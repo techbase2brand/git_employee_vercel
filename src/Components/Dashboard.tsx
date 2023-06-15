@@ -1,63 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button, DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import TableNavbar from "./TableNavbar";
 import DashboardTable from "./DashboardTable";
-import axios from "axios";
-import { GlobalInfo } from "../App";
-import dayjs from "dayjs";
-
-const { RangePicker } = DatePicker;
-interface Project {
-  ProID: string | number;
-  clientName: string;
-  projectName: string;
-  projectDescription: string;
-}
-
-interface Task {
-  EvngTaskID: number;
-  projectName: string;
-  phaseName: string;
-  module: string;
-  task: string;
-  actTime: string;
-  estTime: string;
-  upWorkHrs: number;
-  employeeID: string;
-  currDate: string;
-}
-
-interface Employee {
-  EmpID: string | number;
-  firstName: string;
-  role: string;
-  dob: string | Date;
-  EmployeeID: string;
-}
-
-interface AssignedEmployees {
-  PhaseAssigneeID: number;
-  projectName: string;
-  phaseName: string;
-  assignedNames: string[];
-  EmployeeID: string[];
-}
-
-interface AssignedEmployee {
-  assignedNames: string[];
-  EmployeeID: string[];
-}
-
 const Dashboard: React.FC = () => {
-
-
-    console.log("kkkkk-----");
-
-  return (
+return (
     <div className="emp-main-div">
       <div
         style={{

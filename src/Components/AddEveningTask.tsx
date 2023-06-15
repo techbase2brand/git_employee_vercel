@@ -1,12 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import EmployeeTable from "./EmployeeTable";
-import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 import { GlobalInfo } from "../App";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -36,28 +32,28 @@ interface Module {
   phaseName: string;
   modules: string;
 }
-interface Project {
-  ProID: string | number;
-  clientName: string;
-  projectName: string;
-  projectDescription: string;
-}
+// interface Project {
+//   ProID: string | number;
+//   clientName: string;
+//   projectName: string;
+//   projectDescription: string;
+// }
 interface Phases {
   phaseID: number;
   projectName: string;
   phases: string[];
 }
-type Phase = {
-  phaseID: number;
-  projectName: string;
-};
+// type Phase = {
+//   phaseID: number;
+//   projectName: string;
+// };
 
-interface Props {
-  data: Task[];
-  evngEditID: number;
-  setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
-}
-const AddModule: React.FC<any> = ({ navigation, classes }) => {
+// interface Props {
+//   data: Task[];
+//   evngEditID: number;
+//   setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
+// }
+const AddModule: React.FC<any> = () => {
   // const navigate = useNavigate();
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
@@ -67,9 +63,9 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
-    []
-  );
+  // const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
+  //   []
+  // );
 const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [eveningTask, setEveningTask] = useState<Task>({
     EvngTaskID: 0,
@@ -86,7 +82,7 @@ const formattedDate = format(currentDate, "yyyy-MM-dd");
 
   const navigate = useNavigate();
 
-  const { getEmpInfo, empInfo, setEmpInfo, evngEditID, setEvngEditID } =
+  const { evngEditID, setEvngEditID } =
     useContext(GlobalInfo);
 
   const dataString = localStorage.getItem("myData");
@@ -124,7 +120,7 @@ const formattedDate = format(currentDate, "yyyy-MM-dd");
         const sortedData = response.data.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
-   setPhaseAssignedArr(sortedData);
+  //  setPhaseAssignedArr(sortedData);
     const arr = sortedData
           .map((e) => {
             if (e.EmployeeID === employeeInfo[0].EmployeeID) {
