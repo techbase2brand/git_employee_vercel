@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Menu, Dropdown, Button, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 const TableNavbar: React.FC = () => {
   const [manager, setManager] = useState('');
   const [teamLead, setTeamLead] = useState('');

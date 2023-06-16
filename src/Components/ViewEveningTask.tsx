@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
+// import type { DatePickerProps } from "antd";
+// import {RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import EveningTaskTable from "./EveningTaskTable";
-import DashboardTable from "./DashboardTable";
+// import DashboardTable from "./DashboardTable";
 import axios from "axios";
 import { format } from "date-fns";
 import { GlobalInfo } from "../App";
 
-type TabPosition = "morning" | "evening";
+// type TabPosition = "morning" | "evening";
 
-interface Employee {
-  EmpID: number;
-  firstName: string;
-  role: string;
-  dob: Date;
-}
+// interface Employee {
+//   EmpID: number;
+//   firstName: string;
+//   role: string;
+//   dob: Date;
+// }
 
 interface Task {
   EvngTaskID: number;
@@ -31,20 +31,20 @@ interface Task {
   currDate: string;
 }
 const ViewEveningTask: React.FC = () => {
-  const [mode, setMode] = useState<TabPosition>("morning");
+  // const [mode, setMode] = useState<TabPosition>("morning");
   const [data, setData] = useState<any>([]);
   const [employeeID, setEmployeeID] = useState<string>("");
-  const [selectedDateRange, setSelectedDateRange] = useState<[Date | null, Date | null]>([null, null]);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  // const [selectedDateRange, setSelectedDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [currentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
- const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  //  const handleChange = (value: string) => {
+  //     console.log(`selected ${value}`);
+  //   };
 
-  const handleModeChange = (e: RadioChangeEvent) => {
-    setMode(e.target.value);
-  };
+  // const handleModeChange = (e: RadioChangeEvent) => {
+  //   setMode(e.target.value);
+  // };
 
   useEffect(() => {
     console.log("234567890234567890-");
@@ -52,7 +52,8 @@ const ViewEveningTask: React.FC = () => {
       .get<Task[]>("http://localhost:5000/get/addTaskEvening")
       .then((response) => {
         const arr = response?.data.filter(
-          (e) => e.employeeID == employeeID && e.currDate === formattedDate
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          (e) => e.employeeID === employeeID && e.currDate === formattedDate
         );
 
         // sort the data array in reverse order based on ProID
@@ -64,15 +65,16 @@ const ViewEveningTask: React.FC = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [employeeID]);
+  }, [employeeID, formattedDate]);
 
   const dataString = localStorage.getItem("myData");
 
   // Parse the JSON string back into an array
-  const employeeInfo = dataString ? JSON.parse(dataString) : [];
   useEffect(() => {
-    setEmployeeID(employeeInfo[0].EmployeeID);
-  }, [employeeInfo[0].EmployeeID]);
+    const employeeInfo = dataString ? JSON.parse(dataString) : [];
+    const firstEmployeeID = employeeInfo[0]?.EmployeeID;
+    setEmployeeID(firstEmployeeID);
+  }, [formattedDate, dataString]);
 
   return (
     <div className="emp-main-div">
@@ -102,8 +104,7 @@ const ViewEveningTask: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "flex-start",
               }}
-            >
-            </div>
+            ></div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
               <div
                 style={{

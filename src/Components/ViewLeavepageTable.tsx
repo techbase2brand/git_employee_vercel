@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Table} from "antd";
+// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 interface LeaveData {
@@ -22,8 +22,8 @@ interface LeaveData {
 
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-  const [] = useState<LeaveData[]>([]);
-const navigate = useNavigate();
+  // const [] = useState<LeaveData[]>([]);
+// const navigate = useNavigate();
   useEffect(() => {
     axios
       .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
@@ -36,31 +36,31 @@ const navigate = useNavigate();
       });
   }, []);
 
-const handleApprove = (LeaveInfoID: number) => {
-    axios
-      .put(`http://localhost:5000/approveLeave/${LeaveInfoID}`)
-      .then((response) => {
-        console.log(response.data);
-        // Refresh the table data after approval
-        fetchData();
-      })
-      .catch((error) => {
-        console.error("Error approving leave data:", error);
-      });
-  };
+// const handleApprove = (LeaveInfoID: number) => {
+//     axios
+//       .put(`http://localhost:5000/approveLeave/${LeaveInfoID}`)
+//       .then((response) => {
+//         console.log(response.data);
+//         // Refresh the table data after approval
+//         fetchData();
+//       })
+//       .catch((error) => {
+//         console.error("Error approving leave data:", error);
+//       });
+//   };
 
-  const handleDeny = (LeaveInfoID: number) => {
-    axios
-      .put(`http://localhost:5000/denyLeave/${LeaveInfoID}`)
-      .then((response) => {
-        console.log(response.data);
-        // Refresh the table data after denial
-        fetchData();
-      })
-      .catch((error) => {
-        console.error("Error denying leave data:", error);
-      });
-  };
+  // const handleDeny = (LeaveInfoID: number) => {
+  //   axios
+  //     .put(`http://localhost:5000/denyLeave/${LeaveInfoID}`)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       // Refresh the table data after denial
+  //       fetchData();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error denying leave data:", error);
+  //     });
+  // };
 
   const fetchData = () => {
     axios
