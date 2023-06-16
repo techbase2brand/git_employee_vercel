@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect, useContext, useCallback } from "react";
 import {
   Input,
@@ -6,13 +7,13 @@ import {
   Badge,
   Popover,
   List,
-  notification,
+  // notification,
 } from "antd";
 import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { AssignedTaskCountContext } from "../App";
 import io from "socket.io-client";
-import { message } from "antd";
+// import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
 
@@ -46,16 +47,16 @@ const Navbar: React.FunctionComponent = () => {
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
 
-  const initialNotificationCount = Number(
-    localStorage.getItem("notificationCount") || 0
-  );
-  const [notificationCount, setNotificationCount] = useState(0);
+  // const initialNotificationCount = Number(
+  //   localStorage.getItem("notificationCount") || 0
+  // );
+  // const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
 
 
   const updateNotificationCount = () => {
-    setNotificationCount(notifications.length);
+    // setNotificationCount(notifications.length);
   };
 
   // Call updateNotificationCount() whenever you update the notifications state
@@ -78,6 +79,7 @@ const Navbar: React.FunctionComponent = () => {
   const showDesktopNotification = (
     title: string,
     onClick?: () => void,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options?: Omit<NotificationOptions, "onclick">
   ) => {
     if (Notification.permission === "granted") {
@@ -97,7 +99,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   const handleTaskAssigned = useCallback(
-    (assigneeEmployeeID: any) => {
+    (assigneeEmployeeID: unknown) => {
       console.log("handleTaskAssigned called");
 
       if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
@@ -171,10 +173,7 @@ useEffect(() => {
       });
   }, []);
 
-
-
-
-  const listStyle = {
+ const listStyle = {
     padding: "10px",
     backgroundColor: "#f5f5f5",
     borderRadius: "5px",
@@ -213,28 +212,24 @@ useEffect(() => {
       renderItem={(item) => (
         <List.Item
           key={item.backlogTaskID}
-         onClick={() => {
-  navigate("/dashboard");
-  markNotificationAsVisited(item.backlogTaskID);
-  setNotifications((prevNotifications) =>
-    prevNotifications.filter(
-      (notification) => notification.backlogTaskID !== item.backlogTaskID
-    )
-  );
-  updateNotificationCount(); // Update the notification count
-
-
-
-  console.log(item,"ffggg-------");
-
-}}
+          onClick={() => {
+            navigate("/dashboard");
+            markNotificationAsVisited(item.backlogTaskID);
+            setNotifications((prevNotifications) =>
+              prevNotifications.filter(
+                (notification) => notification.backlogTaskID !== item.backlogTaskID
+              )
+            );
+            updateNotificationCount(); // Update the notification count
+            console.log(item, "ffggg-------");
+          }}
           style={listItemStyle}
         >
           <List.Item.Meta
-
-title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(item.taskName)}`}
-/>
-
+            title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(
+              item.taskName
+            )}`}
+          />
           <CloseOutlined
             onClick={(e) => {
               e.stopPropagation(); // Prevents the parent click event from triggering
@@ -250,79 +245,82 @@ title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(it
         </List.Item>
       )}
       style={listStyle}
-      />
-    );
-
-
-    console.log(notificationList,"kkkkjjj--");
+    />
+  );
 
 
 
-  return (
-    <Header
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "white",
-      }}
-      className="navbar"
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          width: "40%",
-        }}
-      >
-        <div className="logo">
-          <img src="./b2b.png" alt="Company Logo" />
-        </div>
 
-        <div className="search">
-          <Input
-            placeholder="Search..."
-            prefix={<SearchOutlined className="search-icon" />}
-          />
-        </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "60%",
-          float: "right",
-          alignItems: "center",
-          justifyContent: "flex-end",
-        }}
-        className="right-menu"
-      >
-        <div
+
+    return (
+      <div>
+        <Header
           style={{
-            width: "25%",
             display: "flex",
             flexDirection: "row",
-            justifyContent: "space-between",
             alignItems: "center",
+            backgroundColor: "white",
           }}
+          className="navbar"
         >
-          <Badge style={{ marginRight: "3%" }} count={notifications.length}>
-            <Popover
-              style={{ width: "20vw" }}
-              content={notificationList}
-              placement="bottomRight"
-            >
-              <BellOutlined className="notification-icon" />
-            </Popover>
-          </Badge>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "40%",
+            }}
+          >
+            <div className="logo">
+              <img src="./b2b.png" alt="Company Logo" />
+            </div>
 
-          <Avatar className="avatar" icon={<UserOutlined />} />
-          <span className="username">Vikash Soni</span>
-        </div>
+            <div className="search">
+              <Input
+                placeholder="Search..."
+                // eslint-disable-next-line react/react-in-jsx-scope
+                prefix={<SearchOutlined className="search-icon" />}
+              />
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "60%",
+              float: "right",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+            className="right-menu"
+          >
+            <div
+              style={{
+                width: "25%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Badge style={{ marginRight: "3%" }} count={notifications.length}>
+                <Popover
+                  style={{ width: "20vw" }}
+                  content={notificationList}
+                  placement="bottomRight"
+                >
+                  <BellOutlined className="notification-icon" />
+                </Popover>
+              </Badge>
+
+              <Avatar className="avatar" icon={<UserOutlined />} />
+              <span className="username">Vikash Soni</span>
+            </div>
+          </div>
+        </Header>
       </div>
-    </Header>
-  );
-};
+    );
+  };
+
 
 export default Navbar;

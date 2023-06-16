@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Table, Button, Select } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import React, {  useEffect } from "react";
+// import { Table, Button, Select } from "antd";
+// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-import { Option } from "antd/lib/mentions";
+// import { useNavigate } from "react-router-dom";
+// import dayjs from "dayjs";
+// import { Option } from "antd/lib/mentions";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import LeaveReportsTable from "./LeaveReportsTable";
@@ -32,41 +32,41 @@ interface Employee {
 }
 
 const LeaveReports: React.FC = () => {
-  const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
-  const [allEmployee, setAllEmployee] = useState<Employee[]>([]);
+  // const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
+  // const [allEmployee, setAllEmployee] = useState<Employee[]>([]);
 
-  const [selectedEmployee, setSelectedEmployee] = useState<{
-    name: string;
-    id: string;
-  } | null>(null);
+  // const [selectedEmployee, setSelectedEmployee] = useState<{
+  //   name: string;
+  //   id: string;
+  // } | null>(null);
 
-  const handleEmployeeSelect = (value: string, option: any) => {
-    setSelectedEmployee({ name: option.children, id: value });
-  };
+  // const handleEmployeeSelect = (value: string, option: any) => {
+  //   // setSelectedEmployee({ name: option.children, id: value });
+  // };
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     axios
       .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
-      .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-        );
-        setAllLeave(sortedData);
-      });
-    console.log(allEmployee, "ggggg---");
+      // .then((response) => {
+      //   // const sortedData = response.data.sort(
+      //   //   (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+      //   // );
+      //   // setAllLeave(sortedData);
+      // });
+    // console.log(allEmployee, "ggggg---");
   }, []);
 
   useEffect(() => {
     axios
       .get<Employee[]>("http://localhost:5000/employees")
-      .then((response) => {
-        const sortedData = response?.data.sort(
-          (a, b) => Number(b.EmpID) - Number(a.EmpID)
-        );
-        setAllEmployee(sortedData);
-      })
+      // .then((response) => {
+      //   // const sortedData = response?.data.sort(
+      //   //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
+      //   // );
+      //   // setAllEmployee(sortedData);
+      // })
       .catch((error) => console.log(error));
   }, []);
 

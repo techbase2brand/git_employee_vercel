@@ -29,6 +29,7 @@ export const AssignedTaskCountContext = createContext<{
   setAssignedTaskCount: React.Dispatch<React.SetStateAction<number>>;
 }>({
   assignedTaskCount: 0,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setAssignedTaskCount: () => {},
 });
 const App: React.FC = () => {
@@ -39,6 +40,7 @@ const App: React.FC = () => {
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
 
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const getEmpInfo = (item: any) => {
   };
 

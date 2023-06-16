@@ -6,13 +6,13 @@ import "react-dates/lib/css/_datepicker.css";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
-import { Radio } from "antd";
+// import { Radio } from "antd";
 import { useNavigate } from "react-router-dom";
 const { RangePicker } = DatePicker;
-interface TeamLead {
-  id: number;
-  name: string;
-}
+// interface TeamLead {
+//   id: number;
+//   name: string;
+// }
 interface LeaveData {
   employeeName: string;
   startDate: Date | string;
@@ -35,21 +35,21 @@ interface Admin {
 }
 
 const LeaveFormComp: React.FC = () => {
-  const [approvalOfTeamLead, setApprovalOfTeamLead] =
+  const [approvalOfTeamLead] =
     useState<string>("pending");
-  const [approvalOfHR, setApprovalOfHR] = useState<string>("pending");
+  const [approvalOfHR] = useState<string>("pending");
   const [employeeName, setEmployeeName] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [leaveType, setLeaveType] = useState<string>("");
   const [leaveReason, setLeaveReason] = useState<string>("");
   const [teamLead, setTeamLead] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  // const [message, setMessage] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
   const [adminInfo, setAdminInfo] = useState<Admin[]>([]);
   const [estTime, setEstTime] = useState<string>("");
-  const [isHourlyBasis, setIsHourlyBasis] = useState(false);
-  const [isDropdownDisabled, setIsDropdownDisabled] = useState(false);
+  // const [isHourlyBasis, setIsHourlyBasis] = useState(false);
+  // const [isDropdownDisabled, setIsDropdownDisabled] = useState(false);
   const [characterCount, setCharacterCount] = useState<number>(0);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [leaveCategoryState, setLeaveCategoryState] = useState<string>("");
@@ -132,23 +132,23 @@ const LeaveFormComp: React.FC = () => {
         .post("http://localhost:5000/createLeave", leaveData)
         .then((response) => {
           console.log(response.data);
-          setMessage("Leave data submitted");
+          // setMessage("Leave data submitted");
           navigate("/ViewLeavePage");
         })
         .catch((error) => {
           console.error("Error submitting leave data:", error);
-          setMessage("Error submitting leave data");
+          // setMessage("Error submitting leave data");
         });
     } else {
-      setMessage("Please fill in all required fields.");
+      // setMessage("Please fill in all required fields.");
     }
   };
 
-  const handleEstTimeChange = (value: string) => {
-    setEstTime(value);
-  };
+  // const handleEstTimeChange = (value: string) => {
+  //   setEstTime(value);
+  // };
 
-  const handleLeaveTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  // const handleLeaveTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
   const handleLeaveTypeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -213,7 +213,8 @@ const LeaveFormComp: React.FC = () => {
               startDate ? dayjs(startDate) : null,
               endDate ? dayjs(endDate) : null,
             ]}
-            onChange={(dates) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange={(dates : any) => {
               if (dates) {
                 setStartDate(dates[0]?.toDate() || null);
                 setEndDate(dates[1]?.toDate() || null);

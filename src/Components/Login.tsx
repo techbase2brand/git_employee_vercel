@@ -3,28 +3,27 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import {
-  faEnvelope,
   faEye,
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
+import {  UserOutlined } from "@ant-design/icons";
+import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router";
 import { GlobalInfo } from "../App";
-import { Console } from "console";
+// import { Console } from "console";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [getEmployeeID, setGetEmployeeID] = useState("");
-  const [employeedata, setEmployeeData] = useState<any>();
-  const { getEmpInfo , empInfo,  setEmpInfo } = useContext(GlobalInfo);
+  // const [getEmployeeID, setGetEmployeeID] = useState("");
+  const [employeedata] = useState<any>();
+  const { getEmpInfo ,  setEmpInfo } = useContext(GlobalInfo);
 
   useEffect(() => {
     getEmpInfo(employeedata);
-  }, []);
+  }, [employeedata]);
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: unknown) => {
     console.log("Received values of form: ", values);
 
     axios
@@ -46,7 +45,7 @@ const Login: React.FC = () => {
           // Store the JSON string in localStorage
           localStorage.setItem("myData", dataString);
 
-          setGetEmployeeID(res?.data[0]);
+          // setGetEmployeeID(res?.data[0]);
           navigate("/add-morning-task");
         }
       })

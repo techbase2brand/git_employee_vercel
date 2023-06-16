@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState, useEffect, useMemo } from "react";
 
 import { Table, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -25,10 +26,10 @@ const MorningTaskTable: React.FC<Props> = ({
   mrngEditID,
   setMrngEditID,
 }) => {
-  const [info, setInfo] = useState<Task[]>([]);
+  // const [info, setInfo] = useState<Task[]>([]);
   const [propsData, setPropsData] = useState<any>();
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
-  const [employeeLastname, setEmployeeLastname] = useState<string>("");
+  // const [employeeLastname, setEmployeeLastname] = useState<string>("");
 
   const navigate = useNavigate();
   const dataString = localStorage.getItem("myData");
@@ -65,19 +66,21 @@ const MorningTaskTable: React.FC<Props> = ({
           handleDelete(record.MrngTaskID);
         }
       })
-      .catch((error) => {});
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((error) => console.log(error));
   };
 
   // const dataString = localStorage.getItem("myData");
 
   // Parse the JSON string back into an array
-  const employeeInfo = dataString ? JSON.parse(dataString) : [];
+  const employeeInfo = useMemo(() => (dataString ? JSON.parse(dataString) : []), [dataString]);
 
-  useEffect(() => {
-    setEmployeeFirstname(employeeInfo[0].firstName);
-    setEmployeeLastname(employeeInfo[0].lastName);
+  const firstEmployeeFirstName = employeeInfo[0]?.firstName;
 
-  }, [employeeInfo[0].firstName]);
+useEffect(() => {
+  setEmployeeFirstname(firstEmployeeFirstName);
+  // setEmployeeLastname(employeeInfo[0].lastName);
+}, [employeeInfo, firstEmployeeFirstName]);
 
   const columns = [
     {

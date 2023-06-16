@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 interface LeaveData {
@@ -21,7 +21,7 @@ interface LeaveData {
 
 const HRleaveTable : React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 //   console.log(data, "-------");
 

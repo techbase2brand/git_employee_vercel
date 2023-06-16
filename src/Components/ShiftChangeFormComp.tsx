@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
-import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 
-import { useNavigate } from "react-router-dom";
-import { GlobalInfo } from "../App";
-import { format } from "date-fns";
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -32,20 +25,20 @@ interface ShiftChangeData {
 }
 
 const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
-  const [approvalOfTeamLead, setApprovalOfTeamLead] =
+  const [approvalOfTeamLead] =
     useState<string>("pending");
-  const [approvalOfHR, setApprovalOfHR] = useState<string>("pending");
+  const [approvalOfHR] = useState<string>("pending");
   const [employeeName, setEmployeeName] = useState("");
   const [employeeID, setEmployeeID] = useState("");
   const [applyDate, setApplyDate] = useState("");
   const [inTime, setInTime] = useState("");
   const [outTime, setOutTime] = useState("");
-  const [reason, setReason] = useState("");
+  // const [reason, setReason] = useState("");
   const [teamLead, setTeamLead] = useState("");
-  const [adminID, setAdminID] = useState("");
+  // const [adminID, setAdminID] = useState("");
   const [adminInfo, setAdminInfo] = useState<Admin[]>([]);
-  const [shiftStartTime, setShiftStartTime] = useState("");
-  const [shiftEndTime, setShiftEndTime] = useState("");
+  // const [shiftStartTime, setShiftStartTime] = useState("");
+  // const [shiftEndTime, setShiftEndTime] = useState("");
   const [shiftChangeReason, setShiftChangeReason] = useState("");
 
   useEffect(() => {

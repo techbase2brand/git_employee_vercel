@@ -32,7 +32,7 @@ const ViewLeavePage: React.FC = () => {
   // const [data, setData] = useState<any>();
   // const [employeeID, setEmployeeID] = useState<string>("");
   // const [currentDate] = useState<Date>(new Date());
-  const[editID ] = useState<any>()
+  const[editID ] = useState<unknown>()
   const {  setMrngEditID,  } = useContext(GlobalInfo);
 
   if(editID){

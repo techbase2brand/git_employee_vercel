@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect,useContext} from "react";
 import "react-datepicker/dist/react-datepicker.css";
 // import type { DatePickerProps } from "antd";
@@ -35,7 +36,7 @@ const ViewShiftChange: React.FC = () => {
   // const [data, setData] = useState<any>();
   const [employeeID] = useState<string>("");
   const [currentDate] = useState<Date>(new Date());
-  const[editID ] = useState<any>()
+  const[editID ] = useState<unknown>()
 
   const {  setMrngEditID,  } = useContext(GlobalInfo);
 

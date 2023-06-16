@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 interface LeaveData {
   LeaveInfoID: number;
@@ -28,11 +28,11 @@ interface Employee {
 
 const LeaveReportsTable: React.FC = () => {
   const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
-  const [allEmployee, setAllEmployee] = useState<Employee[]>([]);
-  const [selectedEmployee, setSelectedEmployee] = useState<{
-    name: string;
-    id: string;
-  } | null>(null);
+  // const [allEmployee, setAllEmployee] = useState<Employee[]>([]);
+  // const [selectedEmployee, setSelectedEmployee] = useState<{
+  //   name: string;
+  //   id: string;
+  // } | null>(null);
   const [totalLeave, setTotalLeave] = useState<string>("");
   const [uncertainLeaveDuration, setUncertainLeaveDuration] =
     useState<string>("");
@@ -45,11 +45,11 @@ const LeaveReportsTable: React.FC = () => {
     };
   }>({});
 
-  const handleEmployeeSelect = (value: string, option: any) => {
-    setSelectedEmployee({ name: option.children, id: value });
-  };
+  // const handleEmployeeSelect = (value: string, option: any) => {
+  //   // setSelectedEmployee({ name: option.children, id: value });
+  // };
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 
   const dataString = localStorage.getItem("myData");
@@ -75,10 +75,10 @@ const LeaveReportsTable: React.FC = () => {
     axios
       .get<Employee[]>("http://localhost:5000/employees")
       .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.EmpID) - Number(a.EmpID)
-        );
-        setAllEmployee(sortedData);
+        // const sortedData = response.data.sort(
+        //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
+        // );
+        // setAllEmployee(sortedData);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -105,7 +105,7 @@ const LeaveReportsTable: React.FC = () => {
           leave.approvalOfHR === "approved"
       );
 
-      let monthlyData: {
+      const monthlyData: {
         [key: string]: {
           total: number;
           uncertain: number;

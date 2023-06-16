@@ -3,12 +3,8 @@ import { Link } from "react-router-dom";
 import { Menu } from "antd";
 import {
   DashboardOutlined,
-  UserOutlined,
-  PlusOutlined,
   TableOutlined,
   ScheduleOutlined,
-  AppstoreOutlined,
-  MenuOutlined,
 } from "@ant-design/icons";
 
 const AppMenu = () => {

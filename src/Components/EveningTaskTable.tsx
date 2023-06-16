@@ -1,4 +1,5 @@
-import React, { useState, useEffect,useContext } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from "react";
 
 import { Table, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -29,11 +30,11 @@ interface Props {
 
 
 
-const EveningTaskTable: React.FC<Props> = ({ data ,evngEditID, setEvngEditID}) => {
-  const [info, setInfo] = useState<Task[]>([]);
+const EveningTaskTable: React.FC<Props> = ({ data ,setEvngEditID}) => {
+  // const [info, setInfo] = useState<Task[]>([]);
   const [propsData, setPropsData] = useState<any>();
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
-  const [employeeLastname, setEmployeeLastname] = useState<string>("");
+  // const [employeeLastname, setEmployeeLastname] = useState<string>("");
 
 
   const navigate = useNavigate();
@@ -71,6 +72,7 @@ navigate("/add-evening-task");
         .catch((error) => {
           console.log(error);
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setPropsData(propsData.filter((e: any) =>e.EvngTaskID!== EvngTaskID));
     };
 
@@ -78,19 +80,17 @@ navigate("/add-evening-task");
 
     // Parse the JSON string back into an array
     const employeeInfo = dataString ? JSON.parse(dataString) : [];
-    console.log(employeeInfo, "ppp------------");
 
     useEffect(() => {
       // setEmployeeID(employeeInfo[0].EmployeeID)
       setEmployeeFirstname(employeeInfo[0].firstName);
-      setEmployeeLastname(employeeInfo[0].lastName);
+      // setEmployeeLastname(employeeInfo[0].lastName);
 
-      console.log(employeeInfo[0].EmployeeID, "wwwwwwwwwwwwwwww");
+      // console.log(employeeInfo[0].EmployeeID, "wwwwwwwwwwwwwwww");
     }, [employeeInfo[0].firstName]);
 
 
 
-  console.log(data, "yyyyyyy");
 
   const columns = [
     {
