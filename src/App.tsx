@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext,  useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -20,7 +20,6 @@ import ShiftChangeForm from "./Components/ShiftChangeForm";
 import ViewShiftChange from "./Components/ViewShiftChange";
 import HRshiftChangeSection from "./Components/HRshiftChangeSection";
 
-import Navbar from "./Components/Navbar";
 // import MorningTaskTable from "./Components/MorningTaskTable";
 
 export const GlobalInfo = createContext<any>({});
@@ -34,7 +33,7 @@ export const AssignedTaskCountContext = createContext<{
 });
 const App: React.FC = () => {
   const [empInfo, setEmpInfo] = useState();
-  const [updatedempID, setupdatedEmpID] = useState("");
+  // const [updatedempID, setupdatedEmpID] = useState("");
   const [mrngEditID, setMrngEditID] = useState();
   const [evngEditID, setEvngEditID] = useState();
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);

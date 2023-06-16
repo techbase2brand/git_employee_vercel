@@ -1,22 +1,22 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect,useContext} from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
+// import type { DatePickerProps } from "antd";
+// import { RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import ViewShiftChangeTable  from "./ViewShiftChangeTable";
-import DashboardTable from "./DashboardTable";
+// import DashboardTable from "./DashboardTable";
 import axios from "axios";
 import { format } from "date-fns";
 import { GlobalInfo } from "../App";
 
-type TabPosition = "morning" | "evening";
-interface Employee {
-  EmpID: number;
-  firstName: string;
-  role: string;
-  dob: Date;
-}
+// type TabPosition = "morning" | "evening";
+// interface Employee {
+//   EmpID: number;
+//   firstName: string;
+//   role: string;
+//   dob: Date;
+// }
 
 interface Task {
   MrngTaskID: number;
@@ -31,13 +31,13 @@ interface Task {
 }
 
 const ViewShiftChange: React.FC = () => {
-  const [mode, setMode] = useState<TabPosition>("morning");
-  const [data, setData] = useState<any>();
-  const [employeeID, setEmployeeID] = useState<string>("");
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const[editID , setEditID] = useState<any>()
+  // const [mode, setMode] = useState<TabPosition>("morning");
+  // const [data, setData] = useState<any>();
+  const [employeeID] = useState<string>("");
+  const [currentDate] = useState<Date>(new Date());
+  const[editID ] = useState<any>()
 
-  const { getEmpInfo , empInfo,  setEmpInfo ,mrngEditID, setMrngEditID,  } = useContext(GlobalInfo);
+  const {  setMrngEditID,  } = useContext(GlobalInfo);
 
   if(editID){
     setMrngEditID(editID)
@@ -45,37 +45,37 @@ const ViewShiftChange: React.FC = () => {
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+  // const handleChange = (value: string) => {
+  //   console.log(`selected ${value}`);
+  // };
 
-  const handleModeChange = (e: RadioChangeEvent) => {
-    setMode(e.target.value);
-  };
+  // const handleModeChange = (e: RadioChangeEvent) => {
+  //   setMode(e.target.value);
+  // };
 
   useEffect(() => {
     axios
       .get<Task[]>("http://localhost:5000/get/addTaskMorning")
       .then((response) => {
-        const res = response?.data.filter(
-          (e) => e.employeeID === employeeID && e.currDate === formattedDate
-        );
+        // const res = response?.data.filter(
+        //   (e) => e.employeeID === employeeID && e.currDate === formattedDate
+        // );
 
-const sortedData = res.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID));
-        setData(sortedData);
+// const sortedData = res.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID));
+        // setData(sortedData);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [employeeID]);
+  }, [employeeID ,formattedDate]);
 
-  const dataString = localStorage.getItem("myData");
+  // const dataString = localStorage.getItem("myData");
   // Parse the JSON string back into an array
-  const employeeInfo = dataString ? JSON.parse(dataString) : [];
+  // const employeeInfo = useMemo(() => dataString ? JSON.parse(dataString) : [], [dataString]);
 
-  useEffect(() => {
-    setEmployeeID(employeeInfo[0].EmployeeID);
-  }, [employeeInfo[0].EmployeeID]);
+  // useEffect(() => {
+  //   setEmployeeID(employeeInfo[0]?.EmployeeID);
+  // }, [employeeInfo[0]?.EmployeeID, employeeInfo]);
 
   return (
     <div className="emp-main-div">

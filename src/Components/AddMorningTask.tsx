@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
+// import { Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 // import EmployeeTable from "./EmployeeTable";
-import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
+// import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GlobalInfo } from "../App";
@@ -37,35 +37,35 @@ interface Module {
   modules: string;
 }
 
-interface Project {
-  ProID: string | number;
-  clientName: string;
-  projectName: string;
-  projectDescription: string;
-}
+// interface Project {
+//   ProID: string | number;
+//   clientName: string;
+//   projectName: string;
+//   projectDescription: string;
+// }
 
 interface Phases {
   phaseID: number;
   projectName: string;
   phases: string[];
 }
-type Phase = {
-  phaseID: number;
-  projectName: string;
-};
+// type Phase = {
+//   phaseID: number;
+//   projectName: string;
+// };
 const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
-  const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
-    []
-  );
+  // const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
+  //   []
+  // );
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const { mrngEditID, setMrngEditID, getEmpInfo, empInfo, setEmpInfo } =
+  const [currentDate] = useState<Date>(new Date());
+  const { mrngEditID, setMrngEditID } =
     useContext(GlobalInfo);
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [morningTask, setMorningTask] = useState<Task>({
@@ -80,7 +80,8 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
     currDate: formattedDate,
   });
   const dataString = localStorage.getItem("myData");
-  const employeeInfo = dataString ? JSON.parse(dataString) : [];
+  const employeeInfo = useMemo(() => dataString ? JSON.parse(dataString) : [], [dataString]);
+
   useEffect(() => {
     setEmployeeID(employeeInfo[0].EmployeeID);
   }, [employeeInfo]);
@@ -121,7 +122,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
 
-        setPhaseAssignedArr(sortedData);
+        // setPhaseAssignedArr(sortedData);
 
         const arr = sortedData
           .map((e) => {
