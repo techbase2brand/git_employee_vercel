@@ -53,7 +53,7 @@ interface Phases {
 //   phaseID: number;
 //   projectName: string;
 // };
-const AddModule: React.FC<any> = ({ navigation, classes }) => {
+const AddModule: React.FC<unknown> = () => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
@@ -80,11 +80,14 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
     currDate: formattedDate,
   });
   const dataString = localStorage.getItem("myData");
+  console.log(dataString,"dataString");
+
   const employeeInfo = useMemo(() => dataString ? JSON.parse(dataString) : [], [dataString]);
+  console.log(employeeInfo,"employeeInfo");
 
   useEffect(() => {
-    setEmployeeID(employeeInfo[0].EmployeeID);
-  }, [employeeInfo]);
+    setEmployeeID(employeeInfo[0]?.EmployeeID);
+  }, []);
 
   useEffect(() => {
     if (mrngEditID) {
@@ -126,7 +129,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
 
         const arr = sortedData
           .map((e) => {
-            if (e?.EmployeeID === employeeInfo[0].EmployeeID) {
+            if (e?.EmployeeID === employeeInfo[0]?.EmployeeID) {
               return e?.projectName;
             }
             return null; // or some other default value

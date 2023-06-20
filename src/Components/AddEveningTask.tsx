@@ -27,7 +27,6 @@ interface AssignedEmployees {
 }
 interface Module {
   modID: number;
-
   projectName: string;
   phaseName: string;
   modules: string;
@@ -66,7 +65,7 @@ const AddModule: React.FC<any> = () => {
   // const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
   //   []
   // );
-const formattedDate = format(currentDate, "yyyy-MM-dd");
+  const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [eveningTask, setEveningTask] = useState<Task>({
     EvngTaskID: 0,
     projectName: "",
@@ -82,85 +81,84 @@ const formattedDate = format(currentDate, "yyyy-MM-dd");
 
   const navigate = useNavigate();
 
-  const { evngEditID, setEvngEditID } =
-    useContext(GlobalInfo);
+  const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
 
   const dataString = localStorage.getItem("myData");
- const employeeInfo = useMemo(() => dataString ? JSON.parse(dataString) : [], [dataString]);
- useEffect(() => {
-  axios
-    .get<Task[]>("http://localhost:5000/get/addTaskEvening")
-    .then((response) => {
-      const res = response.data.filter((e) => e.EvngTaskID === evngEditID);
-      setSelectedProject(res[0].projectName);
-      setSelectedPhase(res[0].phaseName);
-      setSelectedModule(res[0].module);
-      setEveningTask((prevEveningTask) => ({
-        ...prevEveningTask,
-        EvngTaskID: res[0].EvngTaskID,
-        task: res[0].task,
-        estTime: res[0].estTime,
-        actTime: res[0].actTime,
-        upWorkHrs: res[0].upWorkHrs,
-        employeeID: res[0].employeeID,
-        currDate: res[0].currDate,
-      }));
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}, [evngEditID, setEveningTask]);
-
-
-useEffect(() => {
-  // Fetch employees from the backend API
-  axios
-    .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo")
-    .then((response) => {
-      console.log(response.data);
-      const sortedData = response.data.sort(
-        (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
-      );
-      //  setPhaseAssignedArr(sortedData);
-      const arr = sortedData
-        .map((e) => {
-          if (e.EmployeeID === employeeInfo[0].EmployeeID) {
-            return e.projectName;
-          }
-          return null; // or some other default value
-        })
-        .filter((value, index, self) => {
-          return value !== null && self.indexOf(value) === index;
-        })
-        .reduce((unique: Array<string>, value: string | null) => {
-          if (value !== null && !unique.includes(value)) {
-            unique.push(value);
-          }
-          return unique;
-        }, []);
-
-      setProjectNames(arr);
-
-      if (eveningTask?.projectName) {
-        const arr = sortedData
-          .filter(
-            (obj) =>
-              obj.projectName === eveningTask.projectName &&
-              obj.EmployeeID === employeeInfo?.[0]?.EmployeeID
-          )
-          .map((obj) => obj.phaseName);
-        const phasesArr = arr.map((phase, index) => ({
-          phaseID: index + 1,
-          projectName: eveningTask.projectName,
-          phases: [phase],
+  const employeeInfo = useMemo(
+    () => (dataString ? JSON.parse(dataString) : []),
+    [dataString]
+  );
+  useEffect(() => {
+    axios
+      .get<Task[]>("http://localhost:5000/get/addTaskEvening")
+      .then((response) => {
+        const res = response.data.filter((e) => e.EvngTaskID === evngEditID);
+        setSelectedProject(res[0].projectName);
+        setSelectedPhase(res[0].phaseName);
+        setSelectedModule(res[0].module);
+        setEveningTask((prevEveningTask) => ({
+          ...prevEveningTask,
+          EvngTaskID: res[0].EvngTaskID,
+          task: res[0].task,
+          estTime: res[0].estTime,
+          actTime: res[0].actTime,
+          upWorkHrs: res[0].upWorkHrs,
+          employeeID: res[0].employeeID,
+          currDate: res[0].currDate,
         }));
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [evngEditID, setEveningTask]);
 
-        setPhases(phasesArr);
-      }
-    });
-}, [employeeInfo, eveningTask?.projectName]);
+  useEffect(() => {
+    // Fetch employees from the backend API
+    axios
+      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo")
+      .then((response) => {
+        console.log(response.data);
+        const sortedData = response.data.sort(
+          (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
+        );
+        //  setPhaseAssignedArr(sortedData);
+        const arr = sortedData
+          .map((e) => {
+            if (e.EmployeeID === employeeInfo[0]?.EmployeeID) {
+              return e.projectName;
+            }
+            return null; // or some other default value
+          })
+          .filter((value, index, self) => {
+            return value !== null && self.indexOf(value) === index;
+          })
+          .reduce((unique: Array<string>, value: string | null) => {
+            if (value !== null && !unique.includes(value)) {
+              unique.push(value);
+            }
+            return unique;
+          }, []);
 
+        setProjectNames(arr);
 
+        if (eveningTask?.projectName) {
+          const arr = sortedData
+            .filter(
+              (obj) =>
+                obj.projectName === eveningTask.projectName &&
+                obj.EmployeeID === employeeInfo?.[0]?.EmployeeID
+            )
+            .map((obj) => obj.phaseName);
+          const phasesArr = arr.map((phase, index) => ({
+            phaseID: index + 1,
+            projectName: eveningTask.projectName,
+            phases: [phase],
+          }));
+
+          setPhases(phasesArr);
+        }
+      });
+  }, [employeeInfo, eveningTask?.projectName]);
 
   useEffect(() => {
     // Fetch employees from the backend API

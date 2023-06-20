@@ -29,10 +29,11 @@ interface Task {
   upWorkHrs: number;
   employeeID: string;
   currDate: string;
+  actTime : string;
 }
 const ViewEveningTask: React.FC = () => {
   // const [mode, setMode] = useState<TabPosition>("morning");
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<Task[]>([]);
   const [employeeID, setEmployeeID] = useState<string>("");
   // const [selectedDateRange, setSelectedDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [currentDate] = useState<Date>(new Date());
@@ -51,10 +52,9 @@ const ViewEveningTask: React.FC = () => {
     axios
       .get<Task[]>("http://localhost:5000/get/addTaskEvening")
       .then((response) => {
-        const arr = response?.data.filter(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          (e) => e.employeeID === employeeID && e.currDate === formattedDate
-        );
+        const arr = response?.data?.filter(
+          (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
+        ) || [];
 
         // sort the data array in reverse order based on ProID
         const sortedData = arr.sort(

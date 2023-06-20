@@ -87,8 +87,8 @@ const LeaveFormComp: React.FC = () => {
   useEffect(() => {
     const dataString = localStorage.getItem("myData");
     const employeeInfo = dataString ? JSON.parse(dataString) : [];
-    setEmployeeName(employeeInfo[0].firstName);
-    setEmployeeID(employeeInfo[0].EmployeeID);
+    setEmployeeName(employeeInfo[0]?.firstName);
+    setEmployeeID(employeeInfo[0]?.EmployeeID);
   }, []);
 
   // Add this useEffect hook

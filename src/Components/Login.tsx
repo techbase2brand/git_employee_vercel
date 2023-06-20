@@ -16,42 +16,43 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
   // const [getEmployeeID, setGetEmployeeID] = useState("");
-  const [employeedata] = useState<any>();
+  const [employeedata] = useState<unknown>();
   const { getEmpInfo ,  setEmpInfo } = useContext(GlobalInfo);
 
-  useEffect(() => {
-    getEmpInfo(employeedata);
-  }, [employeedata]);
+  // useEffect(() => {
+  //   getEmpInfo(employeedata);
+  // }, [employeedata]);
 
   const onFinish = (values: unknown) => {
     console.log("Received values of form: ", values);
 
     axios
-      .post("http://localhost:5000/user/login", { values })
-      .then((res) => {
+    .post("http://localhost:5000/user/login", { values })
+    .then((res) => {
+      if (res?.data === "Invalid username or password") {
+        alert("Invalid username or password");
+      } else {
+        console.log("Login successful");
+        console.log(res?.data, "7777mm7");
 
-        if (res?.data === "Invalid username or password") {
-          alert("Invalid username or password");
-        } else {
-          console.log("Login successful");
-          console.log(res?.data, "7777mm7");
-          setEmpInfo (res?.data);
+        // save user info and token in state and local storage
+        const { user, token } = res.data;
+        setEmpInfo(user);
 
+        // Convert the user data to a JSON string
+        const dataString = JSON.stringify(user);
 
-          // Convert the array to a JSON string
-          const dataString = JSON.stringify(res?.data);
+        // Store the user data and the token in localStorage
+        localStorage.setItem("myData", dataString);
+        localStorage.setItem("myToken", token);
 
+        navigate("/add-morning-task");
+      }
+    })
+    .catch((error) => {
+      console.log(error.response.data);
+    });
 
-          // Store the JSON string in localStorage
-          localStorage.setItem("myData", dataString);
-
-          // setGetEmployeeID(res?.data[0]);
-          navigate("/add-morning-task");
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
   };
 
   const togglePasswordVisibility = () => {

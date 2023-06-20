@@ -1,6 +1,14 @@
-import React, { createContext,  useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { ReactNode, createContext, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 import "./App.css";
+
+
+
 
 import Login from "./Components/Login";
 // import AppMenu from "./Components/Menu";
@@ -32,6 +40,24 @@ export const AssignedTaskCountContext = createContext<{
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setAssignedTaskCount: () => {},
 });
+
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("myToken");
+  if (!token) {
+    alert("Please log in!");
+    setTimeout(() => {
+      navigate("/");
+    }, 0);
+    return null;
+  }
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
   const [empInfo, setEmpInfo] = useState();
   // const [updatedempID, setupdatedEmpID] = useState("");
@@ -39,10 +65,8 @@ const App: React.FC = () => {
   const [evngEditID, setEvngEditID] = useState();
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
 
-
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const getEmpInfo = (item: any) => {
-  };
+  const getEmpInfo = (item: any) => {};
 
   return (
     <Router>
@@ -62,24 +86,111 @@ const App: React.FC = () => {
       >
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/table-navbar" element={<TableNavbar />} />
-          <Route path="/add-morning-task" element={<AddMorningTask />} />
-          <Route path="/add-evening-task" element={<AddEveningTask />} />
-          <Route path="/view-morning-task" element={<ViewMorningTask />} />
-          <Route path="/view-evening-task" element={<ViewEveningTask />} />
-          <Route path="/LeaveForm" element={<LeaveForm />} />
-          <Route path="/ViewLeavePage" element={<ViewLeavePage />} />
-          <Route path="/HRsection" element={<HRsection />} />
-          <Route path="/HRsection" element={<HRsection />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/table-navbar"
+            element={
+              <ProtectedRoute>
+                <TableNavbar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-morning-task"
+            element={
+              <ProtectedRoute>
+                <AddMorningTask />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-evening-task"
+            element={
+              <ProtectedRoute>
+                <AddEveningTask />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-morning-task"
+            element={
+              <ProtectedRoute>
+                <ViewMorningTask />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-evening-task"
+            element={
+              <ProtectedRoute>
+                <ViewEveningTask />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/LeaveForm"
+            element={
+              <ProtectedRoute>
+                <LeaveForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ViewLeavePage"
+            element={
+              <ProtectedRoute>
+                <ViewLeavePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/HRsection"
+            element={
+              <ProtectedRoute>
+                <HRsection />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/HRshiftChangeSection"
-            element={<HRshiftChangeSection />}
+            element={
+              <ProtectedRoute>
+                <HRshiftChangeSection />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/LeaveReports" element={<LeaveReports />} />
-          <Route path="/ShiftChangeForm" element={<ShiftChangeForm />} />
-          <Route path="/ViewShiftChange" element={<ViewShiftChange />} />
-          {/* <Route path="/MorningTaskTable" element={<MorningTaskTable />} /> */}
+          <Route
+            path="/LeaveReports"
+            element={
+              <ProtectedRoute>
+                <LeaveReports />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ShiftChangeForm"
+            element={
+              <ProtectedRoute>
+                <ShiftChangeForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ViewShiftChange"
+            element={
+              <ProtectedRoute>
+                <ViewShiftChange />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route path="/MorningTaskTable" element={<ProtectedRoute><MorningTaskTable /></ProtectedRoute>} /> */}
         </Routes>
       </GlobalInfo.Provider>
     </Router>

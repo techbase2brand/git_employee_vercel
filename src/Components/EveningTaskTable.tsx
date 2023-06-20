@@ -83,11 +83,11 @@ navigate("/add-evening-task");
 
     useEffect(() => {
       // setEmployeeID(employeeInfo[0].EmployeeID)
-      setEmployeeFirstname(employeeInfo[0].firstName);
+      setEmployeeFirstname(employeeInfo[0]?.firstName);
       // setEmployeeLastname(employeeInfo[0].lastName);
 
       // console.log(employeeInfo[0].EmployeeID, "wwwwwwwwwwwwwwww");
-    }, [employeeInfo[0].firstName]);
+    }, [employeeInfo[0]?.firstName]);
 
 
 
