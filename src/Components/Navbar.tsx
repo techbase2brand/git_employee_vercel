@@ -248,6 +248,13 @@ useEffect(() => {
     />
   );
 
+  const logout = () => {
+    if (window.confirm('Do you really want to logout?')) {
+      localStorage.removeItem("myToken");
+      navigate("/");
+    }
+  };
+
 
 
 
@@ -315,6 +322,7 @@ useEffect(() => {
 
               <Avatar className="avatar" icon={<UserOutlined />} />
               <span className="username">Vikash Soni</span>
+              <button onClick={logout}>logout</button>
             </div>
           </div>
         </Header>

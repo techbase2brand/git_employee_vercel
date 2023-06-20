@@ -7,14 +7,9 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
-
-
-
 import Login from "./Components/Login";
 // import AppMenu from "./Components/Menu";
-
 import Dashboard from "./Components/Dashboard";
-
 import TableNavbar from "./Components/TableNavbar";
 import AddMorningTask from "./Components/AddMorningTask";
 import AddEveningTask from "./Components/AddEveningTask";
