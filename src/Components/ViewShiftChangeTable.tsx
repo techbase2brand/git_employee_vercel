@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Table } from "antd";
 import axios from "axios";
 // import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
 
 interface ShiftChangeData {
     ShiftChangeTableID : 0,
@@ -65,6 +64,7 @@ const ViewShiftChangeTable: React.FC = () => {
     axios
       .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo")
       .then((response) => {
+
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
@@ -75,6 +75,8 @@ const ViewShiftChangeTable: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+
 
 
   const columns = [
@@ -88,13 +90,13 @@ const ViewShiftChangeTable: React.FC = () => {
       title: "In time",
       dataIndex: "inTime",
       key: "inTime",
-      render: (text: string) => <div style={{ width: 100 }}>{dayjs(text).format("YYYY-MM-DD")}</div>,
+      render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
     },
     {
       title: "Out time ",
       dataIndex: "outTime",
       key: "outTime",
-      render: (text: string) => <div style={{ width: 100 }}>{dayjs(text).format("YYYY-MM-DD")}</div>,
+      render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
     },
     {
       title: "Reason",

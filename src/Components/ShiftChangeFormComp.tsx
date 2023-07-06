@@ -41,11 +41,15 @@ const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
   // const [shiftEndTime, setShiftEndTime] = useState("");
   const [shiftChangeReason, setShiftChangeReason] = useState("");
 
+
+  console.log(employeeID,"gggfffffdddssssss-----------");
+
+
   useEffect(() => {
     const dataString = localStorage.getItem("myData");
     const employeeInfo = dataString ? JSON.parse(dataString) : [];
-    setEmployeeName(employeeInfo[0]?.firstName);
-    setEmployeeID(employeeInfo[0]?.EmployeeID);
+    setEmployeeName(employeeInfo?.firstName);
+    setEmployeeID(employeeInfo?.EmployeeID);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -78,6 +82,8 @@ const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
         approvalOfTeamLead,
         approvalOfHR,
       };
+      console.log(shiftChangeData,"ffddssddggggg=========");
+
 
       axios
         .post("http://localhost:5000/createShiftChange", shiftChangeData)

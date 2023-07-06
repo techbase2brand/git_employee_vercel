@@ -50,7 +50,7 @@ const Login: React.FC = () => {
       }
     })
     .catch((error) => {
-      console.log(error.response.data);
+      console.log(error.response?.data);
     });
 
   };

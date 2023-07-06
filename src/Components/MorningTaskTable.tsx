@@ -42,7 +42,7 @@ const MorningTaskTable: React.FC<Props> = ({
     console.log(`Edit employee with id ${MrngTaskID}`);
 
     setMrngEditID(MrngTaskID);
-    navigate("/add-morning-task");
+    navigate("/add-morning-task" ,  { state: { MrngTaskID: MrngTaskID } });
   };
   const handleDelete = (MrngTaskID: number) => {
     axios

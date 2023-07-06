@@ -6,6 +6,8 @@ import axios from "axios";
 import { GlobalInfo } from "../App";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 interface Task {
   EvngTaskID: number;
   projectName: string;
@@ -80,6 +82,8 @@ const AddModule: React.FC<any> = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
 
@@ -88,28 +92,62 @@ const AddModule: React.FC<any> = () => {
     () => (dataString ? JSON.parse(dataString) : []),
     [dataString]
   );
+  // useEffect(() => {
+  //   axios
+  //     .get<Task[]>("http://localhost:5000/get/addTaskEvening")
+  //     .then((response) => {
+  //       const res = response.data.filter((e) => e.EvngTaskID === evngEditID);
+  //       console.log(res, "ssfffggg------");
+
+  //       setSelectedProject(res[0]?.projectName);
+  //       setSelectedPhase(res[0]?.phaseName);
+  //       setSelectedModule(res[0]?.module);
+  //       setEveningTask((prevEveningTask) => ({
+  //         ...prevEveningTask,
+  //         EvngTaskID: res[0]?.EvngTaskID,
+  //         task: res[0]?.task,
+  //         estTime: res[0]?.estTime,
+  //         actTime: res[0]?.actTime,
+  //         upWorkHrs: res[0]?.upWorkHrs,
+  //         employeeID: res[0]?.employeeID,
+  //         currDate: res[0]?.currDate,
+  //       }));
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     });
+  // }, [evngEditID, setEveningTask]);
+
   useEffect(() => {
+    if (location?.state?.EvngTaskID) {
     axios
       .get<Task[]>("http://localhost:5000/get/addTaskEvening")
       .then((response) => {
-        const res = response.data.filter((e) => e.EvngTaskID === evngEditID);
-        setSelectedProject(res[0].projectName);
-        setSelectedPhase(res[0].phaseName);
-        setSelectedModule(res[0].module);
+        const res = response.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
+        console.log(res, "ssfffggg------");
+
+        setSelectedProject(res[0]?.projectName);
+        setSelectedPhase(res[0]?.phaseName);
+        setSelectedModule(res[0]?.module); // Add this line to set the module
+
         setEveningTask((prevEveningTask) => ({
           ...prevEveningTask,
-          EvngTaskID: res[0].EvngTaskID,
-          task: res[0].task,
-          estTime: res[0].estTime,
-          actTime: res[0].actTime,
-          upWorkHrs: res[0].upWorkHrs,
-          employeeID: res[0].employeeID,
-          currDate: res[0].currDate,
+          EvngTaskID: res[0]?.EvngTaskID,
+          projectName: res[0]?.projectName,
+          phaseName: res[0]?.phaseName,
+          module: res[0]?.module,
+          task: res[0]?.task,
+          estTime: res[0]?.estTime,
+          actTime: res[0]?.actTime,
+          upWorkHrs: res[0]?.upWorkHrs,
+          employeeID: res[0]?.employeeID,
+          currDate: res[0]?.currDate,
         }));
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+    }
   }, [evngEditID, setEveningTask]);
 
   useEffect(() => {
@@ -124,7 +162,7 @@ const AddModule: React.FC<any> = () => {
         //  setPhaseAssignedArr(sortedData);
         const arr = sortedData
           .map((e) => {
-            if (e.EmployeeID === employeeInfo[0]?.EmployeeID) {
+            if (e.EmployeeID === employeeInfo.EmployeeID) {
               return e.projectName;
             }
             return null; // or some other default value
@@ -140,13 +178,14 @@ const AddModule: React.FC<any> = () => {
           }, []);
 
         setProjectNames(arr);
+        console.log(arr, "kkkk-----------");
 
         if (eveningTask?.projectName) {
           const arr = sortedData
             .filter(
               (obj) =>
                 obj.projectName === eveningTask.projectName &&
-                obj.EmployeeID === employeeInfo?.[0]?.EmployeeID
+                obj.EmployeeID === employeeInfo?.EmployeeID
             )
             .map((obj) => obj.phaseName);
           const phasesArr = arr.map((phase, index) => ({
@@ -182,75 +221,107 @@ const AddModule: React.FC<any> = () => {
     });
   };
 
+  // const handleProjectChange = (value: string) => {
+  //   setSelectedProject(value);
+  //   const currentPhase = phases.find((phase) => phase.projectName === value);
+  //   if (currentPhase) {
+  //     setSelectedPhase(currentPhase.phases[0]);
+  //     setEveningTask({
+  //       EvngTaskID: 0,
+  //       projectName: value,
+  //       phaseName: currentPhase.phases[0],
+  //       module: "",
+  //       task: "",
+  //       estTime: "",
+  //       actTime: "",
+
+  //       upWorkHrs: "",
+  //       employeeID: employeeID,
+  //       currDate: formattedDate,
+  //     });
+  //   } else {
+  //     setSelectedPhase("");
+  //     setEveningTask({
+  //       EvngTaskID: 0,
+  //       projectName: value,
+  //       phaseName: "",
+  //       module: "",
+  //       task: "",
+  //       estTime: "",
+  //       actTime: "",
+
+  //       upWorkHrs: "",
+  //       employeeID: employeeID,
+  //       currDate: formattedDate,
+  //     });
+  //   }
+  // };
+
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
     const currentPhase = phases.find((phase) => phase.projectName === value);
     if (currentPhase) {
       setSelectedPhase(currentPhase.phases[0]);
-      setEveningTask({
-        EvngTaskID: 0,
+      const currentModule = modules.find(
+        (module) =>
+          module.projectName === value &&
+          module.phaseName === currentPhase.phases[0]
+      );
+      if (currentModule) {
+        setSelectedModule(currentModule.modules); // Assume the currentModule object has a "modules" property
+      } else {
+        setSelectedModule("");
+      }
+      setEveningTask((prevEveningTask) => ({
+        ...prevEveningTask,
         projectName: value,
         phaseName: currentPhase.phases[0],
-        module: "",
-        task: "",
-        estTime: "",
-        actTime: "",
-
-        upWorkHrs: "",
-        employeeID: employeeID,
-        currDate: formattedDate,
-      });
+        module: currentModule ? currentModule.modules : "",
+      }));
     } else {
       setSelectedPhase("");
-      setEveningTask({
-        EvngTaskID: 0,
+      setSelectedModule("");
+      setEveningTask((prevEveningTask) => ({
+        ...prevEveningTask,
         projectName: value,
         phaseName: "",
         module: "",
-        task: "",
-        estTime: "",
-        actTime: "",
-
-        upWorkHrs: "",
-        employeeID: employeeID,
-        currDate: formattedDate,
-      });
+      }));
     }
   };
 
   const handlePhaseChange = (value: string) => {
     setSelectedPhase(value);
-    setEveningTask({
-      ...eveningTask,
+    setEveningTask((prevEveningTask) => ({
+      ...prevEveningTask,
       phaseName: value,
-    });
+    }));
   };
 
   const handleTaskChange = (value: string) => {
-    setEveningTask({
-      ...eveningTask,
+    setEveningTask((prevEveningTask) => ({
+      ...prevEveningTask,
       task: value,
-    });
+    }));
   };
-
   const handleEstTimeChange = (value: string) => {
-    setEveningTask({
-      ...eveningTask,
+    setEveningTask((prevEveningTask) => ({
+      ...prevEveningTask,
       estTime: value,
-    });
+    }));
   };
   const handleActTimeChange = (value: string) => {
-    setEveningTask({
-      ...eveningTask,
+    setEveningTask((prevEveningTask) => ({
+      ...prevEveningTask,
       actTime: value,
-    });
+    }));
   };
 
   const handleUpWorkHrsChange = (value: string) => {
-    setEveningTask({
-      ...eveningTask,
+    setEveningTask((prevEveningTask) => ({
+      ...prevEveningTask,
       upWorkHrs: value,
-    });
+    }));
   };
 
   const handleSubmit = () => {
@@ -298,11 +369,13 @@ const AddModule: React.FC<any> = () => {
   // const dataString = localStorage.getItem("myData");
 
   useEffect(() => {
-    if (employeeInfo && employeeInfo.length > 0) {
-      setEmployeeID(employeeInfo[0].EmployeeID);
-      console.log(employeeInfo[0].EmployeeID, "wwwwwwwwwwwwwwww");
+    if (employeeInfo) {
+      setEmployeeID(employeeInfo.EmployeeID);
+      console.log(employeeInfo.EmployeeID, "wwwwwwwwwwwwwwww");
     }
-  }, [employeeInfo]);
+  }, []);
+  console.log(employeeInfo.EmployeeID, "wwwwwwwwpppwwwwwwww");
+  console.log(employeeID, "ssdddffgghhh========");
 
   return (
     <div className="emp-main-div">

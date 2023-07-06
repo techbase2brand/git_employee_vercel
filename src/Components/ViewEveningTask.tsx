@@ -72,7 +72,7 @@ const ViewEveningTask: React.FC = () => {
   // Parse the JSON string back into an array
   useEffect(() => {
     const employeeInfo = dataString ? JSON.parse(dataString) : [];
-    const firstEmployeeID = employeeInfo[0]?.EmployeeID;
+    const firstEmployeeID = employeeInfo?.EmployeeID;
     setEmployeeID(firstEmployeeID);
   }, [formattedDate, dataString]);
 

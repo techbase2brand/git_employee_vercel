@@ -81,13 +81,13 @@ const columns = [
         title: "In time",
         dataIndex: "inTime",
         key: "inTime",
-        render: (text: string) => <div style={{ width: 100 }}>{dayjs(text).format("YYYY-MM-DD")}</div>,
+        render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
       },
       {
         title: "Out time ",
         dataIndex: "outTime",
         key: "outTime",
-        render: (text: string) => <div style={{ width: 100 }}>{dayjs(text).format("YYYY-MM-DD")}</div>,
+        render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
       },
       {
         title: "Reason",

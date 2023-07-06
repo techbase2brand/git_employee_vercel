@@ -45,23 +45,15 @@ const EveningTaskTable: React.FC<Props> = ({ data ,setEvngEditID}) => {
     setPropsData(data);
   }, [data]);
 
-  console.log(data,"34567890------");
 
-
-
-  const handleEdit = (EvngTaskID: number) => {
+ const handleEdit = (EvngTaskID: number) => {
     console.log(`Edit employee with id ${EvngTaskID}`);
     setEvngEditID(EvngTaskID)
 
-navigate("/add-evening-task");
+navigate("/add-evening-task" ,  { state: { EvngTaskID: EvngTaskID } } );
 
   };
-
-
-
-
-
-    const handleDelete = (EvngTaskID: number) => {
+  const handleDelete = (EvngTaskID: number) => {
       // console.log(`Delete task with id ${MrngTaskID}`);
 
       axios

@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-// import { Space } from "antd";
+import { Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 // import EmployeeTable from "./EmployeeTable";
-// import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GlobalInfo } from "../App";
 import { format } from "date-fns";
+import { useLocation } from "react-router-dom";
 
 interface Task {
   MrngTaskID: number;
@@ -37,37 +38,43 @@ interface Module {
   modules: string;
 }
 
-// interface Project {
-//   ProID: string | number;
-//   clientName: string;
-//   projectName: string;
-//   projectDescription: string;
-// }
+interface Project {
+  ProID: string | number;
+  clientName: string;
+  projectName: string;
+  projectDescription: string;
+}
 
 interface Phases {
   phaseID: number;
   projectName: string;
   phases: string[];
 }
-// type Phase = {
-//   phaseID: number;
-//   projectName: string;
-// };
-const AddModule: React.FC<unknown> = () => {
+type Phase = {
+  phaseID: number;
+  projectName: string;
+};
+
+const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
-  // const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
-  //   []
-  // );
+  const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
+    []
+  );
+
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
-  const [currentDate] = useState<Date>(new Date());
-  const { mrngEditID, setMrngEditID } =
-    useContext(GlobalInfo);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
+  const [projectName, setProjectName] = useState("");
+const [phaseName, setPhaseName] = useState("");
+const [moduleName, setModuleName] = useState("");
+
   const formattedDate = format(currentDate, "yyyy-MM-dd");
+
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
     projectName: "",
@@ -79,44 +86,125 @@ const AddModule: React.FC<unknown> = () => {
     employeeID: employeeID,
     currDate: formattedDate,
   });
-  const dataString = localStorage.getItem("myData");
-  console.log(dataString,"dataString");
 
-  const employeeInfo = useMemo(() => dataString ? JSON.parse(dataString) : [], [dataString]);
-  console.log(employeeInfo,"employeeInfo");
+  const location = useLocation();
+  // console.log(location?.state?.MrngTaskID, "ffffgggghhhh");
+
+  // useEffect(() => {
+  //   if (location?.state?.MrngTaskID) {
+  //     axios
+  //       .get<Task[]>("http://localhost:5000/get/addTaskMorning")
+  //       .then((response) => {
+  //         const res = response.data.filter(
+  //           (e) => e.MrngTaskID === location?.state?.MrngTaskID
+  //         );
+
+  //         if (res) {
+  //           setMorningTask({
+  //             MrngTaskID: res[0]?.MrngTaskID,
+  //             projectName: res[0]?.projectName,
+  //             phaseName: res[0]?.phaseName,
+  //             module: res[0]?.module,
+  //             task: res[0]?.task,
+  //             estTime: res[0]?.estTime,
+  //             upWorkHrs: res[0]?.upWorkHrs,
+  //             employeeID: res[0]?.employeeID,
+  //             currDate: res[0]?.currDate,
+  //           });
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching data:", error);
+  //       });
+  //   }
+  // }, [location?.state?.MrngTaskID]);
+
+  // useEffect(() => {
+  //   if (location?.state?.MrngTaskID) {
+  //     axios
+  //       .get<Task[]>("http://localhost:5000/get/addTaskMorning")
+  //       .then((response) => {
+  //         const res = response.data.filter(
+  //           (e) => e.MrngTaskID === location?.state?.MrngTaskID
+  //         );
+
+  //         if (res) {
+  //           setMorningTask({
+  //             MrngTaskID: res[0]?.MrngTaskID,
+  //             projectName: res[0]?.projectName,
+  //             phaseName: res[0]?.phaseName,
+  //             module: res[0]?.module,
+  //             task: res[0]?.task,
+  //             estTime: res[0]?.estTime,
+  //             upWorkHrs: res[0]?.upWorkHrs,
+  //             employeeID: res[0]?.employeeID,
+  //             currDate: res[0]?.currDate,
+  //           });
+
+  //           // Update the state variables
+  //           setProjectName(res[0]?.projectName);
+  //           setPhaseName(res[0]?.phaseName);
+  //           setModuleName(res[0]?.module);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching data:", error);
+  //       });
+  //   }
+  // }, [location?.state?.MrngTaskID]);
+
 
   useEffect(() => {
-    setEmployeeID(employeeInfo[0]?.EmployeeID);
-  }, []);
-
-  useEffect(() => {
-    if (mrngEditID) {
+    if (location?.state?.MrngTaskID) {
       axios
         .get<Task[]>("http://localhost:5000/get/addTaskMorning")
         .then((response) => {
-          const res = response?.data.filter((e) => e.MrngTaskID === mrngEditID);
-          setSelectedPhase(res[0].phaseName);
-          setSelectedProject(res[0].projectName);
-          setSelectedModule(res[0].module);
-          setMorningTask({
-            ...morningTask,
-            MrngTaskID: res[0].MrngTaskID,
-            task: res[0].task,
-            estTime: res[0].estTime,
-            upWorkHrs: res[0].upWorkHrs,
-            employeeID: res[0].employeeID,
-            currDate: res[0].currDate,
-          });
+          const res = response.data.filter(
+            (e) => e.MrngTaskID === location?.state?.MrngTaskID
+          );
+
+          if (res) {
+            setMorningTask({
+              MrngTaskID: res[0]?.MrngTaskID,
+              projectName: res[0]?.projectName,
+              phaseName: res[0]?.phaseName,
+              module: res[0]?.module,
+              task: res[0]?.task,
+              estTime: res[0]?.estTime,
+              upWorkHrs: res[0]?.upWorkHrs,
+              employeeID: res[0]?.employeeID,
+              currDate: res[0]?.currDate,
+            });
+
+            // Update the state variables
+            setProjectName(res[0]?.projectName);
+            setPhaseName(res[0]?.phaseName);
+            setModuleName(res[0]?.module);
+
+            // Update the selectedProject, selectedPhase, and selectedModule
+            setSelectedProject(res[0]?.projectName);
+            setSelectedPhase(res[0]?.phaseName);
+            setSelectedModule(res[0]?.module);
+          }
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
     }
-  }, []);
+  }, [location?.state?.MrngTaskID]);
+
+
+  // const { getEmpInfo, empInfo, setEmpInfo } = useContext(GlobalInfo);
+
+  const dataString = localStorage.getItem("myData");
+  const empInfo = useMemo(
+    () => (dataString ? JSON.parse(dataString) : []),
+    [dataString]
+  );
 
   const navigate = useNavigate();
-
   useEffect(() => {
+
     axios
       .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo")
       .then((response) => {
@@ -125,14 +213,15 @@ const AddModule: React.FC<unknown> = () => {
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
 
-        // setPhaseAssignedArr(sortedData);
+        setPhaseAssignedArr(sortedData);
 
         const arr = sortedData
           .map((e) => {
-            if (e?.EmployeeID === employeeInfo[0]?.EmployeeID) {
-              return e?.projectName;
+            if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
+
+              return e.projectName;
             }
-            return null; // or some other default value
+            return null;
           })
           .filter((value, index, self) => {
             return value !== null && self.indexOf(value) === index;
@@ -145,13 +234,15 @@ const AddModule: React.FC<unknown> = () => {
           }, []);
 
         setProjectNames(arr);
+        console.log(arr, "ffffff");
+        console.log(morningTask?.projectName, "sssss");
 
-        if (morningTask.projectName) {
+        if (morningTask?.projectName) {
           const arr = sortedData
             .filter(
               (obj) =>
-                obj.projectName === morningTask.projectName &&
-                obj.EmployeeID === employeeInfo[0].EmployeeID
+                obj?.projectName === morningTask?.projectName &&
+                obj?.EmployeeID === empInfo.EmployeeID
             )
             .map((obj) => obj.phaseName);
 
@@ -188,37 +279,84 @@ const AddModule: React.FC<unknown> = () => {
     });
   };
 
+  // const handleProjectChange = (value: string) => {
+  //   setSelectedProject(value);
+  //   const currentPhase = phases.find((phase) => phase.projectName === value);
+  //   console.log(currentPhase?.phases[0], "dddffff---------");
+
+  //   if (currentPhase) {
+  //     setSelectedPhase(currentPhase.phases[0]);
+  //     setMorningTask({
+  //       MrngTaskID: 0,
+  //       projectName: value,
+  //       phaseName: currentPhase.phases[0],
+  //       module: "",
+  //       task: "",
+  //       estTime: "",
+  //       upWorkHrs: "",
+  //       employeeID: employeeID,
+  //       currDate: formattedDate,
+  //     });
+  //   } else {
+  //     setSelectedPhase("");
+  //     setMorningTask({
+  //       MrngTaskID: 0,
+  //       projectName: value,
+  //       phaseName: "",
+  //       module: "",
+  //       task: "",
+  //       estTime: "",
+  //       upWorkHrs: "",
+  //       employeeID: employeeID,
+  //       currDate: formattedDate,
+  //     });
+  //   }
+  // };
+
+
+  // const handleProjectChange = (value: string) => {
+  //   setSelectedProject(value);
+  //   const currentPhase = phases.find((phase) => phase.projectName === value);
+  //   console.log(currentPhase?.phases[0], "dddffff---------");
+
+  //   if (currentPhase) {
+  //     setSelectedPhase(currentPhase.phases[0]);
+  //     setMorningTask((prev) => ({
+  //       ...prev,
+  //       projectName: value,
+  //       phaseName: currentPhase.phases[0],
+  //     }));
+  //   } else {
+  //     setSelectedPhase("");
+  //     setMorningTask((prev) => ({
+  //       ...prev,
+  //       projectName: value,
+  //       phaseName: "",
+  //     }));
+  //   }
+  // };
+
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
     const currentPhase = phases.find((phase) => phase.projectName === value);
+    console.log(currentPhase?.phases[0], "dddffff---------");
+
     if (currentPhase) {
-      setSelectedPhase(currentPhase.phases[0]);
-      setMorningTask({
-        MrngTaskID: 0,
+      setMorningTask((prev) => ({
+        ...prev,
         projectName: value,
-        phaseName: currentPhase.phases[0],
-        module: "",
-        task: "",
-        estTime: "",
-        upWorkHrs: "",
-        employeeID: employeeID,
-        currDate: formattedDate,
-      });
+      }));
     } else {
       setSelectedPhase("");
-      setMorningTask({
-        MrngTaskID: 0,
+      setMorningTask((prev) => ({
+        ...prev,
         projectName: value,
         phaseName: "",
-        module: "",
-        task: "",
-        estTime: "",
-        upWorkHrs: "",
-        employeeID: employeeID,
-        currDate: formattedDate,
-      });
+      }));
     }
   };
+
+
 
   const handlePhaseChange = (value: string) => {
     setSelectedPhase(value);
@@ -249,17 +387,21 @@ const AddModule: React.FC<unknown> = () => {
     });
   };
 
+  // const dataString = localStorage.getItem("myData");
+
   useEffect(() => {
-    if (employeeInfo && employeeInfo.length > 0) {
-      setEmployeeID(employeeInfo[0].EmployeeID);
+    if (empInfo) {
+      setEmployeeID(empInfo?.EmployeeID);
+    } else {
+      console.log("empInfo is undefined");
     }
-  }, [employeeInfo]);
+  }, []);
 
   const handleSubmit = () => {
-    if (mrngEditID) {
+    if (location?.state?.MrngTaskID) {
       axios
         .put(
-          `http://localhost:5000/update/addMrngTask/${mrngEditID}`,
+          `http://localhost:5000/update/addMrngTask/${location?.state?.MrngTaskID}`,
           morningTask
         )
         .then((response) => {
@@ -269,8 +411,6 @@ const AddModule: React.FC<unknown> = () => {
             navigate("/view-morning-task");
             setMrngEditID();
           }
-
-          console.log(response.data);
         })
         .catch((error) => {
           console.log(error.response.data);
@@ -285,10 +425,11 @@ const AddModule: React.FC<unknown> = () => {
             navigate("/view-morning-task");
           }
 
-          // log the response message
+          console.log(response?.data); // log the response message
           // show a success message to the user/*  */
         })
         .catch((error) => {
+          console.log(error?.response?.data); // log the error message
           // show an error message to the user
         });
     }
@@ -351,7 +492,7 @@ const AddModule: React.FC<unknown> = () => {
                     Phase<span style={{ color: "red" }}>*</span>
                   </label>
                   {/* {selectedProject &&  ( */}
-                  <select
+                  {/* <select
                     className="add-input"
                     id="phase"
                     name="phase"
@@ -370,7 +511,27 @@ const AddModule: React.FC<unknown> = () => {
                           </React.Fragment>
                         );
                       })}
-                  </select>
+                  </select> */}
+
+<select
+  className="add-input"
+  id="phase"
+  name="phase"
+  value={selectedPhase}
+  onChange={(e) => handlePhaseChange(e.target.value)}
+>
+  <option value="">Select a phase</option>
+  {phases
+    .filter((phase) => phase.projectName === selectedProject)
+    .map((phase) => {
+      return phase.phases.map((singlePhase, index) => (
+        <option key={index} value={singlePhase}>
+          {singlePhase}
+        </option>
+      ));
+    })}
+</select>
+
                   {/* )} */}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column" }}>

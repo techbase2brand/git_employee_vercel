@@ -11,7 +11,7 @@ export const useMyContext = () => {
   }
   return context;
 };
-export const MyContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const MyContextProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
   const [data, setData] = useState('');
 
   const value: MyContextInterface = {

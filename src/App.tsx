@@ -63,6 +63,9 @@ const App: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const getEmpInfo = (item: any) => {};
 
+  console.log(empInfo,"hhhhhgggg-----");
+
+
   return (
     <Router>
       {/* <AppMenu /> */}

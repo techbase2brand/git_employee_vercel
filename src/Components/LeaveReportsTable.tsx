@@ -59,7 +59,7 @@ const LeaveReportsTable: React.FC = () => {
   // Parse the JSON string back into an array
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
 
-  console.log(employeeInfo[0]?.EmployeeID,"gggggssss----");
+  // console.log(employeeInfo?.EmployeeID,"gggggssss----");
   useEffect(() => {
     axios
       .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")

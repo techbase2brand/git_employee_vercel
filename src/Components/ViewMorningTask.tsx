@@ -40,9 +40,14 @@ const ViewMorningTask: React.FC = () => {
     axios
       .get<Task[]>("http://localhost:5000/get/addTaskMorning")
       .then((response) => {
-        const res = response?.data.filter(
-          (e) => e.employeeID === employeeID && e.currDate === formattedDate
+        console.log(response.data,employeeID,"gghhhhhppppp------====");
+
+        const res = response?.data?.filter(
+          (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
         );
+
+        console.log(res,"aassssdddfff");
+
 
         const sortedData = res.sort(
           (a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)
@@ -65,7 +70,7 @@ const ViewMorningTask: React.FC = () => {
   );
 
   useEffect(() => {
-    setEmployeeID(employeeInfo[0]?.EmployeeID);
+    setEmployeeID(employeeInfo?.EmployeeID);
   }, [employeeInfo]);
 
   return (
