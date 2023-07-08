@@ -77,7 +77,7 @@ const AddModule: React.FC<any> = () => {
     estTime: "",
     actTime: "",
     upWorkHrs: "",
-    employeeID: employeeID,
+    employeeID: "",
     currDate: formattedDate,
   });
 
@@ -370,12 +370,17 @@ const AddModule: React.FC<any> = () => {
 
   useEffect(() => {
     if (employeeInfo) {
-      setEmployeeID(employeeInfo.EmployeeID);
-      console.log(employeeInfo.EmployeeID, "wwwwwwwwwwwwwwww");
+      setEmployeeID(employeeInfo?.EmployeeID);
+      setEveningTask((prevState) => ({
+        ...prevState,
+        employeeID: employeeInfo?.EmployeeID
+      }));
+    } else {
+      console.log("empInfo is undefined");
     }
-  }, []);
-  console.log(employeeInfo.EmployeeID, "wwwwwwwwpppwwwwwwww");
-  console.log(employeeID, "ssdddffgghhh========");
+
+
+  }, [employeeInfo]);
 
   return (
     <div className="emp-main-div">

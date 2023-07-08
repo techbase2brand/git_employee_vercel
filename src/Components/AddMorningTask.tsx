@@ -75,6 +75,9 @@ const [moduleName, setModuleName] = useState("");
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
 
+  console.log("ggggg",employeeID);
+
+
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
     projectName: "",
@@ -83,75 +86,12 @@ const [moduleName, setModuleName] = useState("");
     task: "",
     estTime: "",
     upWorkHrs: "",
-    employeeID: employeeID,
+    employeeID: "",
     currDate: formattedDate,
   });
 
   const location = useLocation();
-  // console.log(location?.state?.MrngTaskID, "ffffgggghhhh");
 
-  // useEffect(() => {
-  //   if (location?.state?.MrngTaskID) {
-  //     axios
-  //       .get<Task[]>("http://localhost:5000/get/addTaskMorning")
-  //       .then((response) => {
-  //         const res = response.data.filter(
-  //           (e) => e.MrngTaskID === location?.state?.MrngTaskID
-  //         );
-
-  //         if (res) {
-  //           setMorningTask({
-  //             MrngTaskID: res[0]?.MrngTaskID,
-  //             projectName: res[0]?.projectName,
-  //             phaseName: res[0]?.phaseName,
-  //             module: res[0]?.module,
-  //             task: res[0]?.task,
-  //             estTime: res[0]?.estTime,
-  //             upWorkHrs: res[0]?.upWorkHrs,
-  //             employeeID: res[0]?.employeeID,
-  //             currDate: res[0]?.currDate,
-  //           });
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data:", error);
-  //       });
-  //   }
-  // }, [location?.state?.MrngTaskID]);
-
-  // useEffect(() => {
-  //   if (location?.state?.MrngTaskID) {
-  //     axios
-  //       .get<Task[]>("http://localhost:5000/get/addTaskMorning")
-  //       .then((response) => {
-  //         const res = response.data.filter(
-  //           (e) => e.MrngTaskID === location?.state?.MrngTaskID
-  //         );
-
-  //         if (res) {
-  //           setMorningTask({
-  //             MrngTaskID: res[0]?.MrngTaskID,
-  //             projectName: res[0]?.projectName,
-  //             phaseName: res[0]?.phaseName,
-  //             module: res[0]?.module,
-  //             task: res[0]?.task,
-  //             estTime: res[0]?.estTime,
-  //             upWorkHrs: res[0]?.upWorkHrs,
-  //             employeeID: res[0]?.employeeID,
-  //             currDate: res[0]?.currDate,
-  //           });
-
-  //           // Update the state variables
-  //           setProjectName(res[0]?.projectName);
-  //           setPhaseName(res[0]?.phaseName);
-  //           setModuleName(res[0]?.module);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data:", error);
-  //       });
-  //   }
-  // }, [location?.state?.MrngTaskID]);
 
 
   useEffect(() => {
@@ -279,62 +219,6 @@ const [moduleName, setModuleName] = useState("");
     });
   };
 
-  // const handleProjectChange = (value: string) => {
-  //   setSelectedProject(value);
-  //   const currentPhase = phases.find((phase) => phase.projectName === value);
-  //   console.log(currentPhase?.phases[0], "dddffff---------");
-
-  //   if (currentPhase) {
-  //     setSelectedPhase(currentPhase.phases[0]);
-  //     setMorningTask({
-  //       MrngTaskID: 0,
-  //       projectName: value,
-  //       phaseName: currentPhase.phases[0],
-  //       module: "",
-  //       task: "",
-  //       estTime: "",
-  //       upWorkHrs: "",
-  //       employeeID: employeeID,
-  //       currDate: formattedDate,
-  //     });
-  //   } else {
-  //     setSelectedPhase("");
-  //     setMorningTask({
-  //       MrngTaskID: 0,
-  //       projectName: value,
-  //       phaseName: "",
-  //       module: "",
-  //       task: "",
-  //       estTime: "",
-  //       upWorkHrs: "",
-  //       employeeID: employeeID,
-  //       currDate: formattedDate,
-  //     });
-  //   }
-  // };
-
-
-  // const handleProjectChange = (value: string) => {
-  //   setSelectedProject(value);
-  //   const currentPhase = phases.find((phase) => phase.projectName === value);
-  //   console.log(currentPhase?.phases[0], "dddffff---------");
-
-  //   if (currentPhase) {
-  //     setSelectedPhase(currentPhase.phases[0]);
-  //     setMorningTask((prev) => ({
-  //       ...prev,
-  //       projectName: value,
-  //       phaseName: currentPhase.phases[0],
-  //     }));
-  //   } else {
-  //     setSelectedPhase("");
-  //     setMorningTask((prev) => ({
-  //       ...prev,
-  //       projectName: value,
-  //       phaseName: "",
-  //     }));
-  //   }
-  // };
 
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
@@ -392,11 +276,14 @@ const [moduleName, setModuleName] = useState("");
   useEffect(() => {
     if (empInfo) {
       setEmployeeID(empInfo?.EmployeeID);
+      setMorningTask((prevState) => ({
+        ...prevState,
+        employeeID: empInfo?.EmployeeID
+      }));
     } else {
       console.log("empInfo is undefined");
     }
-  }, []);
-
+  }, [empInfo]);
   const handleSubmit = () => {
     if (location?.state?.MrngTaskID) {
       axios
@@ -416,6 +303,8 @@ const [moduleName, setModuleName] = useState("");
           console.log(error.response.data);
         });
     } else {
+      console.log("morningTaskkkk",morningTask);
+
       axios
         .post("http://localhost:5000/create/addTaskMorning", morningTask)
         .then((response) => {

@@ -42,11 +42,12 @@ const ViewMorningTask: React.FC = () => {
       .then((response) => {
         console.log(response.data,employeeID,"gghhhhhppppp------====");
 
-        const res = response?.data?.filter(
-          (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
-        );
+        const res = response.data.filter((e) => e?.employeeID == employeeID && e?.currDate == formattedDate);
 
-        console.log(res,"aassssdddfff");
+
+
+
+        // console.log(res,"aassssdddfff");
 
 
         const sortedData = res.sort(
@@ -69,9 +70,16 @@ const ViewMorningTask: React.FC = () => {
     [dataString]
   );
 
+
+  console.log(employeeInfo,"jjj---");
+
+
   useEffect(() => {
     setEmployeeID(employeeInfo?.EmployeeID);
-  }, [employeeInfo]);
+  }, []);
+
+  console.log(employeeID,"ggfff---rrrrr");
+
 
   return (
     <div className="emp-main-div">
