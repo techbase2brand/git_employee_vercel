@@ -27,33 +27,33 @@ const Login: React.FC = () => {
     console.log("Received values of form: ", values);
 
     axios
-    .post("http://localhost:5000/user/login", { values })
-    .then((res) => {
-      if (res?.data === "Invalid username or password") {
-        alert("Invalid username or password");
-      } else {
-        console.log("Login successful");
-        console.log(res?.data, "7777mm7");
+      .post("http://localhost:5000/user/login", { values })
+      .then((res) => {
+        if (res?.data === "Invalid username or password") {
+          alert("Invalid username or password");
+        } else {
+          console.log("Login successful");
+          console.log(res?.data, "7777mm7");
 
-        // save user info and token in state and local storage
-        const { user, token } = res.data;
-        setEmpInfo(user);
+          // Save user info and token in state and local storage
+          const { user, token } = res.data;
 
-        // Convert the user data to a JSON string
-        const dataString = JSON.stringify(user);
+          // Convert the user data to a JSON string
+          const dataString = JSON.stringify(user);
 
-        // Store the user data and the token in localStorage
-        localStorage.setItem("myData", dataString);
-        localStorage.setItem("myToken", token);
+          // Store the user data and the token in localStorage
+          localStorage.setItem("myData", dataString);
+          localStorage.setItem("myToken", token);
 
-        navigate("/add-morning-task");
-      }
-    })
-    .catch((error) => {
-      console.log(error.response?.data);
-    });
-
+          navigate("/add-morning-task");
+        }
+      })
+      .catch((error) => {
+        console.log(error.response?.data); // Log the error message
+        // Show an error message to the user
+      });
   };
+
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);

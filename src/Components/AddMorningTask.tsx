@@ -91,9 +91,6 @@ const [moduleName, setModuleName] = useState("");
   });
 
   const location = useLocation();
-
-
-
   useEffect(() => {
     if (location?.state?.MrngTaskID) {
       axios
