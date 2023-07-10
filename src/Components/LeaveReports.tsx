@@ -46,29 +46,29 @@ const LeaveReports: React.FC = () => {
 
   // const navigate = useNavigate();
 
-  useEffect(() => {
-    axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
-      // .then((response) => {
-      //   // const sortedData = response.data.sort(
-      //   //   (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-      //   // );
-      //   // setAllLeave(sortedData);
-      // });
-    // console.log(allEmployee, "ggggg---");
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
+  //     // .then((response) => {
+  //     //   // const sortedData = response.data.sort(
+  //     //   //   (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+  //     //   // );
+  //     //   // setAllLeave(sortedData);
+  //     // });
+  //   // console.log(allEmployee, "ggggg---");
+  // }, []);
 
-  useEffect(() => {
-    axios
-      .get<Employee[]>("http://localhost:5000/employees")
-      // .then((response) => {
-      //   // const sortedData = response?.data.sort(
-      //   //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
-      //   // );
-      //   // setAllEmployee(sortedData);
-      // })
-      .catch((error) => console.log(error));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get<Employee[]>("http://localhost:5000/employees")
+  //     // .then((response) => {
+  //     //   // const sortedData = response?.data.sort(
+  //     //   //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
+  //     //   // );
+  //     //   // setAllEmployee(sortedData);
+  //     // })
+  //     .catch((error) => console.log(error));
+  // }, []);
 
   return (
     <>

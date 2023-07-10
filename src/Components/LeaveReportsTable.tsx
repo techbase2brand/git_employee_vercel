@@ -61,8 +61,14 @@ const LeaveReportsTable: React.FC = () => {
 
   // console.log(employeeInfo?.EmployeeID,"gggggssss----");
   useEffect(() => {
+    const token = localStorage.getItem("myToken");
+
     axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
+      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
@@ -71,17 +77,18 @@ const LeaveReportsTable: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    axios
-      .get<Employee[]>("http://localhost:5000/employees")
-      .then((response) => {
-        // const sortedData = response.data.sort(
-        //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
-        // );
-        // setAllEmployee(sortedData);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .get<Employee[]>("http://localhost:5000/employees")
+  //     .then((response) => {
+  //       // const sortedData = response.data.sort(
+  //       //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
+  //       // );
+  //       // setAllEmployee(sortedData);
+  //     })
+  //     .catch((error) => console.log(error));
+  // }, []);
 
   const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(":").map(Number);

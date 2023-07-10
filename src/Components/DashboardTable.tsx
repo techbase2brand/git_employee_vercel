@@ -27,7 +27,11 @@ const DashboardTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks")
+      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
@@ -49,15 +53,21 @@ const DashboardTable: React.FC = () => {
 
     // Call the API endpoint to update the task completion status
     axios
-      .put(`http://localhost:5000/update/task-completion/${backlogTaskID}`, {
-        isCompleted: isChecked,
-      })
-      .then((response) => {
-        console.log(response.data.message);
-      })
-      .catch((error) => {
-        console.error("Error updating task completion status:", error);
-      });
+    .put(`http://localhost:5000/update/task-completion/${backlogTaskID}`,
+      { isCompleted: isChecked },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      }
+    )
+    .then((response) => {
+      console.log(response.data.message);
+    })
+    .catch((error) => {
+      console.error("Error updating task completion status:", error);
+    });
+
 
     localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(isChecked));
   };

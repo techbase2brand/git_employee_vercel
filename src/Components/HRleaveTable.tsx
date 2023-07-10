@@ -25,30 +25,44 @@ const HRleaveTable : React.FC = () => {
 
 //   console.log(data, "-------");
 
-  useEffect(() => {
-    axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
-      .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-        );
-        setData(sortedData);
-      });
-  }, []);
+useEffect(() => {
+  const token = localStorage.getItem("myToken");
+
+  axios
+    .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      const sortedData = response.data.sort(
+        (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+      );
+      setData(sortedData);
+    });
+}, []);
+
 
 // ...
 const handleApprove = (LeaveInfoID: number) => {
-    axios
-      .put(`http://localhost:5000/approveLeaveHR/${LeaveInfoID}`)
-      .then((response) => {
-        console.log(response.data);
-        // Refresh the table data after approval
-        fetchData();
-      })
-      .catch((error) => {
-        console.error("Error approving leave data:", error);
-      });
-  };
+  const token = localStorage.getItem("myToken");
+
+  axios
+    .put(`http://localhost:5000/approveLeaveHR/${LeaveInfoID}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      // Refresh the table data after approval
+      fetchData();
+    })
+    .catch((error) => {
+      console.error("Error approving leave data:", error);
+    });
+};
+
 
   const handleDeny = (LeaveInfoID: number) => {
     axios
@@ -64,8 +78,14 @@ const handleApprove = (LeaveInfoID: number) => {
   };
 
   const fetchData = () => {
+    const token = localStorage.getItem("myToken");
+
     axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
+      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
@@ -73,6 +93,7 @@ const handleApprove = (LeaveInfoID: number) => {
         setData(sortedData);
       });
   };
+
 
   useEffect(() => {
     fetchData();

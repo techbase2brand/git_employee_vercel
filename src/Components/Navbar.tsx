@@ -155,7 +155,11 @@ const Navbar: React.FunctionComponent = () => {
   };
 useEffect(() => {
     axios
-      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks")
+      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         const visitedNotificationIds = getVisitedNotificationIds();
         const filteredData = response.data.filter(

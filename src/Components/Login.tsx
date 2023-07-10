@@ -19,9 +19,7 @@ const Login: React.FC = () => {
   const [employeedata] = useState<unknown>();
   const { getEmpInfo ,  setEmpInfo } = useContext(GlobalInfo);
 
-  // useEffect(() => {
-  //   getEmpInfo(employeedata);
-  // }, [employeedata]);
+
 
   const onFinish = (values: unknown) => {
     console.log("Received values of form: ", values);

@@ -3,13 +3,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import EmployeeTable from "./EmployeeTable";
 import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { GlobalInfo } from "../App";
 import { format } from "date-fns";
-import { useLocation } from "react-router-dom";
 
 interface Task {
   MrngTaskID: number;
@@ -28,7 +26,7 @@ interface AssignedEmployees {
   PhaseAssigneeID: number;
   projectName: string;
   phaseName: string;
-  assignedNames: string[]; // add the assignedNames property
+  assignedNames: string[];
 }
 
 interface Module {
@@ -50,12 +48,13 @@ interface Phases {
   projectName: string;
   phases: string[];
 }
+
 type Phase = {
   phaseID: number;
   projectName: string;
 };
 
-const AddModule: React.FC<any> = ({ navigation, classes }) => {
+const AddModule: React.FC<unknown> = () => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
@@ -69,14 +68,13 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
-  const [projectName, setProjectName] = useState("");
-const [phaseName, setPhaseName] = useState("");
-const [moduleName, setModuleName] = useState("");
+  const [projectName, setProjectName] = useState<string>("");
+  const [phaseName, setPhaseName] = useState<string>("");
+  const [moduleName, setModuleName] = useState<string>("");
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
 
-  console.log("ggggg",employeeID);
-
+  console.log("ggggg", employeeID);
 
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
@@ -92,15 +90,20 @@ const [moduleName, setModuleName] = useState("");
 
   const location = useLocation();
   useEffect(() => {
+    const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>("http://localhost:5000/get/addTaskMorning")
+        .get<Task[]>(`http://localhost:5000/get/addTaskMorning`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           const res = response.data.filter(
-            (e) => e.MrngTaskID === location?.state?.MrngTaskID
+            (e: Task) => e.MrngTaskID === location?.state?.MrngTaskID
           );
 
-          if (res) {
+          if (res.length > 0) {
             setMorningTask({
               MrngTaskID: res[0]?.MrngTaskID,
               projectName: res[0]?.projectName,
@@ -141,9 +144,13 @@ const [moduleName, setModuleName] = useState("");
 
   const navigate = useNavigate();
   useEffect(() => {
-
+    const token = localStorage.getItem("myToken");
     axios
-      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo")
+      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         const sortedData = response.data.sort(
@@ -171,8 +178,7 @@ const [moduleName, setModuleName] = useState("");
           }, []);
 
         setProjectNames(arr);
-        console.log(arr, "ffffff");
-        console.log(morningTask?.projectName, "sssss");
+
 
         if (morningTask?.projectName) {
           const arr = sortedData
@@ -197,8 +203,13 @@ const [moduleName, setModuleName] = useState("");
   }, [morningTask.projectName]);
 
   useEffect(() => {
-    axios
-      .get<Module[]>("http://localhost:5000/get/modules")
+    const token = localStorage.getItem("myToken");
+    // Fetch employees from the backend API
+    axios.get<Module[]>("http://localhost:5000/get/modules", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.modID) - Number(a.modID)
@@ -286,8 +297,12 @@ const [moduleName, setModuleName] = useState("");
       axios
         .put(
           `http://localhost:5000/update/addMrngTask/${location?.state?.MrngTaskID}`,
-          morningTask
-        )
+          morningTask,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          })
         .then((response) => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");
@@ -300,10 +315,14 @@ const [moduleName, setModuleName] = useState("");
           console.log(error.response.data);
         });
     } else {
-      console.log("morningTaskkkk",morningTask);
+      const token = localStorage.getItem("myToken");
 
       axios
-        .post("http://localhost:5000/create/addTaskMorning", morningTask)
+        .post("http://localhost:5000/create/addTaskMorning", morningTask , {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");

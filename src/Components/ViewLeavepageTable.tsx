@@ -22,49 +22,36 @@ interface LeaveData {
 
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-  // const [] = useState<LeaveData[]>([]);
-// const navigate = useNavigate();
-  useEffect(() => {
-    axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
-      .then((response) => {
-        // sort the data array in reverse order based on ProID
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-        );
-        setData(sortedData);
-      });
-  }, []);
 
-// const handleApprove = (LeaveInfoID: number) => {
-//     axios
-//       .put(`http://localhost:5000/approveLeave/${LeaveInfoID}`)
-//       .then((response) => {
-//         console.log(response.data);
-//         // Refresh the table data after approval
-//         fetchData();
-//       })
-//       .catch((error) => {
-//         console.error("Error approving leave data:", error);
-//       });
-//   };
+useEffect(() => {
+  const token = localStorage.getItem("myToken");
 
-  // const handleDeny = (LeaveInfoID: number) => {
-  //   axios
-  //     .put(`http://localhost:5000/denyLeave/${LeaveInfoID}`)
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       // Refresh the table data after denial
-  //       fetchData();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error denying leave data:", error);
-  //     });
-  // };
+  axios
+    .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      const sortedData = response.data.sort(
+        (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+      );
+      setData(sortedData);
+    });
+}, []);
+
+
+
 
   const fetchData = () => {
+    const token = localStorage.getItem("myToken");
+
     axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
+      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
@@ -72,6 +59,7 @@ const ViewLeavepageTable: React.FC = () => {
         setData(sortedData);
       });
   };
+
 
   useEffect(() => {
     fetchData();

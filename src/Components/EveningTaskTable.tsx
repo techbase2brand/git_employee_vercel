@@ -57,7 +57,11 @@ navigate("/add-evening-task" ,  { state: { EvngTaskID: EvngTaskID } } );
       // console.log(`Delete task with id ${MrngTaskID}`);
 
       axios
-        .delete(`http://localhost:5000/delete/eveningDashboard/${EvngTaskID}`)
+        .delete(`http://localhost:5000/delete/eveningDashboard/${EvngTaskID}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
         })

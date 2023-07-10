@@ -46,7 +46,11 @@ const MorningTaskTable: React.FC<Props> = ({
   };
   const handleDelete = (MrngTaskID: number) => {
     axios
-      .delete(`http://localhost:5000/delete/morningDashboard/${MrngTaskID}`)
+      .delete(`http://localhost:5000/delete/morningDashboard/${MrngTaskID}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
       })
@@ -58,7 +62,11 @@ const MorningTaskTable: React.FC<Props> = ({
 
   const handleMove = (record: any) => {
     axios
-      .post("http://localhost:5000/create/addTaskEvening", record)
+      .post("http://localhost:5000/create/addTaskEvening", record,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         if (response.data === "All fields are required.") {
           alert("All fields are required.");

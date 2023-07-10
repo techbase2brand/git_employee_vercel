@@ -92,36 +92,15 @@ const AddModule: React.FC<any> = () => {
     () => (dataString ? JSON.parse(dataString) : []),
     [dataString]
   );
-  // useEffect(() => {
-  //   axios
-  //     .get<Task[]>("http://localhost:5000/get/addTaskEvening")
-  //     .then((response) => {
-  //       const res = response.data.filter((e) => e.EvngTaskID === evngEditID);
-  //       console.log(res, "ssfffggg------");
-
-  //       setSelectedProject(res[0]?.projectName);
-  //       setSelectedPhase(res[0]?.phaseName);
-  //       setSelectedModule(res[0]?.module);
-  //       setEveningTask((prevEveningTask) => ({
-  //         ...prevEveningTask,
-  //         EvngTaskID: res[0]?.EvngTaskID,
-  //         task: res[0]?.task,
-  //         estTime: res[0]?.estTime,
-  //         actTime: res[0]?.actTime,
-  //         upWorkHrs: res[0]?.upWorkHrs,
-  //         employeeID: res[0]?.employeeID,
-  //         currDate: res[0]?.currDate,
-  //       }));
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }, [evngEditID, setEveningTask]);
 
   useEffect(() => {
     if (location?.state?.EvngTaskID) {
     axios
-      .get<Task[]>("http://localhost:5000/get/addTaskEvening")
+      .get<Task[]>("http://localhost:5000/get/addTaskEvening",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         const res = response.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
         console.log(res, "ssfffggg------");
@@ -152,8 +131,13 @@ const AddModule: React.FC<any> = () => {
 
   useEffect(() => {
     // Fetch employees from the backend API
+    const token = localStorage.getItem("myToken");
     axios
-      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo")
+      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         const sortedData = response.data.sort(
@@ -200,9 +184,13 @@ const AddModule: React.FC<any> = () => {
   }, [employeeInfo, eveningTask?.projectName]);
 
   useEffect(() => {
+    const token = localStorage.getItem("myToken");
     // Fetch employees from the backend API
-    axios
-      .get<Module[]>("http://localhost:5000/get/modules")
+    axios.get<Module[]>("http://localhost:5000/get/modules", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => {
         // console.log(response.data);
         const sortedData = response.data.sort(
@@ -329,8 +317,12 @@ const AddModule: React.FC<any> = () => {
       axios
         .put(
           `http://localhost:5000/update/addEvngTask/${evngEditID}`,
-          eveningTask
-        )
+          eveningTask,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          })
         .then((response) => {
           console.log(eveningTask, "nnnnnnnnnnnnnn");
           if (response.data === "All fields are required.") {
@@ -347,7 +339,11 @@ const AddModule: React.FC<any> = () => {
         });
     } else {
       axios
-        .post("http://localhost:5000/create/addTaskEvening", eveningTask)
+        .post("http://localhost:5000/create/addTaskEvening", eveningTask,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        })
         .then((response) => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");

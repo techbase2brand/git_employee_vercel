@@ -25,7 +25,12 @@ const HRshiftChangeTable : React.FC = () => {
   // const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo")
+      .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo",  {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      }
+    )
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
@@ -45,9 +50,16 @@ const handleApprove = (ShiftChangeTableID: number) => {
         console.error("Error approving leave data:", error);
       });
   };
- const handleDeny = (ShiftChangeTableID: number) => {
+  const handleDeny = (ShiftChangeTableID: number) => {
+    // Get the token from local storage
+    const token = localStorage.getItem("myToken");
+
     axios
-      .put(`http://localhost:5000/denyShiftChangeHR/${ShiftChangeTableID}`)
+      .put(`http://localhost:5000/denyShiftChangeHR/${ShiftChangeTableID}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         fetchData();
@@ -56,9 +68,15 @@ const handleApprove = (ShiftChangeTableID: number) => {
         console.error("Error denying leave data:", error);
       });
   };
+
   const fetchData = () => {
     axios
-      .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo")
+      .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo",  {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      }
+    )
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)

@@ -39,7 +39,11 @@ const DashboardTaskTable: React.FC<Props> = ({ data }) => {
     // console.log(`Delete task with id ${MrngTaskID}`);
 
     axios
-      .delete(`http://localhost:5000/delete/morningDashboard/${MrngTaskID}`)
+      .delete(`http://localhost:5000/delete/morningDashboard/${MrngTaskID}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
       })

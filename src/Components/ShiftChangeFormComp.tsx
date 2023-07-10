@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from "react-router-dom";
+
+
 
 import dayjs from "dayjs";
 import axios from "axios";
@@ -24,7 +27,7 @@ interface ShiftChangeData {
   approvalOfHR: string;
 }
 
-const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
+const ShiftChangeFormComp: React.FC<any> = () => {
   const [approvalOfTeamLead] =
     useState<string>("pending");
   const [approvalOfHR] = useState<string>("pending");
@@ -43,6 +46,9 @@ const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
 
 
   console.log(employeeID,"gggfffffdddssssss-----------");
+
+  const navigate = useNavigate();
+
 
 
   useEffect(() => {
@@ -86,9 +92,15 @@ const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
 
 
       axios
-        .post("http://localhost:5000/createShiftChange", shiftChangeData)
+        .post("http://localhost:5000/createShiftChange", shiftChangeData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
         .then((response) => {
           console.log(response.data);
+          navigate("/ViewShiftChange");
         })
         .catch((error) => {
           console.error("Error submitting data:", error);
@@ -99,15 +111,24 @@ const ShiftChangeFormComp: React.FC<any> = ({ navigation, classes }) => {
   };
 
   useEffect(() => {
-    axios
-      .get<Admin[]>("http://localhost:5000/get/admin")
-      .then((response) => {
+    const token = localStorage.getItem("myToken");
+    console.log(token,"tokennnnnn");
 
-        setAdminInfo(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+
+    axios
+    .get<Admin[]>("http://localhost:5000/get/admin", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      setAdminInfo(response.data);
+      console.log(response.data,"response.data");
+
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
   }, [employeeID]);
 
   return (

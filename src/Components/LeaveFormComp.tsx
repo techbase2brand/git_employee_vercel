@@ -129,7 +129,11 @@ const LeaveFormComp: React.FC = () => {
         leaveCategory: leaveCategoryState,
       };
       axios
-        .post("http://localhost:5000/createLeave", leaveData)
+      .post("http://localhost:5000/createLeave", leaveData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
         .then((response) => {
           console.log(response.data);
           // setMessage("Leave data submitted");
@@ -175,16 +179,27 @@ const LeaveFormComp: React.FC = () => {
   };
 
   useEffect(() => {
-    axios
-      .get<Admin[]>("http://localhost:5000/get/admin")
-      .then((response) => {
+    // Get the token from local storage
+    const token = localStorage.getItem("myToken");
+    console.log(token,"tokennnnnn");
 
+
+    axios
+      .get<Admin[]>("http://localhost:5000/get/admin", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
         setAdminInfo(response.data);
+        console.log(response.data,"response.data");
+
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   }, [employeeID]);
+
 
   return (
     <>

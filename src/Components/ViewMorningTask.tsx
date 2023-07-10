@@ -38,7 +38,11 @@ const ViewMorningTask: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Task[]>("http://localhost:5000/get/addTaskMorning")
+      .get<Task[]>("http://localhost:5000/get/addTaskMorning",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         console.log(response.data,employeeID,"gghhhhhppppp------====");
 
