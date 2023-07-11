@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { ReactNode, createContext, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -8,7 +9,6 @@ import {
 import "./App.css";
 
 import Login from "./Components/Login";
-// import AppMenu from "./Components/Menu";
 import Dashboard from "./Components/Dashboard";
 import TableNavbar from "./Components/TableNavbar";
 import AddMorningTask from "./Components/AddMorningTask";
@@ -23,8 +23,6 @@ import ShiftChangeForm from "./Components/ShiftChangeForm";
 import ViewShiftChange from "./Components/ViewShiftChange";
 import HRshiftChangeSection from "./Components/HRshiftChangeSection";
 
-// import MorningTaskTable from "./Components/MorningTaskTable";
-
 export const GlobalInfo = createContext<any>({});
 
 export const AssignedTaskCountContext = createContext<{
@@ -32,7 +30,6 @@ export const AssignedTaskCountContext = createContext<{
   setAssignedTaskCount: React.Dispatch<React.SetStateAction<number>>;
 }>({
   assignedTaskCount: 0,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setAssignedTaskCount: () => {},
 });
 
@@ -55,25 +52,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
 const App: React.FC = () => {
   const [empInfo, setEmpInfo] = useState();
-  // const [updatedempID, setupdatedEmpID] = useState("");
   const [mrngEditID, setMrngEditID] = useState();
   const [evngEditID, setEvngEditID] = useState();
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const getEmpInfo = (item: any) => {};
-
-  console.log(empInfo,"hhhhhgggg-----");
-
+  const info  = JSON.parse(localStorage.getItem("myData") || '{}');
 
   return (
     <Router>
-      {/* <AppMenu /> */}
       <GlobalInfo.Provider
         value={{
           empInfo: empInfo,
           setEmpInfo: setEmpInfo,
-          getEmpInfo: getEmpInfo,
           mrngEditID: mrngEditID,
           setMrngEditID: setMrngEditID,
           evngEditID: evngEditID,
@@ -148,22 +138,26 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/HRsection"
-            element={
-              <ProtectedRoute>
-                <HRsection />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/HRshiftChangeSection"
-            element={
-              <ProtectedRoute>
-                <HRshiftChangeSection />
-              </ProtectedRoute>
-            }
-          />
+          {info.jobPosition === 'HR' &&
+            <>
+              <Route
+                path="/HRsection"
+                element={
+                  <ProtectedRoute>
+                    <HRsection />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/HRshiftChangeSection"
+                element={
+                  <ProtectedRoute>
+                    <HRshiftChangeSection />
+                  </ProtectedRoute>
+                }
+              />
+            </>
+          }
           <Route
             path="/LeaveReports"
             element={
@@ -188,7 +182,6 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          {/* <Route path="/MorningTaskTable" element={<ProtectedRoute><MorningTaskTable /></ProtectedRoute>} /> */}
         </Routes>
       </GlobalInfo.Provider>
     </Router>

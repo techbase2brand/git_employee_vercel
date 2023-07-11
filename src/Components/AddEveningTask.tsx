@@ -400,7 +400,9 @@ const AddModule: React.FC<any> = () => {
             className="form-container"
           >
             <div className="add-div">
-              <p className="add-heading">Add Evening Task</p>
+              <p className="add-heading">
+              {location?.state?.MrngTaskID ? "Update Evening Task" : "Add Evening Task"}
+              </p>
               <label className="add-label">
                 Project Name<span style={{ color: "red" }}>*</span>
               </label>

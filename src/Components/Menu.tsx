@@ -8,6 +8,8 @@ import {
 } from "@ant-design/icons";
 
 const AppMenu = () => {
+  const info  = JSON.parse(localStorage.getItem("myData") || '{}');
+
   return (
     <Menu mode="inline">
       <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
@@ -31,9 +33,16 @@ const AppMenu = () => {
       <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
         <Link to="/ViewLeavePage">ViewLeavePage</Link>
       </Menu.Item>
-      <Menu.Item key="HRsection" icon={<TableOutlined />}>
-        <Link to="/HRsection">HR leave section</Link>
-      </Menu.Item>
+      {info?.jobPosition === "HR" && (
+        <>
+          <Menu.Item key="HRsection" icon={<TableOutlined />}>
+            <Link to="/HRsection">HR leave section</Link>
+          </Menu.Item>
+          <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
+            <Link to="/HRshiftChangeSection">HRshiftChangeSection </Link>
+          </Menu.Item>
+        </>
+      )}
       <Menu.Item key="LeaveReports" icon={<TableOutlined />}>
         <Link to="/LeaveReports">Leave Report</Link>
       </Menu.Item>
@@ -42,9 +51,6 @@ const AppMenu = () => {
       </Menu.Item>
       <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
         <Link to="/ViewShiftChange">View Shift change </Link>
-      </Menu.Item>
-      <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
-        <Link to="/HRshiftChangeSection">HRshiftChangeSection </Link>
       </Menu.Item>
     </Menu>
   );

@@ -363,7 +363,9 @@ const AddModule: React.FC<unknown> = () => {
             className="form-container"
           >
             <div className="add-div">
-              <p className="add-heading">Add Morning Task</p>
+            <p className="add-heading">
+                {location?.state?.MrngTaskID ? "Update Morning Task" : "Add Morning Task"}
+              </p>
               <label className="add-label">
                 Project Name<span style={{ color: "red" }}>*</span>
               </label>
@@ -547,7 +549,7 @@ const AddModule: React.FC<unknown> = () => {
                 </div>
               </div>
               <button className="add-button" onClick={handleSubmit}>
-                Add Task
+                Submit
               </button>
             </div>
             <div

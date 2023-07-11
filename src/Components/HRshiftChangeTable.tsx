@@ -40,8 +40,14 @@ const HRshiftChangeTable : React.FC = () => {
   }, []);
 
 const handleApprove = (ShiftChangeTableID: number) => {
+  const token = localStorage.getItem("myToken");
+
     axios
-      .put(`http://localhost:5000/approveShiftChangeHR/${ShiftChangeTableID}`)
+      .put(`http://localhost:5000/approveShiftChangeHR/${ShiftChangeTableID}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         fetchData();
