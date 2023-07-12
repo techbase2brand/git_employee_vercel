@@ -27,7 +27,7 @@ const DashboardTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks",{
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -53,7 +53,7 @@ const DashboardTable: React.FC = () => {
 
     // Call the API endpoint to update the task completion status
     axios
-    .put(`http://localhost:5000/update/task-completion/${backlogTaskID}`,
+    .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
       { isCompleted: isChecked },
       {
         headers: {

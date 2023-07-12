@@ -93,7 +93,7 @@ const AddModule: React.FC<unknown> = () => {
     const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>(`http://localhost:5000/get/addTaskMorning`, {
+        .get<Task[]>(`https://empbackend.base2brand.com/get/addTaskMorning`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -133,7 +133,6 @@ const AddModule: React.FC<unknown> = () => {
     }
   }, [location?.state?.MrngTaskID]);
 
-
   // const { getEmpInfo, empInfo, setEmpInfo } = useContext(GlobalInfo);
 
   const dataString = localStorage.getItem("myData");
@@ -146,7 +145,7 @@ const AddModule: React.FC<unknown> = () => {
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
-      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo", {
+      .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -162,7 +161,6 @@ const AddModule: React.FC<unknown> = () => {
         const arr = sortedData
           .map((e) => {
             if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
-
               return e.projectName;
             }
             return null;
@@ -178,7 +176,6 @@ const AddModule: React.FC<unknown> = () => {
           }, []);
 
         setProjectNames(arr);
-
 
         if (morningTask?.projectName) {
           const arr = sortedData
@@ -205,11 +202,12 @@ const AddModule: React.FC<unknown> = () => {
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     // Fetch employees from the backend API
-    axios.get<Module[]>("http://localhost:5000/get/modules", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    axios
+      .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.modID) - Number(a.modID)
@@ -226,7 +224,6 @@ const AddModule: React.FC<unknown> = () => {
       module: value,
     });
   };
-
 
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
@@ -247,8 +244,6 @@ const AddModule: React.FC<unknown> = () => {
       }));
     }
   };
-
-
 
   const handlePhaseChange = (value: string) => {
     setSelectedPhase(value);
@@ -286,7 +281,7 @@ const AddModule: React.FC<unknown> = () => {
       setEmployeeID(empInfo?.EmployeeID);
       setMorningTask((prevState) => ({
         ...prevState,
-        employeeID: empInfo?.EmployeeID
+        employeeID: empInfo?.EmployeeID,
       }));
     } else {
       console.log("empInfo is undefined");
@@ -296,13 +291,14 @@ const AddModule: React.FC<unknown> = () => {
     if (location?.state?.MrngTaskID) {
       axios
         .put(
-          `http://localhost:5000/update/addMrngTask/${location?.state?.MrngTaskID}`,
+          `https://empbackend.base2brand.com/update/addMrngTask/${location?.state?.MrngTaskID}`,
           morningTask,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("myToken")}`,
             },
-          })
+          }
+        )
         .then((response) => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");
@@ -318,7 +314,7 @@ const AddModule: React.FC<unknown> = () => {
       const token = localStorage.getItem("myToken");
 
       axios
-        .post("http://localhost:5000/create/addTaskMorning", morningTask , {
+        .post("https://empbackend.base2brand.com/create/addTaskMorning", morningTask, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -363,8 +359,10 @@ const AddModule: React.FC<unknown> = () => {
             className="form-container"
           >
             <div className="add-div">
-            <p className="add-heading">
-                {location?.state?.MrngTaskID ? "Update Morning Task" : "Add Morning Task"}
+              <p className="add-heading">
+                {location?.state?.MrngTaskID
+                  ? "Update Morning Task"
+                  : "Add Morning Task"}
               </p>
               <label className="add-label">
                 Project Name<span style={{ color: "red" }}>*</span>
@@ -420,24 +418,24 @@ const AddModule: React.FC<unknown> = () => {
                       })}
                   </select> */}
 
-<select
-  className="add-input"
-  id="phase"
-  name="phase"
-  value={selectedPhase}
-  onChange={(e) => handlePhaseChange(e.target.value)}
->
-  <option value="">Select a phase</option>
-  {phases
-    .filter((phase) => phase.projectName === selectedProject)
-    .map((phase) => {
-      return phase.phases.map((singlePhase, index) => (
-        <option key={index} value={singlePhase}>
-          {singlePhase}
-        </option>
-      ));
-    })}
-</select>
+                  <select
+                    className="add-input"
+                    id="phase"
+                    name="phase"
+                    value={selectedPhase}
+                    onChange={(e) => handlePhaseChange(e.target.value)}
+                  >
+                    <option value="">Select a phase</option>
+                    {phases
+                      .filter((phase) => phase.projectName === selectedProject)
+                      .map((phase) => {
+                        return phase.phases.map((singlePhase, index) => (
+                          <option key={index} value={singlePhase}>
+                            {singlePhase}
+                          </option>
+                        ));
+                      })}
+                  </select>
 
                   {/* )} */}
                 </div>
@@ -500,30 +498,40 @@ const AddModule: React.FC<unknown> = () => {
                 }}
               >
                 <div className="form-group">
-                  <label className="add-label">
-                    Est. time :<span style={{ color: "red" }}>*</span>
-                  </label>
+                  <label className="add-label">Upwork Hrs</label>
                   <select
                     style={{ width: "16.8vw" }}
-                    name="estTime"
+                    name="upWorkHrs"
                     className="form-control"
-                    value={morningTask.estTime}
-                    onChange={(e) => handleEstTimeChange(e.target.value)}
+                    value={morningTask.upWorkHrs}
+                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
                     required
                   >
                     <option value="">--Select Time--</option>
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [15, 30, 45].map((minute) => (
-                        <option
-                          key={`${hour}:${minute}`}
-                          value={`${hour}:${minute}`}
-                        >
-                          {`${hour} hours ${minute} mins`}
-                        </option>
-                      ))
+                    {Array.from({ length: 25 }, (_, i) => i).map((hour) =>
+                      [0, 10, 20, 30, 40, 50].map((minute) => {
+                        if (hour === 24 && minute > 0) {
+                          return null;
+                        }
+                        return (
+                          <option
+                            key={`${hour}:${
+                              minute < 10 ? "0" + minute : minute
+                            }`}
+                            value={`${hour}:${
+                              minute < 10 ? "0" + minute : minute
+                            }`}
+                          >
+                            {`${hour} hour${
+                              hour !== 1 ? "s" : ""
+                            } ${minute} min${minute !== 1 ? "s" : ""}`}
+                          </option>
+                        );
+                      })
                     )}
                   </select>
                 </div>
+
                 <div className="form-group">
                   <label className="add-label">Upwork Hrs</label>
                   <select
@@ -536,7 +544,7 @@ const AddModule: React.FC<unknown> = () => {
                   >
                     <option value="">--Select Time--</option>
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [15, 30, 45].map((minute) => (
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
                         <option
                           key={`${hour}:${minute}`}
                           value={`${hour}:${minute}`}

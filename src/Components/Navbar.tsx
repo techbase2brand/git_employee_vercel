@@ -155,7 +155,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 useEffect(() => {
     axios
-      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks",{
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

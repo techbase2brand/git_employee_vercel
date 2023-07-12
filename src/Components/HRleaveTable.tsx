@@ -29,7 +29,7 @@ useEffect(() => {
   const token = localStorage.getItem("myToken");
 
   axios
-    .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+    .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -48,7 +48,7 @@ const handleApprove = (LeaveInfoID: number) => {
   const token = localStorage.getItem("myToken");
 
   axios
-    .put(`http://localhost:5000/approveLeaveHR/${LeaveInfoID}`, {}, {
+    .put(`https://empbackend.base2brand.com/approveLeaveHR/${LeaveInfoID}`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -66,7 +66,7 @@ const handleApprove = (LeaveInfoID: number) => {
 
   const handleDeny = (LeaveInfoID: number) => {
     axios
-      .put(`http://localhost:5000/denyLeaveHR/${LeaveInfoID}`)
+      .put(`https://empbackend.base2brand.com/denyLeaveHR/${LeaveInfoID}`)
       .then((response) => {
         console.log(response.data);
         // Refresh the table data after denial
@@ -81,7 +81,7 @@ const handleApprove = (LeaveInfoID: number) => {
     const token = localStorage.getItem("myToken");
 
     axios
-      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
