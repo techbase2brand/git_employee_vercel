@@ -33,7 +33,7 @@ const AppMenu = () => {
       <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
         <Link to="/ViewLeavePage">ViewLeavePage</Link>
       </Menu.Item>
-      {info?.jobPosition === "HR" && (
+      {info?.jobPosition == "HR" && (
         <>
           <Menu.Item key="HRsection" icon={<TableOutlined />}>
             <Link to="/HRsection">HR leave section</Link>

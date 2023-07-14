@@ -56,9 +56,9 @@ const HRshiftChangeSection: React.FC = () => {
                 </p>
               </div>
 
-              <HRshiftChangeTable
+              {/* <HRshiftChangeTable
 
-              />
+              /> */}
             </div>
           </div>
         </div>
