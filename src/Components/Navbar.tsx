@@ -159,6 +159,7 @@ useEffect(() => {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
+
       })
       .then((response) => {
         const visitedNotificationIds = getVisitedNotificationIds();
@@ -172,6 +173,8 @@ useEffect(() => {
         updateNotificationCount(); // Update the notification count
       })
       .catch((error) => {
+        console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
+
         console.error("Error fetching data:", error);
         console.log("Error details:", error.response);
       });
