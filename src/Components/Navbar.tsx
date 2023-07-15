@@ -133,7 +133,7 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
-    const socket = io("http://empbackend.base2brand.com");
+    const socket = io("https://empbackend.base2brand.com");
     socket.on("taskAssigned", handleTaskAssigned);
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
@@ -154,7 +154,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 useEffect(() => {
     axios
-      .get<BacklogTask[]>("http://empbackend.base2brand.com/get/BacklogTasks",{
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

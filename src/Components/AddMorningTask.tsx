@@ -93,7 +93,7 @@ const AddModule: React.FC<unknown> = () => {
     const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>(`http://empbackend.base2brand.com/get/addTaskMorning`, {
+        .get<Task[]>(`https://empbackend.base2brand.com/get/addTaskMorning`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -145,7 +145,7 @@ const AddModule: React.FC<unknown> = () => {
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
-      .get<AssignedEmployees[]>("http://empbackend.base2brand.com/get/PhaseAssignedTo", {
+      .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -203,7 +203,7 @@ const AddModule: React.FC<unknown> = () => {
     const token = localStorage.getItem("myToken");
     // Fetch employees from the backend API
     axios
-      .get<Module[]>("http://empbackend.base2brand.com/get/modules", {
+      .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -291,7 +291,7 @@ const AddModule: React.FC<unknown> = () => {
     if (location?.state?.MrngTaskID) {
       axios
         .put(
-          `http://empbackend.base2brand.com/update/addMrngTask/${location?.state?.MrngTaskID}`,
+          `https://empbackend.base2brand.com/update/addMrngTask/${location?.state?.MrngTaskID}`,
           morningTask,
           {
             headers: {
@@ -314,7 +314,7 @@ const AddModule: React.FC<unknown> = () => {
       const token = localStorage.getItem("myToken");
 
       axios
-        .post("http://empbackend.base2brand.com/create/addTaskMorning", morningTask, {
+        .post("https://empbackend.base2brand.com/create/addTaskMorning", morningTask, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

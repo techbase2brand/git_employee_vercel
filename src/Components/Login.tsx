@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     console.log("Received values of form: ", values);
 
     axios
-      .post("http://empbackend.base2brand.com/user/login", values)
+      .post("https://empbackend.base2brand.com/user/login", values)
       .then((res) => {
         if (res?.data === "Invalid username or password") {
           alert("Invalid username or password");
