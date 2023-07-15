@@ -46,37 +46,7 @@ const ViewShiftChange: React.FC = () => {
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
 
-  // const handleChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
 
-  // const handleModeChange = (e: RadioChangeEvent) => {
-  //   setMode(e.target.value);
-  // };
-
-  useEffect(() => {
-    axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskMorning")
-      .then((response) => {
-        // const res = response?.data.filter(
-        //   (e) => e.employeeID === employeeID && e.currDate === formattedDate
-        // );
-
-// const sortedData = res.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID));
-        // setData(sortedData);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, [employeeID ,formattedDate]);
-
-  // const dataString = localStorage.getItem("myData");
-  // Parse the JSON string back into an array
-  // const employeeInfo = useMemo(() => dataString ? JSON.parse(dataString) : [], [dataString]);
-
-  // useEffect(() => {
-  //   setEmployeeID(employeeInfo[0]?.EmployeeID);
-  // }, [employeeInfo[0]?.EmployeeID, employeeInfo]);
 
   return (
     <div className="emp-main-div">

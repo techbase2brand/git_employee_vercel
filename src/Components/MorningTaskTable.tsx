@@ -46,7 +46,7 @@ const MorningTaskTable: React.FC<Props> = ({
   };
   const handleDelete = (MrngTaskID: number) => {
     axios
-      .delete(`https://empbackend.base2brand.com/delete/morningDashboard/${MrngTaskID}`,{
+      .delete(`http://empbackend.base2brand.com/delete/morningDashboard/${MrngTaskID}`,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -62,7 +62,7 @@ const MorningTaskTable: React.FC<Props> = ({
 
   const handleMove = (record: any) => {
     axios
-      .post("https://empbackend.base2brand.com/create/addTaskEvening", record,{
+      .post("http://empbackend.base2brand.com/create/addTaskEvening", record,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

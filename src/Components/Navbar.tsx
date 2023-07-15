@@ -1,3 +1,4 @@
+
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect, useContext, useCallback } from "react";
 import {
@@ -41,8 +42,6 @@ const Navbar: React.FunctionComponent = () => {
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
   );
-
-
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
@@ -134,7 +133,7 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io("http://empbackend.base2brand.com");
     socket.on("taskAssigned", handleTaskAssigned);
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
@@ -155,7 +154,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 useEffect(() => {
     axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+      .get<BacklogTask[]>("http://empbackend.base2brand.com/get/BacklogTasks",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
