@@ -36,7 +36,7 @@ const DashboardTable: React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
         );
-        const filteredData = sortedData.filter((task) => isWithinLastFiveDays(task.currdate));
+        const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate));
         setData(filteredData);
       })
       .catch((error) => {

@@ -152,7 +152,7 @@ const AddModule: React.FC<unknown> = () => {
       })
       .then((response) => {
         console.log(response.data);
-        const sortedData = response.data.sort(
+        const sortedData = response?.data?.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
 

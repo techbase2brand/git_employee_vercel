@@ -162,7 +162,7 @@ useEffect(() => {
       })
       .then((response) => {
         const visitedNotificationIds = getVisitedNotificationIds();
-        const filteredData = response.data.filter(
+        const filteredData = response?.data?.filter(
           (item) => !visitedNotificationIds.includes(item.backlogTaskID)
         );
         const sortedData = filteredData.sort(
@@ -174,8 +174,8 @@ useEffect(() => {
       .catch((error) => {
         console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
 
-        console.error("Error fetching data:", error);
-        console.log("Error details:", error.response);
+        // console.error("Error fetching data:", error);
+        // console.log("Error details:", error.response);
       });
   }, []);
 
