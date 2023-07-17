@@ -57,7 +57,7 @@ navigate("/add-evening-task" ,  { state: { EvngTaskID: EvngTaskID } } );
       // console.log(`Delete task with id ${MrngTaskID}`);
 
       axios
-        .delete(`https://empbackend.base2brand.com/delete/eveningDashboard/${EvngTaskID}`,{
+        .delete(`https://empmgt.base2brand.com/delete/eveningDashboard/${EvngTaskID}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
