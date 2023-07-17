@@ -204,9 +204,9 @@ const AddModule: React.FC<unknown> = () => {
     // Fetch employees from the backend API
     axios
       .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        // },
       })
       .then((response) => {
         const sortedData = response.data.sort(
