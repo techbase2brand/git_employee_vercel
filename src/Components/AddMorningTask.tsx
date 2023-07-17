@@ -161,6 +161,7 @@ const AddModule: React.FC<unknown> = () => {
         const sortedData = response?.data?.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
+          console.log(sortedData);
 
         setPhaseAssignedArr(sortedData);
 
