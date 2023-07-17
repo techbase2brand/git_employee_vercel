@@ -39,7 +39,7 @@ const DashboardTaskTable: React.FC<Props> = ({ data }) => {
     // console.log(`Delete task with id ${MrngTaskID}`);
 
     axios
-      .delete(`https://empmgt.base2brand.com/delete/morningDashboard/${MrngTaskID}`,{
+      .delete(`https://empbackend.base2brand.com/delete/morningDashboard/${MrngTaskID}`,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

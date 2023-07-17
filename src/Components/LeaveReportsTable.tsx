@@ -64,7 +64,7 @@ const LeaveReportsTable: React.FC = () => {
     const token = localStorage.getItem("myToken");
 
     axios
-      .get<LeaveData[]>("https://empmgt.base2brand.com/get/leaveinfo", {
+      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,7 +80,7 @@ const LeaveReportsTable: React.FC = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get<Employee[]>("https://empmgt.base2brand.com/employees")
+  //     .get<Employee[]>("https://empbackend.base2brand.com/employees")
   //     .then((response) => {
   //       // const sortedData = response.data.sort(
   //       //   (a, b) => Number(b.EmpID) - Number(a.EmpID)

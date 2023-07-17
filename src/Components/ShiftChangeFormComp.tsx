@@ -92,7 +92,7 @@ const ShiftChangeFormComp: React.FC<any> = () => {
 
 
       axios
-        .post("https://empmgt.base2brand.com/createShiftChange", shiftChangeData, {
+        .post("https://empbackend.base2brand.com/createShiftChange", shiftChangeData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
@@ -116,7 +116,7 @@ const ShiftChangeFormComp: React.FC<any> = () => {
 
 
     axios
-    .get<Admin[]>("https://empmgt.base2brand.com/get/admin", {
+    .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
