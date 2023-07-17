@@ -87,10 +87,12 @@ const AddModule: React.FC<unknown> = () => {
     employeeID: "",
     currDate: formattedDate,
   });
+  const token = localStorage.getItem("myToken");
+
 
   const location = useLocation();
   useEffect(() => {
-    const token = localStorage.getItem("myToken");
+    // const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
         .get<Task[]>(`https://empbackend.base2brand.com/get/addTaskMorning`, {
@@ -143,7 +145,7 @@ const AddModule: React.FC<unknown> = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem("myToken");
+    // const token = localStorage.getItem("myToken");
     axios
       .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
         headers: {
@@ -200,13 +202,14 @@ const AddModule: React.FC<unknown> = () => {
   }, [morningTask.projectName]);
 
   useEffect(() => {
-    // const token = localStorage.getItem("myToken");
+    // console.log(token);
+
     // Fetch employees from the backend API
     axios
       .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
-        // headers: {
-        //   Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((response) => {
         const sortedData = response.data.sort(
@@ -298,7 +301,7 @@ const AddModule: React.FC<unknown> = () => {
           morningTask,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         )
@@ -314,7 +317,7 @@ const AddModule: React.FC<unknown> = () => {
           console.log(error.response.data);
         });
     } else {
-      const token = localStorage.getItem("myToken");
+      // const token = localStorage.getItem("myToken");
 
       axios
         .post("https://empbackend.base2brand.com/create/addTaskMorning", morningTask, {
