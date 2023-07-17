@@ -27,11 +27,8 @@ const DashboardTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      })
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
+      )
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)

@@ -150,9 +150,7 @@ const AddModule: React.FC<unknown> = () => {
         "https://empbackend.base2brand.com/get/PhaseAssignedTo",
         {
           headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODk1MjUxOTIsImV4cCI6MTY5MjExNzE5Mn0.4vXDVREin3kc2bfyJQRpo1GWQgQNodL3gA8o7wo8oWA",
+            Authorization: `Bearer ${token}`,
           },
         }
       )
