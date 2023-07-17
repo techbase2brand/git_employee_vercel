@@ -89,7 +89,6 @@ const AddModule: React.FC<unknown> = () => {
   });
   const token = localStorage.getItem("myToken");
 
-
   const location = useLocation();
   useEffect(() => {
     // const token = localStorage.getItem("myToken");
@@ -147,11 +146,16 @@ const AddModule: React.FC<unknown> = () => {
   useEffect(() => {
     // const token = localStorage.getItem("myToken");
     axios
-      .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get<AssignedEmployees[]>(
+        "https://empbackend.base2brand.com/get/PhaseAssignedTo",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODk1MjUxOTIsImV4cCI6MTY5MjExNzE5Mn0.4vXDVREin3kc2bfyJQRpo1GWQgQNodL3gA8o7wo8oWA",
+          },
+        }
+      )
       .then((response) => {
         console.log(response.data);
         const sortedData = response?.data?.sort(
@@ -219,7 +223,6 @@ const AddModule: React.FC<unknown> = () => {
         setModules(sortedData);
         console.log(sortedData);
         console.log(response.data);
-
       });
   }, []);
 
@@ -320,11 +323,15 @@ const AddModule: React.FC<unknown> = () => {
       // const token = localStorage.getItem("myToken");
 
       axios
-        .post("https://empbackend.base2brand.com/create/addTaskMorning", morningTask, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .post(
+          "https://empbackend.base2brand.com/create/addTaskMorning",
+          morningTask,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");
