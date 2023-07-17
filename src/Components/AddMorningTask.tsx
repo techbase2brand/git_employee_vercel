@@ -205,7 +205,7 @@ const AddModule: React.FC<unknown> = () => {
     axios
       .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

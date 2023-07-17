@@ -25,25 +25,25 @@ const DashboardTable: React.FC = () => {
     return taskDate >= fiveDaysAgo;
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       const sortedData = response.data.sort(
-  //         (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-  //       );
-  //       const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate));
-  //       setData(filteredData);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //       console.log("Error details:", error.response);
-  //     });
-  // }, []);
+  useEffect(() => {
+    axios
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        const sortedData = response.data.sort(
+          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+        );
+        const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate));
+        setData(filteredData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        console.log("Error details:", error.response);
+      });
+  }, []);
 
   const handleCheckboxChange = (isChecked: boolean, backlogTaskID: number) => {
     const updatedData = data.map((task) =>
