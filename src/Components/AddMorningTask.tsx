@@ -200,7 +200,7 @@ const AddModule: React.FC<unknown> = () => {
   }, [morningTask.projectName]);
 
   useEffect(() => {
-    const token = localStorage.getItem("myToken");
+    // const token = localStorage.getItem("myToken");
     // Fetch employees from the backend API
     axios
       .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
@@ -214,6 +214,9 @@ const AddModule: React.FC<unknown> = () => {
         );
 
         setModules(sortedData);
+        console.log(sortedData);
+        console.log(response.data);
+
       });
   }, []);
 
