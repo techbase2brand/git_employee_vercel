@@ -31,6 +31,8 @@ const DashboardTable: React.FC = () => {
     () => (dataString ? JSON.parse(dataString) : []),
     [dataString]
   );
+  console.log(employeeInfo);
+
 
   useEffect(() => {
     axios
@@ -40,9 +42,13 @@ const DashboardTable: React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
         );
+        console.log(sortedData);
+
         const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate) && task.employeeID === employeeInfo.EmployeeID
         );
         setData(filteredData);
+        console.log(filteredData);
+
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
