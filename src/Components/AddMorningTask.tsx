@@ -269,10 +269,10 @@ const AddModule: React.FC<unknown> = () => {
   };
 
   const handleEstTimeChange = (value: string) => {
-    setMorningTask({
-      ...morningTask,
+    setMorningTask((prevMorningTask) => ({
+      ...prevMorningTask,
       estTime: value,
-    });
+    }));
   };
 
   const handleUpWorkHrsChange = (value: string) => {
@@ -510,13 +510,13 @@ const AddModule: React.FC<unknown> = () => {
                 }}
               >
                 <div className="form-group">
-                  <label className="add-label">Upwork Hrs</label>
+                  <label className="add-label">Estimate Hrs</label>
                   <select
                     style={{ width: "16.8vw" }}
                     name="upWorkHrs"
                     className="form-control"
-                    value={morningTask.upWorkHrs}
-                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
+                    value={morningTask.estTime}
+                    onChange={(e) => handleEstTimeChange(e.target.value)}
                     required
                   >
                     <option value="">--Select Time--</option>
