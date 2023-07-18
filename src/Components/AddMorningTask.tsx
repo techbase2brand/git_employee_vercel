@@ -513,7 +513,7 @@ const AddModule: React.FC<unknown> = () => {
                   <label className="add-label">Estimate Hrs</label>
                   <select
                     style={{ width: "16.8vw" }}
-                    name="upWorkHrs"
+                    name="estTime"
                     className="form-control"
                     value={morningTask.estTime}
                     onChange={(e) => handleEstTimeChange(e.target.value)}
