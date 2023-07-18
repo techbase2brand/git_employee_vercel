@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useMemo } from "react";
 import { Table } from "antd";
 import axios from "axios";
 
@@ -25,6 +25,13 @@ const DashboardTable: React.FC = () => {
     return taskDate >= fiveDaysAgo;
   };
 
+
+  const dataString = localStorage.getItem("myData");
+  const employeeInfo = useMemo(
+    () => (dataString ? JSON.parse(dataString) : []),
+    [dataString]
+  );
+
   useEffect(() => {
     axios
       .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
@@ -33,7 +40,8 @@ const DashboardTable: React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
         );
-        const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate));
+        const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate) && task.employeeID === employeeInfo.EmployeeID
+        );
         setData(filteredData);
       })
       .catch((error) => {
