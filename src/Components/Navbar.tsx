@@ -100,32 +100,45 @@ const Navbar: React.FunctionComponent = () => {
     }
   };
 
+  // const handleTaskAssigned = useCallback(
+  //   (assigneeEmployeeID: string) => {
+  //     if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
+  //       setAssignedTaskCount((prevCount) => prevCount + 1);
+
+  //       // Fetch all tasks.
+  //       axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
+  //         .then(response => {
+  //           // Filter the tasks assigned to the current user.
+  //           const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
+  //      console.log(newTasks,"newTasks ");
+  //      console.log(response.data[0].assigneeEmployeeID,"response.data[0].assigneeEmployeeID");
+  //      console.log(assigneeEmployeeID,"assigneeEmployeeID");
+  //      console.log(notifications);
+
+
+
+  //           // Add the new tasks to notifications.
+  //           setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
+  //         })
+  //         .catch(error => {
+  //           console.error('Error fetching tasks:', error);
+  //         });
+  //     }
+  //   },
+  //   [assignedTaskCount, myData]
+  // );
+
+
   const handleTaskAssigned = useCallback(
-    (assigneeEmployeeID: string) => {
+    (assigneeEmployeeID: unknown) => {
+      console.log("handleTaskAssigned called");
+
       if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
+
         setAssignedTaskCount((prevCount) => prevCount + 1);
-
-        // Fetch all tasks.
-        axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
-          .then(response => {
-            // Filter the tasks assigned to the current user.
-            const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
-       console.log(newTasks,"newTasks ");
-       console.log(response.data[0].assigneeEmployeeID,"response.data[0].assigneeEmployeeID");
-       console.log(assigneeEmployeeID,"assigneeEmployeeID");
-       console.log(notifications);
-
-
-
-            // Add the new tasks to notifications.
-            setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
-          })
-          .catch(error => {
-            console.error('Error fetching tasks:', error);
-          });
       }
     },
-    [assignedTaskCount, myData]
+    [assignedTaskCount]
   );
 
 
@@ -190,6 +203,7 @@ useEffect(() => {
         const sortedData = filteredData.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
         );
+
         setNotifications(sortedData);
         updateNotificationCount(); // Update the notification count
       })
