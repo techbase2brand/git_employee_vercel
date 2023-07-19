@@ -495,20 +495,22 @@ const AddModule: React.FC<any> = () => {
                 </label>
 
                 <div style={{ width: "89%" }} className="form-control">
-    <textarea
-        style={{
-            outline: "none",
-            border: "none",
-            width: "100%",
-            resize: "none" // add this line
-        }}
-        name="task"
-        className="form-control"
-        value={eveningTask.task}
-        onChange={(e) => handleTaskChange(e.target.value)}
-        required
-    />
+  <textarea
+    style={{
+      outline: "none",
+      border: "none",
+      width: "100%",
+      resize: "none",
+      boxSizing: "content-box", // set boxSizing to content-box
+    }}
+    name="task"
+    className="textarea-control" // use the new class
+    value={eveningTask.task}
+    onChange={(e) => handleTaskChange(e.target.value)}
+    required
+  />
 </div>
+
 
               </div>
               <div
