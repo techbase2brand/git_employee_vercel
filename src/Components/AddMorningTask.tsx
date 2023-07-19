@@ -492,14 +492,16 @@ const AddModule: React.FC<unknown> = () => {
             border: "none",
             maxWidth: "100%",
             resize: "none",  // Add this line
+            boxSizing: "content-box", // set boxSizing to content-box
         }}
         name="task"
-        className="form-control"
+        className="textarea-control" // use the new class
         value={morningTask.task}
         onChange={(e) => handleTaskChange(e.target.value)}
         required
     />
 </div>
+
 
               </div>
               <div
