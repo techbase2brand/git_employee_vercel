@@ -254,7 +254,7 @@ useEffect(() => {
             markNotificationAsVisited(item.backlogTaskID);
             setNotifications((prevNotifications) =>
               prevNotifications.filter(
-                (notification) => notification.backlogTaskID !== item.backlogTaskID
+                (notification) => notification.backlogTaskID !== item.backlogTaskID && notification.assigneeEmployeeID === myData.employeeID
               )
             );
             updateNotificationCount(); // Update the notification count
