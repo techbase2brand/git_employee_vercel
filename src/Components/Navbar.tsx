@@ -114,20 +114,23 @@ const Navbar: React.FunctionComponent = () => {
       if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
         setAssignedTaskCount((prevCount) => prevCount + 1);
 
-        // Fetch the task details.
-        axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks/${assigneeEmployeeID}`)
+        // Fetch all tasks.
+        axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
           .then(response => {
+            // Filter the tasks assigned to the current user.
+            const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
+
             // Add the new tasks to notifications.
-            const newTasks = response.data;
             setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
           })
           .catch(error => {
-            console.error('Error fetching task details:', error);
+            console.error('Error fetching tasks:', error);
           });
       }
     },
     [assignedTaskCount, myData]
   );
+
 
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
