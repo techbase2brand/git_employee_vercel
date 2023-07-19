@@ -132,14 +132,14 @@ const Navbar: React.FunctionComponent = () => {
     };
   }, [newTaskAssignedWhileHidden]);
 
-  // useEffect(() => {
-  //   const socket = io("https://empbackend.base2brand.com");
-  //   socket.on("taskAssigned", handleTaskAssigned);
-  //   return () => {
-  //     socket.off("taskAssigned", handleTaskAssigned);
-  //     socket.disconnect();
-  //   };
-  // }, [handleTaskAssigned]);
+  useEffect(() => {
+    const socket = io("https://empbackend.base2brand.com");
+    socket.on("taskAssigned", handleTaskAssigned);
+    return () => {
+      socket.off("taskAssigned", handleTaskAssigned);
+      socket.disconnect();
+    };
+  }, [handleTaskAssigned]);
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
