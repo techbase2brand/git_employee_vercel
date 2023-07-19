@@ -47,8 +47,16 @@ const Navbar: React.FunctionComponent = () => {
 
 
 
+
+
+
+
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
+
+
+  console.log(notifications,"notifications");
+  console.log(assignedTaskCount,"assignedTaskCount");
 
   // const initialNotificationCount = Number(
   //   localStorage.getItem("notificationCount") || 0
