@@ -30,6 +30,9 @@ interface BacklogTask {
   UserEmail: string;
   AssignedBy: string;
   isCompleted: boolean;
+  employeeID: string;
+
+
 }
 
 const Navbar: React.FunctionComponent = () => {
@@ -44,6 +47,8 @@ const Navbar: React.FunctionComponent = () => {
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
+  console.log(myData,"myData");
+
 
 
   console.log(notifications,"notifications");
@@ -198,7 +203,8 @@ useEffect(() => {
       .then((response) => {
         const visitedNotificationIds = getVisitedNotificationIds();
         const filteredData = response?.data?.filter(
-          (item) => !visitedNotificationIds.includes(item.backlogTaskID)
+          (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
+
         );
         const sortedData = filteredData.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
@@ -254,7 +260,7 @@ useEffect(() => {
             markNotificationAsVisited(item.backlogTaskID);
             setNotifications((prevNotifications) =>
               prevNotifications.filter(
-                (notification) => notification.backlogTaskID !== item.backlogTaskID && notification.assigneeEmployeeID === myData.employeeID
+                (notification) => notification.backlogTaskID !== item.backlogTaskID
               )
             );
             updateNotificationCount(); // Update the notification count
