@@ -102,15 +102,25 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   const handleTaskAssigned = useCallback(
-    (task: BacklogTask) => {
-      if (myData && myData[0] && myData[0].EmployeeID === task.assigneeEmployeeID) {
+    (assigneeEmployeeID: string) => {
+      if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
         setAssignedTaskCount((prevCount) => prevCount + 1);
-        // add the new task to notifications
-        setNotifications((prevNotifications) => [...prevNotifications, task]);
+
+        // Fetch the task details.
+        axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks/${assigneeEmployeeID}`)
+          .then(response => {
+            // Add the new tasks to notifications.
+            const newTasks = response.data;
+            setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
+          })
+          .catch(error => {
+            console.error('Error fetching task details:', error);
+          });
       }
     },
-    [assignedTaskCount, myData] // Added myData to the dependencies
+    [assignedTaskCount, myData]
   );
+
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
       showDesktopNotification(
