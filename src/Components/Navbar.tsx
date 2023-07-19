@@ -1,354 +1,402 @@
-
-/* eslint-disable react/react-in-jsx-scope */
-import { useState, useEffect, useContext, useCallback } from "react";
-import {
-  Input,
-  Layout,
-  Avatar,
-  Badge,
-  Popover,
-  List,
-  // notification,
-} from "antd";
-import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
+import React, { useState, useEffect, useContext } from "react";
+import Menu from "./Menu";
+import Navbar from "./Navbar";
+import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { AssignedTaskCountContext } from "../App";
-import io from "socket.io-client";
-// import { message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { CloseOutlined } from "@ant-design/icons";
+import { GlobalInfo } from "../App";
+// import { Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
+import { DatePicker } from "antd";
+import enUS from "antd/lib/date-picker/locale/en_US";
 
+import dayjs, { Dayjs } from "dayjs";
 
-const { Header } = Layout;
-interface BacklogTask {
-  backlogTaskID: number;
-  taskName: string;
-  assigneeName: string;
-  assigneeEmployeeID: string;
-  deadlineStart: string;
-  deadlineEnd: string;
-  currdate: string;
-  UserEmail: string;
-  AssignedBy: string;
-  isCompleted: boolean;
+import { Moment } from "moment";
+
+const { RangePicker } = DatePicker;
+
+type Phase = {
+  phaseID: number;
+  projectName: string;
+};
+
+interface Employee {
+  EmpID: string | number;
+  firstName: string;
+  role: string;
+  dob: string | Date;
+  EmployeeID: string;
 }
 
-const Navbar: React.FunctionComponent = () => {
-  const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
-    useState(false);
+const currentDate = new Date().toISOString().split("T")[0];
 
-  const [notifications, setNotifications] = useState<BacklogTask[]>([]);
+const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
+  const [elementCount, setElementCount] = useState(1);
+  const [showIncrement, setShowIncrement] = useState(true);
+  const [deadline, setDeadline] = useState<Dayjs | null>(null);
+  // const [deadline, setDeadline] = useState<any | null>(null);
+  const [assignedBy, setAssignedBy] = useState<any | null>(null);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [tasks, setTasks] = useState<any[]>([
+    {
+      createdDate: currentDate,
+      deadlineStart: null,
+      deadlineEnd: null,
+    },
+  ]);
+  const [formattedTasks, setFormattedTasks] = useState<any[]>([]);
 
-  const { assignedTaskCount, setAssignedTaskCount } = useContext(
-    AssignedTaskCountContext
-  );
+  const adminInfo = localStorage.getItem("admin");
 
+  let userEmail: string | null = null;
+  if (adminInfo) {
+    const userInfo = JSON.parse(adminInfo);
+    userEmail = userInfo?.email;
+    console.log("User email: ", userEmail);
+  } else {
+    console.log("No admin info found in local storage");
+  }
 
+  useEffect(() => {
+    axios
+      .get<any[]>("https://empbackend.base2brand.com/get/userlogin", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        const sortedData = response?.data.sort(
+          (a, b) => Number(b.UserID) - Number(a.UserID)
+        );
 
+        console.log("Userlogin fetched:", sortedData);
 
+        const filteredData = sortedData.filter((e) => e?.email === userEmail);
 
+        setAssignedBy(filteredData[0].adminName);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
-
-
-
-  const storedData = localStorage.getItem("myData");
-  const myData = storedData ? JSON.parse(storedData) : null;
-
-
-  console.log(notifications,"notifications");
-  console.log(assignedTaskCount,"assignedTaskCount");
-
-  // const initialNotificationCount = Number(
-  //   localStorage.getItem("notificationCount") || 0
-  // );
-  // const [notificationCount, setNotificationCount] = useState(0);
+  useEffect(() => {
+    console.log(tasks);
+  }, [tasks]);
 
   const navigate = useNavigate();
 
+  const { modulejEditObj, setModulejEditObj } = useContext(GlobalInfo);
 
-  const updateNotificationCount = () => {
-    // setNotificationCount(notifications.length);
+  const handleIncrement = () => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    setTasks([
+      ...tasks,
+      {
+        createdDate: currentDate,
+      },
+    ]);
+    setElementCount(elementCount + 1);
   };
 
-  // Call updateNotificationCount() whenever you update the notifications state
+  const handleDecrement = (index: number) => {
+    if (elementCount > 1) {
+      setElementCount(elementCount - 1);
+      setTasks(tasks.filter((_, i) => i !== index));
+    }
+  };
 
+  const handleTask = (value: string, index: number) => {
+    const newTasks = [...tasks];
+    const currentDate = new Date().toISOString().split("T")[0];
+    newTasks[index] = {
+      ...newTasks[index],
+      task: value,
+      createdDate: currentDate,
+    };
+    setTasks(newTasks);
+  };
 
-  const requestNotificationPermission = async () => {
-    if (!("Notification" in window)) {
-      console.log("This browser does not support desktop notifications.");
+  const handleAssignee = (value: string, index: number) => {
+    const selectedEmployee = employees.find((emp) => emp.firstName === value);
+    const newTasks = [...tasks];
+    const currentDate = new Date().toISOString().split("T")[0];
+    newTasks[index] = {
+      ...newTasks[index],
+      assigneeName: value,
+      assigneeEmployeeID: selectedEmployee?.EmployeeID,
+      createdDate: currentDate,
+    };
+    setTasks(newTasks);
+  };
+
+  // ...
+  // const handleDeadlineChange = (dates: [Moment | null, Moment | null], index: number) => {
+  //   if (dates && dates.length === 2) {
+  //     const newTasks = [...tasks];
+  //     newTasks[index] = {
+  //       ...newTasks[index],
+  //       deadline: [
+  //         dates[0]?.format("YYYY-MM-DD") || null,
+  //         dates[1]?.format("YYYY-MM-DD") || null,
+  //       ],
+  //     };
+  //     setTasks(newTasks);
+  //   }
+  // };
+
+  const handleDeadlineChange = (dates: any, index: number) => {
+    const [start, end] = dates;
+    const newTasks = [...tasks];
+    const currentDate = new Date().toISOString().split("T")[0];
+    newTasks[index] = {
+      ...newTasks[index],
+      deadlineStart: start ? start.format("YYYY-MM-DD") : null,
+      deadlineEnd: end ? end.format("YYYY-MM-DD") : null,
+      createdDate: currentDate,
+    };
+    setTasks(newTasks);
+  };
+
+  const handleCheckboxToggle = (index: number) => {
+    const newTasks = [...tasks];
+    const currentDate = new Date().toISOString().split("T")[0];
+    newTasks[index] = {
+      ...newTasks[index],
+      checked: !newTasks[index]?.checked,
+      createdDate: currentDate,
+    };
+    setTasks(newTasks);
+  };
+
+  const handleSubmit = () => {
+    const atLeastOneChecked = tasks.some((task) => task.checked);
+
+    if (!atLeastOneChecked) {
+      alert("Please check at least one task before clicking Send.");
       return;
     }
-    if (Notification.permission !== "granted") {
-      await Notification.requestPermission();
-    }
-  };
 
-  useEffect(() => {
-    requestNotificationPermission();
-  }, []);
+    const checkedTasks = tasks.filter((task) => task.checked);
 
-  const showDesktopNotification = (
-    title: string,
-    onClick?: () => void,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options?: Omit<NotificationOptions, "onclick">
-  ) => {
-    if (Notification.permission === "granted") {
-      const notification = new Notification("Test Title", {
-        body: "Test Body",
-        icon: "path/to/your/icon.png",
-      });
-
-      console.log("ggggg-----iiiii");
-
-      if (onClick) {
-        notification.onclick = onClick;
-      }
-    } else {
-      console.log("Notification permission is not granted.");
-    }
-  };
-
-  const handleTaskAssigned = useCallback(
-    (assigneeEmployeeID: string) => {
-      if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
-        setAssignedTaskCount((prevCount) => prevCount + 1);
-
-        // Fetch all tasks.
-        axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
-          .then(response => {
-            // Filter the tasks assigned to the current user.
-            const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
-
-            // Add the new tasks to notifications.
-            setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
-          })
-          .catch(error => {
-            console.error('Error fetching tasks:', error);
-          });
-      }
-    },
-    [assignedTaskCount, myData]
-  );
-
-
-  const handleVisibilityChange = () => {
-    if (document.hidden && newTaskAssignedWhileHidden) {
-      showDesktopNotification(
-        "New task assigned!",
-        () => {
-          navigate("/dashboard"); // Replace "/your-page-path" with the actual path
-        },
-        {
-          body: "Click to open the dashboard.",
-          icon: "path/to/your/icon.png",
-        }
-      );
-      setNewTaskAssignedWhileHidden(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [newTaskAssignedWhileHidden]);
-
-  useEffect(() => {
-    const socket = io("https://empbackend.base2brand.com");
-    socket.on("taskAssigned", handleTaskAssigned);
-    return () => {
-      socket.off("taskAssigned", handleTaskAssigned);
-      socket.disconnect();
-    };
-  }, [handleTaskAssigned]);
-  const getVisitedNotificationIds = () => {
-    const visitedNotifications = localStorage.getItem("visitedNotificationIds");
-    return visitedNotifications ? JSON.parse(visitedNotifications) : [];
-  };
- const markNotificationAsVisited = (notificationId: number) => {
-    const visitedNotificationIds = getVisitedNotificationIds();
-    visitedNotificationIds.push(notificationId);
-    localStorage.setItem(
-      "visitedNotificationIds",
-      JSON.stringify(visitedNotificationIds)
+    const allFieldsFilled = checkedTasks.every(
+      (task) =>
+        task.task && task.assigneeName && task.deadlineStart && task.deadlineEnd
     );
-  };
-useEffect(() => {
-    axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
 
-      })
+    if (!allFieldsFilled) {
+      alert("Please fill all the required fields for checked tasks.");
+      return;
+    }
+
+    const outputTasks = checkedTasks.map((task) => {
+      return {
+        assigneeEmployeeID: task.assigneeEmployeeID,
+        assigneeName: task.assigneeName,
+        createdDate: task.createdDate,
+        deadlineStart: task.deadlineStart,
+        deadlineEnd: task.deadlineEnd,
+        task: task.task,
+        userEmail: userEmail,
+        assignedBy: assignedBy,
+        isCompleted: false,
+      };
+    });
+
+    console.log("Output tasks:", outputTasks);
+
+    axios
+      .post(
+        "https://empbackend.base2brand.com/create/addBacklogTasks",
+        { tasks: outputTasks },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+        }
+      )
       .then((response) => {
-        const visitedNotificationIds = getVisitedNotificationIds();
-        const filteredData = response?.data?.filter(
-          (item) => !visitedNotificationIds.includes(item.backlogTaskID)
-        );
-        const sortedData = filteredData.sort(
-          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
-        setNotifications(sortedData);
-        updateNotificationCount(); // Update the notification count
+        if (response.data === "Tasks inserted") {
+          navigate("/ViewBacklogPage");
+        }
       })
       .catch((error) => {
-        console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
-
-        // console.error("Error fetching data:", error);
-        // console.log("Error details:", error.response);
+        console.log(error);
       });
+  };
+
+  useEffect(() => {
+    axios
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        const sortedData = response?.data.sort(
+          (a, b) => Number(b.EmpID) - Number(a.EmpID)
+        );
+
+        setEmployees(sortedData);
+      })
+      .catch((error) => console.log(error));
   }, []);
 
- const listStyle = {
-    padding: "10px",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "5px",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-    width: "20vw",
-    maxHeight: "36em",
-    overflow: "auto",
-  };
-
-  const listItemStyle = {
-    padding: "10px",
-    backgroundColor: "#ffffff",
-    borderRadius: "5px",
-    marginBottom: "10px",
-    cursor: "pointer",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-    width: "18vw",
-  };
-
-  const getShortTaskDescription = (taskName: string) => {
-    const words = taskName.split(' ');
-    const maxWords = 5;
-    const truncatedWords = words.slice(0, maxWords);
-    return truncatedWords.join(' ');
-  };
-
-  const notificationList = (
-    <List
-      itemLayout="horizontal"
-      dataSource={notifications}
-      renderItem={(item) => (
-        <List.Item
-          key={item.backlogTaskID}
-          onClick={() => {
-            navigate("/dashboard");
-            markNotificationAsVisited(item.backlogTaskID);
-            setNotifications((prevNotifications) =>
-              prevNotifications.filter(
-                (notification) => notification.backlogTaskID !== item.backlogTaskID
-              )
-            );
-            updateNotificationCount(); // Update the notification count
-            console.log(item, "ffggg-------");
-          }}
-          style={listItemStyle}
-        >
-          <List.Item.Meta
-            title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(
-              item.taskName
-            )}`}
-          />
-          <CloseOutlined
-            onClick={(e) => {
-              e.stopPropagation(); // Prevents the parent click event from triggering
-              markNotificationAsVisited(item.backlogTaskID);
-              setNotifications((prevNotifications) =>
-                prevNotifications.filter(
-                  (notification) => notification.backlogTaskID !== item.backlogTaskID
-                )
-              );
-              updateNotificationCount(); // Update the notification count
-            }}
-          />
-        </List.Item>
-      )}
-      style={listStyle}
-    />
-  );
-
-  const logout = () => {
-    if (window.confirm('Do you really want to logout?')) {
-      localStorage.removeItem("myToken");
-      navigate("/");
-    }
-  };
-
-    return (
-      <div>
-        <Header
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "white",
-          }}
-          className="navbar"
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "40%",
-            }}
-          >
-            <div className="logo">
-              <img src="./b2b.png" alt="Company Logo" />
-            </div>
-
-            <div className="search">
-              <Input
-                placeholder="Search..."
-                // eslint-disable-next-line react/react-in-jsx-scope
-                prefix={<SearchOutlined className="search-icon" />}
-              />
-            </div>
+  return (
+    <div className="emp-main-div">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div style={{ height: "8%" }}>
+          <Navbar />
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
+          <div className="menu-div">
+            <Menu />
           </div>
           <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              width: "60%",
-              float: "right",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-            className="right-menu"
+            style={{ display: "flex", flexDirection: "column" }}
+            className="form-containerr"
           >
             <div
               style={{
-                width: "25%",
                 display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
+                flexDirection: "column",
+                marginBottom: "50px",
+                marginLeft: "40px",
+                width: "80%",
               }}
+              className="add-div"
             >
-              <Badge style={{ marginRight: "3%" }} count={notifications.length}>
-                <Popover
-                  style={{ width: "20vw" }}
-                  content={notificationList}
-                  placement="bottomRight"
-                >
-                  <BellOutlined className="notification-icon" />
-                </Popover>
-              </Badge>
+              <p className="add-heading">Assign Task</p>
 
-              <Avatar className="avatar" icon={<UserOutlined />} />
-              <span className="username">{myData?.firstName}{myData?.lastName}</span>
-              <button onClick={logout}>logout</button>
+              {Array.from({ length: elementCount }, (_, index) => (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    marginTop: "35px",
+                  }}
+                  key={index}
+                >
+                  <textarea
+                    style={{
+                      padding: "8px",
+                      width: "300px",
+                      height: "100px",
+                      resize: "none",
+                    }}
+                    className="add-input task-input"
+                    id="task"
+                    name="task"
+                    value={tasks[index]?.task || ""}
+                    onChange={(e) => handleTask(e.target.value, index)}
+                    placeholder="Please write task"
+                  />
+
+                  <select
+                    style={{ marginLeft: "15px" }}
+                    className="add-input"
+                    id="assignee"
+                    name="assignee"
+                    value={tasks[index]?.assigneeName || ""}
+                    onChange={(e) => handleAssignee(e.target.value, index)}
+                  >
+                    <option value="">Assgn. To</option>
+                    {employees.map((employee) => (
+                      <option
+                        value={employee.firstName}
+                        key={employee.EmployeeID}
+                      >
+                        {employee.firstName}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div>
+                    <RangePicker
+                      style={{
+                        width: "150px",
+                        marginRight: "15px",
+                        marginLeft: "15px",
+                        paddingBottom: "35px",
+                      }}
+                      className="add-input"
+                      value={[
+                        tasks[index]?.deadlineStart
+                          ? dayjs(tasks[index]?.deadlineStart)
+                          : null,
+                        tasks[index]?.deadlineEnd
+                          ? dayjs(tasks[index]?.deadlineEnd)
+                          : null,
+                      ]}
+                      onChange={(dates) => handleDeadlineChange(dates, index)}
+                      format="YYYY-MM-DD"
+                      locale={enUS}
+                    />
+                  </div>
+                  <input
+                    type="checkbox"
+                    style={{
+                      marginBottom: "32px",
+                      paddingBottom: "20px",
+                      width: "30px",
+                    }}
+                    className="add-checkbox"
+                    checked={tasks[index]?.checked || false}
+                    onClick={() => handleCheckboxToggle(index)}
+                  />
+
+                  <div
+                    style={{
+                      marginLeft: "10px",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {index === elementCount - 1 && (
+                      <button
+                        className="round-button"
+                        onClick={handleIncrement}
+                      >
+                        +
+                      </button>
+                    )}
+                    {index !== 0 && (
+                      <button
+                        className="round-button"
+                        onClick={() => handleDecrement(index)}
+                      >
+                        -
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ position: "relative", bottom: 0, left: 0, right: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: "300px",
+                }}
+              >
+                <button className="add-button" onClick={handleSubmit}>
+                  Send
+                </button>
+              </div>
             </div>
           </div>
-        </Header>
+        </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-
-export default Navbar;
+export default AssignTaskPage;
