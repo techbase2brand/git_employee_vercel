@@ -42,14 +42,6 @@ const Navbar: React.FunctionComponent = () => {
     AssignedTaskCountContext
   );
 
-
-
-
-
-
-
-
-
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
 
@@ -118,6 +110,12 @@ const Navbar: React.FunctionComponent = () => {
           .then(response => {
             // Filter the tasks assigned to the current user.
             const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
+       console.log(newTasks,"newTasks ");
+       console.log(response.data[0].assigneeEmployeeID,"response.data[0].assigneeEmployeeID");
+       console.log(assigneeEmployeeID,"assigneeEmployeeID");
+       console.log(notifications);
+
+
 
             // Add the new tasks to notifications.
             setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
