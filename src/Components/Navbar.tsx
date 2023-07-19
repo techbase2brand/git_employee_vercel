@@ -139,8 +139,7 @@ const Navbar: React.FunctionComponent = () => {
       console.log("handleTaskAssigned called");
 
       if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
-
-        setAssignedTaskCount((prevCount) => prevCount + 1);
+          setAssignedTaskCount((prevCount) => prevCount + 1);
       }
     },
     [assignedTaskCount]
