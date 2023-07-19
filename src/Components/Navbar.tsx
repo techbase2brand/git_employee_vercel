@@ -24,7 +24,7 @@ interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
   assigneeName: string;
-  employeeID: string;
+  assigneeEmployeeID: string;
   deadlineStart: string;
   deadlineEnd: string;
   currdate: string;
@@ -42,6 +42,10 @@ const Navbar: React.FunctionComponent = () => {
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
   );
+
+
+
+
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
@@ -98,17 +102,15 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   const handleTaskAssigned = useCallback(
-    (assigneeEmployeeID: unknown) => {
-      console.log("handleTaskAssigned called");
-
-      if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
-
+    (task: BacklogTask) => {
+      if (myData && myData[0] && myData[0].EmployeeID === task.assigneeEmployeeID) {
         setAssignedTaskCount((prevCount) => prevCount + 1);
+        // add the new task to notifications
+        setNotifications((prevNotifications) => [...prevNotifications, task]);
       }
     },
-    [assignedTaskCount]
+    [assignedTaskCount, myData] // Added myData to the dependencies
   );
-
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
       showDesktopNotification(
@@ -199,17 +201,12 @@ useEffect(() => {
     width: "18vw",
   };
 
-
-
   const getShortTaskDescription = (taskName: string) => {
     const words = taskName.split(' ');
     const maxWords = 5;
     const truncatedWords = words.slice(0, maxWords);
     return truncatedWords.join(' ');
   };
-
-
-
 
   const notificationList = (
     <List
@@ -260,10 +257,6 @@ useEffect(() => {
       navigate("/");
     }
   };
-
-
-
-
 
     return (
       <div>
