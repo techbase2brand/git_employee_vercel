@@ -130,6 +130,9 @@ const Navbar: React.FunctionComponent = () => {
       if (myData && myData[0] && myData[0].EmpID === assigneeEmployeeID) {
         setAssignedTaskCount((prevCount) => prevCount + 1);
 
+        console.log("added handle task from chatGPT");
+
+
         // Fetch all tasks.
         axios
           .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
