@@ -80,16 +80,10 @@ const Navbar: React.FunctionComponent = () => {
   const showDesktopNotification = (
     title: string,
     onClick?: () => void,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options?: Omit<NotificationOptions, "onclick">
   ) => {
     if (Notification.permission === "granted") {
-      const notification = new Notification("Test Title", {
-        body: "Test Body",
-        // icon: "path/to/your/icon.png",
-      });
-
-      console.log("ggggg-----iiiii");
+      const notification = new Notification(title, options);
 
       if (onClick) {
         notification.onclick = onClick;
@@ -200,12 +194,35 @@ const Navbar: React.FunctionComponent = () => {
 
   useEffect(() => {
     const socket = io("https://empbackend.base2brand.com");
-    socket.on("taskAssigned", handleTaskAssigned);
+
+    socket.on("taskAssigned", (task: BacklogTask) => {
+      console.log("New task assigned:", task);
+
+      if (myData && myData[0] && myData[0].EmpID === task.assigneeEmployeeID) {
+        setAssignedTaskCount((prevCount) => prevCount + 1);
+
+        // Update the notifications state with the new task
+        setNotifications((prevNotifications) => [...prevNotifications, task]);
+
+        // Show desktop notification for the new task
+        showDesktopNotification(
+          `New task assigned by ${task.AssignedBy}`,
+          () => {
+            navigate("/dashboard");
+          },
+          {
+            body: task.taskName,
+          }
+        );
+      }
+    });
+
     return () => {
-      socket.off("taskAssigned", handleTaskAssigned);
       socket.disconnect();
     };
-  }, [handleTaskAssigned]);
+  }, [myData]);
+
+
 
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
@@ -243,9 +260,6 @@ const Navbar: React.FunctionComponent = () => {
       })
       .catch((error) => {
         console.log(localStorage.getItem("myToken"), "mmmyyyy tokennnn");
-
-        // console.error("Error fetching data:", error);
-        // console.log("Error details:", error.response);
       });
   }, []);
 
