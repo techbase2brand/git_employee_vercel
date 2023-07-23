@@ -17,8 +17,8 @@ import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
 
-
 const { Header } = Layout;
+
 interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
@@ -31,8 +31,6 @@ interface BacklogTask {
   AssignedBy: string;
   isCompleted: boolean;
   employeeID: string;
-
-
 }
 
 const Navbar: React.FunctionComponent = () => {
@@ -47,12 +45,10 @@ const Navbar: React.FunctionComponent = () => {
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
-  console.log(myData,"myData");
+  console.log(myData, "myData");
 
-
-
-  console.log(notifications,"notifications");
-  console.log(assignedTaskCount,"assignedTaskCount");
+  console.log(notifications, "notifications");
+  console.log(assignedTaskCount, "assignedTaskCount");
 
   // const initialNotificationCount = Number(
   //   localStorage.getItem("notificationCount") || 0
@@ -61,13 +57,11 @@ const Navbar: React.FunctionComponent = () => {
 
   const navigate = useNavigate();
 
-
   const updateNotificationCount = () => {
     // setNotificationCount(notifications.length);
   };
 
   // Call updateNotificationCount() whenever you update the notifications state
-
 
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
@@ -92,7 +86,7 @@ const Navbar: React.FunctionComponent = () => {
     if (Notification.permission === "granted") {
       const notification = new Notification("Test Title", {
         body: "Test Body",
-        icon: "path/to/your/icon.png",
+        // icon: "path/to/your/icon.png",
       });
 
       console.log("ggggg-----iiiii");
@@ -120,8 +114,6 @@ const Navbar: React.FunctionComponent = () => {
   //      console.log(assigneeEmployeeID,"assigneeEmployeeID");
   //      console.log(notifications);
 
-
-
   //           // Add the new tasks to notifications.
   //           setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
   //         })
@@ -133,18 +125,16 @@ const Navbar: React.FunctionComponent = () => {
   //   [assignedTaskCount, myData]
   // );
 
-
   const handleTaskAssigned = useCallback(
     (assigneeEmployeeID: unknown) => {
       console.log("handleTaskAssigned called");
 
       if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
-          setAssignedTaskCount((prevCount) => prevCount + 1);
+        setAssignedTaskCount((prevCount) => prevCount + 1);
       }
     },
     [assignedTaskCount]
   );
-
 
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
@@ -155,7 +145,7 @@ const Navbar: React.FunctionComponent = () => {
         },
         {
           body: "Click to open the dashboard.",
-          icon: "path/to/your/icon.png",
+          // icon: "path/to/your/icon.png",
         }
       );
       setNewTaskAssignedWhileHidden(false);
@@ -178,12 +168,11 @@ const Navbar: React.FunctionComponent = () => {
     };
   }, [handleTaskAssigned]);
 
-
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
- const markNotificationAsVisited = (notificationId: number) => {
+  const markNotificationAsVisited = (notificationId: number) => {
     const visitedNotificationIds = getVisitedNotificationIds();
     visitedNotificationIds.push(notificationId);
     localStorage.setItem(
@@ -191,19 +180,20 @@ const Navbar: React.FunctionComponent = () => {
       JSON.stringify(visitedNotificationIds)
     );
   };
-useEffect(() => {
+
+  useEffect(() => {
     axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
-
       })
       .then((response) => {
         const visitedNotificationIds = getVisitedNotificationIds();
         const filteredData = response?.data?.filter(
-          (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
-
+          (item) =>
+            !visitedNotificationIds.includes(item.backlogTaskID) &&
+            item.employeeID === myData.EmployeeID
         );
         const sortedData = filteredData.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
@@ -213,14 +203,14 @@ useEffect(() => {
         updateNotificationCount(); // Update the notification count
       })
       .catch((error) => {
-        console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
+        console.log(localStorage.getItem("myToken"), "mmmyyyy tokennnn");
 
         // console.error("Error fetching data:", error);
         // console.log("Error details:", error.response);
       });
   }, []);
 
- const listStyle = {
+  const listStyle = {
     padding: "10px",
     backgroundColor: "#f5f5f5",
     borderRadius: "5px",
@@ -241,10 +231,10 @@ useEffect(() => {
   };
 
   const getShortTaskDescription = (taskName: string) => {
-    const words = taskName.split(' ');
+    const words = taskName.split(" ");
     const maxWords = 5;
     const truncatedWords = words.slice(0, maxWords);
-    return truncatedWords.join(' ');
+    return truncatedWords.join(" ");
   };
 
   const notificationList = (
@@ -259,7 +249,8 @@ useEffect(() => {
             markNotificationAsVisited(item.backlogTaskID);
             setNotifications((prevNotifications) =>
               prevNotifications.filter(
-                (notification) => notification.backlogTaskID !== item.backlogTaskID
+                (notification) =>
+                  notification.backlogTaskID !== item.backlogTaskID
               )
             );
             updateNotificationCount(); // Update the notification count
@@ -278,7 +269,8 @@ useEffect(() => {
               markNotificationAsVisited(item.backlogTaskID);
               setNotifications((prevNotifications) =>
                 prevNotifications.filter(
-                  (notification) => notification.backlogTaskID !== item.backlogTaskID
+                  (notification) =>
+                    notification.backlogTaskID !== item.backlogTaskID
                 )
               );
               updateNotificationCount(); // Update the notification count
@@ -291,82 +283,84 @@ useEffect(() => {
   );
 
   const logout = () => {
-    if (window.confirm('Do you really want to logout?')) {
+    if (window.confirm("Do you really want to logout?")) {
       localStorage.removeItem("myToken");
       navigate("/");
     }
   };
 
-    return (
-      <div>
-        <Header
+  return (
+    <div>
+      <Header
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+        className="navbar"
+      >
+        <div
           style={{
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "white",
+            justifyContent: "space-between",
+            width: "40%",
           }}
-          className="navbar"
+        >
+          <div className="logo">
+            <img src="./b2b.png" alt="Company Logo" />
+          </div>
+
+          <div className="search">
+            <Input
+              placeholder="Search..."
+              // eslint-disable-next-line react/react-in-jsx-scope
+              prefix={<SearchOutlined className="search-icon" />}
+            />
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "60%",
+            float: "right",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+          className="right-menu"
         >
           <div
             style={{
+              width: "25%",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: "40%",
-            }}
-          >
-            <div className="logo">
-              <img src="./b2b.png" alt="Company Logo" />
-            </div>
-
-            <div className="search">
-              <Input
-                placeholder="Search..."
-                // eslint-disable-next-line react/react-in-jsx-scope
-                prefix={<SearchOutlined className="search-icon" />}
-              />
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              width: "60%",
-              float: "right",
               alignItems: "center",
-              justifyContent: "flex-end",
             }}
-            className="right-menu"
           >
-            <div
-              style={{
-                width: "25%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Badge style={{ marginRight: "3%" }} count={notifications.length}>
-                <Popover
-                  style={{ width: "20vw" }}
-                  content={notificationList}
-                  placement="bottomRight"
-                >
-                  <BellOutlined className="notification-icon" />
-                </Popover>
-              </Badge>
+            <Badge style={{ marginRight: "3%" }} count={notifications.length}>
+              <Popover
+                style={{ width: "20vw" }}
+                content={notificationList}
+                placement="bottomRight"
+              >
+                <BellOutlined className="notification-icon" />
+              </Popover>
+            </Badge>
 
-              <Avatar className="avatar" icon={<UserOutlined />} />
-              <span className="username">{myData?.firstName}{myData?.lastName}</span>
-              <button onClick={logout}>logout</button>
-            </div>
+            <Avatar className="avatar" icon={<UserOutlined />} />
+            <span className="username">
+              {myData?.firstName}
+              {myData?.lastName}
+            </span>
+            <button onClick={logout}>logout</button>
           </div>
-        </Header>
-      </div>
-    );
-  };
-
+        </div>
+      </Header>
+    </div>
+  );
+};
 
 export default Navbar;
