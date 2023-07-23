@@ -73,10 +73,6 @@ const Navbar: React.FunctionComponent = () => {
     }
   };
 
-  useEffect(() => {
-    requestNotificationPermission();
-  }, []);
-
   const showDesktopNotification = (
     title: string,
     onClick?: () => void,
@@ -92,6 +88,18 @@ const Navbar: React.FunctionComponent = () => {
       console.log("Notification permission is not granted.");
     }
   };
+
+  useEffect(() => {
+    // Request notification permission when the component mounts
+    requestNotificationPermission();
+
+    // Show a dummy desktop notification when the component mounts
+    showDesktopNotification("Welcome!", () => {
+      // Action to perform when the notification is clicked
+      navigate("/dashboard");
+    });
+  }, []);
+
 
   // const handleTaskAssigned = useCallback(
   //   (assigneeEmployeeID: string) => {
