@@ -95,7 +95,7 @@ const Navbar: React.FunctionComponent = () => {
 
     requestNotificationPermission();
 
-
+alert("notification alert")
 
     // Show the dummy desktop notification when the component mounts
     showDesktopNotification(
