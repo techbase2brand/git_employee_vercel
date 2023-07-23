@@ -126,15 +126,51 @@ const Navbar: React.FunctionComponent = () => {
   // );
 
   const handleTaskAssigned = useCallback(
-    (assigneeEmployeeID: unknown) => {
-      console.log("handleTaskAssigned called");
-
-      if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
+    (assigneeEmployeeID: string) => {
+      if (myData && myData[0] && myData[0].EmpID === assigneeEmployeeID) {
         setAssignedTaskCount((prevCount) => prevCount + 1);
+
+        // Fetch all tasks.
+        axios
+          .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          })
+          .then((response) => {
+            // Filter the tasks assigned to the current user.
+            const newTasks = response.data.filter(
+              (task) => task.assigneeEmployeeID === assigneeEmployeeID
+            );
+
+            // Add the new tasks to notifications.
+            setNotifications((prevNotifications) => [
+              ...prevNotifications,
+              ...newTasks,
+            ]);
+
+            // Show desktop notification for each new task
+            newTasks.forEach((task) => {
+              showDesktopNotification(
+                `New task assigned by ${task.AssignedBy}`,
+                () => {
+                  // Action to perform when the notification is clicked
+                  navigate("/dashboard");
+                },
+                {
+                  body: task.taskName,
+                }
+              );
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching tasks:", error);
+          });
       }
     },
-    [assignedTaskCount]
+    [assignedTaskCount, myData]
   );
+
 
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
