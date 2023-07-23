@@ -90,15 +90,24 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
-    // Request notification permission when the component mounts
+
+    console.log(" compiler has entered");
+
     requestNotificationPermission();
 
-    // Show a dummy desktop notification when the component mounts
-    showDesktopNotification("Welcome!", () => {
-      // Action to perform when the notification is clicked
-      navigate("/dashboard");
-    });
-  }, []);
+
+
+    // Show the dummy desktop notification when the component mounts
+    showDesktopNotification(
+      "Welcome!",
+      () => {
+        navigate("/dashboard");
+      },
+      {
+        body: "This is a dummy notification.",
+      }
+    );
+  }, []); // The empty dependency array ensures this effect runs only once on mount
 
 
   // const handleTaskAssigned = useCallback(
