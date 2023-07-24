@@ -64,7 +64,7 @@ const Navbar: React.FunctionComponent = () => {
     }
   };
 
-  console.log("i have madde changes");
+  console.log("i have made changes");
 
 
 
