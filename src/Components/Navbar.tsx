@@ -90,7 +90,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
-    console.log("Compiler has entered");
+    console.log("Compiler has enteredddddd");
     requestNotificationPermission();
 
     alert("Notification alert");
