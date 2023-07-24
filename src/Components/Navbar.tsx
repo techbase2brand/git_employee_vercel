@@ -25,6 +25,19 @@ interface BacklogTask {
   employeeID: string;
 }
 
+
+
+const showDummyDesktopNotification = (title: string, onClick?: () => void) => {
+  console.log("Showing dummy desktop notification:", title);
+
+  // Perform any other actions needed for a dummy notification
+  // For example, you can show a custom popup or toast message.
+
+  if (onClick) {
+    onClick();
+  }
+};
+
 const Navbar: React.FunctionComponent = () => {
   const [notifications, setNotifications] = useState<BacklogTask[]>([]);
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
@@ -168,20 +181,30 @@ const Navbar: React.FunctionComponent = () => {
     };
   }, [newTaskAssignedWhileHidden]);
 
+  // const showDesktopNotification = (
+  //   title: string,
+  //   onClick?: () => void,
+  //   options?: NotificationOptions // Use the NotificationOptions type
+  // ) => {
+  //   if (Notification.permission === "granted") {
+  //     const notification = new Notification(title, options);
+
+  //     if (onClick) {
+  //       notification.onclick = onClick;
+  //     }
+  //   } else {
+  //     console.log("Notification permission is not granted.");
+  //   }
+  // };
+
+
   const showDesktopNotification = (
     title: string,
     onClick?: () => void,
     options?: NotificationOptions // Use the NotificationOptions type
   ) => {
-    if (Notification.permission === "granted") {
-      const notification = new Notification(title, options);
-
-      if (onClick) {
-        notification.onclick = onClick;
-      }
-    } else {
-      console.log("Notification permission is not granted.");
-    }
+    // Show the dummy desktop notification
+    showDummyDesktopNotification(title, onClick);
   };
 
   const getVisitedNotificationIds = () => {
