@@ -1,21 +1,13 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { useState, useEffect, useContext, useCallback } from "react";
-import {
-  Input,
-  Layout,
-  Avatar,
-  Badge,
-  Popover,
-  List,
-  // notification,
-} from "antd";
+import React, { useState, useEffect, useContext, useCallback } from "react";
+import { Input, Layout, Avatar, Badge, Popover, List } from "antd";
 import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { AssignedTaskCountContext } from "../App";
 import io from "socket.io-client";
-// import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
+import { toast, ToastOptions } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const { Header } = Layout;
 
@@ -34,10 +26,9 @@ interface BacklogTask {
 }
 
 const Navbar: React.FunctionComponent = () => {
+  const [notifications, setNotifications] = useState<BacklogTask[]>([]);
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
     useState(false);
-
-  const [notifications, setNotifications] = useState<BacklogTask[]>([]);
 
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
@@ -45,140 +36,104 @@ const Navbar: React.FunctionComponent = () => {
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
-  console.log(myData, "myData");
-
-  console.log(notifications, "notifications");
-  console.log(assignedTaskCount, "assignedTaskCount");
-
-  // const initialNotificationCount = Number(
-  //   localStorage.getItem("notificationCount") || 0
-  // );
-  // const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
-
-  const updateNotificationCount = () => {
-    // setNotificationCount(notifications.length);
-  };
-
-  // Call updateNotificationCount() whenever you update the notifications state
 
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
       console.log("This browser does not support desktop notifications.");
       return;
     }
+
     if (Notification.permission !== "granted") {
       await Notification.requestPermission();
     }
   };
 
-  const showDesktopNotification = (
-    title: string,
-    onClick?: () => void,
-    options?: NotificationOptions
-  ) => {
-    if (Notification.permission === "granted") {
-      const notification = new Notification(title, options);
-
-      if (onClick) {
-        notification.onclick = onClick;
-      }
-    } else {
-      console.log("Notification permission is not granted.");
-    }
-  };
-
-
-
   useEffect(() => {
-    console.log("Compiler has enteredeeee");
     requestNotificationPermission();
+    const socket = io("https://empbackend.base2brand.com");
 
-    alert("Notification alert");
-    console.log("Alert should have appeared");
+    // Event listener for new task assigned through socket
+    socket.on("taskAssigned", (task: BacklogTask) => {
+      if (myData && myData.EmpID === task.assigneeEmployeeID) {
+        setAssignedTaskCount((prevCount) => prevCount + 1);
+        setNewTaskAssignedWhileHidden(true);
 
-    console.log("Notification permission:", Notification.permission);
+        // Update the notifications state with the new task
+        setNotifications((prevNotifications) => [...prevNotifications, task]);
 
-    // Show the dummy desktop notification when the component mounts
-    setTimeout(() => {
-      showDesktopNotification(
-        "Welcome!",
-        () => {
-          navigate("/dashboard");
-        },
-        {
-          body: "This is a dummy notification.",
-        }
-      );
-    }, 1000); // Delay of 1 second (1000 milliseconds)
-  }, []);
+        // Show desktop notification for the new task using react-toastify
+        toast.success(
+          <div>
+            <div>{`New task assigned by ${task.AssignedBy}`}</div>
+            <div>{task.taskName}</div>
+          </div>,
+          {
+            onClick: () => {
+              navigate("/dashboard");
+            },
+            autoClose: 5000, // Close the notification after 5 seconds
+            position: "top-right", // Notification position
+          }
+        );
 
+        // Call handleTaskAssigned to perform additional actions
+        handleTaskAssigned(task.assigneeEmployeeID);
+      }
+    });
 
-  // const handleTaskAssigned = useCallback(
-  //   (assigneeEmployeeID: string) => {
-  //     if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
-  //       setAssignedTaskCount((prevCount) => prevCount + 1);
-
-  //       // Fetch all tasks.
-  //       axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
-  //         .then(response => {
-  //           // Filter the tasks assigned to the current user.
-  //           const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
-  //      console.log(newTasks,"newTasks ");
-  //      console.log(response.data[0].assigneeEmployeeID,"response.data[0].assigneeEmployeeID");
-  //      console.log(assigneeEmployeeID,"assigneeEmployeeID");
-  //      console.log(notifications);
-
-  //           // Add the new tasks to notifications.
-  //           setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
-  //         })
-  //         .catch(error => {
-  //           console.error('Error fetching tasks:', error);
-  //         });
-  //     }
-  //   },
-  //   [assignedTaskCount, myData]
-  // );
+    return () => {
+      socket.disconnect();
+    };
+  }, [myData, setAssignedTaskCount, navigate]);
 
   const handleTaskAssigned = useCallback(
     (assigneeEmployeeID: string) => {
       if (myData && myData[0] && myData[0].EmpID === assigneeEmployeeID) {
+        // Increment the assigned task count
         setAssignedTaskCount((prevCount) => prevCount + 1);
 
-        console.log("added handle task from chatGPT");
-
-
-        // Fetch all tasks.
+        // Fetch all tasks from the server
         axios
-          .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-            },
-          })
+          .get<BacklogTask[]>(
+            "https://empbackend.base2brand.com/get/BacklogTasks",
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+              },
+            }
+          )
           .then((response) => {
-            // Filter the tasks assigned to the current user.
+            // Filter the tasks assigned to the current user
             const newTasks = response.data.filter(
               (task) => task.assigneeEmployeeID === assigneeEmployeeID
             );
 
-            // Add the new tasks to notifications.
+            // Add the new tasks to the notifications state
             setNotifications((prevNotifications) => [
               ...prevNotifications,
               ...newTasks,
             ]);
 
-            // Show desktop notification for each new task
+            // Show a desktop notification for each new task using react-toastify
             newTasks.forEach((task) => {
-              showDesktopNotification(
-                `New task assigned by ${task.AssignedBy}`,
-                () => {
-                  // Action to perform when the notification is clicked
+              const notificationOptions: ToastOptions = {
+                // Customize the options as needed
+                onClick: () => {
                   navigate("/dashboard");
                 },
-                {
-                  body: task.taskName,
-                }
+                autoClose: 5000,
+                position: "top-right",
+                // Other options if required
+              };
+
+              toast.success(
+                <div>
+                  <div>{`New task assigned by ${task.AssignedBy}`}</div>
+                  <div>{task.taskName}</div>
+                </div>,
+                notificationOptions
               );
             });
           })
@@ -187,9 +142,8 @@ const Navbar: React.FunctionComponent = () => {
           });
       }
     },
-    [assignedTaskCount, myData]
+    [assignedTaskCount, myData, setAssignedTaskCount, navigate]
   );
-
 
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
@@ -214,42 +168,27 @@ const Navbar: React.FunctionComponent = () => {
     };
   }, [newTaskAssignedWhileHidden]);
 
-  useEffect(() => {
-    const socket = io("https://empbackend.base2brand.com");
+  const showDesktopNotification = (
+    title: string,
+    onClick?: () => void,
+    options?: NotificationOptions // Use the NotificationOptions type
+  ) => {
+    if (Notification.permission === "granted") {
+      const notification = new Notification(title, options);
 
-    socket.on("taskAssigned", (task: BacklogTask) => {
-      console.log("New task assigned:", task);
-
-      if (myData && myData[0] && myData[0].EmpID === task.assigneeEmployeeID) {
-        setAssignedTaskCount((prevCount) => prevCount + 1);
-
-        // Update the notifications state with the new task
-        setNotifications((prevNotifications) => [...prevNotifications, task]);
-
-        // Show desktop notification for the new task
-        showDesktopNotification(
-          `New task assigned by ${task.AssignedBy}`,
-          () => {
-            navigate("/dashboard");
-          },
-          {
-            body: task.taskName,
-          }
-        );
+      if (onClick) {
+        notification.onclick = onClick;
       }
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [myData]);
-
-
+    } else {
+      console.log("Notification permission is not granted.");
+    }
+  };
 
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
+
   const markNotificationAsVisited = (notificationId: number) => {
     const visitedNotificationIds = getVisitedNotificationIds();
     visitedNotificationIds.push(notificationId);
@@ -257,59 +196,6 @@ const Navbar: React.FunctionComponent = () => {
       "visitedNotificationIds",
       JSON.stringify(visitedNotificationIds)
     );
-  };
-
-  useEffect(() => {
-    axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      })
-      .then((response) => {
-        const visitedNotificationIds = getVisitedNotificationIds();
-        const filteredData = response?.data?.filter(
-          (item) =>
-            !visitedNotificationIds.includes(item.backlogTaskID) &&
-            item.employeeID === myData.EmployeeID
-        );
-        const sortedData = filteredData.sort(
-          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
-
-        setNotifications(sortedData);
-        updateNotificationCount(); // Update the notification count
-      })
-      .catch((error) => {
-        console.log(localStorage.getItem("myToken"), "mmmyyyy tokennnn");
-      });
-  }, []);
-
-  const listStyle = {
-    padding: "10px",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "5px",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-    width: "20vw",
-    maxHeight: "36em",
-    overflow: "auto",
-  };
-
-  const listItemStyle = {
-    padding: "10px",
-    backgroundColor: "#ffffff",
-    borderRadius: "5px",
-    marginBottom: "10px",
-    cursor: "pointer",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-    width: "18vw",
-  };
-
-  const getShortTaskDescription = (taskName: string) => {
-    const words = taskName.split(" ");
-    const maxWords = 5;
-    const truncatedWords = words.slice(0, maxWords);
-    return truncatedWords.join(" ");
   };
 
   const notificationList = (
@@ -328,10 +214,7 @@ const Navbar: React.FunctionComponent = () => {
                   notification.backlogTaskID !== item.backlogTaskID
               )
             );
-            updateNotificationCount(); // Update the notification count
-            console.log(item, "ffggg-------");
           }}
-          style={listItemStyle}
         >
           <List.Item.Meta
             title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(
@@ -340,7 +223,7 @@ const Navbar: React.FunctionComponent = () => {
           />
           <CloseOutlined
             onClick={(e) => {
-              e.stopPropagation(); // Prevents the parent click event from triggering
+              e.stopPropagation();
               markNotificationAsVisited(item.backlogTaskID);
               setNotifications((prevNotifications) =>
                 prevNotifications.filter(
@@ -348,14 +231,19 @@ const Navbar: React.FunctionComponent = () => {
                     notification.backlogTaskID !== item.backlogTaskID
                 )
               );
-              updateNotificationCount(); // Update the notification count
             }}
           />
         </List.Item>
       )}
-      style={listStyle}
     />
   );
+
+  const getShortTaskDescription = (taskName: string) => {
+    const words = taskName.split(" ");
+    const maxWords = 5;
+    const truncatedWords = words.slice(0, maxWords);
+    return truncatedWords.join(" ");
+  };
 
   const logout = () => {
     if (window.confirm("Do you really want to logout?")) {
@@ -375,6 +263,7 @@ const Navbar: React.FunctionComponent = () => {
         }}
         className="navbar"
       >
+        {/* Left section */}
         <div
           style={{
             display: "flex",
@@ -386,15 +275,15 @@ const Navbar: React.FunctionComponent = () => {
           <div className="logo">
             <img src="./b2b.png" alt="Company Logo" />
           </div>
-
           <div className="search">
             <Input
               placeholder="Search..."
-              // eslint-disable-next-line react/react-in-jsx-scope
               prefix={<SearchOutlined className="search-icon" />}
             />
           </div>
         </div>
+
+        {/* Right section */}
         <div
           style={{
             display: "flex",
@@ -420,6 +309,7 @@ const Navbar: React.FunctionComponent = () => {
                 style={{ width: "20vw" }}
                 content={notificationList}
                 placement="bottomRight"
+                trigger="click" // Show popover on click instead of hover
               >
                 <BellOutlined className="notification-icon" />
               </Popover>
@@ -427,10 +317,9 @@ const Navbar: React.FunctionComponent = () => {
 
             <Avatar className="avatar" icon={<UserOutlined />} />
             <span className="username">
-              {myData?.firstName}
-              {myData?.lastName}
+              {myData?.firstName} {myData?.lastName}
             </span>
-            <button onClick={logout}>logout</button>
+            <button onClick={logout}>Logout</button>
           </div>
         </div>
       </Header>
