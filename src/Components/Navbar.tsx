@@ -64,6 +64,12 @@ const Navbar: React.FunctionComponent = () => {
     }
   };
 
+  console.log("i have madde changes");
+
+
+
+
+
   useEffect(() => {
     requestNotificationPermission();
     const socket = io("https://empbackend.base2brand.com");
