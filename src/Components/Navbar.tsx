@@ -90,26 +90,25 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
-
-    console.log(" compiler has entered");
-
+    console.log("Compiler has entered");
     requestNotificationPermission();
 
-alert("notification alert")
-console.log("alet to aana chahiye");
-
+    alert("Notification alert");
+    console.log("Alert should have appeared");
 
     // Show the dummy desktop notification when the component mounts
-    showDesktopNotification(
-      "Welcome!",
-      () => {
-        navigate("/dashboard");
-      },
-      {
-        body: "This is a dummy notification.",
-      }
-    );
-  }, []); // The empty dependency array ensures this effect runs only once on mount
+    setTimeout(() => {
+      showDesktopNotification(
+        "Welcome!",
+        () => {
+          navigate("/dashboard");
+        },
+        {
+          body: "This is a dummy notification.",
+        }
+      );
+    }, 2000); // Delay of 1 second (1000 milliseconds)
+  }, []);
 
 
   // const handleTaskAssigned = useCallback(
