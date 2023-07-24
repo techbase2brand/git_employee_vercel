@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
 import { toast, ToastOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { log } from "console";
 
 const { Header } = Layout;
 
@@ -204,7 +205,10 @@ const Navbar: React.FunctionComponent = () => {
     options?: NotificationOptions // Use the NotificationOptions type
   ) => {
     // Show the dummy desktop notification
+    console.log("how the dummy desktop notification console");
+
     showDummyDesktopNotification(title, onClick);
+
   };
 
   const getVisitedNotificationIds = () => {
