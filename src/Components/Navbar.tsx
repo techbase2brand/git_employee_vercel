@@ -76,7 +76,7 @@ const Navbar: React.FunctionComponent = () => {
   const showDesktopNotification = (
     title: string,
     onClick?: () => void,
-    options?: Omit<NotificationOptions, "onclick">
+    options?: NotificationOptions
   ) => {
     if (Notification.permission === "granted") {
       const notification = new Notification(title, options);
@@ -89,12 +89,16 @@ const Navbar: React.FunctionComponent = () => {
     }
   };
 
+
+
   useEffect(() => {
-    console.log("Compiler has enteredddddd");
+    console.log("Compiler has enteredeeee");
     requestNotificationPermission();
 
     alert("Notification alert");
     console.log("Alert should have appeared");
+
+    console.log("Notification permission:", Notification.permission);
 
     // Show the dummy desktop notification when the component mounts
     setTimeout(() => {
@@ -107,7 +111,7 @@ const Navbar: React.FunctionComponent = () => {
           body: "This is a dummy notification.",
         }
       );
-    }, 2000); // Delay of 1 second (1000 milliseconds)
+    }, 1000); // Delay of 1 second (1000 milliseconds)
   }, []);
 
 
