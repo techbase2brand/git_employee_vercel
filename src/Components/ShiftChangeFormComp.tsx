@@ -132,6 +132,7 @@ const ShiftChangeFormComp: React.FC<any> = () => {
   }, [employeeID]);
 
   return (
+    <>
     <div
       style={{
         display: "flex",
@@ -253,6 +254,7 @@ const ShiftChangeFormComp: React.FC<any> = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 
