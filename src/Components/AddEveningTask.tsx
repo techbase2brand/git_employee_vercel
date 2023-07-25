@@ -108,6 +108,7 @@ const AddModule: React.FC<any> = () => {
         setSelectedProject(res[0]?.projectName);
         setSelectedPhase(res[0]?.phaseName);
         setSelectedModule(res[0]?.module); // Add this line to set the module
+        handleEstTimeChange(res[0]?.estTime || "");
 
         setEveningTask((prevEveningTask) => ({
           ...prevEveningTask,
@@ -127,7 +128,7 @@ const AddModule: React.FC<any> = () => {
         console.error("Error fetching data:", error);
       });
     }
-  }, [evngEditID, setEveningTask]);
+  }, [evngEditID]); // Remove handleEstTimeChange from here
 
 
 
@@ -294,12 +295,24 @@ const AddModule: React.FC<any> = () => {
       task: value,
     }));
   };
+  // const handleEstTimeChange = (value: string) => {
+  //   setEveningTask((prevEveningTask) => ({
+  //     ...prevEveningTask,
+  //     estTime: value,
+  //   }));
+  // };
+
+
   const handleEstTimeChange = (value: string) => {
+    const [hours, mins] = value.split(":");
+    const formattedTime = `${parseInt(hours)} hours ${parseInt(mins)} mins`;
+
     setEveningTask((prevEveningTask) => ({
-      ...prevEveningTask,
-      estTime: value,
+        ...prevEveningTask,
+        estTime: formattedTime,
     }));
-  };
+};
+
   const handleActTimeChange = (value: string) => {
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
@@ -403,7 +416,7 @@ const AddModule: React.FC<any> = () => {
           >
             <div className="add-div">
               <p className="add-heading">
-              {location?.state?.MrngTaskID ? "Update Evening Task" : "Add Evening Task"}
+              {location?.state?.EvngTaskID ? "Update Evening Task" : "Add Evening Task"}
               </p>
               <label className="add-label">
                 Project Name<span style={{ color: "red" }}>*</span>
@@ -496,13 +509,15 @@ const AddModule: React.FC<any> = () => {
 
                 <div style={{ width: "89%" }} className="form-control">
   <textarea
-    style={{
+     style={{
       outline: "none",
       border: "none",
-      width: "100%",
-      resize: "none",
+      // maxWidth: "100%",
+      width:"100%",
+      height:"10vh",
+      resize: "none",  // Add this line
       boxSizing: "content-box", // set boxSizing to content-box
-    }}
+  }}
     name="task"
     className="textarea-control" // use the new class
     value={eveningTask.task}
@@ -529,7 +544,7 @@ const AddModule: React.FC<any> = () => {
                     style={{ width: "16.8vw" }}
                     name="estTime"
                     className="form-control"
-                    value={eveningTask.estTime}
+                    value={eveningTask?.estTime}
                     onChange={(e) => handleEstTimeChange(e.target.value)}
                     required
                   >

@@ -485,12 +485,15 @@ const AddModule: React.FC<unknown> = () => {
                   task:<span style={{ color: "red" }}>*</span>
                 </label>
 
+                {/* <div style={{ width: "89%" }} className="form-control"> */}
                 <div style={{ width: "89%" }} className="form-control">
     <textarea
         style={{
             outline: "none",
             border: "none",
-            maxWidth: "100%",
+            // maxWidth: "100%",
+            width:"100%",
+            height:"10vh",
             resize: "none",  // Add this line
             boxSizing: "content-box", // set boxSizing to content-box
         }}
