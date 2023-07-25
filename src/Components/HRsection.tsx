@@ -13,6 +13,9 @@ const HRsection: React.FC = () => {
   //   console.log(`selected ${value}`);
   // };
 
+  console.log("gggggggggg----");
+
+
   return (
     <div className="emp-main-div">
       <div

@@ -23,6 +23,11 @@ interface LeaveData {
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
 
+
+  const dataString = localStorage.getItem("myData");
+  const employeeInfo = dataString ? JSON.parse(dataString) : [];
+  console.log(employeeInfo,"employeeInfoemployeeInfo");
+
 useEffect(() => {
   const token = localStorage.getItem("myToken");
 
@@ -36,9 +41,15 @@ useEffect(() => {
       const sortedData = response.data.sort(
         (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
       );
-      setData(sortedData);
+
+      const filteredData = sortedData.filter((item)=> item?.employeeID === employeeInfo?.EmployeeID)
+      console.log(sortedData,"sortedDatasortedData");
+
+      setData(filteredData);
     });
 }, []);
+
+
 
 
 

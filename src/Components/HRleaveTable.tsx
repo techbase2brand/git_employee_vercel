@@ -25,22 +25,22 @@ const HRleaveTable : React.FC = () => {
 
 //   console.log(data, "-------");
 
-useEffect(() => {
-  const token = localStorage.getItem("myToken");
+// useEffect(() => {
+//   const token = localStorage.getItem("myToken");
 
-  axios
-    .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      const sortedData = response.data.sort(
-        (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-      );
-      setData(sortedData);
-    });
-}, []);
+//   axios
+//     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     })
+//     .then((response) => {
+//       const sortedData = response.data.sort(
+//         (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+//       );
+//       setData(sortedData);
+//     });
+// }, []);
 
 
 // ...
@@ -90,6 +90,8 @@ const handleApprove = (LeaveInfoID: number) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
         );
+        console.log(sortedData,"sortedDatasortedDatasortedDatasortedData");
+
         setData(sortedData);
       });
   };

@@ -138,7 +138,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          {info.jobPosition === 'HR' &&
+          {info?.role === 'HR' &&
             <>
               <Route
                 path="/HRsection"
