@@ -4,6 +4,10 @@
   max-height: 100%;
 }
 
+.approved-row {
+  background-color: rgb(172, 237, 172) !important;
+}
+
 .outer-container {
   display: flex;
   flex-direction: row;

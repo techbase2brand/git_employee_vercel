@@ -49,11 +49,6 @@ useEffect(() => {
     });
 }, []);
 
-
-
-
-
-
   const fetchData = () => {
     const token = localStorage.getItem("myToken");
 

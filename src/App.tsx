@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { ReactNode, createContext, useState } from "react";
+import React, { ReactNode, createContext, useState , useEffect} from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,6 +22,7 @@ import LeaveReports from "./Components/LeaveReports";
 import ShiftChangeForm from "./Components/ShiftChangeForm";
 import ViewShiftChange from "./Components/ViewShiftChange";
 import HRshiftChangeSection from "./Components/HRshiftChangeSection";
+import HrLeaveAutoFill from "./Components/HrLeaveAutoFill"
 
 export const GlobalInfo = createContext<any>({});
 
@@ -57,6 +58,16 @@ const App: React.FC = () => {
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
 
   const info  = JSON.parse(localStorage.getItem("myData") || '{}');
+
+  useEffect(() => {
+    if ('Notification' in window) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          console.log('Notification permission granted.');
+        }
+      });
+    }
+  }, []);
 
   return (
     <Router>
@@ -153,6 +164,14 @@ const App: React.FC = () => {
                 element={
                   <ProtectedRoute>
                     <HRshiftChangeSection />
+                  </ProtectedRoute>
+                }
+              />
+               <Route
+                path="/HrLeaveAutoFill"
+                element={
+                  <ProtectedRoute>
+                    <HrLeaveAutoFill />
                   </ProtectedRoute>
                 }
               />

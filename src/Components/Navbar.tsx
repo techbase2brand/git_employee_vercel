@@ -64,53 +64,50 @@ const Navbar: React.FunctionComponent = () => {
     }
   };
 
-  console.log("i have made changes");
-  console.log("console again");
-  console.log("console again");
-  console.log("console again");
-  console.log("console again");
 
-
-
-
-
-  useEffect(() => {
+ useEffect(() => {
     requestNotificationPermission();
     const socket = io("https://empbackend.base2brand.com");
 
-    // Event listener for new task assigned through socket
+    socket.on('connect', () => {
+        console.log('Successfully connected to socket server');
+    });
+
     socket.on("taskAssigned", (task: BacklogTask) => {
-      if (myData && myData.EmpID === task.assigneeEmployeeID) {
-        setAssignedTaskCount((prevCount) => prevCount + 1);
-        setNewTaskAssignedWhileHidden(true);
+        console.log("Received taskAssigned event", task);
 
-        // Update the notifications state with the new task
-        setNotifications((prevNotifications) => [...prevNotifications, task]);
+        if (myData && myData.EmpID === task.assigneeEmployeeID) {
+            setAssignedTaskCount((prevCount) => prevCount + 1);
+            setNewTaskAssignedWhileHidden(true);
 
-        // Show desktop notification for the new task using react-toastify
-        toast.success(
-          <div>
-            <div>{`New task assigned by ${task.AssignedBy}`}</div>
-            <div>{task.taskName}</div>
-          </div>,
-          {
-            onClick: () => {
-              navigate("/dashboard");
-            },
-            autoClose: 5000, // Close the notification after 5 seconds
-            position: "top-right", // Notification position
-          }
-        );
+            setNotifications((prevNotifications) => [...prevNotifications, task]);
 
-        // Call handleTaskAssigned to perform additional actions
-        handleTaskAssigned(task.assigneeEmployeeID);
-      }
+            toast.success(
+                <div>
+                    <div>{`New task assigned by ${task.AssignedBy}`}</div>
+                    <div>{task.taskName}</div>
+                </div>,
+                {
+                    onClick: () => {
+                        navigate("/dashboard");
+                    },
+                    autoClose: 5000,
+                    position: "top-right",
+                }
+            );
+
+            handleTaskAssigned(task.assigneeEmployeeID);
+        }
     });
 
     return () => {
-      socket.disconnect();
+        socket.disconnect();
     };
-  }, [myData, setAssignedTaskCount, navigate]);
+}, [myData, setAssignedTaskCount, navigate]);
+
+
+
+console.log(notifications);
 
   const handleTaskAssigned = useCallback(
     (assigneeEmployeeID: string) => {

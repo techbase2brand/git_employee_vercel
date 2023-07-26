@@ -59,6 +59,9 @@ const AppMenu = () => {
           <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
             <Link to="/HRshiftChangeSection">HRshiftChangeSection </Link>
           </Menu.Item>
+          <Menu.Item key="HrLeaveAutoFill" icon={<TableOutlined />}>
+            <Link to="/HrLeaveAutoFill">HrLeaveAutoFill </Link>
+          </Menu.Item>
         </>
       )}
 

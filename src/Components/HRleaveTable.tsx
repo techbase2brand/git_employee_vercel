@@ -181,10 +181,15 @@ const handleApprove = (LeaveInfoID: number) => {
         style={{ width: "80vw" }}
         dataSource={data}
         columns={columns}
-        rowClassName={() => "header-row"}
+        rowClassName={(record) =>
+          record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved"
+            ? "approved-row"
+            : ""
+        }
       />
     </>
   );
+
 };
 
 export default HRleaveTable;
