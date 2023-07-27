@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { ReactNode, createContext, useState , useEffect} from "react";
+import React, { ReactNode, createContext, useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,7 +22,8 @@ import LeaveReports from "./Components/LeaveReports";
 import ShiftChangeForm from "./Components/ShiftChangeForm";
 import ViewShiftChange from "./Components/ViewShiftChange";
 import HRshiftChangeSection from "./Components/HRshiftChangeSection";
-import HrLeaveAutoFill from "./Components/HrLeaveAutoFill"
+import HrLeaveAutoFill from "./Components/HrLeaveAutoFill";
+import HrLeaveReport from "./Components/HrLeaveReport"
 
 export const GlobalInfo = createContext<any>({});
 
@@ -57,13 +58,13 @@ const App: React.FC = () => {
   const [evngEditID, setEvngEditID] = useState();
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
 
-  const info  = JSON.parse(localStorage.getItem("myData") || '{}');
+  const info = JSON.parse(localStorage.getItem("myData") || "{}");
 
   useEffect(() => {
-    if ('Notification' in window) {
+    if ("Notification" in window) {
       Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          console.log('Notification permission granted.');
+        if (permission === "granted") {
+          console.log("Notification permission granted.");
         }
       });
     }
@@ -149,7 +150,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          {info?.role === 'HR' &&
+          {info?.role === "HR" && (
             <>
               <Route
                 path="/HRsection"
@@ -167,7 +168,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-               <Route
+              <Route
                 path="/HrLeaveAutoFill"
                 element={
                   <ProtectedRoute>
@@ -175,8 +176,17 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
+
+              <Route
+                path="/HrLeaveReport"
+                element={
+                  <ProtectedRoute>
+                    <HrLeaveReport />
+                  </ProtectedRoute>
+                }
+              />
             </>
-          }
+          )}
           <Route
             path="/LeaveReports"
             element={
