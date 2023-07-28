@@ -256,27 +256,31 @@ const HrLeaveAutoFillComp: React.FC = () => {
           <div style={{ display: "flex", flexDirection: "row" }}>
             <label className="add-label"></label>
             <select
-              style={{
-                width: "100%",
-                display: "block",
-              }}
-              name="estTime"
-              className="form-control"
-              value={estTime}
-              onClick={handleDropdownClick}
-              onChange={handleDropdownChange}
-              disabled={leaveType === "full day"}
-              required
-            >
-              <option value="">Hourly basis</option>
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                [15, 30, 45].map((minute) => (
-                  <option key={`${hour}:${minute}`} value={`${hour}:${minute}`}>
-                    {`${hour} hours ${minute} mins`}
-                  </option>
-                ))
-              )}
-            </select>
+  style={{
+    width: "100%",
+    display: "block",
+  }}
+  name="estTime"
+  className="form-control"
+  value={estTime}
+  onClick={handleDropdownClick}
+  onChange={handleDropdownChange}
+  disabled={leaveType === "full day"}
+  required
+>
+  <option value="">Hourly basis</option>
+  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) => [
+    <option key={`${hour}:00`} value={`${hour}:00`}>
+      {`${hour} hours`}
+    </option>,
+    ...[15, 30, 45].map((minute) => (
+      <option key={`${hour}:${minute}`} value={`${hour}:${minute}`}>
+        {`${hour} hours ${minute} mins`}
+      </option>
+    ))
+  ])}
+</select>
+
 
             <p
               style={{

@@ -53,6 +53,13 @@ const AppMenu = () => {
         <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
         <Link to="/dashboard">Dashboard</Link>
       </Menu.Item>
+      <Menu.Item key="employee-form" icon={<DashboardOutlined />}>
+        <Link to="/employee-form">Add Employee</Link>
+      </Menu.Item>
+      <Menu.Item key="employee-list" icon={<DashboardOutlined />}>
+        <Link to="/employee-list">Employees List</Link>
+      </Menu.Item>
+
           <Menu.Item key="HRsection" icon={<TableOutlined />}>
             <Link to="/HRsection">HR leave section</Link>
           </Menu.Item>

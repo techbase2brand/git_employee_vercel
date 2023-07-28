@@ -24,6 +24,8 @@ import ViewShiftChange from "./Components/ViewShiftChange";
 import HRshiftChangeSection from "./Components/HRshiftChangeSection";
 import HrLeaveAutoFill from "./Components/HrLeaveAutoFill";
 import HrLeaveReport from "./Components/HrLeaveReport"
+import EmployeeForm from "./Components/EmployeeForm"
+import EmployeeList from "./Components/EmployeeList"
 
 export const GlobalInfo = createContext<any>({});
 
@@ -53,6 +55,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 };
 
 const App: React.FC = () => {
+  const [empObj, setEmpObj] = useState<any>();
+
   const [empInfo, setEmpInfo] = useState();
   const [mrngEditID, setMrngEditID] = useState();
   const [evngEditID, setEvngEditID] = useState();
@@ -74,6 +78,8 @@ const App: React.FC = () => {
     <Router>
       <GlobalInfo.Provider
         value={{
+          empObj:empObj,
+          setEmpObj:setEmpObj,
           empInfo: empInfo,
           setEmpInfo: setEmpInfo,
           mrngEditID: mrngEditID,
@@ -208,6 +214,22 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ViewShiftChange />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/employee-form"
+            element={
+              <ProtectedRoute>
+                <EmployeeForm />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/employee-list"
+            element={
+              <ProtectedRoute>
+                <EmployeeList />
               </ProtectedRoute>
             }
           />
