@@ -237,6 +237,7 @@ const HrLeaveReportTable: React.FC = () => {
             const selectedId = e.target.value;
             if (selectedId === 'all') {
               setSelectedEmployee('all');
+              setCurrentPage(0); // Reset the current page whenever the selected employee changes
             } else {
               const selectedEmp = allEmployees.find(emp => emp.EmpID.toString() === selectedId);
               if (selectedEmp) setSelectedEmployee(selectedEmp);
@@ -257,24 +258,33 @@ const HrLeaveReportTable: React.FC = () => {
         : calculateTotalLeaveForEmployee(selectedEmployee)
       }
       {selectedEmployee === 'all' &&
-        <div className="pagination" style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
-          {[...Array(Math.ceil(allEmployees.length / employeesPerPage))].map((_, idx) => (
-            <button
-              className="paginationButton"
-              style={{
-                margin: "5px",
-                padding: "10px",
-                backgroundColor: idx === currentPage ? "#00a2ed" : "#fff",
-                color: idx === currentPage ? "#fff" : "#000",
-                border: "2px solid #00a2ed",
-                borderRadius: "5px"
-              }}
-              onClick={() => setCurrentPage(idx)}
-              key={idx}
-            >
-              {idx + 1}
-            </button>
-          ))}
+        <div className="pagination" style={{ display: "flex", justifyContent: "space-between", margin: "10px 0" }}>
+          <button
+            disabled={currentPage === 0}
+            onClick={() => setCurrentPage(prevPage => prevPage - 1)}
+            style={{
+              padding: "10px",
+              border: "2px solid #00a2ed",
+              borderRadius: "5px",
+              backgroundColor: currentPage === 0 ? "#ccc" : "#00a2ed",
+              color: currentPage === 0 ? "#000" : "#fff"
+            }}
+          >
+            Previous
+          </button>
+          <button
+            disabled={currentPage === Math.ceil(allEmployees.length / employeesPerPage) - 1}
+            onClick={() => setCurrentPage(prevPage => prevPage + 1)}
+            style={{
+              padding: "10px",
+              border: "2px solid #00a2ed",
+              borderRadius: "5px",
+              backgroundColor: currentPage === Math.ceil(allEmployees.length / employeesPerPage) - 1 ? "#ccc" : "#00a2ed",
+              color: currentPage === Math.ceil(allEmployees.length / employeesPerPage) - 1 ? "#000" : "#fff"
+            }}
+          >
+            Next
+          </button>
         </div>
       }
     </div>
