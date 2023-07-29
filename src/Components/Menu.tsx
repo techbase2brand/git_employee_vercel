@@ -39,6 +39,10 @@ const AppMenu = () => {
        <Menu.Item key="LeaveReports" icon={<TableOutlined />}>
          <Link to="/LeaveReports">Leave Report</Link>
        </Menu.Item>
+       <Menu.Item key="ShiftChangeReport" icon={<TableOutlined />}>
+         <Link to="/ShiftChangeReport">Shift Change Report</Link>
+       </Menu.Item>
+
        <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
          <Link to="/ShiftChangeForm">Shift change form</Link>
        </Menu.Item>

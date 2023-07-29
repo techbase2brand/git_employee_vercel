@@ -26,6 +26,7 @@ import HrLeaveAutoFill from "./Components/HrLeaveAutoFill";
 import HrLeaveReport from "./Components/HrLeaveReport"
 import EmployeeForm from "./Components/EmployeeForm"
 import EmployeeList from "./Components/EmployeeList"
+import ShiftChangeReport from "./Components/ShiftChangeReport"
 
 export const GlobalInfo = createContext<any>({});
 
@@ -36,6 +37,7 @@ export const AssignedTaskCountContext = createContext<{
   assignedTaskCount: 0,
   setAssignedTaskCount: () => {},
 });
+
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -214,6 +216,15 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ViewShiftChange />
+              </ProtectedRoute>
+            }
+          />
+
+<Route
+            path="/ShiftChangeReport"
+            element={
+              <ProtectedRoute>
+                <ShiftChangeReport />
               </ProtectedRoute>
             }
           />
