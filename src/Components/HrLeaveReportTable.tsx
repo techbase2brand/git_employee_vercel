@@ -178,6 +178,56 @@ const HrLeaveReportTable: React.FC = () => {
     );
   };
 
+  // return (
+  //   <div className="allEmployeesLeaveData">
+  //     <div style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
+  //       <select
+  //         value={selectedEmployee === 'all' ? 'all' : selectedEmployee.EmpID}
+  //         onChange={(e) => {
+  //           const selectedId = e.target.value;
+  //           if (selectedId === 'all') {
+  //             setSelectedEmployee('all');
+  //           } else {
+  //             const selectedEmp = allEmployees.find(emp => emp.EmpID.toString() === selectedId);
+  //             if (selectedEmp) setSelectedEmployee(selectedEmp);
+  //           }
+  //         }}
+  //         style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", outline: "none" }}
+  //       >
+  //         <option value='all'>All Employees</option>
+  //         {allEmployees.map(emp => (
+  //           <option key={emp.EmpID} value={emp.EmpID}>{emp.firstName}</option>
+  //         ))}
+  //       </select>
+  //     </div>
+  //     {(selectedEmployee === 'all' ? allEmployees : [selectedEmployee])
+  //       .slice(currentPage * employeesPerPage, (currentPage + 1) * employeesPerPage)
+  //       .map((employee) => calculateTotalLeaveForEmployee(employee))}
+  //     {selectedEmployee === 'all' &&
+  //       <div className="pagination" style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
+  //         {[...Array(Math.ceil(((selectedEmployee === 'all' ? allEmployees : [selectedEmployee]).length) / employeesPerPage))].map((_, idx) => (
+  //           <button
+  //             className="paginationButton"
+  //             style={{
+  //               margin: "5px",
+  //               padding: "10px",
+  //               backgroundColor: idx === currentPage ? "#00a2ed" : "#fff",
+  //               color: idx === currentPage ? "#fff" : "#000",
+  //               border: "2px solid #00a2ed",
+  //               borderRadius: "5px"
+  //             }}
+  //             onClick={() => setCurrentPage(idx)}
+  //             key={idx}
+  //           >
+  //             {idx + 1}
+  //           </button>
+  //         ))}
+  //       </div>
+  //     }
+  //   </div>
+  // );
+
+
   return (
     <div className="allEmployeesLeaveData">
       <div style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
@@ -200,12 +250,15 @@ const HrLeaveReportTable: React.FC = () => {
           ))}
         </select>
       </div>
-      {(selectedEmployee === 'all' ? allEmployees : [selectedEmployee])
-        .slice(currentPage * employeesPerPage, (currentPage + 1) * employeesPerPage)
-        .map((employee) => calculateTotalLeaveForEmployee(employee))}
+      {selectedEmployee === 'all'
+        ? allEmployees
+            .slice(currentPage * employeesPerPage, (currentPage + 1) * employeesPerPage)
+            .map((employee) => calculateTotalLeaveForEmployee(employee))
+        : calculateTotalLeaveForEmployee(selectedEmployee)
+      }
       {selectedEmployee === 'all' &&
         <div className="pagination" style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
-          {[...Array(Math.ceil(((selectedEmployee === 'all' ? allEmployees : [selectedEmployee]).length) / employeesPerPage))].map((_, idx) => (
+          {[...Array(Math.ceil(allEmployees.length / employeesPerPage))].map((_, idx) => (
             <button
               className="paginationButton"
               style={{
