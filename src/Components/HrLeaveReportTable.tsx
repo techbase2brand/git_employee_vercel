@@ -227,6 +227,7 @@ const HrLeaveReportTable: React.FC = () => {
   //   </div>
   // );
 
+console.log("recent--");
 
   return (
     <div className="allEmployeesLeaveData">
@@ -253,6 +254,7 @@ const HrLeaveReportTable: React.FC = () => {
       </div>
       {selectedEmployee === 'all'
         ? allEmployees
+            .filter(emp => allLeave.some(leave => leave.employeeID === emp.EmployeeID)) // Filter out employees with no leave
             .slice(currentPage * employeesPerPage, (currentPage + 1) * employeesPerPage)
             .map((employee) => calculateTotalLeaveForEmployee(employee))
         : calculateTotalLeaveForEmployee(selectedEmployee)
@@ -273,14 +275,14 @@ const HrLeaveReportTable: React.FC = () => {
             Previous
           </button>
           <button
-            disabled={currentPage === Math.ceil(allEmployees.length / employeesPerPage) - 1}
+            disabled={currentPage === Math.ceil(allEmployees.filter(emp => allLeave.some(leave => leave.employeeID === emp.EmployeeID)).length / employeesPerPage) - 1} // Calculate total pages based on filtered employees
             onClick={() => setCurrentPage(prevPage => prevPage + 1)}
             style={{
               padding: "10px",
               border: "2px solid #00a2ed",
               borderRadius: "5px",
-              backgroundColor: currentPage === Math.ceil(allEmployees.length / employeesPerPage) - 1 ? "#ccc" : "#00a2ed",
-              color: currentPage === Math.ceil(allEmployees.length / employeesPerPage) - 1 ? "#000" : "#fff"
+              backgroundColor: currentPage === Math.ceil(allEmployees.filter(emp => allLeave.some(leave => leave.employeeID === emp.EmployeeID)).length / employeesPerPage) - 1 ? "#ccc" : "#00a2ed",
+              color: currentPage === Math.ceil(allEmployees.filter(emp => allLeave.some(leave => leave.employeeID === emp.EmployeeID)).length / employeesPerPage) - 1 ? "#000" : "#fff"
             }}
           >
             Next
