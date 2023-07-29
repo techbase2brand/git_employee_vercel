@@ -100,7 +100,9 @@ const HrLeaveReportTable: React.FC = () => {
     employeeLeaves.forEach((leave) => {
       const startDate = dayjs(leave.startDate).startOf("day");
       const endDate = dayjs(leave.endDate).startOf("day");
-      const dayGap = endDate.diff(startDate, "day");
+      // const dayGap = endDate.diff(startDate, "day");
+      const dayGap = endDate.diff(startDate, "day") + 1;
+
 
       let duration = 0;
       if (/^\d{1,2}:\d{2}$/.test(leave.leaveType)) {
