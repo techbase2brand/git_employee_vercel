@@ -1,17 +1,25 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
-import { Input, Layout, Avatar, Badge, Popover, List } from "antd";
+
+/* eslint-disable react/react-in-jsx-scope */
+import { useState, useEffect, useContext, useCallback } from "react";
+import {
+  Input,
+  Layout,
+  Avatar,
+  Badge,
+  Popover,
+  List,
+  // notification,
+} from "antd";
 import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { AssignedTaskCountContext } from "../App";
 import io from "socket.io-client";
+// import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
-import { toast, ToastOptions } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { log } from "console";
+
 
 const { Header } = Layout;
-
 interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
@@ -24,25 +32,15 @@ interface BacklogTask {
   AssignedBy: string;
   isCompleted: boolean;
   employeeID: string;
+
+
 }
 
-
-
-const showDummyDesktopNotification = (title: string, onClick?: () => void) => {
-  console.log("Showing dummy desktop notification:", title);
-
-  // Perform any other actions needed for a dummy notification
-  // For example, you can show a custom popup or toast message.
-
-  if (onClick) {
-    onClick();
-  }
-};
-
 const Navbar: React.FunctionComponent = () => {
-  const [notifications, setNotifications] = useState<BacklogTask[]>([]);
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
     useState(false);
+
+  const [notifications, setNotifications] = useState<BacklogTask[]>([]);
 
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
@@ -50,121 +48,104 @@ const Navbar: React.FunctionComponent = () => {
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
+  console.log(myData,"myData");
+
+
+
+  console.log(notifications,"notifications");
+  console.log(assignedTaskCount,"assignedTaskCount");
+
+  // const initialNotificationCount = Number(
+  //   localStorage.getItem("notificationCount") || 0
+  // );
+  // const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
+
+
+  const updateNotificationCount = () => {
+    // setNotificationCount(notifications.length);
+  };
+
+  // Call updateNotificationCount() whenever you update the notifications state
+
 
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
       console.log("This browser does not support desktop notifications.");
       return;
     }
-
     if (Notification.permission !== "granted") {
       await Notification.requestPermission();
     }
   };
 
-
- useEffect(() => {
+  useEffect(() => {
     requestNotificationPermission();
-    const socket = io("https://empbackend.base2brand.com");
+  }, []);
 
-    socket.on('connect', () => {
-        console.log('Successfully connected to socket server');
-    });
+  const showDesktopNotification = (
+    title: string,
+    onClick?: () => void,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options?: Omit<NotificationOptions, "onclick">
+  ) => {
+    if (Notification.permission === "granted") {
+      const notification = new Notification("Test Title", {
+        body: "Test Body",
+        icon: "path/to/your/icon.png",
+      });
 
-    socket.on("taskAssigned", (task: BacklogTask) => {
-        console.log("Received taskAssigned event", task);
+      console.log("ggggg-----iiiii");
 
-        if (myData && myData.EmpID === task.assigneeEmployeeID) {
-            setAssignedTaskCount((prevCount) => prevCount + 1);
-            setNewTaskAssignedWhileHidden(true);
+      if (onClick) {
+        notification.onclick = onClick;
+      }
+    } else {
+      console.log("Notification permission is not granted.");
+    }
+  };
 
-            setNotifications((prevNotifications) => [...prevNotifications, task]);
+  // const handleTaskAssigned = useCallback(
+  //   (assigneeEmployeeID: string) => {
+  //     if (myData && myData[0] && myData[0].EmployeeID === assigneeEmployeeID) {
+  //       setAssignedTaskCount((prevCount) => prevCount + 1);
 
-            toast.success(
-                <div>
-                    <div>{`New task assigned by ${task.AssignedBy}`}</div>
-                    <div>{task.taskName}</div>
-                </div>,
-                {
-                    onClick: () => {
-                        navigate("/dashboard");
-                    },
-                    autoClose: 5000,
-                    position: "top-right",
-                }
-            );
-
-            handleTaskAssigned(task.assigneeEmployeeID);
-        }
-    });
-
-    return () => {
-        socket.disconnect();
-    };
-}, [myData, setAssignedTaskCount, navigate]);
+  //       // Fetch all tasks.
+  //       axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
+  //         .then(response => {
+  //           // Filter the tasks assigned to the current user.
+  //           const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
+  //      console.log(newTasks,"newTasks ");
+  //      console.log(response.data[0].assigneeEmployeeID,"response.data[0].assigneeEmployeeID");
+  //      console.log(assigneeEmployeeID,"assigneeEmployeeID");
+  //      console.log(notifications);
 
 
 
-console.log(notifications);
+  //           // Add the new tasks to notifications.
+  //           setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
+  //         })
+  //         .catch(error => {
+  //           console.error('Error fetching tasks:', error);
+  //         });
+  //     }
+  //   },
+  //   [assignedTaskCount, myData]
+  // );
+
 
   const handleTaskAssigned = useCallback(
-    (assigneeEmployeeID: string) => {
-      if (myData && myData[0] && myData[0].EmpID === assigneeEmployeeID) {
-        // Increment the assigned task count
-        setAssignedTaskCount((prevCount) => prevCount + 1);
+    (assigneeEmployeeID: unknown) => {
+      console.log("handleTaskAssigned called");
 
-        // Fetch all tasks from the server
-        axios
-          .get<BacklogTask[]>(
-            "https://empbackend.base2brand.com/get/BacklogTasks",
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-              },
-            }
-          )
-          .then((response) => {
-            // Filter the tasks assigned to the current user
-            const newTasks = response.data.filter(
-              (task) => task.assigneeEmployeeID === assigneeEmployeeID
-            );
-
-            // Add the new tasks to the notifications state
-            setNotifications((prevNotifications) => [
-              ...prevNotifications,
-              ...newTasks,
-            ]);
-
-            // Show a desktop notification for each new task using react-toastify
-            newTasks.forEach((task) => {
-              const notificationOptions: ToastOptions = {
-                // Customize the options as needed
-                onClick: () => {
-                  navigate("/dashboard");
-                },
-                autoClose: 5000,
-                position: "top-right",
-                // Other options if required
-              };
-
-              toast.success(
-                <div>
-                  <div>{`New task assigned by ${task.AssignedBy}`}</div>
-                  <div>{task.taskName}</div>
-                </div>,
-                notificationOptions
-              );
-            });
-          })
-          .catch((error) => {
-            console.error("Error fetching tasks:", error);
-          });
+      if (myData  && myData?.EmployeeID === assigneeEmployeeID) {
+          setAssignedTaskCount((prevCount) => prevCount + 1);
       }
     },
-    [assignedTaskCount, myData, setAssignedTaskCount, navigate]
+    [assignedTaskCount]
   );
+
 
   const handleVisibilityChange = () => {
     if (document.hidden && newTaskAssignedWhileHidden) {
@@ -175,7 +156,7 @@ console.log(notifications);
         },
         {
           body: "Click to open the dashboard.",
-          // icon: "path/to/your/icon.png",
+          icon: "path/to/your/icon.png",
         }
       );
       setNewTaskAssignedWhileHidden(false);
@@ -189,47 +170,82 @@ console.log(notifications);
     };
   }, [newTaskAssignedWhileHidden]);
 
-  // const showDesktopNotification = (
-  //   title: string,
-  //   onClick?: () => void,
-  //   options?: NotificationOptions // Use the NotificationOptions type
-  // ) => {
-  //   if (Notification.permission === "granted") {
-  //     const notification = new Notification(title, options);
+  useEffect(() => {
+    const socket = io("https://empbackend.base2brand.com");
+    socket.on("taskAssigned", handleTaskAssigned);
+    return () => {
+      socket.off("taskAssigned", handleTaskAssigned);
+      socket.disconnect();
+    };
+  }, [handleTaskAssigned]);
 
-  //     if (onClick) {
-  //       notification.onclick = onClick;
-  //     }
-  //   } else {
-  //     console.log("Notification permission is not granted.");
-  //   }
-  // };
-
-
-  const showDesktopNotification = (
-    title: string,
-    onClick?: () => void,
-    options?: NotificationOptions // Use the NotificationOptions type
-  ) => {
-    // Show the dummy desktop notification
-    console.log("how the dummy desktop notification console");
-
-    showDummyDesktopNotification(title, onClick);
-
-  };
 
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
-
-  const markNotificationAsVisited = (notificationId: number) => {
+ const markNotificationAsVisited = (notificationId: number) => {
     const visitedNotificationIds = getVisitedNotificationIds();
     visitedNotificationIds.push(notificationId);
     localStorage.setItem(
       "visitedNotificationIds",
       JSON.stringify(visitedNotificationIds)
     );
+  };
+useEffect(() => {
+    axios
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+
+      })
+      .then((response) => {
+        const visitedNotificationIds = getVisitedNotificationIds();
+        const filteredData = response?.data?.filter(
+          (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
+
+        );
+        const sortedData = filteredData.sort(
+          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+        );
+
+        setNotifications(sortedData);
+        updateNotificationCount(); // Update the notification count
+      })
+      .catch((error) => {
+        console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
+
+        // console.error("Error fetching data:", error);
+        // console.log("Error details:", error.response);
+      });
+  }, []);
+
+ const listStyle = {
+    padding: "10px",
+    backgroundColor: "#f5f5f5",
+    borderRadius: "5px",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
+    width: "20vw",
+    maxHeight: "36em",
+    overflow: "auto",
+  };
+
+  const listItemStyle = {
+    padding: "10px",
+    backgroundColor: "#ffffff",
+    borderRadius: "5px",
+    marginBottom: "10px",
+    cursor: "pointer",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
+    width: "18vw",
+  };
+
+  const getShortTaskDescription = (taskName: string) => {
+    const words = taskName.split(' ');
+    const maxWords = 5;
+    const truncatedWords = words.slice(0, maxWords);
+    return truncatedWords.join(' ');
   };
 
   const notificationList = (
@@ -244,11 +260,13 @@ console.log(notifications);
             markNotificationAsVisited(item.backlogTaskID);
             setNotifications((prevNotifications) =>
               prevNotifications.filter(
-                (notification) =>
-                  notification.backlogTaskID !== item.backlogTaskID
+                (notification) => notification.backlogTaskID !== item.backlogTaskID
               )
             );
+            updateNotificationCount(); // Update the notification count
+            console.log(item, "ffggg-------");
           }}
+          style={listItemStyle}
         >
           <List.Item.Meta
             title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(
@@ -257,108 +275,99 @@ console.log(notifications);
           />
           <CloseOutlined
             onClick={(e) => {
-              e.stopPropagation();
+              e.stopPropagation(); // Prevents the parent click event from triggering
               markNotificationAsVisited(item.backlogTaskID);
               setNotifications((prevNotifications) =>
                 prevNotifications.filter(
-                  (notification) =>
-                    notification.backlogTaskID !== item.backlogTaskID
+                  (notification) => notification.backlogTaskID !== item.backlogTaskID
                 )
               );
+              updateNotificationCount(); // Update the notification count
             }}
           />
         </List.Item>
       )}
+      style={listStyle}
     />
   );
 
-  const getShortTaskDescription = (taskName: string) => {
-    const words = taskName.split(" ");
-    const maxWords = 5;
-    const truncatedWords = words.slice(0, maxWords);
-    return truncatedWords.join(" ");
-  };
-
   const logout = () => {
-    if (window.confirm("Do you really want to logout?")) {
+    if (window.confirm('Do you really want to logout?')) {
       localStorage.removeItem("myToken");
       navigate("/");
     }
   };
 
-  return (
-    <div>
-      <Header
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
-        className="navbar"
-      >
-        {/* Left section */}
-        <div
+    return (
+      <div>
+        <Header
           style={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: "space-between",
-            width: "40%",
-          }}
-        >
-          <div className="logo">
-            <img src="./b2b.png" alt="Company Logo" />
-          </div>
-          <div className="search">
-            <Input
-              placeholder="Search..."
-              prefix={<SearchOutlined className="search-icon" />}
-            />
-          </div>
-        </div>
-
-        {/* Right section */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            width: "60%",
-            float: "right",
             alignItems: "center",
-            justifyContent: "flex-end",
+            backgroundColor: "white",
           }}
-          className="right-menu"
+          className="navbar"
         >
           <div
             style={{
-              width: "25%",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
+              width: "40%",
             }}
           >
-            <Badge style={{ marginRight: "3%" }} count={notifications.length}>
-              <Popover
-                style={{ width: "20vw" }}
-                content={notificationList}
-                placement="bottomRight"
-                trigger="click" // Show popover on click instead of hover
-              >
-                <BellOutlined className="notification-icon" />
-              </Popover>
-            </Badge>
+            <div className="logo">
+              <img src="./b2b.png" alt="Company Logo" />
+            </div>
 
-            <Avatar className="avatar" icon={<UserOutlined />} />
-            <span className="username">
-              {myData?.firstName} {myData?.lastName}
-            </span>
-            <button onClick={logout}>Logout</button>
+            <div className="search">
+              <Input
+                placeholder="Search..."
+                // eslint-disable-next-line react/react-in-jsx-scope
+                prefix={<SearchOutlined className="search-icon" />}
+              />
+            </div>
           </div>
-        </div>
-      </Header>
-    </div>
-  );
-};
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "60%",
+              float: "right",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+            className="right-menu"
+          >
+            <div
+              style={{
+                width: "25%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Badge style={{ marginRight: "3%" }} count={notifications.length}>
+                <Popover
+                  style={{ width: "20vw" }}
+                  content={notificationList}
+                  placement="bottomRight"
+                >
+                  <BellOutlined className="notification-icon" />
+                </Popover>
+              </Badge>
+
+              <Avatar className="avatar" icon={<UserOutlined />} />
+              <span className="username">{myData?.firstName}{myData?.lastName}</span>
+              <button onClick={logout}>logout</button>
+            </div>
+          </div>
+        </Header>
+      </div>
+    );
+  };
+
 
 export default Navbar;
