@@ -44,32 +44,35 @@ useEffect(() => {
 
       const filteredData = sortedData.filter((item)=> item?.employeeID === employeeInfo?.EmployeeID)
       console.log(sortedData,"sortedDatasortedData");
+      console.log(sortedData,"sortedDatasortedData");
+      console.log(filteredData);
+
 
       setData(filteredData);
     });
 }, []);
 
-  const fetchData = () => {
-    const token = localStorage.getItem("myToken");
+  // const fetchData = () => {
+  //   const token = localStorage.getItem("myToken");
 
-    axios
-      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-        );
-        setData(sortedData);
-      });
-  };
+  //   axios
+  //     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       const sortedData = response.data.sort(
+  //         (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+  //       );
+  //       setData(sortedData);
+  //     });
+  // };
 
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
 
   const columns = [
