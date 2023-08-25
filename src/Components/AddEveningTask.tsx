@@ -550,7 +550,7 @@ const AddModule: React.FC<any> = () => {
                   >
                     <option value="">--Select Time--</option>
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [15, 30, 45].map((minute) => (
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
                         <option
                           key={`${hour}:${minute}`}
                           value={`${hour}:${minute}`}
@@ -609,7 +609,7 @@ const AddModule: React.FC<any> = () => {
                   >
                     <option value="">--Select Time--</option>
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [15, 30, 45].map((minute) => (
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
                         <option
                           key={`${hour}:${minute}`}
                           value={`${hour}:${minute}`}
