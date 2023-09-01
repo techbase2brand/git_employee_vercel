@@ -27,6 +27,8 @@ import HrLeaveReport from "./Components/HrLeaveReport"
 import EmployeeForm from "./Components/EmployeeForm"
 import EmployeeList from "./Components/EmployeeList"
 import ShiftChangeReport from "./Components/ShiftChangeReport"
+import SalecampusForm from "./Components/SalecampusForm";
+import SalecampusFormList from "./Components/SalecampusFormList";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -45,14 +47,14 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("myToken");
-  if (!token) {
-    alert("Please log in!");
-    setTimeout(() => {
-      navigate("/");
-    }, 0);
-    return null;
-  }
+  // const token = localStorage.getItem("myToken");
+  // if (!token) {
+  //   alert("Please log in!");
+  //   setTimeout(() => {
+  //     navigate("/");
+  //   }, 0);
+  //   return null;
+  // }
   return <>{children}</>;
 };
 
@@ -155,6 +157,23 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ViewLeavePage />
+              </ProtectedRoute>
+            }
+          />
+          {/* Salecampus route */}
+          <Route
+            path="/SalecampusForm"
+            element={
+              <ProtectedRoute>
+                <SalecampusForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/SalecampusFormList"
+            element={
+              <ProtectedRoute>
+                <SalecampusFormList />
               </ProtectedRoute>
             }
           />
