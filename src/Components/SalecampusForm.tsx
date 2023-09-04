@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import Swal from 'sweetalert2';
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router";
 
 interface FormData {
+  id?: number; // This makes the id property optional
   name: string;
   phone: string;
   email: string;
@@ -27,11 +29,23 @@ function SalecampusForm(): JSX.Element {
     totalFee: "",
     gender: "male",
   };
+  // update api data
+  const location = useLocation();
+  const navigate = useNavigate();
+  const record: FormData | undefined = location.state?.record;
+
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<FormData>(record || initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
+  useEffect(() => {
+    if (record) {
+      setFormData(record);
+    }
+  }, [record]);
+
+  // input handlechange
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -46,75 +60,40 @@ function SalecampusForm(): JSX.Element {
     }));
   };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   const isValid = false;
-  //   const newErrors: Record<string, string> = {};
-  //   if (!formData.name) {
-  //     newErrors.name = "Name is required.";
-  //   }
-  //   if (!formData.email) {
-  //     newErrors.email = "Email is required.";
-  //   } else if (!emailRegex.test(formData.email)) {
-  //     newErrors.email = "Invalid email format.";
-  //   }
-  //   if (!formData.phone) {
-  //     newErrors.phone = "Phone Number is required.";
-  //   }
-  //   if (!formData.parentPhone) {
-  //     newErrors.parentPhone = "Parent's Phone Number is required.";
-  //   }
-  //   if (!formData.location) {
-  //     newErrors.location = "Location is required.";
-  //   }
-  //   if (!formData.highestQualification) {
-  //     newErrors.highestQualification = "Highest Qualification is required.";
-  //   }
-  //   if (!formData.duration) {
-  //     newErrors.duration = "Duration is required.";
-  //   }
-  //   if (!formData.totalFee) {
-  //     newErrors.totalFee = "Total Fee is required.";
-  //   }
-  //   if (!formData.gender) {
-  //     newErrors.gender = "Gender is required.";
-  //   }
-  //   setFormErrors(newErrors);
-  //   console.log("formData.gender", formData.gender);
+  const submitForm = async () => {
+    if (formData.id) {
+      // Update API, To update data
+      handleUpdate();
+    } else {
+      try {
+        const response = await fetch("http://localhost:8000/submit-form", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
 
-  //   // if (Object.keys(newErrors).length === 0) {
-  //   //   try {
-  //   //     const response = await fetch("http://localhost:8000/submit-form", {
-  //   //       method: "POST",
-  //   //       headers: {
-  //   //         "Content-Type": "application/json",
-  //   //       },
-  //   //       body: JSON.stringify(formData),
-  //   //     });
+        const responseData = await response.json();
 
-  //   //     const responseData = await response.json(); // Parse the JSON response data
-
-  //   //     if (response.status === 200) {
-  //   //       console.log("Form submitted successfully");
-  //   //       setFormData(initialFormData);
-  //   //       setSubmitted(true);
-  //   //       // Swal.fire({
-  //   //       //   icon: 'success',
-  //   //       //   title: 'Thank you for connecting!',
-  //   //       //   text: 'Your message has been submitted successfully.',
-  //   //       //   confirmButtonText: 'OK',
-  //   //       // });
-  //   //     } else if (response.status === 400) {
-  //   //       alert(responseData.message); // Show the user exist message from the server
-  //   //     } else {
-  //   //       console.error("Error submitting form. Status:", response.status);
-  //   //     }
-  //   //   } catch (error) {
-  //   //     console.error("Error submitting form:", error);
-  //   //   }
-  //   // }
-  //   console.log("formDataaaaaaaaaaaaaaaaaaaa", formData);
-  // };
+        if (response.status === 200) {
+          console.log("Form submitted successfully");
+          setFormData(initialFormData);
+          setSubmitted(true);
+        } else if (response.status === 400) {
+          alert(responseData.message);
+        } else {
+          console.error("Error submitting form. Status:", response.status);
+        }
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 3000);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+      console.log("Form submitted!", formData);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,33 +136,16 @@ function SalecampusForm(): JSX.Element {
     }
   };
 
-  const submitForm = async () => {
-    // if (Object.keys(newErrors).length === 0) {
-      try {
-        const response = await fetch("http://localhost:8000/submit-form", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-
-        const responseData = await response.json();
-
-        if (response.status === 200) {
-          console.log("Form submitted successfully");
-          setFormData(initialFormData);
-          setSubmitted(true);
-        } else if (response.status === 400) {
-          alert(responseData.message);
-        } else {
-          console.error("Error submitting form. Status:", response.status);
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      }
-    // }
-    console.log("Form submitted!", formData);
+  const handleUpdate = () => {
+    axios
+      .put(`http://localhost:8000/update/${formData.id}`, formData)
+      .then((response) => {
+        console.log(response.data);
+        navigate("/SalecampusFormList"); // Navigate back to the list after update
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -445,12 +407,18 @@ function SalecampusForm(): JSX.Element {
                       </div>
 
                       <div className="SalecampusForm-submit-os">
-                        <button type="submit">Submit</button>
+                        <button onClick={handleSubmit} type="submit">
+                          {formData.id ? "Update" : "Submit"}
+                        </button>
                       </div>
                     </div>
                   </form>
 
-                  {submitted && <p>Thank you for connecting!</p>}
+                  {submitted && (
+                    <p style={{ color: "green", paddingTop: "0.5rem" }}>
+                      Thank you for connecting!
+                    </p>
+                  )}
                 </div>
               </div>
             </section>

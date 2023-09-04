@@ -2,31 +2,63 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table } from "antd";
-import dayjs from "dayjs";
+import { Table, Button, Input } from "antd";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import { useLocation, useNavigate } from "react-router";
+// import dayjs from "dayjs";
 
 interface SalecampusData {
+  id: number;
   gender: string;
   name: string;
   email: string;
   phone: string;
   parentPhone: string;
   location: string;
-  course: string; // I'm guessing from the render method
+  course: string;
   duration: string;
   totalFee: string;
   highestQualification: string;
 }
 
+//
+// interface Task {
+//   EvngTaskID: number;
+//   projectName: string;
+//   phaseName: string;
+//   module: string;
+//   task: string;
+//   estTime: string;
+//   actTime: string;
+//   upWorkHrs: number;
+// }
+
+interface Props {
+  data: SalecampusData[];
+  evngEditID: number;
+  setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
+}
+
 const SalecampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
+  const [filteredData, setFilteredData] = useState<SalecampusData[]>(data);
+  const [deleteId, setDeleteId] = useState<number>();
+  const [editId, setEditId] = useState<number>();
+  const [search, setSearch] = useState<string>("");
+  const Navigate = useNavigate();
+
+  const location = useLocation();
+  const passedRecord = location.state?.record;
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
-
     axios
       .get(
-        "http://localhost:8000/salecampus"
+        "http://localhost:8000/salecampusdata"
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,
@@ -37,63 +69,148 @@ const SalecampusFormList = () => {
         const resData = response.data;
         console.log("resData", resData);
         setData(resData);
+        setFilteredData(resData);
       });
   }, []);
 
+  // useEffect(() => {
+  //   filterData(search);
+  // }, [data]);
+
+  // delete methods
+  const handleDelete = (id: number) => {
+    setDeleteId(id);
+    axios
+      .delete(
+        `http://localhost:8000/delete/${id}`
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        //   },
+        // }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // Update the main data state
+    const updatedData = data.filter((e: any) => e.id !== id);
+    setData(updatedData);
+    // Check if the data is currently filtered
+    // filterData(search);
+  };
+
+  // edit methods
+  const handleEdit = (id: number) => {
+    console.log(`update form with id ${id}`);
+    setEditId(id);
+    const recordToEdit = data.find((e: any) => e.id === id);
+    Navigate("/SalecampusForm", { state: { record: recordToEdit } });
+  };
+
   const columns = [
     {
-      title: "Team Lead",
-      dataIndex: "teamLead",
-      key: "teamLead",
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
       render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
     },
     {
-      title: "Start Date",
-      dataIndex: "startDate",
-      key: "startDate",
-      render: (text: string) => (
-        <div style={{ width: 100 }}>{dayjs(text).format("YYYY-MM-DD")}</div>
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Phone No.",
+      dataIndex: "phone",
+      key: "phone",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Parent Phone No.",
+      dataIndex: "parentPhone",
+      key: "parentPhone",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Location",
+      dataIndex: "location",
+      key: "location",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Course",
+      dataIndex: "highestQualification",
+      key: "highestQualification",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Duration",
+      dataIndex: "duration",
+      key: "duration",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Total Fees",
+      dataIndex: "totalFee",
+      key: "totalFee",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: SalecampusData) => (
+        <span>
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record.id)}
+          >
+            Edit
+          </Button>
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record.id)}
+          >
+            Delete
+          </Button>
+        </span>
       ),
-    },
-    {
-      title: "End Date",
-      dataIndex: "endDate",
-      key: "endDate",
-      render: (text: string) => (
-        <div style={{ width: 100 }}>{dayjs(text).format("YYYY-MM-DD")}</div>
-      ),
-    },
-    {
-      title: "leaveCategory",
-      dataIndex: "leaveCategory",
-      key: "leaveCategory",
-      render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
-    },
-    {
-      title: "Leave Type",
-      dataIndex: "leaveType",
-      key: "leaveType",
-      render: (text: string) => <div style={{ width: 50 }}>{text}</div>,
-    },
-    {
-      title: "Leave Reason",
-      dataIndex: "leaveReason",
-      key: "leaveReason",
-      render: (text: string) => <div style={{ width: 250 }}>{text}</div>,
-    },
-    {
-      title: "Status (TL)",
-      dataIndex: "approvalOfTeamLead",
-      key: "approvalOfTeamLead",
-      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
-    },
-    {
-      title: "Status (HR)",
-      dataIndex: "approvalOfHR",
-      key: "approvalOfHR",
-      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
     },
   ];
+
+  // handle search
+const handleSearch = () => {
+  console.log("handle search")
+}
+
+
+  // const filterData = (inputValue: string) => {
+  //   if (inputValue) {
+  //     const result = data.filter(
+  //       (e) =>
+  //         e.name.includes(inputValue) || String(e.phone).includes(inputValue)
+  //     );
+  //     setFilteredData(result);
+  //   } else {
+  //     setFilteredData(data);
+  //   }
+  // };
+  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const inputValue = e.target.value;
+  //   setSearch(inputValue);
+  //   filterData(inputValue);
+  // };
+
   return (
     <>
       <div className="emp-main-div">
@@ -115,13 +232,28 @@ const SalecampusFormList = () => {
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="SalecampusFormList-default-os">
-                  {/* <Table
-                  style={{ width: "80vw" }}
-                  dataSource={data}
-                  columns={columns}
-                  rowClassName={() => "header-row"}
-                /> */}
-                  <table>
+                  <div
+                    className="search"
+                    style={{
+                      width: "60%",
+                      margin: "0 auto",
+                      paddingBottom: "2rem",
+                    }}
+                  >
+                    <Input
+                      placeholder="Search..."
+                      // eslint-disable-next-line react/react-in-jsx-scope
+                      prefix={<SearchOutlined className="search-icon" />}
+                      onChange={handleSearch}
+                    />
+                  </div>
+                  <Table
+                    // dataSource={filteredData}
+                    dataSource={data}
+                    columns={columns}
+                    rowClassName={() => "header-row"}
+                  />
+                  {/* <table>
                     <tr>
                       <th>Gender</th>
                       <th>Name</th>
@@ -149,7 +281,7 @@ const SalecampusFormList = () => {
                           </tr>
                         );
                       })}
-                  </table>
+                  </table> */}
                 </div>
               </div>
             </section>
