@@ -14,10 +14,10 @@ interface FormData {
   highestQualification: string;
   duration: string;
   totalFee: string;
-  gender: string;
+  portalType: string;
 }
 
-function SalecampusForm(): JSX.Element {
+function SaleInfoForm(): JSX.Element {
   const initialFormData: FormData = {
     name: "",
     phone: "",
@@ -27,7 +27,7 @@ function SalecampusForm(): JSX.Element {
     highestQualification: "",
     duration: "1 Year",
     totalFee: "",
-    gender: "Male",
+    portalType: "Upwork",
   };
   // update api data
   const location = useLocation();
@@ -146,7 +146,7 @@ function SalecampusForm(): JSX.Element {
       id: 19,
       value: "Mathematics-III",
       label: "Mathematics-III",
-    }
+    },
   ];
 
   // input handlechange
@@ -229,8 +229,8 @@ function SalecampusForm(): JSX.Element {
     // if (!formData.totalFee) {
     //   newErrors.totalFee = "Total Fee is required.";
     // }
-    // if (!formData.gender) {
-    //   newErrors.gender = "Gender is required.";
+    // if (!formData.portalType) {
+    //   newErrors.portalType = "portalType is required.";
     // }
 
     setFormErrors(newErrors);
@@ -274,35 +274,76 @@ function SalecampusForm(): JSX.Element {
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="SalecampusForm-data-os">
-                  <h2>Sale Campus Form</h2>
+                  <h2>Sale Info Form</h2>
                   <form onSubmit={handleSubmit}>
                     <div className="SalecampusForm-row-os">
+                      {/* <h4>Portal type</h4> */}
                       <div className="SalecampusForm-radio-row-os">
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">Male</label>
+                          <label>Upwork</label>
                           <input
                             type="radio"
-                            name="gender"
-                            value="Male"
-                            checked={formData.gender === "Male"}
+                            name="portalType"
+                            value="Upwork"
+                            checked={formData.portalType === "Upwork"}
                             onChange={handleChange}
                           />
                         </div>
 
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">Female</label>
+                          <label>PPH</label>
                           <input
                             type="radio"
-                            name="gender"
-                            value="Female"
-                            checked={formData.gender === "Female"}
+                            name="portalType"
+                            value="PPH"
+                            checked={formData.portalType === "PPH"}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="SalecampusForm-radio-os">
+                          <label>Freelancer</label>
+                          <input
+                            type="radio"
+                            name="portalType"
+                            value="Freelancer"
+                            checked={formData.portalType === "Freelancer"}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="SalecampusForm-radio-os">
+                          <label>Linkedin</label>
+                          <input
+                            type="radio"
+                            name="portalType"
+                            value="Linkedin"
+                            checked={formData.portalType === "Linkedin"}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="SalecampusForm-radio-os">
+                          <label>Website</label>
+                          <input
+                            type="radio"
+                            name="portalType"
+                            value="Website"
+                            checked={formData.portalType === "Website"}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="SalecampusForm-radio-os">
+                          <label>Other</label>
+                          <input
+                            type="radio"
+                            name="portalType"
+                            value="Other"
+                            checked={formData.portalType === "Other"}
                             onChange={handleChange}
                           />
                         </div>
                       </div>
-                      {formErrors.gender && (
+                      {formErrors.portalType && (
                         <div className="error-message-os">
-                          {formErrors.gender}
+                          {formErrors.portalType}
                         </div>
                       )}
 
@@ -311,7 +352,7 @@ function SalecampusForm(): JSX.Element {
                           <input
                             type="text"
                             name="name"
-                            placeholder="Name"
+                            placeholder="Profile name"
                             value={formData.name}
                             onChange={handleChange}
                           />
@@ -326,9 +367,9 @@ function SalecampusForm(): JSX.Element {
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
                           <input
-                            type="tel"
+                            type="text"
                             name="phone"
-                            placeholder="Student Phone Number"
+                            placeholder="Url"
                             value={formData.phone}
                             onChange={handleChange}
                           />
@@ -343,9 +384,9 @@ function SalecampusForm(): JSX.Element {
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
                           <input
-                            type="email"
+                            type="text"
                             name="email"
-                            placeholder="Email"
+                            placeholder="Client name"
                             value={formData.email}
                             onChange={handleChange}
                           />
@@ -362,7 +403,7 @@ function SalecampusForm(): JSX.Element {
                           <input
                             type="tel"
                             name="parentPhone"
-                            placeholder="Parents Phone Number"
+                            placeholder="Handle by"
                             value={formData.parentPhone}
                             onChange={handleChange}
                           />
@@ -370,6 +411,29 @@ function SalecampusForm(): JSX.Element {
                         {formErrors.parentPhone && (
                           <div className="error-message-os">
                             {formErrors.parentPhone}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="SalecampusForm-col-os">
+                        <div className="SalecampusForm-input-os">
+                          <select
+                            name="highestQualification"
+                            value={formData.highestQualification}
+                            onChange={handleChange}
+                          >
+                            {highestQualification.map((item) => {
+                              return (
+                                <option key={item.id} value={item.value}>
+                                  {item.label}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                        {formErrors.highestQualification && (
+                          <div className="error-message-os">
+                            {formErrors.highestQualification}
                           </div>
                         )}
                       </div>
@@ -387,27 +451,6 @@ function SalecampusForm(): JSX.Element {
                         {formErrors.location && (
                           <div className="error-message-os">
                             {formErrors.location}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="SalecampusForm-col-os">
-                        <div className="SalecampusForm-input-os">
-                          <select
-                            name="highestQualification"
-                            value={formData.highestQualification}
-                            onChange={handleChange}
-                          >
-                            {highestQualification.map((item) => {
-                              return(
-                                <option key={item.id} value={item.value}>{item.label}</option>
-                              )
-                            })}
-                          </select>
-                        </div>
-                        {formErrors.highestQualification && (
-                          <div className="error-message-os">
-                            {formErrors.highestQualification}
                           </div>
                         )}
                       </div>
@@ -532,4 +575,4 @@ function SalecampusForm(): JSX.Element {
   );
 }
 
-export default SalecampusForm;
+export default SaleInfoForm;

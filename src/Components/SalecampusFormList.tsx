@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table, Button, Input } from "antd";
+import { Table, Button, Input, Modal } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -45,14 +45,26 @@ interface Props {
 
 const SalecampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
+  const [recordToDelete, setRecordToDelete] = useState<SalecampusData | null>(
+    null
+  );
   const [filteredData, setFilteredData] = useState<SalecampusData[]>(data);
   const [deleteId, setDeleteId] = useState<number>();
   const [editId, setEditId] = useState<number>();
   const [search, setSearch] = useState<string>("");
   const Navigate = useNavigate();
-
   const location = useLocation();
   const passedRecord = location.state?.record;
+
+  // Modal for delete confirmation
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setRecordToDelete(null);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -73,9 +85,9 @@ const SalecampusFormList = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   filterData(search);
-  // }, [data]);
+  useEffect(() => {
+    filterData(search);
+  }, [data]);
 
   // delete methods
   const handleDelete = (id: number) => {
@@ -99,7 +111,11 @@ const SalecampusFormList = () => {
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);
     // Check if the data is currently filtered
-    // filterData(search);
+    filterData(search);
+    // close consfirmation modal
+    setIsModalOpen(false);
+    // Null values of delete id
+    setRecordToDelete(null);
   };
 
   // edit methods
@@ -179,7 +195,10 @@ const SalecampusFormList = () => {
             type="link"
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => {
+              setRecordToDelete(record);
+              showModal();
+            }}
           >
             Delete
           </Button>
@@ -188,28 +207,24 @@ const SalecampusFormList = () => {
     },
   ];
 
-  // handle search
-const handleSearch = () => {
-  console.log("handle search")
-}
-
-
-  // const filterData = (inputValue: string) => {
-  //   if (inputValue) {
-  //     const result = data.filter(
-  //       (e) =>
-  //         e.name.includes(inputValue) || String(e.phone).includes(inputValue)
-  //     );
-  //     setFilteredData(result);
-  //   } else {
-  //     setFilteredData(data);
-  //   }
-  // };
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const inputValue = e.target.value;
-  //   setSearch(inputValue);
-  //   filterData(inputValue);
-  // };
+  const filterData = (inputValue: string) => {
+    const lowercasedInput = inputValue.toLowerCase();
+    
+    if (inputValue) {
+      const result = data.filter(e =>
+        e.name.toLowerCase().includes(lowercasedInput) || 
+        String(e.phone).toLowerCase().includes(lowercasedInput)
+      );
+      setFilteredData(result);
+    } else {
+      setFilteredData(data);
+    }
+  };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setSearch(inputValue);
+    filterData(inputValue);
+  };
 
   return (
     <>
@@ -242,46 +257,29 @@ const handleSearch = () => {
                   >
                     <Input
                       placeholder="Search..."
-                      // eslint-disable-next-line react/react-in-jsx-scope
                       prefix={<SearchOutlined className="search-icon" />}
                       onChange={handleSearch}
                     />
                   </div>
                   <Table
                     // dataSource={filteredData}
-                    dataSource={data}
+                    dataSource={filteredData.slice().reverse()}
                     columns={columns}
                     rowClassName={() => "header-row"}
                   />
-                  {/* <table>
-                    <tr>
-                      <th>Gender</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Phone No.</th>
-                      <th>Parent Phone No.</th>
-                      <th>Location</th>
-                      <th>Course</th>
-                      <th>Duration</th>
-                      <th>Total Fees</th>
-                    </tr>
-                    {data.length > 0 &&
-                      data.map((val, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{val.gender}</td>
-                            <td>{val.name}</td>
-                            <td>{val.email}</td>
-                            <td>{val.phone}</td>
-                            <td>{val.parentPhone}</td>
-                            <td>{val.location}</td>
-                            <td>{val.duration}</td>
-                            <td>{val.totalFee}</td>
-                            <td>{val.highestQualification}</td>
-                          </tr>
-                        );
-                      })}
-                  </table> */}
+
+                  <Modal
+                    title="Confirmation"
+                    open={isModalOpen}
+                    onOk={() => {
+                      if (recordToDelete) {
+                        handleDelete(recordToDelete.id);
+                      }
+                    }}
+                    onCancel={handleCancel}
+                  >
+                    <p>Are you sure, you want to delete</p>
+                  </Modal>
                 </div>
               </div>
             </section>
