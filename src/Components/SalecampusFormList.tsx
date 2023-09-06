@@ -212,8 +212,15 @@ const SalecampusFormList = () => {
     
     if (inputValue) {
       const result = data.filter(e =>
+        e.gender.toLowerCase() === (lowercasedInput) ||
+        e.email.toLowerCase().includes(lowercasedInput) ||
         e.name.toLowerCase().includes(lowercasedInput) || 
-        String(e.phone).toLowerCase().includes(lowercasedInput)
+        String(e.phone).toLowerCase().includes(lowercasedInput) ||
+        String(e.parentPhone).toLowerCase().includes(lowercasedInput) ||
+        e.location.toLowerCase().includes(lowercasedInput) ||
+        e.highestQualification.toLowerCase().includes(lowercasedInput) ||
+        e.duration.toLowerCase().includes(lowercasedInput) ||
+        e.totalFee.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {

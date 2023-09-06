@@ -146,7 +146,7 @@ function SalecampusForm(): JSX.Element {
       id: 19,
       value: "Mathematics-III",
       label: "Mathematics-III",
-    }
+    },
   ];
 
   // input handlechange
@@ -279,25 +279,29 @@ function SalecampusForm(): JSX.Element {
                     <div className="SalecampusForm-row-os">
                       <div className="SalecampusForm-radio-row-os">
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">Male</label>
-                          <input
-                            type="radio"
-                            name="gender"
-                            value="Male"
-                            checked={formData.gender === "Male"}
-                            onChange={handleChange}
-                          />
+                          <label className="male">
+                            Male
+                            <input
+                              type="radio"
+                              name="gender"
+                              value="Male"
+                              checked={formData.gender === "Male"}
+                              onChange={handleChange}
+                            />
+                          </label>
                         </div>
 
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">Female</label>
-                          <input
-                            type="radio"
-                            name="gender"
-                            value="Female"
-                            checked={formData.gender === "Female"}
-                            onChange={handleChange}
-                          />
+                          <label className="male">
+                            Female
+                            <input
+                              type="radio"
+                              name="gender"
+                              value="Female"
+                              checked={formData.gender === "Female"}
+                              onChange={handleChange}
+                            />
+                          </label>
                         </div>
                       </div>
                       {formErrors.gender && (
@@ -399,9 +403,11 @@ function SalecampusForm(): JSX.Element {
                             onChange={handleChange}
                           >
                             {highestQualification.map((item) => {
-                              return(
-                                <option key={item.id} value={item.value}>{item.label}</option>
-                              )
+                              return (
+                                <option key={item.id} value={item.value}>
+                                  {item.label}
+                                </option>
+                              );
                             })}
                           </select>
                         </div>
@@ -434,45 +440,53 @@ function SalecampusForm(): JSX.Element {
 
                       <div className="SalecampusForm-radio-row-os">
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">45 Days</label>
-                          <input
-                            type="radio"
-                            name="duration"
-                            value="45 Days"
-                            checked={formData.duration === "45 Days"}
-                            onChange={handleChange}
-                          />
+                          <label className="male">
+                            45 Days
+                            <input
+                              type="radio"
+                              name="duration"
+                              value="45 Days"
+                              checked={formData.duration === "45 Days"}
+                              onChange={handleChange}
+                            />
+                          </label>
                         </div>
 
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">3 Months</label>
-                          <input
-                            type="radio"
-                            name="duration"
-                            value="3 Months"
-                            checked={formData.duration === "3 Months"}
-                            onChange={handleChange}
-                          />
+                          <label className="male">
+                            3 Months
+                            <input
+                              type="radio"
+                              name="duration"
+                              value="3 Months"
+                              checked={formData.duration === "3 Months"}
+                              onChange={handleChange}
+                            />
+                          </label>
                         </div>
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">6 Months</label>
-                          <input
-                            type="radio"
-                            name="duration"
-                            value="6 Months"
-                            checked={formData.duration === "6 Months"}
-                            onChange={handleChange}
-                          />
+                          <label className="male">
+                            6 Months
+                            <input
+                              type="radio"
+                              name="duration"
+                              value="6 Months"
+                              checked={formData.duration === "6 Months"}
+                              onChange={handleChange}
+                            />
+                          </label>
                         </div>
                         <div className="SalecampusForm-radio-os">
-                          <label className="male">1 Year</label>
-                          <input
-                            type="radio"
-                            name="duration"
-                            value="1 Year"
-                            checked={formData.duration === "1 Year"}
-                            onChange={handleChange}
-                          />
+                          <label className="male">
+                            1 Year
+                            <input
+                              type="radio"
+                              name="duration"
+                              value="1 Year"
+                              checked={formData.duration === "1 Year"}
+                              onChange={handleChange}
+                            />
+                          </label>
                         </div>
                       </div>
                       {formErrors.duration && (

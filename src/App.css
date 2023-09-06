@@ -332,7 +332,12 @@ css .campus_form {
 .SalecampusForm-radio-os {
   display: flex;
   align-items: center;
-  gap: 1rem;
+}
+.SalecampusForm-radio-os label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
 }
 .SalecampusForm-radio-row-os {
   display: flex;

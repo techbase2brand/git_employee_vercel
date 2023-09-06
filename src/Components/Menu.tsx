@@ -55,6 +55,9 @@ const AppMenu = () => {
        <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
          <Link to="/salecampusformlist">Salecampus Form List</Link>
        </Menu.Item>
+       <Menu.Item key="saleinfoform" icon={<TableOutlined />}>
+         <Link to="/saleinfoform">Saleinfo Form</Link>
+       </Menu.Item>
        </>
       )}
 
