@@ -30,6 +30,7 @@ import ShiftChangeReport from "./Components/ShiftChangeReport";
 import SalecampusForm from "./Components/SalecampusForm";
 import SalecampusFormList from "./Components/SalecampusFormList";
 import SaleInfoForm from "./Components/SaleInfoForm";
+import SaleInfoFormList from "./Components/SaleInfoFormList";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -182,6 +183,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <SaleInfoForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saleinfoformlist"
+            element={
+              <ProtectedRoute>
+                <SaleInfoFormList />
               </ProtectedRoute>
             }
           />

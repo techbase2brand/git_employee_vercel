@@ -53,10 +53,13 @@ const AppMenu = () => {
          <Link to="/salecampusform">Salecampus Form</Link>
        </Menu.Item>
        <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
-         <Link to="/salecampusformlist">Salecampus Form List</Link>
+         <Link to="/salecampusformlist">Sale Campus List</Link>
        </Menu.Item>
        <Menu.Item key="saleinfoform" icon={<TableOutlined />}>
          <Link to="/saleinfoform">Saleinfo Form</Link>
+       </Menu.Item>
+       <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
+         <Link to="/saleinfoformlist">Sale Info List</Link>
        </Menu.Item>
        </>
       )}

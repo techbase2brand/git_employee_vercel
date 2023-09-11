@@ -6,35 +6,35 @@ import { useLocation, useNavigate } from "react-router";
 
 interface FormData {
   id?: number; // This makes the id property optional
-  name: string;
-  phone: string;
-  email: string;
-  parentPhone: string;
-  location: string;
-  highestQualification: string;
-  duration: string;
-  totalFee: string;
   portalType: string;
+  profileName: string;
+  url: string;
+  clientName: string;
+  handleBy: string;
+  status: string;
+  statusReason: string;
+  communicationMode: string;
+  communicationReason: string;
 }
 
 function SaleInfoForm(): JSX.Element {
   const initialFormData: FormData = {
-    name: "",
-    phone: "",
-    email: "",
-    parentPhone: "",
-    location: "",
-    highestQualification: "",
-    duration: "1 Year",
-    totalFee: "",
-    portalType: "Upwork",
+    portalType: "upwork",
+    profileName: "",
+    url: "",
+    clientName: "",
+    handleBy: "",
+    status: "",
+    statusReason: "",
+    communicationMode: "skype",
+    communicationReason: "",
   };
   // update api data
   const location = useLocation();
   const Navigate = useNavigate();
   const record: FormData | undefined = location.state?.record;
 
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -66,11 +66,12 @@ function SaleInfoForm(): JSX.Element {
       id: 3,
       value: "Closed",
       label: "Closed",
-    },{
+    },
+    {
       id: 4,
       value: "Pending",
       label: "Pending",
-    }
+    },
   ];
 
   // input handlechange
@@ -93,33 +94,15 @@ function SaleInfoForm(): JSX.Element {
       // Update API, To update data
       handleUpdate();
     } else {
-      try {
-        const response = await fetch("http://localhost:8000/submit-form", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
+      // console.log("formData-os", formData);
+      axios
+        .post(`http://localhost:8000/submit-salesform`, formData)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
         });
-
-        const responseData = await response.json();
-
-        if (response.status === 200) {
-          console.log("Form submitted successfully");
-          setFormData(initialFormData);
-          setSubmitted(true);
-        } else if (response.status === 400) {
-          alert(responseData.message);
-        } else {
-          console.error("Error submitting form. Status:", response.status);
-        }
-        setTimeout(() => {
-          setSubmitted(false);
-        }, 3000);
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      }
-      console.log("Form submitted!", formData);
     }
   };
 
@@ -127,31 +110,32 @@ function SaleInfoForm(): JSX.Element {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name) {
-      newErrors.name = "Name is required.";
+    if (!formData.profileName) {
+      newErrors.profileName = "Profile name is required.";
     }
-    if (!formData.email) {
-      newErrors.email = "Email is required.";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Invalid email format.";
+    if (!formData.clientName) {
+      newErrors.clientName = "Client name is required.";
     }
-    // if (!formData.phone) {
-    //   newErrors.phone = "Phone Number is required.";
+    // else if (!emailRegex.test(formData.email)) {
+    //   newErrors.email = "Invalid email format.";
+    // }
+    // if (!formData.url) {
+    //   newErrors.url = "Url is required.";
     // }
     // if (!formData.parentPhone) {
     //   newErrors.parentPhone = "Parent's Phone Number is required.";
     // }
-    // if (!formData.location) {
-    //   newErrors.location = "Location is required.";
+    // if (!formData.statusReason) {
+    //   newErrors.statusReason = "status reason is required.";
     // }
-    // if (!formData.highestQualification) {
-    //   newErrors.highestQualification = "Highest Qualification is required.";
+    // if (!formData.status) {
+    //   newErrors.status = "status is required.";
     // }
-    // if (!formData.duration) {
-    //   newErrors.duration = "Duration is required.";
+    // if (!formData.communicationMode) {
+    //   newErrors.communicationMode = "communicationMode is required.";
     // }
-    // if (!formData.totalFee) {
-    //   newErrors.totalFee = "Total Fee is required.";
+    // if (!formData.communicationReason) {
+    //   newErrors.communicationReason = "communicationReason is required.";
     // }
     // if (!formData.portalType) {
     //   newErrors.portalType = "portalType is required.";
@@ -161,16 +145,16 @@ function SaleInfoForm(): JSX.Element {
 
     if (Object.keys(newErrors).length === 0) {
       submitForm();
-      Navigate("/salecampusFormList");
+      Navigate("/saleinfoformlist");
     }
   };
 
   const handleUpdate = () => {
     axios
-      .put(`http://localhost:8000/update/${formData.id}`, formData)
+      .put(`http://localhost:8000/updatesaleinfo/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
-        Navigate("/SalecampusFormList"); // Navigate back to the list after update
+        Navigate("/saleinfoformlist"); // Navigate back to the list after update
       })
       .catch((error) => {
         console.log(error);
@@ -209,8 +193,8 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="radio"
                               name="portalType"
-                              value="Upwork"
-                              checked={formData.portalType === "Upwork"}
+                              value="upwork"
+                              checked={formData.portalType === "upwork"}
                               onChange={handleChange}
                             />
                           </label>
@@ -234,8 +218,8 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="radio"
                               name="portalType"
-                              value="Freelancer"
-                              checked={formData.portalType === "Freelancer"}
+                              value="freelancer"
+                              checked={formData.portalType === "freelancer"}
                               onChange={handleChange}
                             />
                           </label>
@@ -246,8 +230,8 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="radio"
                               name="portalType"
-                              value="Linkedin"
-                              checked={formData.portalType === "Linkedin"}
+                              value="linkedin"
+                              checked={formData.portalType === "linkedin"}
                               onChange={handleChange}
                             />
                           </label>
@@ -258,8 +242,8 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="radio"
                               name="portalType"
-                              value="Website"
-                              checked={formData.portalType === "Website"}
+                              value="website"
+                              checked={formData.portalType === "website"}
                               onChange={handleChange}
                             />
                           </label>
@@ -270,8 +254,8 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="radio"
                               name="portalType"
-                              value="Other"
-                              checked={formData.portalType === "Other"}
+                              value="other"
+                              checked={formData.portalType === "other"}
                               onChange={handleChange}
                             />
                           </label>
@@ -287,15 +271,15 @@ function SaleInfoForm(): JSX.Element {
                         <div className="SalecampusForm-input-os">
                           <input
                             type="text"
-                            name="name"
+                            name="profileName"
                             placeholder="Profile name"
-                            value={formData.name}
+                            value={formData.profileName}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.name && (
+                        {formErrors.profileName && (
                           <div className="error-message-os">
-                            {formErrors.name}
+                            {formErrors.profileName}
                           </div>
                         )}
                       </div>
@@ -304,15 +288,15 @@ function SaleInfoForm(): JSX.Element {
                         <div className="SalecampusForm-input-os">
                           <input
                             type="text"
-                            name="phone"
+                            name="url"
                             placeholder="Url"
-                            value={formData.phone}
+                            value={formData.url}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.phone && (
+                        {formErrors.url && (
                           <div className="error-message-os">
-                            {formErrors.phone}
+                            {formErrors.url}
                           </div>
                         )}
                       </div>
@@ -321,15 +305,15 @@ function SaleInfoForm(): JSX.Element {
                         <div className="SalecampusForm-input-os">
                           <input
                             type="text"
-                            name="email"
+                            name="clientName"
                             placeholder="Client name"
-                            value={formData.email}
+                            value={formData.clientName}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.email && (
+                        {formErrors.clientName && (
                           <div className="error-message-os">
-                            {formErrors.email}
+                            {formErrors.clientName}
                           </div>
                         )}
                       </div>
@@ -338,15 +322,15 @@ function SaleInfoForm(): JSX.Element {
                         <div className="SalecampusForm-input-os">
                           <input
                             type="text"
-                            name="parentPhone"
+                            name="handleBy"
                             placeholder="Handle by"
-                            value={formData.parentPhone}
+                            value={formData.handleBy}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.parentPhone && (
+                        {formErrors.handleBy && (
                           <div className="error-message-os">
-                            {formErrors.parentPhone}
+                            {formErrors.handleBy}
                           </div>
                         )}
                       </div>
@@ -354,8 +338,8 @@ function SaleInfoForm(): JSX.Element {
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
                           <select
-                            name="highestQualification"
-                            value={formData.highestQualification}
+                            name="status"
+                            value={formData.status}
                             onChange={handleChange}
                           >
                             {status.map((item) => {
@@ -367,9 +351,9 @@ function SaleInfoForm(): JSX.Element {
                             })}
                           </select>
                         </div>
-                        {formErrors.highestQualification && (
+                        {formErrors.status && (
                           <div className="error-message-os">
-                            {formErrors.highestQualification}
+                            {formErrors.status}
                           </div>
                         )}
                       </div>
@@ -378,15 +362,15 @@ function SaleInfoForm(): JSX.Element {
                         <div className="SalecampusForm-input-os">
                           <input
                             type="text"
-                            name="location"
+                            name="statusReason"
                             placeholder="Enter status reason"
-                            value={formData.location}
+                            value={formData.statusReason}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.location && (
+                        {formErrors.statusReason && (
                           <div className="error-message-os">
-                            {formErrors.location}
+                            {formErrors.statusReason}
                           </div>
                         )}
                       </div>
@@ -397,9 +381,9 @@ function SaleInfoForm(): JSX.Element {
                             Skype
                             <input
                               type="radio"
-                              name="duration"
-                              value="45 Days"
-                              checked={formData.duration === "45 Days"}
+                              name="communicationMode"
+                              value="skype"
+                              checked={formData.communicationMode === "skype"}
                               onChange={handleChange}
                             />
                           </label>
@@ -410,17 +394,17 @@ function SaleInfoForm(): JSX.Element {
                             Phone
                             <input
                               type="radio"
-                              name="duration"
-                              value="3 Months"
-                              checked={formData.duration === "3 Months"}
+                              name="communicationMode"
+                              value="phone"
+                              checked={formData.communicationMode === "phone"}
                               onChange={handleChange}
                             />
                           </label>
                         </div>
                       </div>
-                      {formErrors.duration && (
+                      {formErrors.communicationMode && (
                         <div className="error-message-os">
-                          {formErrors.duration}
+                          {formErrors.communicationMode}
                         </div>
                       )}
 
@@ -428,15 +412,15 @@ function SaleInfoForm(): JSX.Element {
                         <div className="SalecampusForm-input-os">
                           <input
                             type="text"
-                            name="totalFee"
+                            name="communicationReason"
                             placeholder="Enter communication reason"
-                            value={formData.totalFee}
+                            value={formData.communicationReason}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.totalFee && (
+                        {formErrors.communicationReason && (
                           <div className="error-message-os">
-                            {formErrors.totalFee}
+                            {formErrors.communicationReason}
                           </div>
                         )}
                       </div>

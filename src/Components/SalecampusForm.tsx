@@ -237,7 +237,7 @@ function SalecampusForm(): JSX.Element {
 
     if (Object.keys(newErrors).length === 0) {
       submitForm();
-      Navigate("/salecampusFormList");
+      Navigate("/saleinfoformlist");
     }
   };
 
@@ -246,7 +246,7 @@ function SalecampusForm(): JSX.Element {
       .put(`http://localhost:8000/update/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
-        Navigate("/SalecampusFormList"); // Navigate back to the list after update
+        Navigate("/saleinfoformlist"); // Navigate back to the list after update
       })
       .catch((error) => {
         console.log(error);

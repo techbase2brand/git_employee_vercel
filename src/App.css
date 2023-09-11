@@ -339,6 +339,9 @@ css .campus_form {
   gap: 12px;
   cursor: pointer;
 }
+.SalecampusForm-radio-os label input {
+  cursor: pointer;
+}
 .SalecampusForm-radio-row-os {
   display: flex;
   align-items: center;
