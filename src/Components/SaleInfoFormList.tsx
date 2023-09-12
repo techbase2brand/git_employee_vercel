@@ -11,31 +11,31 @@ import {
 import { useLocation, useNavigate } from "react-router";
 // import dayjs from "dayjs";
 
+// interface SalesInfoData {
+//   id: number;
+//   gender: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   parentPhone: string;
+//   location: string;
+//   course: string;
+//   duration: string;
+//   totalFee: string;
+//   highestQualification: string;
+// }
 interface SalesInfoData {
   id: number;
-  gender: string;
-  name: string;
-  email: string;
-  phone: string;
-  parentPhone: string;
-  location: string;
-  course: string;
-  duration: string;
-  totalFee: string;
-  highestQualification: string;
+  portalType: string;
+  profileName: string;
+  url: string;
+  clientName: string;
+  handleBy: string;
+  status: string;
+  statusReason: string;
+  communicationMode: string;
+  communicationReason: string;
 }
-
-//
-// interface Task {
-//   EvngTaskID: number;
-//   projectName: string;
-//   phaseName: string;
-//   module: string;
-//   task: string;
-//   estTime: string;
-//   actTime: string;
-//   upWorkHrs: number;
-// }
 
 interface Props {
   data: SalesInfoData[];
@@ -222,15 +222,15 @@ const SaleInfoFormList = () => {
     if (inputValue) {
       const result = data.filter(
         (e) =>
-          e.gender.toLowerCase() === lowercasedInput ||
-          e.email.toLowerCase().includes(lowercasedInput) ||
-          e.name.toLowerCase().includes(lowercasedInput) ||
-          String(e.phone).toLowerCase().includes(lowercasedInput) ||
-          String(e.parentPhone).toLowerCase().includes(lowercasedInput) ||
-          e.location.toLowerCase().includes(lowercasedInput) ||
-          e.highestQualification.toLowerCase().includes(lowercasedInput) ||
-          e.duration.toLowerCase().includes(lowercasedInput) ||
-          e.totalFee.toLowerCase().includes(lowercasedInput)
+          e.clientName.toLowerCase() === lowercasedInput ||
+          e.communicationMode.toLowerCase().includes(lowercasedInput) ||
+          e.communicationReason.toLowerCase().includes(lowercasedInput) ||
+          e.handleBy.toLowerCase().includes(lowercasedInput) ||
+          e.portalType.toLowerCase().includes(lowercasedInput) ||
+          e.profileName.toLowerCase().includes(lowercasedInput) ||
+          e.status.toLowerCase().includes(lowercasedInput) ||
+          e.statusReason.toLowerCase().includes(lowercasedInput) ||
+          e.url.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {

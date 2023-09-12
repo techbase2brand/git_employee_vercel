@@ -91,10 +91,11 @@ function SaleInfoForm(): JSX.Element {
 
   const submitForm = async () => {
     if (formData.id) {
+      // console.log("submitForm-if-os")
       // Update API, To update data
       handleUpdate();
     } else {
-      // console.log("formData-os", formData);
+      console.log("submitForm-else-os");
       axios
         .post(`http://localhost:8000/submit-salesform`, formData)
         .then((response) => {
@@ -145,7 +146,7 @@ function SaleInfoForm(): JSX.Element {
 
     if (Object.keys(newErrors).length === 0) {
       submitForm();
-      Navigate("/saleinfoformlist");
+      Navigate("/saleinfoformlist"); // Navigate back to the list after update
     }
   };
 
@@ -155,6 +156,7 @@ function SaleInfoForm(): JSX.Element {
       .then((response) => {
         console.log(response.data);
         Navigate("/saleinfoformlist"); // Navigate back to the list after update
+      console.log("handleUpdate-working-os")
       })
       .catch((error) => {
         console.log(error);
@@ -272,7 +274,7 @@ function SaleInfoForm(): JSX.Element {
                           <input
                             type="text"
                             name="profileName"
-                            placeholder="Profile name"
+                            placeholder="Profile id name"
                             value={formData.profileName}
                             onChange={handleChange}
                           />
@@ -289,7 +291,7 @@ function SaleInfoForm(): JSX.Element {
                           <input
                             type="text"
                             name="url"
-                            placeholder="Url"
+                            placeholder="Lead url"
                             value={formData.url}
                             onChange={handleChange}
                           />

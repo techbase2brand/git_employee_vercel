@@ -345,7 +345,7 @@ css .campus_form {
 .SalecampusForm-radio-row-os {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem 2rem;
   padding-bottom: 1.5rem;
   flex-wrap: wrap;
 }
@@ -371,3 +371,25 @@ tr:nth-child(even) {
 }
 /* table css ends */
 /* salecampus css end */
+
+.SalesInfoForm-radio-os label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 30%;
+}
+.SalesInfoForm-radio-os {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 0.2rem;
+}
+.SalesInfoForm-input-os input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+.SalesInfoForm-input-os {
+  width: 70%;
+}
