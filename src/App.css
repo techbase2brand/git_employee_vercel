@@ -393,3 +393,7 @@ tr:nth-child(even) {
 .SalesInfoForm-input-os {
   width: 70%;
 }
+.SalesInfoForm-input-os input:disabled {
+  opacity: 0.5;
+  cursor: no-drop;
+}
