@@ -49,6 +49,18 @@ const AppMenu = () => {
        <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
          <Link to="/ViewShiftChange">View Shift change </Link>
        </Menu.Item>
+       <Menu.Item key="salecampusform" icon={<TableOutlined />}>
+         <Link to="/salecampusform">Sale Campus Form</Link>
+       </Menu.Item>
+       <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
+         <Link to="/salecampusformlist">Sale Campus List</Link>
+       </Menu.Item>
+       <Menu.Item key="saleinfoform" icon={<TableOutlined />}>
+         <Link to="/saleinfoform">Sale Info Form</Link>
+       </Menu.Item>
+       <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
+         <Link to="/saleinfoformlist">Sale Info List</Link>
+       </Menu.Item>
        </>
       )}
 

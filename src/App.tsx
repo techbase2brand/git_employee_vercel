@@ -23,10 +23,14 @@ import ShiftChangeForm from "./Components/ShiftChangeForm";
 import ViewShiftChange from "./Components/ViewShiftChange";
 import HRshiftChangeSection from "./Components/HRshiftChangeSection";
 import HrLeaveAutoFill from "./Components/HrLeaveAutoFill";
-import HrLeaveReport from "./Components/HrLeaveReport"
-import EmployeeForm from "./Components/EmployeeForm"
-import EmployeeList from "./Components/EmployeeList"
-import ShiftChangeReport from "./Components/ShiftChangeReport"
+import HrLeaveReport from "./Components/HrLeaveReport";
+import EmployeeForm from "./Components/EmployeeForm";
+import EmployeeList from "./Components/EmployeeList";
+import ShiftChangeReport from "./Components/ShiftChangeReport";
+import SalecampusForm from "./Components/SalecampusForm";
+import SalecampusFormList from "./Components/SalecampusFormList";
+import SaleInfoForm from "./Components/SaleInfoForm";
+import SaleInfoFormList from "./Components/SaleInfoFormList";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -37,7 +41,6 @@ export const AssignedTaskCountContext = createContext<{
   assignedTaskCount: 0,
   setAssignedTaskCount: () => {},
 });
-
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -80,8 +83,8 @@ const App: React.FC = () => {
     <Router>
       <GlobalInfo.Provider
         value={{
-          empObj:empObj,
-          setEmpObj:setEmpObj,
+          empObj: empObj,
+          setEmpObj: setEmpObj,
           empInfo: empInfo,
           setEmpInfo: setEmpInfo,
           mrngEditID: mrngEditID,
@@ -158,6 +161,39 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          {/* Salecampus route */}
+          <Route
+            path="/salecampusform"
+            element={
+              <ProtectedRoute>
+                <SalecampusForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/salecampusformlist"
+            element={
+              <ProtectedRoute>
+                <SalecampusFormList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saleinfoform"
+            element={
+              <ProtectedRoute>
+                <SaleInfoForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/saleinfoformlist"
+            element={
+              <ProtectedRoute>
+                <SaleInfoFormList />
+              </ProtectedRoute>
+            }
+          />
           {info?.role === "HR" && (
             <>
               <Route
@@ -220,7 +256,7 @@ const App: React.FC = () => {
             }
           />
 
-<Route
+          <Route
             path="/ShiftChangeReport"
             element={
               <ProtectedRoute>
@@ -228,7 +264,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/employee-form"
             element={
               <ProtectedRoute>
@@ -236,7 +272,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/employee-list"
             element={
               <ProtectedRoute>
