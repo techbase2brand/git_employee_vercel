@@ -70,7 +70,7 @@ const SalecampusFormList = () => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-        "http://localhost:8000/salecampusdata"
+        "https://empbackend.base2brand.com/salecampusdata"
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const SalecampusFormList = () => {
     setDeleteId(id);
     axios
       .delete(
-        `http://localhost:8000/delete/${id}`
+        `https://empbackend.base2brand.com/delete/${id}`
         // {
         //   headers: {
         //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,

@@ -170,7 +170,7 @@ function SalecampusForm(): JSX.Element {
       handleUpdate();
     } else {
       try {
-        const response = await fetch("http://localhost:8000/submit-form", {
+        const response = await fetch("https://empbackend.base2brand.com/submit-form", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -243,7 +243,7 @@ function SalecampusForm(): JSX.Element {
 
   const handleUpdate = () => {
     axios
-      .put(`http://localhost:8000/update/${formData.id}`, formData)
+      .put(`https://empbackend.base2brand.com/update/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
         Navigate("/salecampusformlist"); // Navigate back to the list after update
