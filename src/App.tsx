@@ -48,14 +48,14 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
-  // const token = localStorage.getItem("myToken");
-  // if (!token) {
-  //   alert("Please log in!");
-  //   setTimeout(() => {
-  //     navigate("/");
-  //   }, 0);
-  //   return null;
-  // }
+  const token = localStorage.getItem("myToken");
+  if (!token) {
+    alert("Please log in!");
+    setTimeout(() => {
+      navigate("/");
+    }, 0);
+    return null;
+  }
   return <>{children}</>;
 };
 
