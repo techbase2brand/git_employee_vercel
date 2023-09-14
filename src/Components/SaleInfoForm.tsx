@@ -184,7 +184,7 @@ function SaleInfoForm(): JSX.Element {
 
   const handleUpdate = () => {
     axios
-      .put(`https://empbackend.base2brand.com/updatesaleinfo/${formData.id}`, formData)
+      .put(`https://empbackend.base2brand.com/updatesale/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
         Navigate("/saleinfoformlist"); // Navigate back to the list after update

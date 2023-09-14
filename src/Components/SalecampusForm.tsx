@@ -243,7 +243,7 @@ function SalecampusForm(): JSX.Element {
 
   const handleUpdate = () => {
     axios
-      .put(`https://empbackend.base2brand.com/update/${formData.id}`, formData)
+      .put(`https://empbackend.base2brand.com/updatecampus/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
         Navigate("/salecampusformlist"); // Navigate back to the list after update
