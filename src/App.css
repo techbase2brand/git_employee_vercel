@@ -2,6 +2,7 @@
   margin: 0px;
   padding: 0px;
   max-height: 100%;
+  box-sizing: border-box;
 }
 
 .approved-row {
@@ -19,55 +20,45 @@
 }
 
 .emp-main-div {
-
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100vw;
   height: 100vh;
   block-size: fit-content;
-
-
 }
 
 .menu-div {
-
   width: 20vw;
   height: 90vh;
   background-color: white;
 }
 
 .form-container {
-
   width: 80vw;
   height: 90vh;
-  background-color: #F7F9FF;
-  display: flex;
+  background-color: #f7f9ff;
+  /* display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
   /* margin-top: 10vh */
 }
 
-.form-div {
-
-  width: 40%;
-  background-color: #F7F9FF;
-  height: 100%;
-  margin-right: 48%;
-  /* margin-top:7% */
+.SalecampusForm-data-os {
+  width: 60%;
+  background-color: #f7f9ff;
+  padding: 2rem 4rem;
 }
 
 .emp-div-flex {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-
 }
 
 .form-control {
@@ -79,8 +70,8 @@
   padding-top: 15px;
   padding-bottom: 15px;
   border-width: 1px solid #094781;
-  background-color: #FFFFFF;
-  border: 1.69622px solid #D8D6D6;
+  background-color: #ffffff;
+  border: 1.69622px solid #d8d6d6;
   border-radius: 4.24055px;
 }
 
@@ -89,10 +80,10 @@
   color: #094781;
   margin-top: 3%;
   margin-bottom: 2%;
-
 }
 
-.btn-btn-primary {}
+.btn-btn-primary {
+}
 
 .upwork {
   font-family: Poppins;
@@ -111,7 +102,6 @@
   border-radius: 15px;
 }
 
-
 .add-div {
   display: flex;
   width: 50%;
@@ -122,7 +112,7 @@
 }
 
 .add-heading {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   font-size: 26.1px;
@@ -130,11 +120,11 @@
   letter-spacing: 0.02em;
   height: 25px;
   color: #094781;
-  position: 'absolute';
+  position: "absolute";
 }
 
 .add-label {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 15.3508px;
@@ -145,8 +135,8 @@
 }
 
 .add-input {
-  background: #FFFFFF;
-  border: 1.69622px solid #D8D6D6;
+  background: #ffffff;
+  border: 1.69622px solid #d8d6d6;
   border-radius: 4.24055px;
   box-sizing: border-box;
   width: 267.15px;
@@ -164,28 +154,28 @@
   background: #094781;
   border-radius: 4.96885px;
   margin-top: 24px;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 600;
   font-size: 18.7263px;
   line-height: 28px;
   letter-spacing: 0.02em;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .nav-dropDown {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 300;
   font-size: 10.83px;
   line-height: 19px;
   letter-spacing: 0.02em;
   padding: 0;
-  color: #BDBDBD;
+  color: #bdbdbd;
 }
 
 .go-btn {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 16.83px;
@@ -193,42 +183,42 @@
   letter-spacing: 0.02em;
   background: #154880;
   border-radius: 5px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .nav-proj-btn {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 13.292px;
   line-height: 20px;
   letter-spacing: 0.02em;
-  color: #FFFFFF;
+  color: #ffffff;
   text-shadow: 0px 2px 9px rgba(0, 0, 0, 0.09);
-  background: #FD7C50;
+  background: #fd7c50;
   border: 1px solid #454545;
   border-radius: 50px;
 }
 
 .nav-date {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 16.83px;
   line-height: 25px;
   letter-spacing: 0.02em;
-  color: #2A2A2A;
+  color: #2a2a2a;
 }
 
 .nav-hrs-estimate {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 16.83px;
   line-height: 25px;
   letter-spacing: 0.02em;
-  color: #2A2A2A;
-  border: 1px solid #BEBEBE;
+  color: #2a2a2a;
+  border: 1px solid #bebebe;
   border-radius: 99px;
   width: 221px;
   height: 25px;
@@ -238,7 +228,7 @@
 }
 
 .proj-person {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 13.15px;
@@ -247,11 +237,10 @@
   color: #154880;
   margin-bottom: 1.5%;
   margin-left: 2%;
-
 }
 
 .table-data {
-  font-family: 'Poppins';
+  font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-size: 10.15px;
@@ -276,11 +265,135 @@
 .uncertainLeaveStyle {
   font-size: 16px;
   line-height: 1.5;
-  font-style: italic
+  font-style: italic;
 }
 
 .regularLeaveStyle {
   font-size: 16px;
   line-height: 1.5;
-  font-style: italic
+  font-style: italic;
+}
+
+/* salecampus css starts */
+css .campus_form {
+  width: 90%;
+  margin: 0 auto;
+}
+.SalecampusForm-input-os input,
+.SalecampusForm-input-os select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+.SalecampusForm-col-os {
+  padding-bottom: 2rem;
+}
+.gender {
+  position: relative;
+}
+.gender select {
+  width: 100%;
+  /* margin-top: 15px; */
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  margin-top: 30px;
+}
+.SalecampusForm-submit-os button {
+  width: 40%;
+  padding: 10px;
+  background: #071c4d;
+  color: #fff;
+  font-size: 16px;
+  border: 0;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.gender1-radio {
+  width: 7%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.SalecampusForm-data-os h2 {
+  padding-bottom: 1rem;
+  color: #071c4d;
+  font-size: 27px;
+}
+.error-message-os {
+  color: red;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 8px 0;
+}
+.SalecampusForm-radio-os {
+  display: flex;
+  align-items: center;
+}
+.SalecampusForm-radio-os label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.SalecampusForm-radio-os label input {
+  cursor: pointer;
+}
+.SalecampusForm-radio-row-os {
+  display: flex;
+  align-items: center;
+  gap: 1rem 2rem;
+  padding-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.SalecampusFormList-default-os {
+  padding: 3rem;
+}
+/* table css starts */
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+/* table css ends */
+/* salecampus css end */
+
+.SalesInfoForm-radio-os label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 30%;
+}
+.SalesInfoForm-radio-os {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 0.2rem;
+}
+.SalesInfoForm-input-os input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+.SalesInfoForm-input-os {
+  width: 70%;
+}
+.SalesInfoForm-input-os input:disabled {
+  opacity: 0.5;
+  cursor: no-drop;
 }
