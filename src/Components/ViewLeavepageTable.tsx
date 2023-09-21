@@ -43,10 +43,6 @@ useEffect(() => {
       );
 
       const filteredData = sortedData.filter((item)=> item?.employeeID === employeeInfo?.EmployeeID)
-      console.log(sortedData,"sortedDatasortedData");
-      console.log(sortedData,"sortedDatasortedData");
-      console.log(filteredData);
-
 
       setData(filteredData);
     });

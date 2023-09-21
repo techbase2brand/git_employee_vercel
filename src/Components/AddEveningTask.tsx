@@ -102,8 +102,8 @@ const AddModule: React.FC<any> = () => {
         },
       })
       .then((response) => {
-        const res = response.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
-        console.log(res, "ssfffggg------");
+        const res = response?.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
+        console.log(res, "ssfffggg======------");
 
         setSelectedProject(res[0]?.projectName);
         setSelectedPhase(res[0]?.phaseName);
@@ -295,23 +295,23 @@ const AddModule: React.FC<any> = () => {
       task: value,
     }));
   };
-  // const handleEstTimeChange = (value: string) => {
-  //   setEveningTask((prevEveningTask) => ({
-  //     ...prevEveningTask,
-  //     estTime: value,
-  //   }));
-  // };
-
-
   const handleEstTimeChange = (value: string) => {
-    const [hours, mins] = value.split(":");
-    const formattedTime = `${parseInt(hours)} hours ${parseInt(mins)} mins`;
-
     setEveningTask((prevEveningTask) => ({
-        ...prevEveningTask,
-        estTime: formattedTime,
+      ...prevEveningTask,
+      estTime: value,
     }));
-};
+  };
+
+
+//   const handleEstTimeChange = (value: string) => {
+//     const [hours, mins] = value.split(":");
+//     const formattedTime = `${parseInt(hours)} hours ${parseInt(mins)} mins`;
+
+//     setEveningTask((prevEveningTask) => ({
+//         ...prevEveningTask,
+//         estTime: formattedTime,
+//     }));
+// };
 
   const handleActTimeChange = (value: string) => {
     setEveningTask((prevEveningTask) => ({
@@ -550,7 +550,7 @@ const AddModule: React.FC<any> = () => {
                   >
                     <option value="">--Select Time--</option>
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [15, 30, 45].map((minute) => (
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
                         <option
                           key={`${hour}:${minute}`}
                           value={`${hour}:${minute}`}
@@ -609,7 +609,7 @@ const AddModule: React.FC<any> = () => {
                   >
                     <option value="">--Select Time--</option>
                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [15, 30, 45].map((minute) => (
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
                         <option
                           key={`${hour}:${minute}`}
                           value={`${hour}:${minute}`}
