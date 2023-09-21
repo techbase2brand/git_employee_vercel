@@ -96,7 +96,7 @@ const AddModule: React.FC<any> = () => {
   useEffect(() => {
     if (location?.state?.EvngTaskID) {
     axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskEvening",{
+      .get<Task[]>("http://localhost:5000/get/addTaskEvening",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -136,7 +136,7 @@ const AddModule: React.FC<any> = () => {
     // Fetch employees from the backend API
     const token = localStorage.getItem("myToken");
     axios
-      .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
+      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -189,7 +189,7 @@ const AddModule: React.FC<any> = () => {
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     // Fetch employees from the backend API
-    axios.get<Module[]>("https://empbackend.base2brand.com/get/modules", {
+    axios.get<Module[]>("http://localhost:5000/get/modules", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -299,21 +299,26 @@ const AddModule: React.FC<any> = () => {
   //   setEveningTask((prevEveningTask) => ({
   //     ...prevEveningTask,
   //     estTime: value,
-  //   }));
+  //   }));   
   // };
 
 
-  const handleEstTimeChange = (value: string) => {
-    const [hours, mins] = value.split(":");
-    const formattedTime = `${parseInt(hours)} hours ${parseInt(mins)} mins`;
-
+ const handleEstTimeChange = (value: string) => {
+    // const [hours, mins] = value.split(":");
+    // const formattedTime = `${parseInt(hours)} hours ${parseInt(mins)} mins`;
+      // console.log(formattedTime, "formattedTime");
+      // console.log(value);
+      
+      
     setEveningTask((prevEveningTask) => ({
         ...prevEveningTask,
-        estTime: formattedTime,
+        estTime: value,
     }));
 };
 
   const handleActTimeChange = (value: string) => {
+    console.log(value,"valuevaluevalue");
+    
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
       actTime: value,
@@ -321,6 +326,8 @@ const AddModule: React.FC<any> = () => {
   };
 
   const handleUpWorkHrsChange = (value: string) => {
+    console.log(value,"valuevaluevammmlue");
+    
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
       upWorkHrs: value,
@@ -331,7 +338,7 @@ const AddModule: React.FC<any> = () => {
     if (evngEditID) {
       axios
         .put(
-          `https://empbackend.base2brand.com/update/addEvngTask/${evngEditID}`,
+          `http://localhost:5000/update/addEvngTask/${evngEditID}`,
           eveningTask,
           {
             headers: {
@@ -354,7 +361,7 @@ const AddModule: React.FC<any> = () => {
         });
     } else {
       axios
-        .post("https://empbackend.base2brand.com/create/addTaskEvening", eveningTask,{
+        .post("http://localhost:5000/create/addTaskEvening", eveningTask,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },

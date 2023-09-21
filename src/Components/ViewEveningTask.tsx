@@ -26,7 +26,7 @@ interface Task {
   module: string;
   task: string;
   estTime: string;
-  upWorkHrs: number;
+  upWorkHrs: string;
   employeeID: string;
   currDate: string;
   actTime : string;
@@ -50,7 +50,7 @@ const ViewEveningTask: React.FC = () => {
   useEffect(() => {
     console.log("234567890234567890-");
     axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskEvening",{
+      .get<Task[]>("http://localhost:5000/get/addTaskEvening",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
