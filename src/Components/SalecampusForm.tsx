@@ -912,6 +912,7 @@ function SalecampusForm(): JSX.Element {
                             <option value="interested">Interested</option>
                             <option value="not interested">Not Interested</option>
                             <option value="hopefully">Hopefully</option>
+                            <option value="not picked">Not Picked</option>
                           </select>
                         </div>
                         {formErrors.status && (
