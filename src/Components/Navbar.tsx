@@ -48,12 +48,12 @@ const Navbar: React.FunctionComponent = () => {
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
-  console.log(myData,"myData");
+  // console.log(myData,"myData");
 
 
 
-  console.log(notifications,"notifications");
-  console.log(assignedTaskCount,"assignedTaskCount");
+  // console.log(notifications,"notifications");
+  // console.log(assignedTaskCount,"assignedTaskCount");
 
   // const initialNotificationCount = Number(
   //   localStorage.getItem("notificationCount") || 0
@@ -112,7 +112,7 @@ const Navbar: React.FunctionComponent = () => {
   //       setAssignedTaskCount((prevCount) => prevCount + 1);
 
   //       // Fetch all tasks.
-  //       axios.get<BacklogTask[]>(`http://localhost:5000/get/BacklogTasks`)
+  //       axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
   //         .then(response => {
   //           // Filter the tasks assigned to the current user.
   //           const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
@@ -171,7 +171,7 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io("https://empbackend.base2brand.com");
     socket.on("taskAssigned", handleTaskAssigned);
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
@@ -194,7 +194,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 useEffect(() => {
     axios
-      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks",{
+      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

@@ -32,7 +32,7 @@ useEffect(() => {
   const token = localStorage.getItem("myToken");
 
   axios
-    .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+    .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -43,10 +43,6 @@ useEffect(() => {
       );
 
       const filteredData = sortedData.filter((item)=> item?.employeeID === employeeInfo?.EmployeeID)
-      console.log(sortedData,"sortedDatasortedData");
-      console.log(sortedData,"sortedDatasortedData");
-      console.log(filteredData);
-
 
       setData(filteredData);
     });
@@ -56,7 +52,7 @@ useEffect(() => {
   //   const token = localStorage.getItem("myToken");
 
   //   axios
-  //     .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
+  //     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
   //       headers: {
   //         Authorization: `Bearer ${token}`,
   //       },

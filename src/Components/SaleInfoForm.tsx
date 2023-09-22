@@ -128,7 +128,7 @@ function SaleInfoForm(): JSX.Element {
     } else {
       console.log("submitForm-else-os");
       axios
-        .post(`http://localhost:5000/submit-salesform`, formData)
+        .post(`https://empbackend.base2brand.com/submit-salesform`, formData)
         .then((response) => {
           console.log(response.data);
           setSubmitted(true);
@@ -184,7 +184,7 @@ function SaleInfoForm(): JSX.Element {
 
   const handleUpdate = () => {
     axios
-      .put(`http://localhost:5000/updatesale/${formData.id}`, formData)
+      .put(`https://empbackend.base2brand.com/updatesale/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
         Navigate("/saleinfoformlist"); // Navigate back to the list after update

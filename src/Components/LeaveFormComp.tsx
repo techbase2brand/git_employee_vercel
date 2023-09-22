@@ -129,7 +129,7 @@ const LeaveFormComp: React.FC = () => {
         leaveCategory: leaveCategoryState,
       };
       axios
-      .post("http://localhost:5000/createLeave", leaveData, {
+      .post("https://empbackend.base2brand.com/createLeave", leaveData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -185,7 +185,7 @@ const LeaveFormComp: React.FC = () => {
 
 
     axios
-      .get<Admin[]>("http://localhost:5000/get/admin", {
+      .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

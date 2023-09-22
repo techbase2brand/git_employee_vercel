@@ -94,7 +94,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>(`http://localhost:5000/get/addTaskMorning`, {
+        .get<Task[]>(`https://empbackend.base2brand.com/get/addTaskMorning`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -147,7 +147,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     axios
       .get<AssignedEmployees[]>(
-        "http://localhost:5000/get/PhaseAssignedTo",
+        "https://empbackend.base2brand.com/get/PhaseAssignedTo",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -209,7 +209,7 @@ const AddModule: React.FC<unknown> = () => {
 
     // Fetch employees from the backend API
     axios
-      .get<Module[]>("http://localhost:5000/get/modules", {
+      .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -299,7 +299,7 @@ const AddModule: React.FC<unknown> = () => {
     if (location?.state?.MrngTaskID) {
       axios
         .put(
-          `http://localhost:5000/update/addMrngTask/${location?.state?.MrngTaskID}`,
+          `https://empbackend.base2brand.com/update/addMrngTask/${location?.state?.MrngTaskID}`,
           morningTask,
           {
             headers: {
@@ -323,7 +323,7 @@ const AddModule: React.FC<unknown> = () => {
 
       axios
         .post(
-          "http://localhost:5000/create/addTaskMorning",
+          "https://empbackend.base2brand.com/create/addTaskMorning",
           morningTask,
           {
             headers: {
@@ -451,12 +451,11 @@ const AddModule: React.FC<unknown> = () => {
 
                   {/* )} */}
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                {/* <div style={{ display: "flex", flexDirection: "column" }}>
                   <label className="add-label">
                     Module<span style={{ color: "red" }}>*</span>
                   </label>
 
-                  {/* {selectedProject && selectedPhase && ( */}
                   <select
                     className="add-input"
                     id="module"
@@ -475,7 +474,29 @@ const AddModule: React.FC<unknown> = () => {
                         );
                       })}
                   </select>
-                </div>
+                </div> */}
+
+                  <div style={{display:'flex', flexDirection:'column'}}>
+        <label className="add-label">Module</label>
+          <select
+            className="add-input"
+            id="module"
+            name="module"
+            value={selectedModule}
+            onChange={(e) => handleModuleChange(e.target.value)}
+          >
+            <option value="">Select a module</option>
+            {modules
+              .filter((module) => module.phaseName == selectedPhase && module.projectName == selectedProject)
+              .map((module) => {
+                return (
+                  <option key={module.modID} value={module.modules}>
+                    {module.modules}
+                  </option>
+                );
+            })}
+          </select>
+        </div>
 
                 {/* )} */}
               </div>
