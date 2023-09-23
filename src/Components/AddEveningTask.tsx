@@ -76,7 +76,7 @@ const AddModule: React.FC<any> = () => {
     task: "",
     estTime: "",
     actTime: "",
-    upWorkHrs: "",
+    upWorkHrs: "0:00",
     employeeID: "",
     currDate: formattedDate,
   });
@@ -575,7 +575,7 @@ const AddModule: React.FC<any> = () => {
                     onChange={(e) => handleUpWorkHrsChange(e.target.value)}
                     required
                   >
-                    <option value="">--Select Time--</option>
+                    <option value="0:00">--Select Time--</option>
                     {Array.from({ length: 25 }, (_, i) => i).map((hour) =>
                       [0, 10, 20, 30, 40, 50].map((minute) => {
                         if (hour === 24 && minute > 0) {

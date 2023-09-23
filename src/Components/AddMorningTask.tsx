@@ -78,14 +78,14 @@ const AddModule: React.FC<unknown> = () => {
 
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
-    projectName: "",
-    phaseName: "",
-    module: "",
-    task: "",
-    estTime: "",
-    upWorkHrs: "",
-    employeeID: "",
-    currDate: formattedDate,
+  projectName: "",
+  phaseName: "",
+  module: "",
+  task: "",
+  estTime: "",
+  upWorkHrs: "0:00", // Set the initial value to "0:00"
+  employeeID: "",
+  currDate: formattedDate,
   });
   const token = localStorage.getItem("myToken");
 
@@ -309,7 +309,7 @@ const AddModule: React.FC<unknown> = () => {
         )
         .then((response) => {
           if (response.data === "All fields are required.") {
-            alert("All fields are required.");
+            alert("All compulsory fields are required.");
           } else {
             navigate("/view-morning-task");
             setMrngEditID();
@@ -477,7 +477,10 @@ const AddModule: React.FC<unknown> = () => {
                 </div> */}
 
                   <div style={{display:'flex', flexDirection:'column'}}>
-        <label className="add-label">Module</label>
+        {/* <label className="add-label">Module</label> */}
+        <label className="add-label">
+                    Module<span style={{ color: "red" }}>*</span>
+                  </label>
           <select
             className="add-input"
             id="module"
@@ -537,7 +540,10 @@ const AddModule: React.FC<unknown> = () => {
                 }}
               >
                 <div className="form-group">
-                  <label className="add-label">Estimate Hrs</label>
+                  {/* <label className="add-label">Estimate Hrs</label> */}
+                  <label className="add-label">
+                  Estimate Hrs<span style={{ color: "red" }}>*</span>
+                  </label>
                   <select
                     style={{ width: "16.8vw" }}
                     name="estTime"
@@ -572,28 +578,27 @@ const AddModule: React.FC<unknown> = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="add-label">Upwork Hrs</label>
-                  <select
-                    style={{ width: "16.8vw" }}
-                    name="upWorkHrs"
-                    className="form-control"
-                    value={morningTask.upWorkHrs}
-                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
-                    required
-                  >
-                    <option value="">--Select Time--</option>
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [0, 10, 20, 30, 40, 50].map((minute) => (
-                        <option
-                          key={`${hour}:${minute}`}
-                          value={`${hour}:${minute}`}
-                        >
-                          {`${hour} hours ${minute} mins`}
-                        </option>
-                      ))
-                    )}
-                  </select>
-                </div>
+  <label className="add-label">Upwork Hrs</label>
+  <select
+    style={{ width: "16.8vw" }}
+    name="upWorkHrs"
+    className="form-control"
+    value={morningTask.upWorkHrs}
+    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
+  >
+    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
+    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+      [0, 10, 20, 30, 40, 50].map((minute) => (
+        <option
+          key={`${hour}:${minute}`}
+          value={`${hour}:${minute}`}
+        >
+          {`${hour} hours ${minute} mins`}
+        </option>
+      ))
+    )}
+  </select>
+</div>
               </div>
               <button className="add-button" onClick={handleSubmit}>
                 Submit

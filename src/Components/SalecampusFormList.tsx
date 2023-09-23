@@ -24,6 +24,7 @@ interface SalecampusData {
   totalFee: string;
   highestQualification: string;
   status: string;
+  description :string;
 }
 
 //
@@ -138,6 +139,11 @@ const SalecampusFormList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "description",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Email",
