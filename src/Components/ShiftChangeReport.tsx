@@ -48,7 +48,7 @@ const ShiftChangeReport: React.FC = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
+  //     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo")
   //     // .then((response) => {
   //     //   // const sortedData = response.data.sort(
   //     //   //   (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
@@ -60,7 +60,7 @@ const ShiftChangeReport: React.FC = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get<Employee[]>("http://localhost:5000/employees")
+  //     .get<Employee[]>("https://empbackend.base2brand.com/employees")
   //     // .then((response) => {
   //     //   // const sortedData = response?.data.sort(
   //     //   //   (a, b) => Number(b.EmpID) - Number(a.EmpID)
