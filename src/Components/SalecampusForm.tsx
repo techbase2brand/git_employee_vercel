@@ -15,6 +15,7 @@ interface FormData {
   duration: string;
   totalFee: string;
   gender: string;
+  status: string
 }
 
 function SalecampusForm(): JSX.Element {
@@ -25,9 +26,10 @@ function SalecampusForm(): JSX.Element {
     parentPhone: "",
     location: "",
     highestQualification: "",
-    duration: "1 Year",
+    duration: "",
     totalFee: "",
     gender: "Male",
+    status: ""
   };
   // update api data
   const location = useLocation();
@@ -164,9 +166,51 @@ function SalecampusForm(): JSX.Element {
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const updatedFormData = { ...formData };
+
+    const newErrors: Record<string, string> = {};
+
+    if (!updatedFormData.name) {
+      newErrors.name = "Name is required.";
+    }
+    if (!updatedFormData.phone) {
+      newErrors.phone = "Phone Number is required.";
+    }
+    if (!updatedFormData.status) {
+      newErrors.status = "Status is required.";
+    }
+
+    setFormErrors(newErrors);
+
+    // Create a copy of formData to modifyWHY ABOVE '
+
+    // Assigning default value "NA" to each string field if they're empty
+
+    updatedFormData.email = (updatedFormData.email == " ") ? "NA" : updatedFormData.email;
+    updatedFormData.parentPhone = (updatedFormData.parentPhone == " ") ? "NA" : updatedFormData.parentPhone;
+    updatedFormData.location = (updatedFormData.location == " ") ? "NA" : updatedFormData.location;
+    updatedFormData.highestQualification = (updatedFormData.highestQualification === " ") ? "NA" : updatedFormData.highestQualification;
+    updatedFormData.duration = (updatedFormData.duration == " ") ? "NA" : updatedFormData.duration;
+    updatedFormData.totalFee = (updatedFormData.totalFee == " ") ? "NA" : updatedFormData.totalFee;
+
+
+    // Update formData with the updated values
+    setFormData(updatedFormData);
+
+
+
+    if (Object.keys(newErrors).length === 0) {
+      submitForm();
+      Navigate("/salecampusformlist");
+    }
+  };
+
+
   const submitForm = async () => {
     if (formData.id) {
-      // Update API, To update data
       handleUpdate();
     } else {
       try {
@@ -183,6 +227,7 @@ function SalecampusForm(): JSX.Element {
         if (response.status === 200) {
           console.log("Form submitted successfully");
           setFormData(initialFormData);
+
           setSubmitted(true);
         } else if (response.status === 400) {
           alert(responseData.message);
@@ -195,63 +240,23 @@ function SalecampusForm(): JSX.Element {
       } catch (error) {
         console.error("Error submitting form:", error);
       }
-      console.log("Form submitted!", formData);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name) {
-      newErrors.name = "Name is required.";
-    }
-    if (!formData.email) {
-      newErrors.email = "Email is required.";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Invalid email format.";
-    }
-    // if (!formData.phone) {
-    //   newErrors.phone = "Phone Number is required.";
-    // }
-    // if (!formData.parentPhone) {
-    //   newErrors.parentPhone = "Parent's Phone Number is required.";
-    // }
-    // if (!formData.location) {
-    //   newErrors.location = "Location is required.";
-    // }
-    // if (!formData.highestQualification) {
-    //   newErrors.highestQualification = "Highest Qualification is required.";
-    // }
-    // if (!formData.duration) {
-    //   newErrors.duration = "Duration is required.";
-    // }
-    // if (!formData.totalFee) {
-    //   newErrors.totalFee = "Total Fee is required.";
-    // }
-    // if (!formData.gender) {
-    //   newErrors.gender = "Gender is required.";
-    // }
-
-    setFormErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      submitForm();
-      Navigate("/salecampusformlist");
     }
   };
 
   const handleUpdate = () => {
-    axios
-      .put(`https://empbackend.base2brand.com/updatecampus/${formData.id}`, formData)
+    axios.put(`https://empbackend.base2brand.com/updatecampus/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
-        Navigate("/salecampusformlist"); // Navigate back to the list after update
+        Navigate("/salecampusformlist");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+
+  //... Your other code and component logic
+
 
   return (
     <>
@@ -346,6 +351,31 @@ function SalecampusForm(): JSX.Element {
 
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
+                          <select
+                            name="status"
+                            value={formData.status}
+                            onChange={handleChange}
+                          >
+                            <option value="" disabled>Select Status</option>
+                            <option value="interested">Interested</option>
+                            <option value="not interested">Not Interested</option>
+                            <option value="hopefully">Hopefully</option>
+                            <option value="not picked">Not Picked</option>
+                            <option value="enrolled">Enrolled</option>
+                          </select>
+                        </div>
+                        {formErrors.status && (
+                          <div className="error-message-os">
+                            {formErrors.status}
+                          </div>
+                        )}
+                      </div>
+
+
+
+
+                      <div className="SalecampusForm-col-os">
+                        <div className="SalecampusForm-input-os">
                           <input
                             type="email"
                             name="email"
@@ -418,25 +448,7 @@ function SalecampusForm(): JSX.Element {
                         )}
                       </div>
 
-                      {/* <div className="SalecampusForm-col-os">
-                        <div className="SalecampusForm-input-os">
-                          <select
-                            name="duration"
-                            value={formData.duration}
-                            onChange={handleChange}
-                          >
-                            <option value="">Select Duration</option>
-                            <option value="2 Months">2 Months</option>
-                            <option value="3 Months">3 Months</option>
-                            <option value="6 Months">6 Months</option>
-                          </select>
-                        </div>
-                        {formErrors.duration && (
-                          <div className="error-message-os">
-                            {formErrors.duration}
-                          </div>
-                        )}
-                      </div> */}
+
 
                       <div className="SalecampusForm-radio-row-os">
                         <div className="SalecampusForm-radio-os">
@@ -523,12 +535,15 @@ function SalecampusForm(): JSX.Element {
                         )}
                       </div>
 
-                      <div className="SalecampusForm-submit-os">
+           <div className="SalecampusForm-submit-os">
                         <button onClick={handleSubmit} type="submit">
                           {formData.id ? "Update" : "Submit"}
                         </button>
                       </div>
+
+
                     </div>
+
                   </form>
 
                   {submitted && (

@@ -23,6 +23,7 @@ interface SalecampusData {
   duration: string;
   totalFee: string;
   highestQualification: string;
+  status: string;
 }
 
 //
@@ -173,11 +174,33 @@ const SalecampusFormList = () => {
       key: "duration",
       render: (text: string) => <div>{text}</div>,
     },
+
     {
       title: "Total Fees",
       dataIndex: "totalFee",
       key: "totalFee",
       render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      // render: (text: string) => <div>{text}</div>,
+      render: (utcDateTime: any) => convertUTCToLocal(utcDateTime)
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      // render: (text: string) => <div>{text}</div>,
+      render: (utcDateTime: any) => convertUTCToLocal(utcDateTime)
+
     },
     {
       title: "Action",
@@ -209,18 +232,20 @@ const SalecampusFormList = () => {
 
   const filterData = (inputValue: string) => {
     const lowercasedInput = inputValue.toLowerCase();
-    
+
     if (inputValue) {
       const result = data.filter(e =>
-        e.gender.toLowerCase() === (lowercasedInput) ||
+        // e.gender.toLowerCase() === (lowercasedInput) ||
+        e.gender.toLowerCase().includes(lowercasedInput) ||
         e.email.toLowerCase().includes(lowercasedInput) ||
-        e.name.toLowerCase().includes(lowercasedInput) || 
+        e.name.toLowerCase().includes(lowercasedInput) ||
         String(e.phone).toLowerCase().includes(lowercasedInput) ||
         String(e.parentPhone).toLowerCase().includes(lowercasedInput) ||
         e.location.toLowerCase().includes(lowercasedInput) ||
         e.highestQualification.toLowerCase().includes(lowercasedInput) ||
         e.duration.toLowerCase().includes(lowercasedInput) ||
-        e.totalFee.toLowerCase().includes(lowercasedInput)
+        e.totalFee.toLowerCase().includes(lowercasedInput) ||
+        e.status.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {
@@ -232,6 +257,21 @@ const SalecampusFormList = () => {
     setSearch(inputValue);
     filterData(inputValue);
   };
+
+
+  //
+  function convertUTCToLocal(utcString: string | number | Date) {
+    const date = new Date(utcString);
+    const offsetIST = 330;  // offset in minutes for UTC+5:30
+    date.setMinutes(date.getMinutes() + offsetIST);
+    return date.toISOString().slice(0, 19).replace("T", " ");
+  }
+
+  // Sample usage
+  const utcDateTime = "2023-09-21T14:09:55.000Z";
+  const localDateTime = convertUTCToLocal(utcDateTime);
+  console.log(localDateTime);  // Outputs "2023-09-21 19:39:55"
+
 
   return (
     <>
