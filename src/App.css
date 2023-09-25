@@ -397,3 +397,26 @@ tr:nth-child(even) {
   opacity: 0.5;
   cursor: no-drop;
 }
+
+/* styles.css */
+
+.interested {
+  background-color: #83e568;
+}
+
+.not-interested {
+  background-color: #f17575;
+}
+
+.hopefully {
+  background-color: #dec046;
+}
+
+.not-picked {
+  background-color: #b57a2b;
+}
+
+.enrolled {
+  background-color: #3f5b99;
+}
+

@@ -78,14 +78,14 @@ const AddModule: React.FC<unknown> = () => {
 
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
-    projectName: "",
-    phaseName: "",
-    module: "",
-    task: "",
-    estTime: "",
-    upWorkHrs: "",
-    employeeID: "",
-    currDate: formattedDate,
+  projectName: "",
+  phaseName: "",
+  module: "",
+  task: "",
+  estTime: "",
+  upWorkHrs: "0:00", // Set the initial value to "0:00"
+  employeeID: "",
+  currDate: formattedDate,
   });
   const token = localStorage.getItem("myToken");
 
@@ -94,7 +94,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>(`https://empbackend.base2brand.com/get/addTaskMorning`, {
+        .get<Task[]>(`http://localhost:5000/get/addTaskMorning`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -147,7 +147,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     axios
       .get<AssignedEmployees[]>(
-        "https://empbackend.base2brand.com/get/PhaseAssignedTo",
+        "http://localhost:5000/get/PhaseAssignedTo",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -209,7 +209,7 @@ const AddModule: React.FC<unknown> = () => {
 
     // Fetch employees from the backend API
     axios
-      .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
+      .get<Module[]>("http://localhost:5000/get/modules", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -299,7 +299,7 @@ const AddModule: React.FC<unknown> = () => {
     if (location?.state?.MrngTaskID) {
       axios
         .put(
-          `https://empbackend.base2brand.com/update/addMrngTask/${location?.state?.MrngTaskID}`,
+          `http://localhost:5000/update/addMrngTask/${location?.state?.MrngTaskID}`,
           morningTask,
           {
             headers: {
@@ -309,7 +309,7 @@ const AddModule: React.FC<unknown> = () => {
         )
         .then((response) => {
           if (response.data === "All fields are required.") {
-            alert("All fields are required.");
+            alert("All compulsory fields are required.");
           } else {
             navigate("/view-morning-task");
             setMrngEditID();
@@ -323,7 +323,7 @@ const AddModule: React.FC<unknown> = () => {
 
       axios
         .post(
-          "https://empbackend.base2brand.com/create/addTaskMorning",
+          "http://localhost:5000/create/addTaskMorning",
           morningTask,
           {
             headers: {
@@ -451,12 +451,11 @@ const AddModule: React.FC<unknown> = () => {
 
                   {/* )} */}
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                {/* <div style={{ display: "flex", flexDirection: "column" }}>
                   <label className="add-label">
                     Module<span style={{ color: "red" }}>*</span>
                   </label>
 
-                  {/* {selectedProject && selectedPhase && ( */}
                   <select
                     className="add-input"
                     id="module"
@@ -475,7 +474,32 @@ const AddModule: React.FC<unknown> = () => {
                         );
                       })}
                   </select>
-                </div>
+                </div> */}
+
+                  <div style={{display:'flex', flexDirection:'column'}}>
+        {/* <label className="add-label">Module</label> */}
+        <label className="add-label">
+                    Module<span style={{ color: "red" }}>*</span>
+                  </label>
+          <select
+            className="add-input"
+            id="module"
+            name="module"
+            value={selectedModule}
+            onChange={(e) => handleModuleChange(e.target.value)}
+          >
+            <option value="">Select a module</option>
+            {modules
+              .filter((module) => module.phaseName == selectedPhase && module.projectName == selectedProject)
+              .map((module) => {
+                return (
+                  <option key={module.modID} value={module.modules}>
+                    {module.modules}
+                  </option>
+                );
+            })}
+          </select>
+        </div>
 
                 {/* )} */}
               </div>
@@ -516,7 +540,10 @@ const AddModule: React.FC<unknown> = () => {
                 }}
               >
                 <div className="form-group">
-                  <label className="add-label">Estimate Hrs</label>
+                  {/* <label className="add-label">Estimate Hrs</label> */}
+                  <label className="add-label">
+                  Estimate Hrs<span style={{ color: "red" }}>*</span>
+                  </label>
                   <select
                     style={{ width: "16.8vw" }}
                     name="estTime"
@@ -551,28 +578,27 @@ const AddModule: React.FC<unknown> = () => {
                 </div>
 
                 <div className="form-group">
-                  <label className="add-label">Upwork Hrs</label>
-                  <select
-                    style={{ width: "16.8vw" }}
-                    name="upWorkHrs"
-                    className="form-control"
-                    value={morningTask.upWorkHrs}
-                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
-                    required
-                  >
-                    <option value="">--Select Time--</option>
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [0, 10, 20, 30, 40, 50].map((minute) => (
-                        <option
-                          key={`${hour}:${minute}`}
-                          value={`${hour}:${minute}`}
-                        >
-                          {`${hour} hours ${minute} mins`}
-                        </option>
-                      ))
-                    )}
-                  </select>
-                </div>
+  <label className="add-label">Upwork Hrs</label>
+  <select
+    style={{ width: "16.8vw" }}
+    name="upWorkHrs"
+    className="form-control"
+    value={morningTask.upWorkHrs}
+    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
+  >
+    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
+    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+      [0, 10, 20, 30, 40, 50].map((minute) => (
+        <option
+          key={`${hour}:${minute}`}
+          value={`${hour}:${minute}`}
+        >
+          {`${hour} hours ${minute} mins`}
+        </option>
+      ))
+    )}
+  </select>
+</div>
               </div>
               <button className="add-button" onClick={handleSubmit}>
                 Submit

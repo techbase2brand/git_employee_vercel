@@ -112,7 +112,7 @@ const Navbar: React.FunctionComponent = () => {
   //       setAssignedTaskCount((prevCount) => prevCount + 1);
 
   //       // Fetch all tasks.
-  //       axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
+  //       axios.get<BacklogTask[]>(`http://localhost:5000/get/BacklogTasks`)
   //         .then(response => {
   //           // Filter the tasks assigned to the current user.
   //           const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
@@ -171,7 +171,7 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
-    const socket = io("https://empbackend.base2brand.com");
+    const socket = io("http://localhost:5000");
     socket.on("taskAssigned", handleTaskAssigned);
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
@@ -194,7 +194,7 @@ const Navbar: React.FunctionComponent = () => {
   };
 useEffect(() => {
     axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks",{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

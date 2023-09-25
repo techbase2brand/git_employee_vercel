@@ -11,3 +11,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* styles.css */
+
+.interested {
+  background-color: #DFFFD6;
+}
+
+.not-interested {
+  background-color: #FFD6D6;
+}
+
+.hopefully {
+  background-color: #FFF7D6;
+}
+
+.not-picked {
+  background-color: #FFEDD6;
+}
+
+.enrolled {
+  background-color: #D6E3FF;
+}
+

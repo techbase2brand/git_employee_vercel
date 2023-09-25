@@ -32,7 +32,7 @@ useEffect(() => {
   const token = localStorage.getItem("myToken");
 
   axios
-    .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+    .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,7 +52,7 @@ useEffect(() => {
   //   const token = localStorage.getItem("myToken");
 
   //   axios
-  //     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+  //     .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
   //       headers: {
   //         Authorization: `Bearer ${token}`,
   //       },

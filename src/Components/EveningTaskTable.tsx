@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
-
 import { Table, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 
 interface Task {
   EvngTaskID: number;
@@ -15,75 +13,65 @@ interface Task {
   task: string;
   estTime: string;
   actTime: string;
-  upWorkHrs: number;
+  upWorkHrs: string;
 }
 
 interface Props {
   data: Task[];
-  evngEditID: number ;
-  setEvngEditID: React.Dispatch<React.SetStateAction<number >>;
-
+  evngEditID: number;
+  setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
 }
-// interface Propsdata {
-//   data: Task[];
-// }
 
-
-
-const EveningTaskTable: React.FC<Props> = ({ data ,setEvngEditID}) => {
-  // const [info, setInfo] = useState<Task[]>([]);
-  const [propsData, setPropsData] = useState<any>();
+const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
+  const [propsData, setPropsData] = useState<Task[]>([]);
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
-  // const [employeeLastname, setEmployeeLastname] = useState<string>("");
-
-
   const navigate = useNavigate();
-
-
 
   useEffect(() => {
     setPropsData(data);
   }, [data]);
 
+  const convertTimeToDecimal = (time: string) => {
+    if (!time) return 0;
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours + (minutes / 60);
+  };
 
- const handleEdit = (EvngTaskID: number) => {
-    console.log(`Edit employee with id ${EvngTaskID}`);
-    setEvngEditID(EvngTaskID)
-navigate("/add-evening-task" ,  { state: { EvngTaskID: EvngTaskID } } );
-};
+  const convertDecimalToTime = (timeInDecimal: number) => {
+    const hours = Math.floor(timeInDecimal);
+    const minutes = Math.round((timeInDecimal - hours) * 60);
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+  };
 
+  const totalEstTime = propsData.reduce((acc, curr) => acc + convertTimeToDecimal(curr.estTime), 0);
+  const totalActTime = propsData.reduce((acc, curr) => acc + convertTimeToDecimal(curr.actTime), 0);
+  const totalUpWorkHrs = propsData.reduce((acc, curr) => acc + convertTimeToDecimal(curr.upWorkHrs), 0);
+
+  const handleEdit = (EvngTaskID: number) => {
+    setEvngEditID(EvngTaskID);
+    navigate("/add-evening-task", { state: { EvngTaskID: EvngTaskID } });
+  };
 
   const handleDelete = (EvngTaskID: number) => {
-      // console.log(`Delete task with id ${MrngTaskID}`);
+    axios
+      .delete(`http://localhost:5000/delete/eveningDashboard/${EvngTaskID}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setPropsData(prev => prev.filter(task => task.EvngTaskID !== EvngTaskID));
+      })
+      .catch(console.error);
+  };
 
-      axios
-        .delete(`https://empbackend.base2brand.com/delete/eveningDashboard/${EvngTaskID}`,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-          },
-        })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setPropsData(propsData.filter((e: any) =>e.EvngTaskID!== EvngTaskID));
-    };
+  const dataString = localStorage.getItem("myData");
+  const employeeInfo = dataString ? JSON.parse(dataString) : [];
 
-    const dataString = localStorage.getItem("myData");
-
-    // Parse the JSON string back into an array
-    const employeeInfo = dataString ? JSON.parse(dataString) : [];
-
-    useEffect(() => {
-      // setEmployeeID(employeeInfo[0].EmployeeID)
-      setEmployeeFirstname(employeeInfo[0]?.firstName);
-      // setEmployeeLastname(employeeInfo[0].lastName);
-
-      // console.log(employeeInfo[0].EmployeeID, "wwwwwwwwwwwwwwww");
-    }, [employeeInfo[0]?.firstName]);
+  useEffect(() => {
+    setEmployeeFirstname(employeeInfo[0]?.firstName);
+  }, [employeeInfo[0]?.firstName]);
 
 
 
@@ -132,12 +120,12 @@ navigate("/add-evening-task" ,  { state: { EvngTaskID: EvngTaskID } } );
       render: (_: any, record: Task) => (
         <span>
           <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record.EvngTaskID)}
-            >
-              Edit
-            </Button>
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record.EvngTaskID)}
+          >
+            Edit
+          </Button>
           <Button
             type="link"
             danger
@@ -153,15 +141,16 @@ navigate("/add-evening-task" ,  { state: { EvngTaskID: EvngTaskID } } );
 
   return (
     <>
+    <p>{employeeFirstname}</p>
+      <div className="totals" style={{ marginBottom: '20px' }}>
+        <p><strong>Estimated Time Total: </strong> {convertDecimalToTime(totalEstTime)} hrs</p>
+        <p><strong>Actual Time Total: </strong> {convertDecimalToTime(totalActTime)} hrs</p>
+        <p><strong>UpWork Total: </strong> {convertDecimalToTime(totalUpWorkHrs)} hrs</p>
+      </div>
+      <Table dataSource={propsData} columns={columns} rowClassName={() => "header-row"} />
 
-<p>{employeeFirstname} </p>
-      <Table
-        dataSource={propsData}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
-    </>
-  );
+  </>
+  )
 };
 
 export default EveningTaskTable;

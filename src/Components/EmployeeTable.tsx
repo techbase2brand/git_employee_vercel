@@ -41,7 +41,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
 
  useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees",{
+      .get<Employee[]>("http://localhost:5000/employees",{
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -77,7 +77,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     console.log(`Delete employee with id ${EmpID}`);
 
     axios
-      .delete(`https://empbackend.base2brand.com/users/${EmpID}`,  {
+      .delete(`http://localhost:5000/users/${EmpID}`,  {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }

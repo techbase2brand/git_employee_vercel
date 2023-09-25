@@ -36,7 +36,7 @@ const DashboardTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
+      .get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks"
       )
       .then((response) => {
         const sortedData = response.data.sort(
@@ -64,7 +64,7 @@ const DashboardTable: React.FC = () => {
 
     // Call the API endpoint to update the task completion status
     axios
-    .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
+    .put(`http://localhost:5000/update/task-completion/${backlogTaskID}`,
       { isCompleted: isChecked },
       {
         headers: {

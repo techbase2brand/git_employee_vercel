@@ -48,7 +48,7 @@ const HrLeaveReport: React.FC = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo")
+  //     .get<LeaveData[]>("http://localhost:5000/get/leaveinfo")
   //     // .then((response) => {
   //     //   // const sortedData = response.data.sort(
   //     //   //   (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
@@ -60,7 +60,7 @@ const HrLeaveReport: React.FC = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get<Employee[]>("https://empbackend.base2brand.com/employees")
+  //     .get<Employee[]>("http://localhost:5000/employees")
   //     // .then((response) => {
   //     //   // const sortedData = response?.data.sort(
   //     //   //   (a, b) => Number(b.EmpID) - Number(a.EmpID)

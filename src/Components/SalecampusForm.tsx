@@ -15,7 +15,8 @@ interface FormData {
   duration: string;
   totalFee: string;
   gender: string;
-  status: string
+  status: string;
+  // description:string;
 }
 
 function SalecampusForm(): JSX.Element {
@@ -29,7 +30,8 @@ function SalecampusForm(): JSX.Element {
     duration: "",
     totalFee: "",
     gender: "Male",
-    status: ""
+    status: "",
+    // description: "",
   };
   // update api data
   const location = useLocation();
@@ -149,11 +151,26 @@ function SalecampusForm(): JSX.Element {
       value: "Mathematics-III",
       label: "Mathematics-III",
     },
+    {
+      id: 20,
+      value: "Java",
+      label: "Java",
+    },
+    {
+      id: 21,
+      value: "React Native",
+      label: "React Native",
+    },
+    {
+      id: 22,
+      value: "Online bidding",
+      label: "Online bidding",
+    },
   ];
 
   // input handlechange
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -199,10 +216,7 @@ function SalecampusForm(): JSX.Element {
 
     // Update formData with the updated values
     setFormData(updatedFormData);
-
-
-
-    if (Object.keys(newErrors).length === 0) {
+ if (Object.keys(newErrors).length === 0) {
       submitForm();
       Navigate("/salecampusformlist");
     }
@@ -214,7 +228,7 @@ function SalecampusForm(): JSX.Element {
       handleUpdate();
     } else {
       try {
-        const response = await fetch("https://empbackend.base2brand.com/submit-form", {
+        const response = await fetch("http://localhost:5000/submit-form", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -244,7 +258,7 @@ function SalecampusForm(): JSX.Element {
   };
 
   const handleUpdate = () => {
-    axios.put(`https://empbackend.base2brand.com/updatecampus/${formData.id}`, formData)
+    axios.put(`http://localhost:5000/updatecampus/${formData.id}`, formData)
       .then((response) => {
         console.log(response.data);
         Navigate("/salecampusformlist");
@@ -370,6 +384,23 @@ function SalecampusForm(): JSX.Element {
                           </div>
                         )}
                       </div>
+
+                      {/* <div className="SalecampusForm-col-os">
+  <div className="SalecampusForm-input-os">
+    <textarea
+      name="description"
+      placeholder="Enter Description/Comments"
+      value={formData.description}
+      onChange={handleChange}
+    />
+  </div>
+  {formErrors.description && (
+    <div className="error-message-os">
+      {formErrors.description}
+    </div>
+  )}
+</div> */}
+
 
 
 
