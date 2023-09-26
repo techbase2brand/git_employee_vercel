@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+          import React, { useState, useContext } from "react";
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import type { DatePickerProps } from "antd";
@@ -11,9 +11,9 @@ import { GlobalInfo } from "../App";
 const EmployeeList: React.FC = () => {
   const { empObj, setEmpObj } = useContext(GlobalInfo);
 
-  if (empObj) {
-    console.log(empObj, "kkkkk----gggg");
-  }
+  // if (empObj) {
+  //   console.log(empObj, "kkkkk----gggg");
+  // }
 
   return (
     <div className="emp-main-div">

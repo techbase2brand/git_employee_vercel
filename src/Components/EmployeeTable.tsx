@@ -4,16 +4,17 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import e from "express";
 
 // Define the type for the data array
 interface Employee {
   EmpID: string | number;
   firstName: string;
+  lastName:string
   role: string;
   dob: string | Date;
   EmployeeID: string;
 }
-
 
 interface Props {
   empObj: Employee | undefined;
@@ -27,8 +28,6 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
 
   const navigate = useNavigate();
 
-
-
   if (editID !== undefined) {
     // console.log(data,"gggg----");
 
@@ -36,34 +35,31 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
       return obj.EmpID === editID;
     });
     setEmpObj(filteredObj[0]);
-  navigate('/employee-form'   , { state: { empEditObj: filteredObj[0] } } );
-}
+    navigate("/employee-form", { state: { empEditObj: filteredObj[0] } });
+  }
 
- useEffect(() => {
+  useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees",{
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
       })
       .then((response) => {
         const sortedData = response?.data.sort(
           (a, b) => Number(b.EmpID) - Number(a.EmpID)
         );
-        console.log(sortedData, "///////-----");
 
         setData(sortedData);
       })
       .catch((error) => console.log(error));
   }, [setData]);
 
-
   const handleEdit = (EmpID: string | number) => {
     if (EmpID !== undefined) {
       setEditID(EmpID);
     }
 
-    console.log(EmpID, "jjjjgggggg----");
 
     //     let num = EmpID;
     // let text = num.toString();
@@ -77,10 +73,10 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     console.log(`Delete employee with id ${EmpID}`);
 
     axios
-      .delete(`https://empbackend.base2brand.com/users/${EmpID}`,  {
+      .delete(`https://empbackend.base2brand.com/users/${EmpID}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
       })
       .then((response) => {
         console.log(response.data);
@@ -89,16 +85,19 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
       .catch((error) => {
         console.log(error);
         // handle the error
-      },);
+      });
 
     setData(data.filter((employee) => employee.EmpID !== EmpID));
   };
 
   const columns = [
     {
-      title: "Name",
+      title: "Full Name",
       dataIndex: "name",
       key: "name",
+      render: (text: string, record: Employee) => (
+        <div>{record.firstName} {record.lastName}</div>
+      ),
     },
     {
       title: "Employee ID",
@@ -114,7 +113,9 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
       title: "DOB",
       dataIndex: "date",
       key: "date",
-      render: (text: string) => <div style={{}}>{dayjs(text).format("YYYY-MM-DD")}</div>,
+      render: (text: string) => (
+        <div style={{}}>{dayjs(text).format("YYYY-MM-DD")}</div>
+      ),
     },
     {
       title: "Action",
@@ -145,10 +146,11 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   const rows = data.map((employee) => ({
     EmpID: employee.EmpID,
     firstName: employee.firstName,
+    lastName: employee.lastName,
     role: employee.role,
     dob: employee.dob.toString(),
     key: employee.EmpID,
-    name: employee.firstName,
+    name: employee.firstName ,
     id: employee.EmpID,
     team: employee.role,
     date: employee.dob.toString(),

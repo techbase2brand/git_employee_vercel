@@ -39,9 +39,11 @@ const validateEmail = (email: string) => {
 };
 
 const validatePhoneNumber = (phoneNumber: string) => {
-  const regex = /^[6-9]\d{9}$/;
+  // Updated regex to allow any starting digit and a total length of at least 10 digits
+  const regex = /^\d{10,}$/;
   return regex.test(phoneNumber);
 };
+
 
 const validateEmployeeID = (employeeID: string) => {
   const regex = /^[a-zA-Z0-9]{8}$/;
@@ -51,7 +53,8 @@ const validateEmployeeID = (employeeID: string) => {
 const validatePassword = (password: string) => {
   // At least one lowercase letter, one uppercase letter, one numeric digit, one special character and at least 6 characters long
   const regex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/;
+    // eslint-disable-next-line no-useless-escape
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
   return regex.test(password);
 };
 
@@ -261,7 +264,6 @@ const EmployeeForm: React.FC = () => {
         confirmPassword: employee.confirmPassword,
       };
 
-      console.log(data,"aaazzzzzzzzzaaaaaaa======");
       console.log(localStorage.getItem('adminToken'),'adminToken');
 
 
@@ -360,11 +362,15 @@ const EmployeeForm: React.FC = () => {
                         <option value="QA Trainee">QA Trainee</option>
                         <option value="Software Developer">Software Developer</option>
                         <option value="Web Designer">Web Designer</option>
+                        <option value="Digital Marketer">Digital Marketer</option>
                         <option value="Graphic Designer">Graphic Designer</option>
                         {/* <option value="CEO">CEO</option> */}
                         <option value="QA">QA</option>
                         <option value="Project Manager">Project Manager</option>
                         <option value="Team Lead">Team Lead</option>
+                        <option value="HR">HR</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Campus">Campus</option>
                       </select>
                     </div>
                   </div>
@@ -469,10 +475,11 @@ const EmployeeForm: React.FC = () => {
                         style={{ outline: "none", border: "none" }}
                       >
                         <option value="">-- Select Role --</option>
-                        <option value="Manager">Manager</option>
+                        <option value="Manager">Manager</option>w
                         <option value="Super Admin">Super Admin</option>
                         <option value="HR">HR</option>
                         <option value="Employee">Employee</option>
+                        <option value="SalesCampus">Campus</option>
                         <option value="Sales">Sales</option>
                         <option value="Content Writer">Content Writer</option>
                         <option value="Graphic Designer">Graphic Designer</option>
@@ -594,10 +601,9 @@ const EmployeeForm: React.FC = () => {
                       fontWeight: "bold",
                       width: "3vw",
                       marginLeft: "12px",
-                      padding:'15px'
                     }}
                   >
-                    {empObj ? "Submit" : "Submit"}
+                    {location?.state?.empEditObj ? "Update employee" : "Add employee"}
                   </p>
                 </button>
               </form>

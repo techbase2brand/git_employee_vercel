@@ -50,6 +50,15 @@
   padding: 2rem 4rem;
 }
 
+.form-div {
+
+  width: 40%;
+  background-color:#F7F9FF;
+  height: 100%;
+  margin-right: 48%;
+  /* margin-top:7% */
+}
+
 .emp-div-flex {
   display: flex;
   flex-direction: row;

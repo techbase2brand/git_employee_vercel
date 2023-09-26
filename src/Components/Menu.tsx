@@ -76,8 +76,8 @@ const AppMenu = () => {
           </>
         )
        }
-      
-       
+
+
        </>
       )}
 
@@ -92,6 +92,20 @@ const AppMenu = () => {
       <Menu.Item key="employee-list" icon={<DashboardOutlined />}>
         <Link to="/employee-list">Employees List</Link>
       </Menu.Item>
+      <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
+           <Link to="/add-morning-task">Add Morning Task</Link>
+         </Menu.Item>
+
+
+         <Menu.Item key="ViewMorningTask" icon={<TableOutlined />}>
+         <Link to="/view-morning-task">ViewMorningTask</Link>
+       </Menu.Item>
+       <Menu.Item key="add-evening-task" icon={<ScheduleOutlined />}>
+         <Link to="/add-evening-task">Add Evening Task</Link>
+       </Menu.Item>
+       <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
+         <Link to="/view-evening-task">ViewEveningTask</Link>
+       </Menu.Item>
 
           <Menu.Item key="HRsection" icon={<TableOutlined />}>
             <Link to="/HRsection">HR leave section</Link>
