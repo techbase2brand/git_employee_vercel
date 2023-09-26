@@ -9,9 +9,8 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router";
-import { DatePicker ,AutoComplete  } from "antd";
+import { DatePicker, AutoComplete } from "antd";
 // import './styles.css';
-
 
 // import dayjs from "dayjs";
 
@@ -62,6 +61,8 @@ const SalecampusFormList = () => {
   const [search, setSearch] = useState<string>("");
   const [dateSearch, setDateSearch] = useState<string | null>(null);
   const [generalSearch, setGeneralSearch] = useState<string>("");
+  const [dateRangeSearch, setDateRangeSearch] = useState<[string | null, string | null]>([null, null]);
+
 
   const Navigate = useNavigate();
   const location = useLocation();
@@ -77,9 +78,7 @@ const SalecampusFormList = () => {
     setRecordToDelete(null);
   };
 
-
   // const autoCompleteOptions = ['not picked', 'not interested'];
-
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -101,8 +100,8 @@ const SalecampusFormList = () => {
   }, []);
 
   useEffect(() => {
-    filterData(dateSearch, search);
-}, [data]);
+    filterData(dateSearch, dateSearch, search);
+  }, [data]);
 
 
   // delete methods
@@ -123,17 +122,21 @@ const SalecampusFormList = () => {
       .catch((error) => {
         console.log(error);
       });
+
     // Update the main data state
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);
     // Check if the data is currently filtered
-    filterData(dateSearch, search);
+  // Check if the data is currently filtered
+filterData(dateSearch, dateSearch, search);
+// Corrected this line
 
     // close consfirmation modal
     setIsModalOpen(false);
     // Null values of delete id
     setRecordToDelete(null);
-  };
+};
+
 
   // edit methods
   const handleEdit = (id: number) => {
@@ -273,28 +276,46 @@ const SalecampusFormList = () => {
   //   }
   // };
 
-  const handleDateChange = (date: any, dateString: string) => {
-    setDateSearch(dateString);
-    filterData(dateString, generalSearch);
+  const { RangePicker } = DatePicker;
+
+  const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+    if (dates) {
+      const [startDate, endDate] = dateStrings;
+      setDateRangeSearch([startDate, endDate]);
+      filterData(startDate, endDate, generalSearch);
+    } else {
+      setDateRangeSearch([null, null]);
+      filterData(null, null, generalSearch);
+    }
   };
+
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setGeneralSearch(inputValue);
-    filterData(dateSearch, inputValue);
+    if (dateRangeSearch[0] && dateRangeSearch[1]) {
+      filterData(dateRangeSearch[0], dateRangeSearch[1], inputValue);
+    } else {
+      filterData(null, null, inputValue);
+    }
   };
 
-  const filterData = (dateValue: string | null, generalValue: string) => {
+  const filterData = (
+    startDate: string | null,
+    endDate: string | null,
+    generalValue: string
+  ) => {
     const lowercasedGeneralValue = generalValue.toLowerCase();
-
     let result = data;
 
-    // Filter by date if dateValue exists
-    if (dateValue) {
+    // Filter by date range if both startDate and endDate exist
+    if (startDate && endDate) {
       result = result.filter((e) => {
+        const createdDate = convertUTCToLocal(e.created_at).split(" ")[0];
+        const updatedDate = convertUTCToLocal(e.updated_at).split(" ")[0];
         return (
-          convertUTCToLocal(e.created_at).split(" ")[0] === dateValue ||
-          convertUTCToLocal(e.updated_at).split(" ")[0] === dateValue
+          (createdDate >= startDate && createdDate <= endDate) ||
+          (updatedDate >= startDate && updatedDate <= endDate)
         );
       });
     }
@@ -389,7 +410,8 @@ const SalecampusFormList = () => {
                       paddingBottom: "2rem",
                     }}
                   >
-                    <DatePicker onChange={handleDateChange} />
+                   <RangePicker onChange={handleDateRangeChange} />
+
                     <Input
                       placeholder="Search..."
                       prefix={<SearchOutlined />}
@@ -398,14 +420,17 @@ const SalecampusFormList = () => {
                     />
                   </div>
 
-                  <p style={{ fontWeight: 'bold', marginBottom: '20px' }}>Number of Records: {filteredData.length}</p>
+                  <p style={{ fontWeight: "bold", marginBottom: "20px" }}>
+                    Number of Records: {filteredData.length}
+                  </p>
 
                   <Table
-  dataSource={filteredData.slice().reverse()}
-  columns={columns}
-  rowClassName={(record) => record.status.replace(/\s+/g, '-')}  // Convert spaces to hyphens
-/>
-
+                    dataSource={filteredData.slice().reverse()}
+                    columns={columns}
+                    rowClassName={(record) =>
+                      record.status.replace(/\s+/g, "-")
+                    } // Convert spaces to hyphens
+                  />
 
                   <Modal
                     title="Confirmation"

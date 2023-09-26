@@ -401,22 +401,31 @@ tr:nth-child(even) {
 /* styles.css */
 
 .interested {
-  background-color: #83e568;
+  background-color: #bdfbab !important;
 }
 
 .not-interested {
-  background-color: #f17575;
+  background-color: #f64c4c !important;
 }
 
 .hopefully {
-  background-color: #dec046;
+  background-color: #f8e07f !important;
 }
 
 .not-picked {
-  background-color: #b57a2b;
+  background-color: #f19b2b !important;
 }
 
 .enrolled {
-  background-color: #3f5b99;
+  background-color: #92b3fb !important;
 }
+
+/* This ensures that every row, regardless of whether it is even or odd, takes the color based on its class and doesn't get shaded differently */
+/* .ant-table-row.interested,
+.ant-table-row.not-interested,
+.ant-table-row.hopefully,
+.ant-table-row.not-picked,
+.ant-table-row.enrolled {
+  background-color: inherit;
+} */
 
