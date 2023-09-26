@@ -17,10 +17,10 @@ interface BacklogTask {
 const DashboardTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
 
-  const isWithinLastFiveDays = (dateString :any) => {
+  const isWithinLastOneMonth = (dateString :any) => {
     const taskDate = new Date(dateString);
     const currentDate = new Date();
-    const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 5));
+    const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
 
     return taskDate >= fiveDaysAgo;
   };
@@ -43,8 +43,12 @@ const DashboardTable: React.FC = () => {
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
         );
         console.log(sortedData);
+       console.log(employeeInfo?.EmployeeID);
 
-        const filteredData = sortedData?.filter((task) => isWithinLastFiveDays(task.currdate) && task.employeeID === employeeInfo.EmployeeID
+
+
+
+        const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
         );
         setData(filteredData);
         console.log(filteredData);
