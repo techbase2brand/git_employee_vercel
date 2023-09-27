@@ -343,7 +343,6 @@ const AddModule: React.FC<any> = () => {
             },
           })
         .then((response) => {
-          console.log(eveningTask, "nnnnnnnnnnnnnn");
           if (response.data === "All fields are required.") {
             alert("All fields are required.");
           } else {

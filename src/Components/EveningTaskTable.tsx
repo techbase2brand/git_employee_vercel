@@ -96,7 +96,19 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
       title: "Task",
       dataIndex: "task",
       key: "task",
-      //   render: (dob: string | Date) => new Date(dob).toLocaleDateString(),
+      render: (text: string) => {
+        // Define regular expressions to match the words
+        const doneRegex = /\bdone\b/i; // Matches "done" (case-insensitive)
+        const inProgressRegex = /\bin\s*progress\b/i; // Matches "in progress" (case-insensitive)
+
+        // Replace "done" with green color and "in progress" with yellow color
+        const coloredText = text
+          .replace(doneRegex, '<span style="color: green;">done</span>')
+          .replace(inProgressRegex, '<span style="color: blue;">in progress</span>');
+
+        // Render the HTML content as React element
+        return <div dangerouslySetInnerHTML={{ __html: coloredText }} />;
+      },
     },
     {
       title: "Est time (hrs)",
