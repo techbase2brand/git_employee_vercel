@@ -50,6 +50,11 @@ interface Props {
   setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
 }
 
+
+const info = JSON.parse(localStorage.getItem("myData") || "{}");
+console.log(info?.EmployeeID);
+
+
 const SalecampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
   const [recordToDelete, setRecordToDelete] = useState<SalecampusData | null>(
@@ -82,9 +87,11 @@ const SalecampusFormList = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
+    const info = JSON.parse(localStorage.getItem("myData") || "{}");
+
     axios
-      .get(
-        "https://empbackend.base2brand.com/salecampusdata"
+      .get("https://empbackend.base2brand.com/salecampusdata"
+        // Uncomment below if your server requires the token for authentication
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,
@@ -93,9 +100,14 @@ const SalecampusFormList = () => {
       )
       .then((response) => {
         const resData = response.data;
-        console.log("resData", resData);
-        setData(resData);
-        setFilteredData(resData);
+
+        // Filter data based on EmployeeID
+        const filteredByEmployeeID = resData.filter((entry: { EmployeeID: any; }) => entry.EmployeeID === info?.EmployeeID);
+
+        console.log("Filtered Data", filteredByEmployeeID);
+
+        setData(filteredByEmployeeID);
+        setFilteredData(filteredByEmployeeID); // Assuming you also want to set this to another state
       });
   }, []);
 

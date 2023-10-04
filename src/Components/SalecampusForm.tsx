@@ -16,8 +16,12 @@ interface FormData {
   totalFee: string;
   gender: string;
   status: string;
+  EmployeeID: string; // New addition
   // description:string;
 }
+const info = JSON.parse(localStorage.getItem("myData") || "{}");
+  console.log(info?.EmployeeID,"EmployeeID");
+
 
 function SalecampusForm(): JSX.Element {
   const initialFormData: FormData = {
@@ -31,6 +35,7 @@ function SalecampusForm(): JSX.Element {
     totalFee: "",
     gender: "Male",
     status: "",
+    EmployeeID: info?.EmployeeID || "",
     // description: "",
   };
   // update api data
@@ -42,6 +47,9 @@ function SalecampusForm(): JSX.Element {
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+
+
+
 
   useEffect(() => {
     if (record) {
