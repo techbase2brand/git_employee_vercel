@@ -28,6 +28,8 @@ interface Props {
   totalUpworkhrs: any;
   setTotalUpworkhrs: React.Dispatch<React.SetStateAction<any>>;
   searchQuery: any;
+  setSelectedRole: React.Dispatch<React.SetStateAction<any>>;
+  selectedRole:any;
 }
 
 interface EmployeeTime {
@@ -56,13 +58,16 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   setTotalEstHrs,
   totalUpworkhrs,
   setTotalUpworkhrs,
-  searchQuery
+  searchQuery,
+  setSelectedRole,
+  selectedRole
+
 }) => {
   const [employeeArr, setEmployeeArr] = useState<any>([]);
   const [filteredEmployee, setFilteredEmployee] = useState<any>([]);
   const [dateRange, setDateRange] = useState<any>([null, null]); // Start and end date
-  // console.log(data,"datadatadatadata");
 
+console.log(selectedRole,"selectedRole");
 
   const handleDateChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
@@ -102,8 +107,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       })
       .catch((error) => console.log(error));
   }, []);
-
-
 
   const arrayOfArray = Object.values(data);
 
@@ -201,10 +204,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     return acc;
   }, 0);
 
-  console.log(
-    totalMinutesUpworkhrs,
-    "totalMinutesUpworkhrstotalMinutesUpworkhrs"
-  );
+
 
   const hoursUpworkhrs = Math.floor(totalMinutesUpworkhrs / 60);
   const minutesUpworkhrs = totalMinutesUpworkhrs % 60;
@@ -297,10 +297,19 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   }
   const tables = employeeArr
   .filter((emp: Employee) => {
+
+    // if (emp.role == selectedRole  )  {
+    //   console.log(selectedRole,"selectedRole");
+    //   console.log(emp,"emp.role.toLowerCase()");
+
+    //   return true;
+    // }
     if (!searchQuery) return true; // Show all if there's no search query
+    // console.log(emp,"emp.role.toLowerCase()");
+
 
     // Check if the employee's name matches the searchQuery
-    if (emp.firstName.toLowerCase().includes(searchQuery)  || emp.lastName.toLowerCase().includes(searchQuery)) {
+    if (emp.firstName.toLowerCase().includes(searchQuery)  || emp.lastName.toLowerCase().includes(searchQuery))  {
       return true;
     }
 

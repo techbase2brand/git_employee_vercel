@@ -45,8 +45,12 @@ const EveningDashboard: React.FC = () => {
   const [totalUpworkhrs, setTotalUpworkhrs] = useState<any>();
   const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedRole, setSelectedRole] = useState<string>("");
 
-console.log(dateRange,"dateRangedateRangedateRangedateRange")
+  const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRole(event.target.value);
+  };
+
 
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
@@ -92,14 +96,7 @@ console.log(dateRange,"dateRangedateRangedateRangedateRange")
         }
 
 
-        // if (searchQuery) {
-        //   filteredData = filteredData.filter(obj =>
-        //     obj.employeeID.toLowerCase().includes(searchQuery) ||
-        //     obj.phaseName.toLowerCase().includes(searchQuery) ||
-        //     obj.module.toLowerCase().includes(searchQuery) ||
-        //     obj.projectName.toLowerCase().includes(searchQuery)
-        //   );
-        // }
+
 
         const sortedData = filteredData.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
@@ -163,6 +160,23 @@ console.log(dateRange,"dateRangedateRangedateRangedateRange")
           <RangePicker onChange={handleDateRangeChange} />
         </div>
 
+        {/* <div className="role-dropdown">
+        <label>Select Role: </label>
+        <select value={selectedRole} onChange={handleRoleChange}>
+          <option value="">All Roles</option>
+          <option value="Software Developer">Software Developer</option>
+          <option value="Digital Marketer">Digital Marketer</option>
+          <option value="Graphic Designer">Graphic Designer</option>
+          <option value="HR">HR</option>
+          <option value="QA">QA</option>
+          <option value="Sales Campus">Sales Campus</option>
+          <option value="Sales Infotech">Sales Infotech</option>
+        </select>
+      </div> */}
+
+
+
+
         <div style={{
   display: "flex",
   width: "100%",
@@ -205,6 +219,8 @@ console.log(dateRange,"dateRangedateRangedateRangedateRange")
                   totalUpworkhrs={totalUpworkhrs}
                   setTotalUpworkhrs={setTotalUpworkhrs}
                   searchQuery={searchQuery}
+                  selectedRole={selectedRole}
+                  setSelectedRole={setSelectedRole}
                 />
               </div>
             </div>

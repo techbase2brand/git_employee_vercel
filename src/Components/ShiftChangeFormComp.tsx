@@ -135,7 +135,7 @@ const ShiftChangeFormComp: React.FC<any> = () => {
     })
     .then((response) => {
 
-      const arr = response?.data.filter((elem)=> elem?.role == "Manager" || elem?.role == "Super Admin")
+      const arr = response?.data.filter((elem)=> elem?.jobPosition == "Project Manager" || elem?.jobPosition == "Managing Director")
 
 
       setAdminInfo(arr);

@@ -173,11 +173,7 @@ const AddProject: React.FC = (navigation) => {
                 value={project?.projectName}
                 onChange={handleProjectChange}
               >
-                {/* <option value="">-- Select position --</option>
-                <option value="Manager">Manager</option>
-                <option value="Developer">Employee</option>
-                <option value="Designer">CEO</option>
-                <option value="Tester">HR</option> */}
+
               </input>
               <label className="add-label">
                 Project Description<span style={{ color: "red" }}>*</span>

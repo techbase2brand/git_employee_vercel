@@ -360,7 +360,7 @@ useEffect(() => {
               </Badge>
 
               <Avatar className="avatar" icon={<UserOutlined />} />
-              <span className="username">{myData?.firstName}{myData?.lastName}</span>
+              <span className="username">{myData?.firstName} {myData?.lastName}</span>
               <button onClick={logout}>logout</button>
             </div>
           </div>
