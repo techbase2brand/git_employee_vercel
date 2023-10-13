@@ -7,10 +7,24 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import axios from "axios";
 
-interface Admin {
+interface IEmployee {
+  firstName: string;
+  lastName: string;
+  jobPosition: string;
   email: string;
-  adminID: string;
-  adminName: string;
+  phone: string;
+  permanentaddress: string;
+  currentAddress: string;
+  dob: Date;
+  role: string;
+  parentPhone: string;
+  EmployeeID: string;
+  password: string;
+  confirmPassword: string;
+  EmpID: number;
+  doj: Date;
+  bloodGroup: string;
+  highestQualification: string;
 }
 
 interface ShiftChangeData {
@@ -39,13 +53,12 @@ const ShiftChangeFormComp: React.FC<any> = () => {
   // const [reason, setReason] = useState("");
   const [teamLead, setTeamLead] = useState("");
   // const [adminID, setAdminID] = useState("");
-  const [adminInfo, setAdminInfo] = useState<Admin[]>([]);
+  const [adminInfo, setAdminInfo] = useState<IEmployee[]>([]);
   // const [shiftStartTime, setShiftStartTime] = useState("");
   // const [shiftEndTime, setShiftEndTime] = useState("");
   const [shiftChangeReason, setShiftChangeReason] = useState("");
 
 
-  console.log(employeeID,"gggfffffdddssssss-----------");
 
   const navigate = useNavigate();
 
@@ -63,15 +76,15 @@ const ShiftChangeFormComp: React.FC<any> = () => {
     if (applyDate && inTime && outTime) {
       // Find the selected admin using the adminID
       const selectedAdmin = adminInfo.find(
-        (admin) => admin.adminID === teamLead
+        (admin) => admin.EmployeeID === teamLead
       );
 
       // Extract the adminName and adminID
       let adminName = "";
       let adminID = "";
       if (selectedAdmin) {
-        adminName = selectedAdmin.adminName;
-        adminID = selectedAdmin.adminID;
+        adminName = selectedAdmin ? selectedAdmin.firstName : "";
+        adminID = selectedAdmin ? selectedAdmin.EmployeeID : "";
       }
 
       const formattedApplyDate = dayjs(applyDate).format("YYYY-MM-DD HH:mm:ss");
@@ -111,24 +124,43 @@ const ShiftChangeFormComp: React.FC<any> = () => {
   };
 
   useEffect(() => {
+    // Get the token from local storage
     const token = localStorage.getItem("myToken");
-    // console.log(token,"tokennnnnn");
-
 
     axios
-    .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
+    .get<IEmployee[]>("https://empbackend.base2brand.com/employees", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
     .then((response) => {
-      setAdminInfo(response.data);
-      console.log(response.data,"response.data");
+
+      const arr = response?.data.filter((elem)=> elem?.jobPosition == "Project Manager" || elem?.jobPosition == "Managing Director")
+
+
+      setAdminInfo(arr);
+      console.log(response.data,"response.data of empployee");
 
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
     });
+
+
+    // axios
+    //   .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     setAdminInfo(response.data);
+    //     console.log(response.data,"response.data");
+
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching data:", error);
+    //   });
   }, [employeeID]);
 
   return (
@@ -224,8 +256,8 @@ const ShiftChangeFormComp: React.FC<any> = () => {
               >
                 <option value="">Select admin</option>
                 {adminInfo.map((admin) => (
-                  <option key={admin.adminID} value={admin.adminID}>
-                    {admin.adminName}
+                  <option key={admin.EmployeeID} value={admin.EmployeeID}>
+                    {admin.firstName}
                   </option>
                 ))}
               </select>

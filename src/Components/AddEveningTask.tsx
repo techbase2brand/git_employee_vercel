@@ -44,16 +44,7 @@ interface Phases {
   projectName: string;
   phases: string[];
 }
-// type Phase = {
-//   phaseID: number;
-//   projectName: string;
-// };
 
-// interface Props {
-//   data: Task[];
-//   evngEditID: number;
-//   setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
-// }
 const AddModule: React.FC<any> = () => {
   // const navigate = useNavigate();
   const [projectNames, setProjectNames] = useState<string[]>([]);
@@ -64,9 +55,7 @@ const AddModule: React.FC<any> = () => {
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate] = useState<Date>(new Date());
-  // const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
-  //   []
-  // );
+
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [eveningTask, setEveningTask] = useState<Task>({
     EvngTaskID: 0,
@@ -103,7 +92,6 @@ const AddModule: React.FC<any> = () => {
       })
       .then((response) => {
         const res = response?.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
-        console.log(res, "ssfffggg======------");
 
         setSelectedProject(res[0]?.projectName);
         setSelectedPhase(res[0]?.phaseName);
@@ -212,41 +200,7 @@ const AddModule: React.FC<any> = () => {
     });
   };
 
-  // const handleProjectChange = (value: string) => {
-  //   setSelectedProject(value);
-  //   const currentPhase = phases.find((phase) => phase.projectName === value);
-  //   if (currentPhase) {
-  //     setSelectedPhase(currentPhase.phases[0]);
-  //     setEveningTask({
-  //       EvngTaskID: 0,
-  //       projectName: value,
-  //       phaseName: currentPhase.phases[0],
-  //       module: "",
-  //       task: "",
-  //       estTime: "",
-  //       actTime: "",
 
-  //       upWorkHrs: "",
-  //       employeeID: employeeID,
-  //       currDate: formattedDate,
-  //     });
-  //   } else {
-  //     setSelectedPhase("");
-  //     setEveningTask({
-  //       EvngTaskID: 0,
-  //       projectName: value,
-  //       phaseName: "",
-  //       module: "",
-  //       task: "",
-  //       estTime: "",
-  //       actTime: "",
-
-  //       upWorkHrs: "",
-  //       employeeID: employeeID,
-  //       currDate: formattedDate,
-  //     });
-  //   }
-  // };
 
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
@@ -303,15 +257,7 @@ const AddModule: React.FC<any> = () => {
   };
 
 
-//   const handleEstTimeChange = (value: string) => {
-//     const [hours, mins] = value.split(":");
-//     const formattedTime = `${parseInt(hours)} hours ${parseInt(mins)} mins`;
 
-//     setEveningTask((prevEveningTask) => ({
-//         ...prevEveningTask,
-//         estTime: formattedTime,
-//     }));
-// };
 
   const handleActTimeChange = (value: string) => {
     console.log(value,"valuevaluevalue");
@@ -380,7 +326,7 @@ const AddModule: React.FC<any> = () => {
     // Submit module data to server
   };
 
-  // const dataString = localStorage.getItem("myData");
+
 
   useEffect(() => {
     if (employeeInfo) {

@@ -31,7 +31,6 @@ const Login: React.FC = () => {
           alert("Invalid username or password");
         } else {
           console.log("Login successful");
-          console.log(res?.data, "7777mm7");
 
           // Save user info and token in state and local storage
           const { user, token } = res.data;

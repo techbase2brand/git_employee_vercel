@@ -1,160 +1,221 @@
-import React, { useState, useEffect,useMemo } from "react";
-import { Table } from "antd";
+import React, { useState, useEffect } from "react";
+import { Menu, Dropdown, Button, DatePicker, Tooltip } from "antd";
+import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-interface BacklogTask {
-  backlogTaskID: number;
-  taskName: string;
-  assigneeName: string;
-  employeeID: string;
-  deadlineStart: string;
-  deadlineEnd: string;
-  currdate: string;
-  UserEmail: string;
-  isCompleted: boolean;
+const { RangePicker } = DatePicker;
+
+interface Employee {
+  EmpID: number;
+  firstName: string;
+  role: string;
+  dob: string | Date;
+  EmployeeID: string;
 }
 
-const DashboardTable: React.FC = () => {
-  const [data, setData] = useState<BacklogTask[]>([]);
+interface MorningDashboardTableProps {
+  data: any;
+  totalEstHrs: any;
+  setTotalEstHrs: React.Dispatch<React.SetStateAction<any>>;
+  setTotalUpWorkHrs: any;
+  setSetTotalUpWorkHrs: React.Dispatch<React.SetStateAction<any>>;
+}
 
-  const isWithinLastOneMonth = (dateString :any) => {
-    const taskDate = new Date(dateString);
-    const currentDate = new Date();
-    const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
+interface TaskEntry {
+  MrngTaskID: number;
 
-    return taskDate >= fiveDaysAgo;
-  };
+  currDate: string;
+  employeeID: string;
+  estTime: string;
+  module: string;
+  phaseName: string;
+  projectName: string;
+  task: string;
+  upWorkHrs: string;
+}
 
-
-  const dataString = localStorage.getItem("myData");
-  const employeeInfo = useMemo(
-    () => (dataString ? JSON.parse(dataString) : []),
-    [dataString]
-  );
-  console.log(employeeInfo);
-
+const DashboardTable: React.FC<MorningDashboardTableProps> = ({
+  data,
+  totalEstHrs,
+  setTotalEstHrs,
+  setTotalUpWorkHrs,
+  setSetTotalUpWorkHrs,
+}) => {
+  const [manager, setManager] = useState("");
+  const [teamLead, setTeamLead] = useState("");
+  const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
+  const [isEvening, setIsEvening] = useState(false);
+  const navigate = useNavigate();
+  const [activeButton, setActiveButton] = useState("button1");
+  const [employeeArr, setEmployeeArr] = useState<Employee[]>([]);
 
   useEffect(() => {
     axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
-      )
-      .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
-        console.log(sortedData);
-       console.log(employeeInfo?.EmployeeID);
-
-
-
-
-        const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
-        );
-        setData(filteredData);
-        console.log(filteredData);
-
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        console.log("Error details:", error.response);
-      });
-  }, []);
-
-  const handleCheckboxChange = (isChecked: boolean, backlogTaskID: number) => {
-    const updatedData = data.map((task) =>
-      task.backlogTaskID === backlogTaskID ? { ...task, isCompleted: isChecked } : task
-    );
-    setData(updatedData);
-
-    // Call the API endpoint to update the task completion status
-    axios
-    .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
-      { isCompleted: isChecked },
-      {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
-      }
-    )
-    .then((response) => {
-      console.log(response.data.message);
-    })
-    .catch((error) => {
-      console.error("Error updating task completion status:", error);
-    });
+      })
+      .then((response) => {
+        const sortedData = response.data.sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        );
+        setEmployeeArr(sortedData);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
-
-    localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(isChecked));
+  const handleButton1Click = () => {
+    setActiveButton("button1");
   };
 
+  const handleButton2Click = () => {
+    setActiveButton("button2");
+    setIsEvening(!isEvening);
+    const route = isEvening ? "/dashboard" : "/EveningDashboard";
+    navigate(route);
+  };
 
-  const getCheckboxState = (backlogTaskID: number) => {
-    const item = localStorage.getItem(`task-${backlogTaskID}`);
-    if (item !== null) {
-      return JSON.parse(item);
-    } else {
-      return false;
+  console.log(data, "morning data");
+
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
+    if (date) {
+      setDate(date);
     }
   };
 
-  const columns = [
 
-    {
-      title: "Task",
-      dataIndex: "taskName",
-      key: "taskName",
-      render: (text: string) => <div>{text}</div>,
-    },
-    {
-      title: "AssignedBy",
-      dataIndex: "AssignedBy",
-      key: "AssignedBy",
-      render: (text: string) => <div>{text}</div>,
-    },
-    {
-      title: "Deadline Start",
-      dataIndex: "deadlineStart",
-      key: "deadlineStart",
-      render: (text: string) => <div>{formatDate(text)}</div>,
-    },
-    {
-      title: "Deadline End",
-      dataIndex: "deadlineEnd",
-      key: "deadlineEnd",
-      render: (text: string) => <div>{formatDate(text)}</div>,
-    },
-    {
-      title: "Completed",
-      dataIndex: "isCompleted",
-      key: "isCompleted",
-      render: (isCompleted: boolean, record: BacklogTask) => (
-        <input
-          type="checkbox"
-          checked={getCheckboxState(record.backlogTaskID)}
-          onChange={(event) =>
-            handleCheckboxChange(event.target.checked, record.backlogTaskID)
-          }
-        />
-      ),
-    },
-  ];
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-      date.getDate()
-    ).padStart(2, "0")}`;
+  function sumTimes(allTimes: string[]): string {
+    let totalMinutes = 0;
+
+    allTimes.forEach((timeStr) => {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      totalMinutes += hours * 60 + minutes;
+    });
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
+  }
+
+  const getTotalTimeForEmployee = (timeKey: string): string => {
+    const allTimes: string[] = [];
+
+    Object.values(data).forEach((taskEntries) => {
+      (taskEntries as any[])
+        .filter((entry) => entry[timeKey])
+        .forEach((entry) => allTimes.push(entry[timeKey]!));
+    });
+
+    return sumTimes(allTimes);
   };
+
+  const getTotalEstTimeTooltip = () => {
+    return Object.entries(data)
+      .map(([id, taskEntries]) => {
+        const employee = employeeArr.find((emp) => emp.EmployeeID === id);
+        const employeeName = employee ? employee.firstName : id;
+        const totalEstTime = sumTimes(
+          (taskEntries as any[]).map((entry: any) => entry.estTime)
+        );
+
+        // Filter out the entries with 0 hours
+        if (totalEstTime === "0:00") return null;
+
+        return `${employeeName}: ${totalEstTime}`;
+      })
+      .filter(Boolean) // Remove nulls from the array
+      .join("\n");
+  };
+
+  const getTotalUpWorkTimeTooltip = () => {
+    return Object.entries(data)
+      .map(([id, taskEntries]) => {
+        const employee = employeeArr.find((emp) => emp.EmployeeID === id);
+        const employeeName = employee ? employee.firstName : id;
+        const totalUpWorkTime = sumTimes(
+          (taskEntries as any[]).map((entry) => entry.upWorkHrs)
+        );
+
+        // Filter out the entries with 0 hours
+        if (totalUpWorkTime === "0:00") return null;
+
+        return `${employeeName}: ${totalUpWorkTime}`;
+      })
+      .filter(Boolean) // Remove nulls from the array
+      .join("\n");
+  };
+
   return (
-    <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
-    </>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        width: "85vw",
+        marginTop: "3%",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <button
+            style={{
+              backgroundColor: "royalBlue",
+              padding: "8px",
+              borderRadius: "5px 0px 0px 5px",
+            }}
+            onClick={handleButton1Click}
+            className={activeButton === "button1" ? "redButton" : ""}
+          >
+            Morning
+          </button>
+          <button
+            style={{ padding: "8px", borderRadius: "0px 5px 5px 0px" }}
+            onClick={handleButton2Click}
+            className={activeButton === "button2" ? "redButton" : ""}
+          >
+            Evening
+          </button>
+        </div>
+        <DatePicker
+          value={date}
+          className="nav-date"
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #BEBEBE",
+            borderRadius: "99px",
+            width: "120px",
+          }}
+          onChange={handleDateChange}
+        />
+
+        <Tooltip title={getTotalEstTimeTooltip()}>
+          <span className="nav-hrs-estimate">
+            {" "}
+            Est. Time : {getTotalTimeForEmployee("estTime")}{" "}
+          </span>
+        </Tooltip>
+
+        <Tooltip title={getTotalUpWorkTimeTooltip()}>
+          <span className="nav-hrs-estimate">
+            {" "}
+            Upwork. Time : {getTotalTimeForEmployee("upWorkHrs")}{" "}
+          </span>
+        </Tooltip>
+      </div>
+    </div>
   );
 };
 
 export default DashboardTable;
+

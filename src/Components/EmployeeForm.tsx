@@ -44,7 +44,6 @@ const validatePhoneNumber = (phoneNumber: string) => {
   return regex.test(phoneNumber);
 };
 
-
 const validateEmployeeID = (employeeID: string) => {
   const regex = /^[a-zA-Z0-9]{8}$/;
   return regex.test(employeeID);
@@ -84,7 +83,6 @@ const EmployeeForm: React.FC = () => {
   const [data, setData] = useState<any>();
 
   const location = useLocation();
-
 
   const handleDOBChange = (date: Dayjs | null, dateString: string) => {
     if (date) {
@@ -132,21 +130,18 @@ const EmployeeForm: React.FC = () => {
     setEmployee({ ...employee, [name]: modifiedValue });
   };
 
-
   useEffect(() => {
     axios
-      .get<IEmployee[]>("https://empbackend.base2brand.com/employees",{
+      .get<IEmployee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
       })
       .then((response) => setData(response.data))
       .catch((error) => console.log(error));
   }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("p===========");
-
     event.preventDefault();
 
     if (!validateName(employee.firstName)) {
@@ -199,8 +194,6 @@ const EmployeeForm: React.FC = () => {
       return;
     }
 
-
-
     if (location?.state?.empEditObj) {
       const data = {
         firstName: employee.firstName,
@@ -219,29 +212,26 @@ const EmployeeForm: React.FC = () => {
         EmployeeID: employee.EmployeeID,
       };
 
-
-
       axios
-      .put(
-        `https://empbackend.base2brand.com/employeeUpdate/${location?.state?.empEditObj?.EmpID}`,
-        data
-      ,{
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      })
-      .then((response) => {
-
-
-        navigate("/employee-list");
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          alert(error.response.data);
-        } else {
-          console.log(error);
-        }
-      });
+        .put(
+          `https://empbackend.base2brand.com/employeeUpdate/${location?.state?.empEditObj?.EmpID}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          }
+        )
+        .then((response) => {
+          navigate("/employee-list");
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 400) {
+            alert(error.response.data);
+          } else {
+            console.log(error);
+          }
+        });
 
       return;
     } else {
@@ -264,28 +254,25 @@ const EmployeeForm: React.FC = () => {
         confirmPassword: employee.confirmPassword,
       };
 
-      console.log(localStorage.getItem('adminToken'),'adminToken');
-
+      // console.log(localStorage.getItem('myToken'),'myToken');
 
       axios
-         .post("https://empbackend.base2brand.com/create", data ,{
-
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-    }
-  })
-  .then((response) => {
-    navigate("/employee-list");
-  })
-  .catch((error) => {
-    console.log("Error during request:", error);  // Add this line
-    if (error.response && error.response.status === 400) {
-      alert(error.response.data);
-    } else {
-      console.log(error);
-    }
-  });
-
+        .post("https://empbackend.base2brand.com/create", data, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        })
+        .then((response) => {
+          navigate("/employee-list");
+        })
+        .catch((error) => {
+          console.log("Error during request:", error); // Add this line
+          if (error.response && error.response.status === 400) {
+            alert(error.response.data);
+          } else {
+            console.log(error);
+          }
+        });
     }
   };
 
@@ -314,8 +301,9 @@ const EmployeeForm: React.FC = () => {
                 }}
               >
                 {" "}
-                {location?.state?.empEditObj ? "Update new Employee" : "Add new Employee" }
-
+                {location?.state?.empEditObj
+                  ? "Update new Employee"
+                  : "Add new Employee"}
               </h2>
               <form onSubmit={handleSubmit}>
                 <div className="emp-div-flex">
@@ -346,7 +334,8 @@ const EmployeeForm: React.FC = () => {
                   <div className="form-group">
                     <label className="emp-label">Job Position:</label>
 
-                    <div style={{ width: "95%" }} className="form-control">
+
+                    <div className="form-control">
                       <select
                         name="jobPosition"
                         value={employee.jobPosition}
@@ -354,23 +343,19 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">-- Select position --</option>
-                        {/* <option value="Manager">Manager</option> */}
-                        <option value="Software Trainee">Software Trainee</option>
-                        <option value="Web Designer Trainee">Web Designer Trainee</option>
-                        <option value="Graphic  Trainee">Graphic  Trainee</option>
-                        <option value="QA Trainee">QA Trainee</option>
-                        <option value="Software Developer">Software Developer</option>
-                        <option value="Web Designer">Web Designer</option>
-                        <option value="Digital Marketer">Digital Marketer</option>
-                        <option value="Graphic Designer">Graphic Designer</option>
-                        {/* <option value="CEO">CEO</option> */}
-                        <option value="QA">QA</option>
+                        <option value="" disabled>
+                          Job position{" "}
+                        </option>
+                        <option value="Managing Director">
+                          Managing Director
+                        </option>
                         <option value="Project Manager">Project Manager</option>
                         <option value="Team Lead">Team Lead</option>
+                        <option value="Employee">Employee</option>
+                        <option value="BDE">BDE</option>
+                        <option value="BDE Campus">BDE Campus</option>
+                        <option value="QA">QA</option>
                         <option value="HR">HR</option>
-                        <option value="Sales">Sales</option>
-                        <option value="Campus">Campus</option>
                       </select>
                     </div>
                   </div>
@@ -384,7 +369,9 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">Highest Qualification</option>
+                        <option value="" disabled>
+                          Highest Qualification
+                        </option>
                         <option value="High School">High School</option>
                         <option value="Intermediate">Intermediate</option>
                         <option value="Diploma">Diploma</option>
@@ -446,25 +433,25 @@ const EmployeeForm: React.FC = () => {
                   </div>
                 </div>
                 <div className="emp-div-flex">
-                <div style={{ marginTop: "8px" }}>
-                  <label className="emp-label">Date of Birth:</label>
-                  <div
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      border: "1.69622px solid #D8D6D6",
-                      borderRadius: "4.24055px",
-                      width: "14.5vw",
-                    }}
-                  >
-                    <DatePicker
-                      className="form-control"
-                      style={{ outline: "none", border: "none" }}
-                      value={dayjs(employee.dob)}
-                      onChange={handleDOBChange}
-                    />
+                  <div style={{ marginTop: "8px" }}>
+                    <label className="emp-label">Date of Birth:</label>
+                    <div
+                      style={{
+                        backgroundColor: "#FFFFFF",
+                        border: "1.69622px solid #D8D6D6",
+                        borderRadius: "4.24055px",
+                        width: "14.5vw",
+                      }}
+                    >
+                      <DatePicker
+                        className="form-control"
+                        style={{ outline: "none", border: "none" }}
+                        value={dayjs(employee.dob)}
+                        onChange={handleDOBChange}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="form-group">
+                  <div className="form-group">
                     <label className="emp-label">Role:</label>
                     <div className="form-control">
                       <select
@@ -474,21 +461,27 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">-- Select Role --</option>
-                        <option value="Manager">Manager</option>w
-                        <option value="Super Admin">Super Admin</option>
+                        <option value="" disabled>
+                          {" "}
+                          Role
+                        </option>
+                        <option value="Software Developer">
+                          Software Developer
+                        </option>
+                        <option value="Digital Marketer">
+                          Digital Marketer
+                        </option>
+                        <option value="Graphic Designer">
+                          Graphic Designer
+                        </option>
                         <option value="HR">HR</option>
-                        <option value="Employee">Employee</option>
-                        <option value="SalesCampus">Campus</option>
-                        <option value="Sales">Sales</option>
-                        <option value="Content Writer">Content Writer</option>
-                        <option value="Graphic Designer">Graphic Designer</option>
+                        <option value="QA">QA</option>
+                        <option value="Sales Campus">Sales Campus</option>
+                        <option value="Sales Infotech">Sales Infotech</option>
                       </select>
                     </div>
                   </div>
                 </div>
-
-
 
                 <div className="emp-div-flex">
                   <div style={{ marginTop: "8px" }}>
@@ -519,7 +512,7 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">-- Select Blood Group --</option>
+                        <option value="">Blood Group</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
                         <option value="B+">B+</option>
@@ -603,7 +596,9 @@ const EmployeeForm: React.FC = () => {
                       marginLeft: "12px",
                     }}
                   >
-                    {location?.state?.empEditObj ? "Update employee" : "Add employee"}
+                    {location?.state?.empEditObj
+                      ? "Update employee"
+                      : "Add employee"}
                   </p>
                 </button>
               </form>

@@ -30,6 +30,15 @@ interface SalecampusData {
   description: string;
   created_at: string;
   updated_at: string;
+  EmployeeID :string;
+}
+
+
+interface Employee {
+  EmpID: string | number;
+  firstName: string;
+  role: string;
+  dob: string | Date;
   EmployeeID: string;
 }
 
@@ -51,12 +60,7 @@ interface Props {
   setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
 }
 
-
-const info = JSON.parse(localStorage.getItem("myData") || "{}");
-console.log(info?.EmployeeID);
-
-
-const SalecampusFormList = () => {
+const AdminSaleCampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
   const [recordToDelete, setRecordToDelete] = useState<SalecampusData | null>(
     null
@@ -68,11 +72,19 @@ const SalecampusFormList = () => {
   const [dateSearch, setDateSearch] = useState<string | null>(null);
   const [generalSearch, setGeneralSearch] = useState<string>("");
   const [dateRangeSearch, setDateRangeSearch] = useState<[string | null, string | null]>([null, null]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
 
 
   const Navigate = useNavigate();
   const location = useLocation();
   const passedRecord = location.state?.record;
+
+  // const info = JSON.parse(localStorage.getItem("myData") || "{}");
+
+
+
+
 
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,11 +99,10 @@ const SalecampusFormList = () => {
   // const autoCompleteOptions = ['not picked', 'not interested'];
 
   useEffect(() => {
-
-
+    const token = localStorage.getItem("myToken");
     axios
-      .get("https://empbackend.base2brand.com/salecampusdata"
-        // Uncomment below if your server requires the token for authentication
+      .get(
+        "https://empbackend.base2brand.com/salecampusdata"
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,
@@ -100,20 +111,36 @@ const SalecampusFormList = () => {
       )
       .then((response) => {
         const resData = response.data;
-
-        // Filter data based on EmployeeID
-        const filteredByEmployeeID = resData.filter((entry: { EmployeeID: any; }) => entry.EmployeeID === info?.EmployeeID);
-
-        console.log("Filtered Data", filteredByEmployeeID);
-
-        setData(filteredByEmployeeID);
-        setFilteredData(filteredByEmployeeID); // Assuming you also want to set this to another state
+        console.log("resData", resData);
+        setData(resData);
+        setFilteredData(resData);
       });
   }, []);
 
   useEffect(() => {
     filterData(dateSearch, dateSearch, search);
   }, [data]);
+
+
+  useEffect(() => {
+    axios
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        }
+      })
+      .then((response) => {
+        setEmployees(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+
+  const getEmployeeName = (employeeId: string | number) => {
+    const employee = employees.find(emp => emp.EmployeeID === employeeId);
+    return employee ? employee.firstName : '-';
+  }
+
 
 
   // delete methods
@@ -170,11 +197,11 @@ filterData(dateSearch, dateSearch, search);
       dataIndex: "name",
       key: "name",
     },
-    {
-      title: "description",
-      dataIndex: "description",
-      key: "description",
-    },
+    // {
+    //   title: "description",
+    //   dataIndex: "description",
+    //   key: "description",
+    // },
     {
       title: "Email",
       dataIndex: "email",
@@ -223,8 +250,13 @@ filterData(dateSearch, dateSearch, search);
       key: "status",
       render: (text: string) => <div>{text}</div>,
     },
-
-
+    {
+      title: "Called By",
+      key: "EmployeeName",
+      render: (_: any, record: SalecampusData) => (
+        <div>{getEmployeeName(record.EmployeeID)}</div>
+      )
+    },
     {
       title: "Created At",
       dataIndex: "created_at",
@@ -337,6 +369,7 @@ filterData(dateSearch, dateSearch, search);
     // Further filter by general search value
     if (generalValue) {
       result = result.filter((e) => {
+        const employeeName = getEmployeeName(e.EmployeeID);  // Fetch the employee's name
         const criteria = [
           e.gender,
           e.email,
@@ -348,6 +381,7 @@ filterData(dateSearch, dateSearch, search);
           e.duration,
           e.totalFee,
           e.status,
+          employeeName  // Add the employee's name to the criteria
         ];
         return criteria.some(
           (criterion) =>
@@ -359,6 +393,7 @@ filterData(dateSearch, dateSearch, search);
 
     setFilteredData(result);
   };
+
 
   // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const inputValue = e.target.value;
@@ -399,7 +434,7 @@ filterData(dateSearch, dateSearch, search);
             </div>
             <section className="SalecampusForm-section-os">
               <div className="form-container">
-                <div className="SalecampusFormList-default-os">
+                <div className="AdminSaleCampusFormList-default-os">
                   <div
                     style={{
                       paddingBottom: "1rem",
@@ -468,4 +503,4 @@ filterData(dateSearch, dateSearch, search);
   );
 };
 
-export default SalecampusFormList;
+export default AdminSaleCampusFormList;

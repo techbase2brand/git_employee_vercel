@@ -282,7 +282,6 @@ const AddModule: React.FC<unknown> = () => {
     });
   };
 
-  // const dataString = localStorage.getItem("myData");
 
   useEffect(() => {
     if (empInfo) {
