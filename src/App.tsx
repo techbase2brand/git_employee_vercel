@@ -31,6 +31,25 @@ import SalecampusForm from "./Components/SalecampusForm";
 import SalecampusFormList from "./Components/SalecampusFormList";
 import SaleInfoForm from "./Components/SaleInfoForm";
 import SaleInfoFormList from "./Components/SaleInfoFormList";
+import EveningDashboard from "./Components/EveningDashboard";
+import AddProject from "./Components/AddProject";
+import AddPhase from "./Components/AddPhase";
+import AddModule from "./Components/AddModule";
+import EditAddModule from "./Components/EditAddModule";
+import EditAddPhase from "./Components/EditAddPhase";
+import ViewProject from "./Components/ViewProject";
+import ViewPhase from "./Components/ViewPhase";
+import ViewModule from "./Components/ViewModule";
+import PhaseAssignedTo from "./Components/PhaseAssignedTo";
+import ViewPhaseAssign from "./Components/ViewPhaseAssign";
+import AboutProject from "./Components/AboutProject";
+import LeavePage from "./Components/LeavePage";
+import ShiftChangePage from "./Components/ShiftChangePage";
+import AdminSaleCampusFormList from "./Components/AdminSalecampusFormList";
+import AssignTaskPage from "./Components/AssignTaskPage";
+import ViewBacklogPage from "./Components/ViewBacklogPage";
+import AssignedTasks from "./Components/AssignedTasks";
+
 
 export const GlobalInfo = createContext<any>({});
 
@@ -61,7 +80,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
 const App: React.FC = () => {
   const [empObj, setEmpObj] = useState<any>();
-
   const [empInfo, setEmpInfo] = useState();
   const [mrngEditID, setMrngEditID] = useState();
   const [evngEditID, setEvngEditID] = useState();
@@ -105,6 +123,130 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
+
+<Route
+            path="/EveningDashboard"
+            element={
+              <ProtectedRoute>
+                <EveningDashboard  />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/add-project"
+            element={
+              <ProtectedRoute>
+                <AddProject />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/AssignedTasks"
+            element={
+              <ProtectedRoute>
+                <AssignedTasks />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/AdminSaleCampusFormList"
+            element={
+              <ProtectedRoute>
+                <AdminSaleCampusFormList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-phase"
+            element={
+              <ProtectedRoute>
+                <AddPhase />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-module"
+            element={
+              <ProtectedRoute>
+                <AddModule />
+              </ProtectedRoute>
+            }
+          />
+             <Route
+            path="/view-project"
+            element={
+              <ProtectedRoute>
+                <ViewProject />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/LeavePage"
+            element={
+              <ProtectedRoute>
+                <LeavePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-phase"
+            element={
+              <ProtectedRoute>
+                <ViewPhase />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-module"
+            element={
+              <ProtectedRoute>
+                <ViewModule />
+              </ProtectedRoute>
+            }
+          />
+
+
+<Route
+            path="/EditAddPhase"
+            element={
+              <ProtectedRoute>
+                <EditAddPhase />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/AssignTaskPage"
+            element={
+              <ProtectedRoute>
+                <AssignTaskPage />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/ViewBacklogPage"
+            element={
+              <ProtectedRoute>
+                <ViewBacklogPage />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/EditAddModule"
+            element={
+              <ProtectedRoute>
+                <EditAddModule />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ShiftChangePage"
+            element={
+              <ProtectedRoute>
+                <ShiftChangePage />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/table-navbar"
             element={
@@ -142,6 +284,30 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <ViewEveningTask />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/AboutProject"
+            element={
+              <ProtectedRoute>
+                <AboutProject />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/PhaseAssignedTo"
+            element={
+              <ProtectedRoute>
+                <PhaseAssignedTo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ViewPhaseAssign"
+            element={
+              <ProtectedRoute>
+                <ViewPhaseAssign />
               </ProtectedRoute>
             }
           />
@@ -194,7 +360,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-          {info?.role === "HR" && (
+          {/* {info?.role === "HR" && ( */}
             <>
               <Route
                 path="/HRsection"
@@ -230,7 +396,7 @@ const App: React.FC = () => {
                 }
               />
             </>
-          )}
+          {/* )} */}
           <Route
             path="/LeaveReports"
             element={

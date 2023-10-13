@@ -132,12 +132,31 @@ const EmployeeForm: React.FC = () => {
     setEmployee({ ...employee, [name]: modifiedValue });
   };
 
-
+  <div  className="form-control">
+  <select
+    name="jobPosition"
+    value={employee.jobPosition}
+    onChange={handleInputChange}
+    required
+    style={{ outline: "none", border: "none" }}
+  >
+    <option value="" disabled>Job position </option>
+    {/* <option value="Manager">Manager</option> */}
+    <option value="Super Admin">Super Admin</option>
+    <option value="Project Manager">Project Manager</option>
+    <option value="Team Lead">Team Lead</option>
+    <option value="Tech Engineer">Tech Engineer</option>
+    <option value="BDE">BDE</option>
+    <option value="BDE Campus">BDE Campus</option>
+    <option value="QA">QA</option>
+    <option value="HR">HR</option>
+  </select>
+</div>
   useEffect(() => {
     axios
       .get<IEmployee[]>("https://empbackend.base2brand.com/employees",{
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       })
       .then((response) => setData(response.data))
@@ -227,7 +246,7 @@ const EmployeeForm: React.FC = () => {
         data
       ,{
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       })
       .then((response) => {
@@ -264,14 +283,14 @@ const EmployeeForm: React.FC = () => {
         confirmPassword: employee.confirmPassword,
       };
 
-      console.log(localStorage.getItem('adminToken'),'adminToken');
+      console.log(localStorage.getItem('myToken'),'myToken');
 
 
       axios
          .post("https://empbackend.base2brand.com/create", data ,{
 
     headers: {
-      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      'Authorization': `Bearer ${localStorage.getItem('myToken')}`
     }
   })
   .then((response) => {
@@ -346,33 +365,26 @@ const EmployeeForm: React.FC = () => {
                   <div className="form-group">
                     <label className="emp-label">Job Position:</label>
 
-                    <div style={{ width: "95%" }} className="form-control">
-                      <select
-                        name="jobPosition"
-                        value={employee.jobPosition}
-                        onChange={handleInputChange}
-                        required
-                        style={{ outline: "none", border: "none" }}
-                      >
-                        <option value="">-- Select position --</option>
-                        {/* <option value="Manager">Manager</option> */}
-                        <option value="Software Trainee">Software Trainee</option>
-                        <option value="Web Designer Trainee">Web Designer Trainee</option>
-                        <option value="Graphic  Trainee">Graphic  Trainee</option>
-                        <option value="QA Trainee">QA Trainee</option>
-                        <option value="Software Developer">Software Developer</option>
-                        <option value="Web Designer">Web Designer</option>
-                        <option value="Digital Marketer">Digital Marketer</option>
-                        <option value="Graphic Designer">Graphic Designer</option>
-                        {/* <option value="CEO">CEO</option> */}
-                        <option value="QA">QA</option>
-                        <option value="Project Manager">Project Manager</option>
-                        <option value="Team Lead">Team Lead</option>
-                        <option value="HR">HR</option>
-                        <option value="Sales">Sales</option>
-                        <option value="Campus">Campus</option>
-                      </select>
-                    </div>
+                      <div  className="form-control">
+                        <select
+                          name="jobPosition"
+                          value={employee.jobPosition}
+                          onChange={handleInputChange}
+                          required
+                          style={{ outline: "none", border: "none" }}
+                        >
+                          <option value="" disabled>Job position </option>
+                          {/* <option value="Manager">Manager</option> */}
+                          <option value="Super Admin">Super Admin</option>
+                          <option value="Project Manager">Project Manager</option>
+                          <option value="Team Lead">Team Lead</option>
+                          <option value="Tech Engineer">Tech Engineer</option>
+                          <option value="BDE">BDE</option>
+                          <option value="BDE Campus">BDE Campus</option>
+                          <option value="QA">QA</option>
+                          <option value="HR">HR</option>
+                        </select>
+                      </div>
                   </div>
                   <div className="form-group">
                     <label className="emp-label">Highest Qualification:</label>
@@ -384,7 +396,7 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">Highest Qualification</option>
+                        <option value="" disabled>Highest Qualification</option>
                         <option value="High School">High School</option>
                         <option value="Intermediate">Intermediate</option>
                         <option value="Diploma">Diploma</option>
@@ -464,7 +476,7 @@ const EmployeeForm: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="form-group">
+                  <div className="form-group">
                     <label className="emp-label">Role:</label>
                     <div className="form-control">
                       <select
@@ -474,15 +486,16 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">-- Select Role --</option>
-                        <option value="Manager">Manager</option>w
-                        <option value="Super Admin">Super Admin</option>
-                        <option value="HR">HR</option>
-                        <option value="Employee">Employee</option>
-                        <option value="SalesCampus">Campus</option>
-                        <option value="Sales">Sales</option>
+                        <option value="" disabled> Role</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
                         <option value="Content Writer">Content Writer</option>
                         <option value="Graphic Designer">Graphic Designer</option>
+                        <option value="SEO">SEO</option>
+                        <option value="HR">HR</option>
+                        <option value="QA">QA</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Sales Infotech">Sales Infotech</option>
                       </select>
                     </div>
                   </div>
@@ -519,7 +532,7 @@ const EmployeeForm: React.FC = () => {
                         required
                         style={{ outline: "none", border: "none" }}
                       >
-                        <option value="">-- Select Blood Group --</option>
+                        <option value="">Blood Group</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
                         <option value="B+">B+</option>

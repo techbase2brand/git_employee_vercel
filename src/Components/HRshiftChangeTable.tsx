@@ -35,6 +35,7 @@ const HRshiftChangeTable : React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
+
         setData(sortedData);
       });
   }, []);

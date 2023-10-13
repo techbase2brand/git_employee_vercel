@@ -4,19 +4,19 @@ import axios from "axios";
 // import { useNavigate } from "react-router-dom";
 
 interface ShiftChangeData {
-    ShiftChangeTableID : 0,
-    employeeName: string;
-    employeeID: string;
-    applyDate: string;
-    inTime: string;
-    outTime: string;
-    reason: string;
-    currDate: Date;
-    teamLead: string;
-    adminID: string;
-    approvalOfTeamLead: string;
-    approvalOfHR: string;
-  }
+  ShiftChangeTableID: 0;
+  employeeName: string;
+  employeeID: string;
+  applyDate: string;
+  inTime: string;
+  outTime: string;
+  reason: string;
+  currDate: Date;
+  teamLead: string;
+  adminID: string;
+  approvalOfTeamLead: string;
+  approvalOfHR: string;
+}
 
 const ViewShiftChangeTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
@@ -24,12 +24,11 @@ const ViewShiftChangeTable: React.FC = () => {
   // const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo",  {
+      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
-      }
-    )
+      })
       .then((response) => {
         // sort the data array in reverse order based on ProID
         const sortedData = response.data.sort(
@@ -39,31 +38,32 @@ const ViewShiftChangeTable: React.FC = () => {
       });
   }, []);
 
-
-
   const fetchData = () => {
     axios
-      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo",  {
+      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
-      }
-    )
+      })
       .then((response) => {
-
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
-        setData(sortedData);
+        const employeeInfo = JSON.parse(localStorage.getItem("myData") || "{}");
+        console.log(employeeInfo);
+
+        const employeeID = employeeInfo.EmployeeID;
+
+        const filteredata = sortedData.filter(
+          (emp) => emp?.employeeID == employeeID
+        );
+            setData(filteredata);
       });
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-
-
 
   const columns = [
     {
@@ -90,7 +90,6 @@ const ViewShiftChangeTable: React.FC = () => {
       key: "reason",
       render: (text: string) => <div style={{ width: 250 }}>{text}</div>,
     },
-
 
     {
       title: "Status (TL)",

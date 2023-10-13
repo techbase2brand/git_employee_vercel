@@ -28,10 +28,24 @@ interface LeaveData {
   leaveCategory: string;
 }
 
-interface Admin {
+interface IEmployee {
+  firstName: string;
+  lastName: string;
+  jobPosition: string;
   email: string;
-  adminID: string;
-  adminName: string;
+  phone: string;
+  permanentaddress: string;
+  currentAddress: string;
+  dob: Date;
+  role: string;
+  parentPhone: string;
+  EmployeeID: string;
+  password: string;
+  confirmPassword: string;
+  EmpID: number;
+  doj: Date;
+  bloodGroup: string;
+  highestQualification: string;
 }
 
 const LeaveFormComp: React.FC = () => {
@@ -46,7 +60,7 @@ const LeaveFormComp: React.FC = () => {
   const [teamLead, setTeamLead] = useState<string>("");
   // const [message, setMessage] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
-  const [adminInfo, setAdminInfo] = useState<Admin[]>([]);
+  const [adminInfo, setAdminInfo] = useState<IEmployee[]>([]);
   const [estTime, setEstTime] = useState<string>("");
   // const [isHourlyBasis, setIsHourlyBasis] = useState(false);
   // const [isDropdownDisabled, setIsDropdownDisabled] = useState(false);
@@ -103,13 +117,19 @@ const LeaveFormComp: React.FC = () => {
     e.preventDefault();
     if (startDate && endDate) {
       // Find the selected admin using the adminID
+
+      console.log(teamLead,"teamLeadteamLeadteamLeadteamLeadteamLead");
+
       const selectedAdmin = adminInfo.find(
-        (admin) => admin.adminID === teamLead
+        (admin) => admin.EmployeeID === teamLead
       );
+   console.log(selectedAdmin,"selectedAdminselectedAdmin");
 
       // Extract the adminName and adminID
-      const adminName = selectedAdmin ? selectedAdmin.adminName : "";
-      const adminID = selectedAdmin ? selectedAdmin.adminID : "";
+      const adminName = selectedAdmin ? selectedAdmin.firstName : "";
+      console.log(adminName,"adminNameadminNameadminName");
+
+      const adminID = selectedAdmin ? selectedAdmin.EmployeeID : "";
 
       const localLeaveType = estTime ? estTime : "full day";
 
@@ -162,6 +182,7 @@ const LeaveFormComp: React.FC = () => {
     }
   };
 
+
   const handleDropdownClick = () => {
     if (leaveType === "full day") {
       setLeaveType("");
@@ -181,23 +202,41 @@ const LeaveFormComp: React.FC = () => {
   useEffect(() => {
     // Get the token from local storage
     const token = localStorage.getItem("myToken");
-    console.log(token,"tokennnnnn");
-
 
     axios
-      .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setAdminInfo(response.data);
-        console.log(response.data,"response.data");
+    .get<IEmployee[]>("https://empbackend.base2brand.com/employees", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
 
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+      const arr = response?.data.filter((elem)=> elem?.role == "Manager" || elem?.role == "Super Admin")
+
+
+      setAdminInfo(arr);
+      console.log(response.data,"response.data of empployee");
+
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+
+
+    // axios
+    //   .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     setAdminInfo(response.data);
+    //     console.log(response.data,"response.data");
+
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching data:", error);
+    //   });
   }, [employeeID]);
 
 
@@ -344,8 +383,8 @@ const LeaveFormComp: React.FC = () => {
             >
               <option value="">Select admin</option>
               {adminInfo.map((admin) => (
-                <option key={admin.adminID} value={admin.adminID}>
-                  {admin.adminName}
+                <option key={admin.EmployeeID} value={admin.EmployeeID}>
+                  {admin.firstName}
                 </option>
               ))}
             </select>

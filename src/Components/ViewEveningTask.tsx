@@ -126,7 +126,7 @@ const ViewEveningTask: React.FC = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  Evening Tasks
+                  Evening Status
                 </p>
               </div>
               <EveningTaskTable

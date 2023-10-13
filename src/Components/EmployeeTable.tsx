@@ -29,7 +29,6 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   const navigate = useNavigate();
 
   if (editID !== undefined) {
-    // console.log(data,"gggg----");
 
     const filteredObj = data.filter((obj) => {
       return obj.EmpID === editID;
@@ -42,7 +41,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     axios
       .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {
