@@ -181,7 +181,8 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
 
         if (totalActTime === "0:00") return null; // Filter out the entries with 0 hours
 
-        return `${employeeName}: ${totalActTime}`;
+        return `${employeeName}: ${totalActTime} ` ;
+
       })
       .filter(Boolean) // Remove nulls from the array
       .join("\n");
