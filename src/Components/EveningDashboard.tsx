@@ -146,10 +146,13 @@ const EveningDashboard: React.FC = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column" , paddingTop:"16px" }}
             className="form-container"
           >
-             <div
+            <div
+            style={{ display: "flex", flexDirection: "row" ,width:"100%" }}
+            >
+            <div
           style={{
             display: "flex",
             width: "100%",
@@ -160,19 +163,39 @@ const EveningDashboard: React.FC = () => {
           <RangePicker onChange={handleDateRangeChange} />
         </div>
 
-        {/* <div className="role-dropdown">
-        <label>Select Role: </label>
-        <select value={selectedRole} onChange={handleRoleChange}>
-          <option value="">All Roles</option>
-          <option value="Software Developer">Software Developer</option>
-          <option value="Digital Marketer">Digital Marketer</option>
-          <option value="Graphic Designer">Graphic Designer</option>
-          <option value="HR">HR</option>
-          <option value="QA">QA</option>
-          <option value="Sales Campus">Sales Campus</option>
-          <option value="Sales Infotech">Sales Infotech</option>
-        </select>
-      </div> */}
+
+  <div style={{
+  display: "flex",
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "space-between",
+}}> {/* This ensures the dropdown takes up as much space as possible */}
+    <select
+      id="roleSelect"
+      style={{
+        width: 300,
+        padding: '10px 12px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+        appearance: 'none',
+        backgroundColor: '#f7f7f7'
+      }}
+      value={selectedRole}
+      onChange={handleRoleChange}
+    >
+      <option value="" disabled hidden>Select a role</option>
+      <option value="">All Roles</option>
+      <option value="Software Developer">Software Developer</option>
+      <option value="Digital Marketer">Digital Marketer</option>
+      <option value="Graphic Designer">Graphic Designer</option>
+      <option value="HR">HR</option>
+      <option value="QA">QA</option>
+      <option value="Sales Campus">Sales Campus</option>
+      <option value="Sales Infotech">Sales Infotech</option>
+    </select>
+  </div>
+
 
 
 
@@ -190,6 +213,10 @@ const EveningDashboard: React.FC = () => {
   />
   {/* <RangePicker onChange={handleDateRangeChange} /> */}
 </div>
+
+
+   </div>
+
             <div
               style={{
                 display: "flex",

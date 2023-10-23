@@ -68,6 +68,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   const [dateRange, setDateRange] = useState<any>([null, null]); // Start and end date
 
 console.log(selectedRole,"selectedRole");
+console.log(employeeArr,"employeeArr");
 
   const handleDateChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
@@ -83,7 +84,7 @@ console.log(selectedRole,"selectedRole");
         },
       })
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data,"response.data");
       })
       .catch((error) => {
         console.log(error);
@@ -104,6 +105,7 @@ console.log(selectedRole,"selectedRole");
         );
 
         setEmployeeArr(sortedData);
+
       })
       .catch((error) => console.log(error));
   }, []);
@@ -295,7 +297,16 @@ console.log(selectedRole,"selectedRole");
     const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
     employeeactTimes.push({ employeeID, formattedTime });
   }
-  const tables = employeeArr
+   let filteredEmployees;
+   if(selectedRole){
+    filteredEmployees = employeeArr.filter((emp: Employee) => emp.role === selectedRole);
+   }else{
+    filteredEmployees = employeeArr;
+   }
+
+
+
+  const tables = filteredEmployees
   .filter((emp: Employee) => {
 
     // if (emp.role == selectedRole  )  {

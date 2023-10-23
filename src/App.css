@@ -9,6 +9,32 @@
   background-color: rgb(172, 237, 172) !important;
 }
 
+
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.tooltip-entry {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tooltip-entry:last-child {
+  border-bottom: none;
+}
+
+.employee-name {
+  font-weight: 500;
+}
+
+.employee-hours {
+  color: #888;
+}
+
 .outer-container {
   display: flex;
   flex-direction: row;
