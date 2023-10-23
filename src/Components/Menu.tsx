@@ -286,7 +286,7 @@ const AppMenu = () => {
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
           <>
-            <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
+          <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
               <Link to="/SaleInfoForm">Sale Infotech Form</Link>
             </Menu.Item>
 
