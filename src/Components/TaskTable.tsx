@@ -36,6 +36,7 @@ interface Employee {
   role: string;
   dob: string | Date;
   EmployeeID: string;
+  status: number;
 }
 
 const handleEdit = (EmpID: string | number) => {
@@ -81,7 +82,9 @@ const TaskTable: React.FC<Props> = ({
         );
 
         const employeeArray = sortedData?.map((e) => e.EmployeeID);
-        setEmployeeArr(sortedData); // Set the sorted employees
+        const filteredData = sortedData.filter((emp)=> emp.status === 1  )
+
+        setEmployeeArr(filteredData); // Set the sorted employees
       })
       .catch((error) => console.log(error));
   }, []);

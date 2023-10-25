@@ -4,7 +4,6 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import e from "express";
 
 // Define the type for the data array
 interface Employee {
@@ -14,6 +13,7 @@ interface Employee {
   role: string;
   dob: string | Date;
   EmployeeID: string;
+  status: number;
 }
 
 interface Props {
@@ -60,12 +60,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     }
 
 
-    //     let num = EmpID;
-    // let text = num.toString();
-    // console.log(text,"-----");
 
-    // localStorage.setItem("EMPID", text);
-    // console.log(`Edit employee with id ${EmpID}`);
   };
 
   const handleDelete = (EmpID: string | number) => {
@@ -88,6 +83,33 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
 
     setData(data.filter((employee) => employee.EmpID !== EmpID));
   };
+
+  const handleStatusChange = (EmpID: string | number, currentStatus: number) => {
+    const newStatus = currentStatus === 1 ? 0 : 1;
+
+    // Call the API to update the status
+    axios.put(`https://empbackend.base2brand.com/employeeUpdateStatus/${EmpID}`, {
+      status: newStatus
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+      },
+    })
+    .then((response) => {
+      // Update the local data state
+      setData(prevData =>
+        prevData.map(employee =>
+          employee.EmpID === EmpID
+          ? { ...employee, status: newStatus }
+          : employee
+        )
+      );
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
 
   const columns = [
     {
@@ -114,6 +136,18 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
       key: "date",
       render: (text: string) => (
         <div style={{}}>{dayjs(text).format("YYYY-MM-DD")}</div>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (_: any, record: Employee) => (
+        <input
+          type="checkbox"
+          checked={record.status === 1}
+          onChange={() => handleStatusChange(record.EmpID, record.status)}
+        />
       ),
     },
     {
@@ -154,6 +188,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     team: employee.role,
     date: employee.dob.toString(),
     EmployeeID: employee.EmployeeID,
+    status :employee.status
   }));
 
   return <Table dataSource={rows} columns={columns} />;
