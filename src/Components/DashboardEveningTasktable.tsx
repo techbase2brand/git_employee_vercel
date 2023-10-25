@@ -44,6 +44,7 @@ interface Employee {
   role: string;
   dob: string | Date;
   EmployeeID: string;
+  status:number;
 }
 
 const handleEdit = (EmpID: string | number) => {
@@ -103,8 +104,10 @@ console.log(employeeArr,"employeeArr");
         const sortedData = response.data.sort(
           (a, b) => a.firstName.localeCompare(b.firstName) // sort by firstName
         );
+        const filteredData = sortedData.filter((emp)=> emp.status === 1  )
 
-        setEmployeeArr(sortedData);
+
+        setEmployeeArr(filteredData);
 
       })
       .catch((error) => console.log(error));

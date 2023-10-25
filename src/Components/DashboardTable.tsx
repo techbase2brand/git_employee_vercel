@@ -12,6 +12,7 @@ interface Employee {
   role: string;
   dob: string | Date;
   EmployeeID: string;
+  status : number;
 }
 
 interface MorningDashboardTableProps {
@@ -61,7 +62,11 @@ const DashboardTable: React.FC<MorningDashboardTableProps> = ({
         const sortedData = response.data.sort((a, b) =>
           a.firstName.localeCompare(b.firstName)
         );
-        setEmployeeArr(sortedData);
+
+        const filteredData = sortedData.filter((emp)=> emp.status === 1  )
+        console.log(filteredData);
+
+        setEmployeeArr(filteredData);
       })
       .catch((error) => console.log(error));
   }, []);
