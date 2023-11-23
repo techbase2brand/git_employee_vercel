@@ -3,6 +3,7 @@ import { Table, DatePicker } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
+import io from "socket.io-client";
 
 interface BacklogTask {
   backlogTaskID: number;
@@ -43,54 +44,96 @@ const ViewBacklogTable: React.FC = () => {
   console.log(UserEmail,"UserEmail");
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-          },
-        });
+
+  useEffect(()=>{
+    const socket = io("https://empbackend.base2brand.com");
+
+    socket.on('notification',(data)=>{
+      const sortedData = data?.data?.sort((a: { backlogTaskID: number; }, b: { backlogTaskID: number; }) => b.backlogTaskID - a.backlogTaskID);
+      console.log("Sorted data:", sortedData);
+
+      const filteredData = sortedData.filter((e: { UserEmail: any; }) => e.UserEmail === UserEmail);
+
+      console.log("Filtered data:", filteredData);
+
+      const today = new Date();
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
+    const finalFilteredData = filteredData.filter((e: { currdate: string | number | Date; UserEmail: any; }) => {
+      const taskDate = new Date(e.currdate);
+      const isDateInRange =
+        taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
+        (dateRange === null ||
+          (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
+            taskDate <= (dateRange[1] || today)));
+
+        // Check if the task is assigned by the admin based on email ID
+        const isAssignedByAdmin = e.UserEmail === UserEmail;
+
+        console.log("Task Date:", taskDate, "Is Date in Range:", isDateInRange, "Is Assigned by Admin:", isAssignedByAdmin);
+
+        return isDateInRange && isAssignedByAdmin;
+      });
 
 
-        const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
-        console.log("Sorted data:", sortedData);
+      console.log("Final filtered data:", finalFilteredData);
 
-        const filteredData = sortedData.filter((e) => e.UserEmail === UserEmail);
-
-        console.log("Filtered data:", filteredData);
-
-        const today = new Date();
-      const tenDaysAgo = new Date();
-      tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
-      const finalFilteredData = filteredData.filter((e) => {
-        const taskDate = new Date(e.currdate);
-        const isDateInRange =
-          taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
-          (dateRange === null ||
-            (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
-              taskDate <= (dateRange[1] || today)));
-
-          // Check if the task is assigned by the admin based on email ID
-          const isAssignedByAdmin = e.UserEmail === UserEmail;
-
-          console.log("Task Date:", taskDate, "Is Date in Range:", isDateInRange, "Is Assigned by Admin:", isAssignedByAdmin);
-
-          return isDateInRange && isAssignedByAdmin;
-        });
+      setData(finalFilteredData);
+    })
+  },[adminID, dateRange])
 
 
-        console.log("Final filtered data:", finalFilteredData);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+  //         },
+  //       });
 
-        setData(finalFilteredData);
-      } catch (error: any) {
-        console.error("Error fetching data:", error);
-        console.log("Error details:", (error as AxiosError)?.response);
-      }
-    };
 
-    fetchData();
-  }, [adminID, dateRange]);
+
+
+
+  //       const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
+  //       console.log("Sorted data:", sortedData);
+
+  //       const filteredData = sortedData.filter((e) => e.UserEmail === UserEmail);
+
+  //       console.log("Filtered data:", filteredData);
+
+  //       const today = new Date();
+  //     const tenDaysAgo = new Date();
+  //     tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
+  //     const finalFilteredData = filteredData.filter((e) => {
+  //       const taskDate = new Date(e.currdate);
+  //       const isDateInRange =
+  //         taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
+  //         (dateRange === null ||
+  //           (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
+  //             taskDate <= (dateRange[1] || today)));
+
+  //         // Check if the task is assigned by the admin based on email ID
+  //         const isAssignedByAdmin = e.UserEmail === UserEmail;
+
+  //         console.log("Task Date:", taskDate, "Is Date in Range:", isDateInRange, "Is Assigned by Admin:", isAssignedByAdmin);
+
+  //         return isDateInRange && isAssignedByAdmin;
+  //       });
+
+
+  //       console.log("Final filtered data:", finalFilteredData);
+
+  //       setData(finalFilteredData);
+  //     } catch (error: any) {
+  //       console.error("Error fetching data:", error);
+  //       console.log("Error details:", (error as AxiosError)?.response);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [adminID, dateRange]);
 
 
   const formatDate = (dateString: string) => {
