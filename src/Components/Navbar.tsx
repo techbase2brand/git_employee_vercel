@@ -171,7 +171,27 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
-    const socket = io("https://empbackend.base2brand.com");
+
+      const socket = io("https://empbackend.base2brand.com");
+
+
+      socket.on('notification' ,(data)=>{
+        const visitedNotificationIds = getVisitedNotificationIds();
+
+        const filteredData = data?.data?.filter(
+          (item: { backlogTaskID: any; employeeID: any; }) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
+
+        );
+        const sortedData = filteredData.sort(
+          (a: { backlogTaskID: any; }, b: { backlogTaskID: any; }) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+        );
+
+        setNotifications(sortedData);
+        updateNotificationCount(); // Update the notification count
+
+        console.log("datadatadata===============",data)
+
+  })
     socket.on("taskAssigned", handleTaskAssigned);
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
@@ -192,34 +212,34 @@ const Navbar: React.FunctionComponent = () => {
       JSON.stringify(visitedNotificationIds)
     );
   };
-useEffect(() => {
-    axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
+// useEffect(() => {
+//     axios
+//       .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+//         },
 
-      })
-      .then((response) => {
-        const visitedNotificationIds = getVisitedNotificationIds();
-        const filteredData = response?.data?.filter(
-          (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
+//       })
+//       .then((response) => {
+//         const visitedNotificationIds = getVisitedNotificationIds();
+//         const filteredData = response?.data?.filter(
+//           (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
 
-        );
-        const sortedData = filteredData.sort(
-          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
+//         );
+//         const sortedData = filteredData.sort(
+//           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+//         );
 
-        setNotifications(sortedData);
-        updateNotificationCount(); // Update the notification count
-      })
-      .catch((error) => {
-        console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
+//         setNotifications(sortedData);
+//         updateNotificationCount(); // Update the notification count
+//       })
+//       .catch((error) => {
+//         console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
 
-        // console.error("Error fetching data:", error);
-        // console.log("Error details:", error.response);
-      });
-  }, []);
+//         // console.error("Error fetching data:", error);
+//         // console.log("Error details:", error.response);
+//       });
+//   }, []);
 
  const listStyle = {
     padding: "10px",
@@ -256,7 +276,7 @@ useEffect(() => {
         <List.Item
           key={item.backlogTaskID}
           onClick={() => {
-            navigate("/dashboard");
+            navigate("/AssignedTasks");
             markNotificationAsVisited(item.backlogTaskID);
             setNotifications((prevNotifications) =>
               prevNotifications.filter(
