@@ -1,6 +1,8 @@
-import React, { useState, useEffect,useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Table } from "antd";
 import axios from "axios";
+// import { Socket } from "socket.io-client";
+import io from "socket.io-client";
 
 interface BacklogTask {
   backlogTaskID: number;
@@ -17,14 +19,15 @@ interface BacklogTask {
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
 
-  const isWithinLastOneMonth = (dateString :any) => {
+  const isWithinLastOneMonth = (dateString: any) => {
     const taskDate = new Date(dateString);
     const currentDate = new Date();
-    const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
+    const fiveDaysAgo = new Date(
+      currentDate.setDate(currentDate.getDate() - 30)
+    );
 
     return taskDate >= fiveDaysAgo;
   };
-
 
   const dataString = localStorage.getItem("myData");
   const employeeInfo = useMemo(
@@ -33,60 +36,49 @@ const AssignedTasksTable: React.FC = () => {
   );
   console.log(employeeInfo);
 
-
   useEffect(() => {
-    axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
-      )
-      .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
-        console.log(sortedData);
-       console.log(employeeInfo?.EmployeeID);
-
-
-
-
-        const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
-        );
-        setData(filteredData);
-        console.log(filteredData);
-
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        console.log("Error details:", error.response);
-      });
+    const socket = io("https://empbackend.base2brand.com");
+    socket.on("notification", (data: { data: any[] }) => {
+      const sortedData = data?.data?.sort(
+        (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+      );
+      const filteredData = sortedData?.filter(
+        (task) =>
+          isWithinLastOneMonth(task?.currdate) &&
+          task?.employeeID === employeeInfo?.EmployeeID
+      );
+      setData(filteredData);
+    });
   }, []);
 
   const handleCheckboxChange = (isChecked: boolean, backlogTaskID: number) => {
     const updatedData = data.map((task) =>
-      task.backlogTaskID === backlogTaskID ? { ...task, isCompleted: isChecked } : task
+      task.backlogTaskID === backlogTaskID
+        ? { ...task, isCompleted: isChecked }
+        : task
     );
     setData(updatedData);
 
     // Call the API endpoint to update the task completion status
     axios
-    .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
-      { isCompleted: isChecked },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response.data.message);
-    })
-    .catch((error) => {
-      console.error("Error updating task completion status:", error);
-    });
-
+      .put(
+        `https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
+        { isCompleted: isChecked },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error updating task completion status:", error);
+      });
 
     localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(isChecked));
   };
-
 
   const getCheckboxState = (backlogTaskID: number) => {
     const item = localStorage.getItem(`task-${backlogTaskID}`);
@@ -98,7 +90,6 @@ const AssignedTasksTable: React.FC = () => {
   };
 
   const columns = [
-
     {
       title: "Task",
       dataIndex: "taskName",
@@ -141,9 +132,10 @@ const AssignedTasksTable: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-      date.getDate()
-    ).padStart(2, "0")}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
   };
   return (
     <>
