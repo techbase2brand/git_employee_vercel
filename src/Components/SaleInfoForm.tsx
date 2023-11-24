@@ -3,7 +3,7 @@ import Menu from "./Menu";
 import Navbar from "./Navbar";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router";
-
+import { PlusCircleOutlined } from '@ant-design/icons';
 interface FormData {
   id?: number;
   portalType: string;
@@ -12,7 +12,7 @@ interface FormData {
   clientName: string;
   handleBy: string;
   status: string;
-  statusReason: string;
+  statusReason: string[];
   communicationMode: string;
   communicationReason: string;
   othermode: string;
@@ -21,6 +21,10 @@ interface FormData {
   commModeWhatsapp: string;
   commModeEmail: string;
   commModePortal: string;
+  dateData: string;
+  EmployeeID: string;
+  RegisterBy: string;
+  commModeOther: string;
 }
 
 interface communicationModeInterface {
@@ -29,17 +33,30 @@ interface communicationModeInterface {
   whatsapp: boolean;
   email: boolean;
   portal: boolean;
+  other: boolean;
 }
 
 function SaleInfoForm(): JSX.Element {
+  const myDataString = localStorage.getItem('myData');
+  const [statusReasons, setStatusReasons] = useState(['']);
+  const [state, setState] = useState<boolean>(false);
+  const[one]=useState([])
+  let employeeID = "";
+  let employeeName = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    employeeID = myData.EmployeeID;
+    employeeName = `${myData.firstName} ${myData.lastName}`;
+  }
+  const today = new Date().toISOString().split("T")[0];
   const initialFormData: FormData = {
     portalType: "upwork",
     profileName: "",
     url: "",
     clientName: "",
     handleBy: "",
-    status: "",
-    statusReason: "",
+    status: "Discussion",
+    statusReason: [],
     communicationMode: "skype",
     communicationReason: "",
     othermode: "",
@@ -48,8 +65,11 @@ function SaleInfoForm(): JSX.Element {
     commModeWhatsapp: "",
     commModeEmail: "",
     commModePortal: "",
+    dateData: today,
+    EmployeeID: employeeID,
+    RegisterBy: employeeName,
+    commModeOther: "",
   };
-
   //
   const initialCommunicationModeInterface: communicationModeInterface = {
     skype: false,
@@ -57,6 +77,7 @@ function SaleInfoForm(): JSX.Element {
     whatsapp: false,
     email: false,
     portal: false,
+    other: false,
   };
 
   // update api data
@@ -70,37 +91,50 @@ function SaleInfoForm(): JSX.Element {
   const [submitted, setSubmitted] = useState(false);
   const [communicationMode, setCommunicationMode] =
     useState<communicationModeInterface>(initialCommunicationModeInterface);
-
   useEffect(() => {
     if (record) {
+      console.log("Record from location state:", record);
       setFormData(record);
+      if (typeof record.statusReason === 'string' && (record.statusReason as string).trim().length > 0) {
+        const reasonsArray = (record.statusReason as string).split(',');
+        setStatusReasons(reasonsArray);
+      }
     }
   }, [record]);
 
+  const handleAddReason = () => {
+    setStatusReasons([...statusReasons, '']);
+    setState(true)
+  };
+
+  const handleChangeReason = (value: string, index: number) => {
+    const newStatusReasons = [...statusReasons];
+    newStatusReasons[index] = value;
+    setStatusReasons(newStatusReasons);
+    setFormData((prevData) => ({
+      ...prevData,
+      statusReason: newStatusReasons,
+    }));
+  };
   // course options array
   const status = [
     {
       id: 0,
-      value: "Choose a status",
-      label: "Choose a status",
-    },
-    {
-      id: 1,
       value: "Hired",
       label: "Hired",
     },
     {
-      id: 2,
+      id: 1,
       value: "Discussion",
       label: "Discussion",
     },
     {
-      id: 3,
+      id: 2,
       value: "Closed",
       label: "Closed",
     },
     {
-      id: 4,
+      id: 3,
       value: "Pending",
       label: "Pending",
     },
@@ -121,6 +155,17 @@ function SaleInfoForm(): JSX.Element {
     }));
   };
 
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
   const submitForm = async () => {
     if (formData.id) {
       // Update API, To update data
@@ -130,7 +175,7 @@ function SaleInfoForm(): JSX.Element {
       axios
         .post(`https://empbackend.base2brand.com/submit-salesform`, formData)
         .then((response) => {
-          console.log(response.data);
+          console.log("response.data", response);
           setSubmitted(true);
         })
         .catch((error) => {
@@ -173,9 +218,7 @@ function SaleInfoForm(): JSX.Element {
     // if (!formData.portalType) {
     //   newErrors.portalType = "portalType is required.";
     // }
-
     setFormErrors(newErrors);
-
     if (Object.keys(newErrors).length === 0) {
       submitForm();
       Navigate("/saleinfoformlist"); // Navigate back to the list after update
@@ -183,10 +226,14 @@ function SaleInfoForm(): JSX.Element {
   };
 
   const handleUpdate = () => {
+    const statusReasonString = statusReasons.join(',');
+    const updatedFormData = {
+      ...formData,
+      statusReason: statusReasonString,
+    };
     axios
-      .put(`https://empbackend.base2brand.com/updatesale/${formData.id}`, formData)
+      .put(`https://empbackend.base2brand.com/updatesale/${updatedFormData.id}`, updatedFormData)
       .then((response) => {
-        console.log(response.data);
         Navigate("/saleinfoformlist"); // Navigate back to the list after update
         console.log("handleUpdate-working-os");
         setSubmitted(true);
@@ -316,7 +363,7 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="text"
                               name="othermode"
-                              placeholder="Other mode"
+                              placeholder="Portal Name"
                               value={formData.othermode}
                               onChange={handleChange}
                             />
@@ -326,6 +373,7 @@ function SaleInfoForm(): JSX.Element {
 
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
+                          {!formData.profileName && <label className="star-red">*</label>}
                           <input
                             type="text"
                             name="profileName"
@@ -360,6 +408,9 @@ function SaleInfoForm(): JSX.Element {
 
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
+                          {!formData.clientName && <label className="star-red" style={{
+                            marginLeft: '88px'
+                          }}>*</label>}
                           <input
                             type="text"
                             name="clientName"
@@ -399,6 +450,8 @@ function SaleInfoForm(): JSX.Element {
                             value={formData.status}
                             onChange={handleChange}
                           >
+                            <option value="">Choose a status</option>
+
                             {status.map((item) => {
                               return (
                                 <option key={item.id} value={item.value}>
@@ -414,20 +467,39 @@ function SaleInfoForm(): JSX.Element {
                           </div>
                         )}
                       </div>
-
+                      {statusReasons.map((reason, index) => (
+                        <div key={index} className="SalecampusForm-col-os">
+                          <div className="SalecampusForm-input-os">
+                            <input
+                              type="text"
+                              placeholder={`Status Reason ${index + 1}`}
+                              value={reason}
+                              onChange={(e) => handleChangeReason(e.target.value, index)}
+                            />
+                          </div>
+                          {formData.id && index === statusReasons.length - 1 && (
+                            <div style={{
+                              float: 'right'
+                            }}
+                              onClick={handleAddReason}
+                            >
+                              <PlusCircleOutlined />
+                            </div>
+                          )}
+                        </div>
+                      ))}
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
                           <input
-                            type="text"
-                            name="statusReason"
-                            placeholder="Enter status reason"
-                            value={formData.statusReason}
+                            type="date"
+                            name="dateData"
+                            value={formData?.dateData}
                             onChange={handleChange}
                           />
                         </div>
-                        {formErrors.statusReason && (
+                        {formErrors.dateData && (
                           <div className="error-message-os">
-                            {formErrors.statusReason}
+                            {formErrors.dateData}
                           </div>
                         )}
                       </div>
@@ -552,21 +624,42 @@ function SaleInfoForm(): JSX.Element {
                             />
                           </div>
                         </div>
+                        <div className="SalesInfoForm-radio-os">
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="other"
+                              // value="other"
+                              checked={communicationMode.other}
+                              onChange={handleCommunicationMode}
+                            />
+                            Other
+                          </label>
+                          <div className="SalesInfoForm-input-os">
+                            <input
+                              type="text"
+                              name="commModeOther"
+                              placeholder="Other"
+                              disabled={!communicationMode.other}
+                              value={formData.commModeOther}
+                              onChange={handleChange}
+                            />
+                          </div>
+                        </div>
                       </div>
                       {formErrors.communicationMode && (
                         <div className="error-message-os">
                           {formErrors.communicationMode}
                         </div>
                       )}
-
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
-                          <input
-                            type="text"
+                          <textarea
                             name="communicationReason"
-                            placeholder="Enter communication reason"
+                            placeholder="Additional Notes"
                             value={formData.communicationReason}
-                            onChange={handleChange}
+                            onChange={handleTextareaChange}
+                            className="additional-notes"
                           />
                         </div>
                         {formErrors.communicationReason && (
@@ -575,7 +668,6 @@ function SaleInfoForm(): JSX.Element {
                           </div>
                         )}
                       </div>
-
                       <div className="SalecampusForm-submit-os">
                         <button onClick={handleSubmit} type="submit">
                           {formData.id ? "Update" : "Submit"}
