@@ -214,6 +214,9 @@ const AppMenu = () => {
           <Menu.Item key="AdminSaleCampusFormList" icon={<TableOutlined />}>
             <Link to="/AdminSaleCampusFormList">AdminSaleCampusFormList</Link>
           </Menu.Item>
+          <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
+            <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
+          </Menu.Item>
         </>
       )}
 

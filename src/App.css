@@ -27,6 +27,42 @@
   border-bottom: none;
 }
 
+.yellow-row {
+  background-color: yellow !important;
+}
+.ant-table-content{
+  overflow: auto;
+}
+th.ant-table-cell {
+  min-width: 300px;
+}
+.star-red{
+  position: absolute;
+  color: red;
+  margin-left: 104px;
+  margin-top: 12px;
+}
+
+/* tbody > tr > td:nth-child(8) {
+  background-color: rgba(81, 181, 176);
+  color: black;
+} */
+tbody > tr > td:nth-child(12) {
+  background-color: rgba(184, 237, 104);
+  color: black;
+}
+.green-row {
+  background-color: rgb(89, 181, 89) !important;
+}
+
+.red-row {
+  background-color: rgb(202, 84, 84) !important;
+}
+
+.pending-row {
+  background-color: rgb(105, 125, 184) !important;
+}
+
 .employee-name {
   font-weight: 500;
 }
@@ -79,7 +115,7 @@
 .form-div {
 
   width: 40%;
-  background-color:#F7F9FF;
+  background-color: #F7F9FF;
   height: 100%;
   margin-right: 48%;
   /* margin-top:7% */
@@ -117,8 +153,7 @@
   margin-bottom: 2%;
 }
 
-.btn-btn-primary {
-}
+.btn-btn-primary {}
 
 .upwork {
   font-family: Poppins;
@@ -180,6 +215,7 @@
   margin-top: 10px;
   padding-inline: 10px;
 }
+
 .round-button {
   display: inline-block;
   width: 40px;
@@ -195,7 +231,7 @@
   border: 1px solid #ddd;
   cursor: pointer;
   margin-top: 15px;
-  margin-right:"15px"
+  margin-right: "15px"
 
 }
 
@@ -337,8 +373,37 @@ css .campus_form {
   width: 90%;
   margin: 0 auto;
 }
+.ant-select-selector{
+  border-style: none !important;
+  margin-top: 9px !important;
+}
+thead.ant-table-thead tr th:nth-child(1),
+thead.ant-table-thead tr th:nth-child(2),
+thead.ant-table-thead tr th:nth-child(3),
+thead.ant-table-thead tr th:nth-child(4),
+thead.ant-table-thead tr th:nth-child(6),
+thead.ant-table-thead tr th:nth-child(7),
+thead.ant-table-thead tr th:nth-child(8),
+thead.ant-table-thead tr th:nth-child(11),
+thead.ant-table-thead tr th:nth-child(12) {
+  min-width: 100px;
+}
+.adjust-inputs{
+  height: 27px !important;
+  min-height: 32px;
+  margin-top: 0px;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+}
 .SalecampusForm-input-os input,
 .SalecampusForm-input-os select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+.additional-notes{
   width: 100%;
   padding: 12px;
   border-radius: 5px;
@@ -347,9 +412,11 @@ css .campus_form {
 .SalecampusForm-col-os {
   padding-bottom: 2rem;
 }
+
 .gender {
   position: relative;
 }
+
 .gender select {
   width: 100%;
   /* margin-top: 15px; */
@@ -358,6 +425,7 @@ css .campus_form {
   border: 1px solid gray;
   margin-top: 30px;
 }
+
 .SalecampusForm-submit-os button {
   width: 40%;
   padding: 10px;
@@ -370,36 +438,43 @@ css .campus_form {
   font-weight: 500;
   cursor: pointer;
 }
+
 .gender1-radio {
   width: 7%;
   display: flex;
   gap: 10px;
   align-items: center;
 }
+
 .SalecampusForm-data-os h2 {
   padding-bottom: 1rem;
   color: #071c4d;
   font-size: 27px;
 }
+
 .error-message-os {
   color: red;
   font-size: 16px;
   font-weight: 400;
   padding: 8px 0;
 }
+
 .SalecampusForm-radio-os {
   display: flex;
   align-items: center;
 }
+
 .SalecampusForm-radio-os label {
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
 }
+
 .SalecampusForm-radio-os label input {
   cursor: pointer;
 }
+
 .SalecampusForm-radio-row-os {
   display: flex;
   align-items: center;
@@ -407,9 +482,11 @@ css .campus_form {
   padding-bottom: 1.5rem;
   flex-wrap: wrap;
 }
+
 .SalecampusFormList-default-os {
   padding: 3rem;
 }
+
 /* table css starts */
 table {
   font-family: arial, sans-serif;
@@ -427,6 +504,7 @@ th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
 /* table css ends */
 /* salecampus css end */
 
@@ -436,21 +514,25 @@ tr:nth-child(even) {
   gap: 0.5rem;
   width: 30%;
 }
+
 .SalesInfoForm-radio-os {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   padding-bottom: 0.2rem;
 }
+
 .SalesInfoForm-input-os input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 5px;
   border: 1px solid gray;
 }
+
 .SalesInfoForm-input-os {
   width: 70%;
 }
+
 .SalesInfoForm-input-os input:disabled {
   opacity: 0.5;
   cursor: no-drop;
@@ -486,4 +568,3 @@ tr:nth-child(even) {
 .ant-table-row.enrolled {
   background-color: inherit;
 } */
-

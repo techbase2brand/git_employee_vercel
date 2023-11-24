@@ -87,16 +87,18 @@ const EveningDashboard: React.FC = () => {
 
           filteredData = response.data.filter((obj) => {
             const taskDate = new Date(obj.currDate).getTime();
+
             return taskDate >= startDate && taskDate <= endDate;
+
           });
+        console.log("filteData1",filteredData)
+
         } else {
           filteredData = response.data.filter(
             (obj) => obj.currDate === formattedDate
           );
         }
-
-
-
+        console.log("filteData2",filteredData)
 
         const sortedData = filteredData.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)

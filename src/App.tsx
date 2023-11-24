@@ -46,6 +46,7 @@ import AboutProject from "./Components/AboutProject";
 import LeavePage from "./Components/LeavePage";
 import ShiftChangePage from "./Components/ShiftChangePage";
 import AdminSaleCampusFormList from "./Components/AdminSalecampusFormList";
+import AdminSaleInfotechFormList from "./Components/AdminSaleInfotechFormList";
 import AssignTaskPage from "./Components/AssignTaskPage";
 import ViewBacklogPage from "./Components/ViewBacklogPage";
 import AssignedTasks from "./Components/AssignedTasks";
@@ -58,7 +59,7 @@ export const AssignedTaskCountContext = createContext<{
   setAssignedTaskCount: React.Dispatch<React.SetStateAction<number>>;
 }>({
   assignedTaskCount: 0,
-  setAssignedTaskCount: () => {},
+  setAssignedTaskCount: () => { },
 });
 
 interface ProtectedRouteProps {
@@ -84,7 +85,6 @@ const App: React.FC = () => {
   const [mrngEditID, setMrngEditID] = useState();
   const [evngEditID, setEvngEditID] = useState();
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
-
   const info = JSON.parse(localStorage.getItem("myData") || "{}");
 
   useEffect(() => {
@@ -124,15 +124,15 @@ const App: React.FC = () => {
             }
           />
 
-<Route
+          <Route
             path="/EveningDashboard"
             element={
               <ProtectedRoute>
-                <EveningDashboard  />
+                <EveningDashboard />
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
             path="/add-project"
             element={
               <ProtectedRoute>
@@ -140,7 +140,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/AssignedTasks"
             element={
               <ProtectedRoute>
@@ -148,11 +148,19 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/AdminSaleCampusFormList"
             element={
               <ProtectedRoute>
                 <AdminSaleCampusFormList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/AdminSaleInfotechFormList"
+            element={
+              <ProtectedRoute>
+                <AdminSaleInfotechFormList />
               </ProtectedRoute>
             }
           />
@@ -172,7 +180,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-             <Route
+          <Route
             path="/view-project"
             element={
               <ProtectedRoute>
@@ -180,7 +188,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/LeavePage"
             element={
               <ProtectedRoute>
@@ -206,7 +214,7 @@ const App: React.FC = () => {
           />
 
 
-<Route
+          <Route
             path="/EditAddPhase"
             element={
               <ProtectedRoute>
@@ -214,7 +222,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
             path="/AssignTaskPage"
             element={
               <ProtectedRoute>
@@ -222,7 +230,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/ViewBacklogPage"
             element={
               <ProtectedRoute>
@@ -230,7 +238,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
             path="/EditAddModule"
             element={
               <ProtectedRoute>
@@ -287,7 +295,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
             path="/AboutProject"
             element={
               <ProtectedRoute>
@@ -295,7 +303,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
             path="/PhaseAssignedTo"
             element={
               <ProtectedRoute>
@@ -361,41 +369,41 @@ const App: React.FC = () => {
             }
           />
           {/* {info?.role === "HR" && ( */}
-            <>
-              <Route
-                path="/HRsection"
-                element={
-                  <ProtectedRoute>
-                    <HRsection />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/HRshiftChangeSection"
-                element={
-                  <ProtectedRoute>
-                    <HRshiftChangeSection />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/HrLeaveAutoFill"
-                element={
-                  <ProtectedRoute>
-                    <HrLeaveAutoFill />
-                  </ProtectedRoute>
-                }
-              />
+          <>
+            <Route
+              path="/HRsection"
+              element={
+                <ProtectedRoute>
+                  <HRsection />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/HRshiftChangeSection"
+              element={
+                <ProtectedRoute>
+                  <HRshiftChangeSection />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/HrLeaveAutoFill"
+              element={
+                <ProtectedRoute>
+                  <HrLeaveAutoFill />
+                </ProtectedRoute>
+              }
+            />
 
-              <Route
-                path="/HrLeaveReport"
-                element={
-                  <ProtectedRoute>
-                    <HrLeaveReport />
-                  </ProtectedRoute>
-                }
-              />
-            </>
+            <Route
+              path="/HrLeaveReport"
+              element={
+                <ProtectedRoute>
+                  <HrLeaveReport />
+                </ProtectedRoute>
+              }
+            />
+          </>
           {/* )} */}
           <Route
             path="/LeaveReports"
