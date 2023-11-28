@@ -377,17 +377,17 @@ const AdminSaleInfotechFormList = () => {
     if (inputValue) {
       const result = data.filter(
         (e) =>
-          e.clientName.toLowerCase().includes(lowercasedInput) ||
-          e.status.toLowerCase().includes(lowercasedInput) ||
-          e.communicationMode.toLowerCase().includes(lowercasedInput) ||
-          e.communicationReason.toLowerCase().includes(lowercasedInput) ||
-          e.handleBy.toLowerCase().includes(lowercasedInput) ||
-          e.portalType.toLowerCase().includes(lowercasedInput) ||
-          e.profileName.toLowerCase().includes(lowercasedInput) ||
-          e.statusReason.toLowerCase().includes(lowercasedInput) ||
-          e.url.toLowerCase().includes(lowercasedInput) ||
-          e.dateData.toLowerCase().includes(lowercasedInput) ||
-          e.RegisterBy.toLowerCase().includes(lowercasedInput)
+          e?.clientName?.toLowerCase().includes(lowercasedInput) ||
+          e?.status?.toLowerCase().includes(lowercasedInput) ||
+          e?.communicationMode?.toLowerCase().includes(lowercasedInput) ||
+          e?.communicationReason?.toLowerCase().includes(lowercasedInput) ||
+          e?.handleBy?.toLowerCase().includes(lowercasedInput) ||
+          e?.portalType?.toLowerCase().includes(lowercasedInput) ||
+          e?.profileName?.toLowerCase().includes(lowercasedInput) ||
+          e?.statusReason?.toLowerCase().includes(lowercasedInput) ||
+          e?.url?.toLowerCase().includes(lowercasedInput) ||
+          e?.dateData?.toLowerCase().includes(lowercasedInput) ||
+          e?.RegisterBy?.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {
