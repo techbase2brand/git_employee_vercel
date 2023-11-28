@@ -73,13 +73,16 @@ const AdminSaleInfotechFormList = () => {
   const Navigate = useNavigate();
   const location = useLocation();
   const passedRecord = location.state?.record;
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [state, setState] = useState<boolean>(false);
   const [registerNames, setRegisterNames] = useState<string[]>([]);
   const [statusNames, setStatusNames] = useState<string[]>([]);
+  const [selectedPortal, setSelectedPortal] = useState<string>("");
+  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+  const [selectedDays, setSelectedDays] = useState<string>("");
   const [selectedRegister, setSelectedRegister] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
   const uniqueStatusNames = Array.from(new Set(statusNames));
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,10 +98,18 @@ const AdminSaleInfotechFormList = () => {
     setDateRange(dateStrings);
     setState(true);
   };
+
   const handleProjectChange = (value: string) => {
     setSelectedRegister(value);
     filterData(value);
-
+  };
+  const handleProjectStatus = (value: string) => {
+    setSelectedStatus(value);
+    filterData(value);
+  };
+  const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedPortal(selectedValue);
   };
 
   useEffect(() => {
@@ -202,6 +213,45 @@ const AdminSaleInfotechFormList = () => {
     // Null values of delete id
     setRecordToDelete(null);
   };
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedDays(selectedValue);
+  };
+  const filterByDateRange = (range: string) => {
+    const currentDate = new Date();
+    const startDate = new Date(currentDate);
+    startDate.setDate(currentDate.getDate() - parseInt(range));
+    const filteredData = data.filter((item: any) => {
+      const itemDate = new Date(item.created_at);
+      return itemDate >= startDate && itemDate <= currentDate;
+    });
+    setData(filteredData);
+  };
+
+  useEffect(() => {
+    if (selectedDays !== "") {
+      filterByDateRange(selectedDays);
+    }
+  }, [selectedDays]);
+
+  const filterByPortalType = (portalType: string) => {
+    if (portalType === "") {
+      setFilteredData(data);
+    } else {
+      const filteredResult = data.filter((item: SalesInfoData) => {
+        return item.portalType.toLowerCase() === portalType.toLowerCase();
+      });
+      setFilteredData(filteredResult);
+    }
+  };
+
+
+  useEffect(() => {
+    if (selectedPortal !== "") {
+      filterByPortalType(selectedPortal);
+    }
+  }, [selectedPortal]);
+
 
   // edit methods
   const handleEdit = (id: number) => {
@@ -227,6 +277,11 @@ const AdminSaleInfotechFormList = () => {
       dataIndex: "dateData",
       key: "dateData",
       render: (text: string) => <div>{text}</div>,
+      sorter: (a: SalesInfoData, b: SalesInfoData) => {
+        const dateA = new Date(a.dateData).getTime();
+        const dateB = new Date(b.dateData).getTime();
+        return dateA - dateB;
+      },
     },
     {
       title: "Client name",
@@ -338,7 +393,35 @@ const AdminSaleInfotechFormList = () => {
     } else {
       setFilteredData(data);
     }
+    if (selectedPortal !== "") {
+      const result = filteredData.filter((e) => e.portalType === selectedPortal);
+      setFilteredData(result);
+    }
   };
+  const handleGoButtonClick = () => {
+    const filteredResult = data.filter((item) => {
+      const statusMatch =
+        selectedStatus ?
+          item.status.toLowerCase() === selectedStatus.toLowerCase() :
+          true;
+      const portalMatch =
+        selectedPortal ?
+          item.portalType.toLowerCase() === selectedPortal.toLowerCase() :
+          true;
+      const registerMatch =
+        selectedRegister ?
+          item.RegisterBy.toLowerCase().includes(selectedRegister.toLowerCase()) :
+          true;
+      const matchDate =
+        selectedDays && item.dateData ?
+          new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
+          true;
+      return statusMatch && registerMatch && matchDate && portalMatch
+    });
+    setFilteredData(filteredResult);
+  };
+
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setSearch(inputValue);
@@ -379,20 +462,7 @@ const AdminSaleInfotechFormList = () => {
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="SalecampusFormList-default-os">
-                  <div
-                    className="search"
-                    style={{
-                      width: "60%",
-                      margin: "0 auto",
-                      paddingBottom: "2rem",
-                    }}
-                  >
-                    <Input
-                      placeholder="Search..."
-                      prefix={<SearchOutlined className="search-icon" />}
-                      onChange={handleSearch}
-                    />
-                  </div>
+
 
                   <div
                     style={{
@@ -400,10 +470,38 @@ const AdminSaleInfotechFormList = () => {
                       width: "100%",
                       alignItems: "center",
                       gap: '7px',
+                      margin: '0 0 11px'
                     }}
                   >
+                    <div
+                      className="search"
+                      style={{
+                        width: "fit-content",
+                      }}
+                    >
+                      <Input
+                        placeholder="Search..."
+                        prefix={<SearchOutlined className="search-icon" />}
+                        onChange={handleSearch}
+                      />
+                    </div>
                     <div><RangePicker onChange={handleDateRangeChange} /></div>
-
+                    <div>
+                      <select
+                        // onChange={handleChange}
+                        className="adjust-inputs"
+                        id="project"
+                        value={selectedStatus}
+                        onChange={(e) => handleProjectStatus(e.target.value)}
+                      >
+                        <option value="">Select a Status</option>
+                        {uniqueStatusNames.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <div>
                       <select
                         // onChange={handleChange}
@@ -422,19 +520,35 @@ const AdminSaleInfotechFormList = () => {
                     </div>
                     <div>
                       <select
-                        // onChange={handleChange}
                         className="adjust-inputs"
-                        id="project"
-                        value={selectedRegister}
-                        onChange={(e) => handleProjectChange(e.target.value)}
+                        value={selectedDays === "" ? "" : `${selectedDays}`}
+                        onChange={handleSelectChange}
                       >
-                        <option value="">Select a Status</option>
-                        {uniqueStatusNames.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
+                        <option value="">Select date range</option>
+                        <option value="7">Last 1 week</option>
+                        <option value="30">Last 1 month</option>
+                        <option value="90">Last 3 months</option>
+                        <option value="180">Last 6 months</option>
+                        <option value="365">Last 1 year</option>
                       </select>
+                    </div>
+                    <div>
+                      <select
+                        value={selectedPortal === "" ? "" : `${selectedPortal}`}
+                        onChange={handlePortalChange}
+                        className="adjust-inputs"
+                      >
+                        <option value="">Select portal</option>
+                        <option value="Upwork">Upwork</option>
+                        <option value="PPH">PPH</option>
+                        <option value="Freelancer">Freelancer</option>
+                        <option value="Linkedin">Linkedin</option>
+                        <option value="Website">Website</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <button className="go-button" onClick={handleGoButtonClick}>Go</button>
                     </div>
                   </div>
 

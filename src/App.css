@@ -94,12 +94,14 @@ tbody > tr > td:nth-child(12) {
   width: 20vw;
   height: 90vh;
   background-color: white;
+  overflow: auto;
 }
 
 .form-container {
   width: 80vw;
   height: 90vh;
   background-color: #f7f9ff;
+  padding: 2rem;
   /* display: flex;
   align-items: center;
   justify-content: center; */
@@ -191,6 +193,20 @@ tbody > tr > td:nth-child(12) {
   height: 25px;
   color: #094781;
   position: "absolute";
+}
+
+.go-button{
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 6px 19px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 15px;
 }
 
 .add-label {
@@ -319,6 +335,8 @@ tbody > tr > td:nth-child(12) {
   left: 1141px;
   top: 165px;
   padding: 4px 20px 4px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .proj-person {
@@ -485,6 +503,7 @@ thead.ant-table-thead tr th:nth-child(12) {
 
 .SalecampusFormList-default-os {
   padding: 3rem;
+  overflow: auto;
 }
 
 /* table css starts */

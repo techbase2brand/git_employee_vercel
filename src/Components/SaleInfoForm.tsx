@@ -40,7 +40,6 @@ function SaleInfoForm(): JSX.Element {
   const myDataString = localStorage.getItem('myData');
   const [statusReasons, setStatusReasons] = useState(['']);
   const [state, setState] = useState<boolean>(false);
-  const[one]=useState([])
   let employeeID = "";
   let employeeName = "";
   if (myDataString) {
@@ -87,6 +86,7 @@ function SaleInfoForm(): JSX.Element {
 
   // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
+  console.log("formData",formData)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [communicationMode, setCommunicationMode] =
@@ -475,6 +475,7 @@ function SaleInfoForm(): JSX.Element {
                               placeholder={`Status Reason ${index + 1}`}
                               value={reason}
                               onChange={(e) => handleChangeReason(e.target.value, index)}
+                              // readOnly={formData.statusReason.includes(reason[index])}
                             />
                           </div>
                           {formData.id && index === statusReasons.length - 1 && (
