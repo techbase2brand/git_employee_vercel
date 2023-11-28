@@ -223,7 +223,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
                 }
               >
                 <Option value="">Select a project</Option>
-                {projectNames.map((project) => (
+                {projectNames.sort((a, b) => a.localeCompare(b)).map((project) => (
                   <Option key={project} value={project}>
                     {project}
                   </Option>

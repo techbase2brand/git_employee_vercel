@@ -53,20 +53,34 @@ const SaleInfoFormList = () => {
   const [data, setData] = useState<SalesInfoData[]>([]);
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
   const [editId, setEditId] = useState<number>();
+  const [selectedPortal, setSelectedPortal] = useState<string>("");
+
   const [search, setSearch] = useState<string>("");
   const [employeeData, setEmployeeData] = useState<any>([]);
-
   const Navigate = useNavigate();
   const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [state, setState] = useState<boolean>(false);
-  const formattedDate = format(currentDate, "yyyy-MM-dd");
+  const [selectedRegister, setSelectedRegister] = useState<string>("");
+  const [statusNames, setStatusNames] = useState<string[]>([]);
 
+  const uniqueStatusNames = Array.from(new Set(statusNames));
+  const formattedDate = format(currentDate, "yyyy-MM-dd");
+  const myDataString = localStorage.getItem('myData');
+  let empIdMatch = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    empIdMatch = myData.EmployeeID;
+  }
+  const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch);
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
     setState(true);
   };
-
+  const handleProjectChange = (value: string) => {
+    setSelectedRegister(value);
+    filterData(value);
+  };
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
@@ -79,10 +93,8 @@ const SaleInfoFormList = () => {
         //   }
       )
       .then((response) => {
-        console.log("response", response);
-
+        setStatusNames(response.data.map((item: { status: string }) => item.status));
         const resData = response.data;
-        console.log("resData", resData);
         setData(resData);
         setFilteredData(resData);
         let filteData = response.data;
@@ -121,9 +133,32 @@ const SaleInfoFormList = () => {
     filterData(search);
   }, [data]);
 
+  const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedPortal(selectedValue);
+  };
+
+  const filterByPortalType = (portalType: string) => {
+    if (portalType === "") {
+      setFilteredData(data); // Show all data if no portal is selected
+    } else {
+      const filteredResult = data.filter((item: SalesInfoData) => {
+        return item.portalType.toLowerCase() === portalType.toLowerCase();
+      });
+      setFilteredData(filteredResult);
+    }
+  };
+
+
+  useEffect(() => {
+    if (selectedPortal !== "") {
+      filterByPortalType(selectedPortal);
+    }
+  }, [selectedPortal]);
+
   // edit methods
   const handleEdit = (id: number) => {
-    console.log("id",id)
+    console.log("id", id)
     console.log(`update form with id ${id}`);
     setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
@@ -145,6 +180,11 @@ const SaleInfoFormList = () => {
       dataIndex: "dateData",
       key: "dateData",
       render: (text: string) => <div>{text}</div>,
+      sorter: (a: SalesInfoData, b: SalesInfoData) => {
+        const dateA = new Date(a.dateData).getTime();
+        const dateB = new Date(b.dateData).getTime();
+        return dateA - dateB;
+      },
     },
     {
       title: "Client name",
@@ -182,6 +222,12 @@ const SaleInfoFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
+      title: "Comm. mode",
+      dataIndex: "communicationMode",
+      key: "communicationMode",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
       title: "Status Reason",
       dataIndex: "statusReason",
       key: "statusReason",
@@ -196,12 +242,6 @@ const SaleInfoFormList = () => {
           )}
         </div>
       ),
-    },
-    {
-      title: "Comm. mode",
-      dataIndex: "communicationMode",
-      key: "communicationMode",
-      render: (text: string) => <div>{text}</div>,
     },
     {
       title: "Additional",
@@ -289,32 +329,61 @@ const SaleInfoFormList = () => {
               <div className="form-container">
                 <div className="SalecampusFormList-default-os">
                   <div
-                    className="search"
-                    style={{
-                      width: "60%",
-                      margin: "0 auto",
-                      paddingBottom: "2rem",
-                    }}
-                  >
-                    <Input
-                      placeholder="Search..."
-                      prefix={<SearchOutlined className="search-icon" />}
-                      onChange={handleSearch}
-                    />
-                  </div>
-                  <div
                     style={{
                       display: "flex",
                       width: "100%",
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      gap: '7px',
                     }}
                   >
-                    <RangePicker onChange={handleDateRangeChange} />
+                    <div
+                      className="search"
+                      style={{
+                        width: "fit-content",
+                      }}
+                    >
+                      <Input
+                        placeholder="Search..."
+                        prefix={<SearchOutlined className="search-icon" />}
+                        onChange={handleSearch}
+                      />
+                    </div>
+                    <div><RangePicker onChange={handleDateRangeChange} /></div>
+                    <div>
+                      <select
+                        // onChange={handleChange}
+                        className="adjust-inputs"
+                        id="project"
+                        value={selectedRegister}
+                        onChange={(e) => handleProjectChange(e.target.value)}
+                      >
+                        <option value="">Select a Status</option>
+                        {uniqueStatusNames.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <select
+                        value={selectedPortal === "" ? "" : `${selectedPortal}`}
+                        onChange={handlePortalChange}
+                        className="adjust-inputs"
+                      >
+                        <option value="">Select portal</option>
+                        <option value="Upwork">Upwork</option>
+                        <option value="PPH">PPH</option>
+                        <option value="Freelancer">Freelancer</option>
+                        <option value="Linkedin">Linkedin</option>
+                        <option value="Website">Website</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
                   </div>
                   {state === false &&
                     <Table
-                      dataSource={filteredData.slice().reverse()}
+                      dataSource={matchedData.slice().reverse()}
                       // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
                       columns={columns}
                       // rowClassName={() => "header-row"}
