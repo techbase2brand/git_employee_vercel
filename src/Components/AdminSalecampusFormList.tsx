@@ -455,13 +455,15 @@ filterData(dateSearch, dateSearch, search);
                     className="search"
                     style={{
                       width: "60%",
-                      margin: "0 auto",
                       paddingBottom: "2rem",
+                      display:'flex',
+                      gap: '16px'
                     }}
                   >
                    <RangePicker onChange={handleDateRangeChange} />
 
                     <Input
+                    style={{width:"auto"}}
                       placeholder="Search..."
                       prefix={<SearchOutlined />}
                       onChange={handleSearch}

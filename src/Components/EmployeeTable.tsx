@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 interface Employee {
   EmpID: string | number;
   firstName: string;
-  lastName:string
+  lastName: string
   role: string;
   dob: string | Date;
   EmployeeID: string;
@@ -25,6 +25,7 @@ interface Props {
 const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   const [data, setData] = useState<Employee[]>([]);
   const [editID, setEditID] = useState<string | number | undefined>();
+  const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
 
@@ -95,19 +96,19 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
       },
     })
-    .then((response) => {
-      // Update the local data state
-      setData(prevData =>
-        prevData.map(employee =>
-          employee.EmpID === EmpID
-          ? { ...employee, status: newStatus }
-          : employee
-        )
-      );
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then((response) => {
+        // Update the local data state
+        setData(prevData =>
+          prevData.map(employee =>
+            employee.EmpID === EmpID
+              ? { ...employee, status: newStatus }
+              : employee
+          )
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
 
@@ -183,15 +184,34 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     role: employee.role,
     dob: employee.dob.toString(),
     key: employee.EmpID,
-    name: employee.firstName ,
+    name: employee.firstName,
     id: employee.EmpID,
     team: employee.role,
     date: employee.dob.toString(),
     EmployeeID: employee.EmployeeID,
-    status :employee.status
+    status: employee.status
   }));
-
-  return <Table dataSource={rows} columns={columns} />;
+  const filteredData = rows.filter(project =>
+    project.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.EmployeeID.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  return (
+    <>
+      <div className="search-section" style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: 10 }}>
+          <input
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search"
+            style={{ marginLeft: 10 }}
+          />
+        </div>
+      </div>
+      <Table dataSource={filteredData} columns={columns} />
+    </>
+  )
 };
 
 export default EmployeeTable;

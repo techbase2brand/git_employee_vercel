@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
+import { Select, Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import EmployeeTable from "./EmployeeTable";
@@ -34,15 +34,19 @@ type Phase = {
 
 const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
-const [phases, setPhases] = useState<Phases[]>([]);
-const [selectedProject, setSelectedProject] = useState<string>("");
-const [selectedPhase, setSelectedPhase] = useState<string>("");
-const [module, setModule] = useState<Module>({
-  projectName: "",
-  phaseName: "",
-  modules: ["", ""],
-});
+  console.log("projectNames",projectNames)
 
+  const [phases, setPhases] = useState<Phases[]>([]);
+  console.log("phases",phases)
+  const [selectedProject, setSelectedProject] = useState<string>("");
+  const [selectedPhase, setSelectedPhase] = useState<string>("");
+  const [module, setModule] = useState<Module>({
+    projectName: "",
+    phaseName: "",
+    modules: ["", ""],
+  });
+
+  const { Option } = Select;
 
   const navigate = useNavigate();
 
@@ -51,7 +55,7 @@ const [module, setModule] = useState<Module>({
 
   useEffect(() => {
     axios
-      .get<Project[]>("https://empbackend.base2brand.com/get/projects",{
+      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
@@ -62,14 +66,14 @@ const [module, setModule] = useState<Module>({
   }, []);
 
   useEffect(() => {
-    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases",{
+    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases", {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
     })
-    .then((response) => {
-      setPhases(response.data);
-    });
+      .then((response) => {
+        setPhases(response.data);
+      });
   }, []);
 
   const handleModuleChange = (
@@ -130,7 +134,6 @@ const [module, setModule] = useState<Module>({
       phaseName: value,
     });
   };
-
   const handleSubmit = () => {
     axios
       .post("https://empbackend.base2brand.com/api/add-module", module, {
@@ -150,7 +153,17 @@ const [module, setModule] = useState<Module>({
         }
       });
   };
-
+  const handleFilterOption = (
+    input: string,
+    option: React.ReactElement<any, string> // Update the type here
+  ): boolean => {
+    if (option && typeof option.props.children === "string") {
+      return (
+        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
+    }
+    return false;
+  };
   return (
     <div className="emp-main-div">
       <div
@@ -178,7 +191,7 @@ const [module, setModule] = useState<Module>({
                 Project Name<span style={{ color: "red" }}>*</span>
               </label>
 
-              <select
+              {/* <select
                 // onChange={handleChange}
                 className="add-input"
                 id="project"
@@ -192,7 +205,30 @@ const [module, setModule] = useState<Module>({
                     {project}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <Select
+                showSearch
+                className="add-input"
+                id="project"
+                placeholder="Select a project"
+                value={selectedProject}
+                onChange={(value) => handleProjectChange(value)}
+                filterOption={(input, option) =>
+                  option && option.props.children
+                    ? option.props.children
+                      .toString()
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                    : false
+                }
+              >
+                <Option value="">Select a project</Option>
+                {projectNames.sort((a, b) => a.localeCompare(b)).map((project) => (
+                  <Option key={project} value={project}>
+                    {project}
+                  </Option>
+                ))}
+              </Select>
 
               {/* <input className="add-input" name="projectName" value={module.projectName} onChange={handleModuleChange} /> */}
               <label className="add-label">
@@ -225,47 +261,47 @@ const [module, setModule] = useState<Module>({
                 </label>
 
                 {
-                // !modulejEditObj &&
-                 module?.modules.map((moduleName, index) => (
-                  <div style={{ display: "flex" }} key={index}>
-                    <input
-                      className="add-input"
-                      type="text"
-                      value={moduleName}
-                      onChange={(event) =>
-                        handleModuleChange(
-                          event,
-                          index,
-                          module.modules.indexOf(moduleName)
-                        )
-                      }
-                    />
-                    {index !== 0 && (
-                      <div
-                        style={{
-                          marginLeft: "10px",
-                          cursor: "pointer",
-                          marginTop: "16px",
-                        }}
-                        onClick={() => handleRemoveModule(index)}
-                      >
-                        <MinusCircleOutlined rev={undefined} />
-                      </div>
-                    )}
-                    {index === module.modules.length - 1 && (
-                      <div
-                        style={{
-                          marginLeft: "10px",
-                          cursor: "pointer",
-                          marginTop: "16px",
-                        }}
-                        onClick={handleAddModule}
-                      >
-                        <PlusCircleOutlined rev={undefined} />
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  // !modulejEditObj &&
+                  module?.modules.map((moduleName, index) => (
+                    <div style={{ display: "flex" }} key={index}>
+                      <input
+                        className="add-input"
+                        type="text"
+                        value={moduleName}
+                        onChange={(event) =>
+                          handleModuleChange(
+                            event,
+                            index,
+                            module.modules.indexOf(moduleName)
+                          )
+                        }
+                      />
+                      {index !== 0 && (
+                        <div
+                          style={{
+                            marginLeft: "10px",
+                            cursor: "pointer",
+                            marginTop: "16px",
+                          }}
+                          onClick={() => handleRemoveModule(index)}
+                        >
+                          <MinusCircleOutlined rev={undefined} />
+                        </div>
+                      )}
+                      {index === module.modules.length - 1 && (
+                        <div
+                          style={{
+                            marginLeft: "10px",
+                            cursor: "pointer",
+                            marginTop: "16px",
+                          }}
+                          onClick={handleAddModule}
+                        >
+                          <PlusCircleOutlined rev={undefined} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
               </div>
               <button className="add-button" onClick={handleSubmit}>
                 Add Module

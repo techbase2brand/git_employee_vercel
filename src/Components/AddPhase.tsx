@@ -76,7 +76,7 @@ const AddPhase: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Project[]>("https://empbackend.base2brand.com/get/projects",{
+      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
@@ -112,26 +112,26 @@ const AddPhase: React.FC = () => {
     };
 
     axios
-    .post("https://empbackend.base2brand.com/api/add-phase", data,{
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('myToken')}`
-      }
-    })
-    .then((response) => {
-      console.log(response, "999");
-      if (response.data === "OK") {
-        navigate("/view-phase");
-      }
-    })
-    .catch((error) => {
-      if (error.response && error.response.status === 400) {
-        alert(error.response.data);
-      } else {
-        console.log(error, "8888");
-      }
-    });
+      .post("https://empbackend.base2brand.com/api/add-phase", data, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+        }
+      })
+      .then((response) => {
+        console.log(response, "999");
+        if (response.data === "OK") {
+          navigate("/view-phase");
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data);
+        } else {
+          console.log(error, "8888");
+        }
+      });
 
-  console.log("Form submitted with data:", data);
+    console.log("Form submitted with data:", data);
 
 
     console.log("Form submitted with data:", data);
@@ -181,11 +181,12 @@ const AddPhase: React.FC = () => {
                 onChange={handleClientNameChange}
               >
                 <option value="">Select a project</option>
-                {projectNames.map((name) => (
+                {projectNames.sort((a, b) => a.localeCompare(b)).map((name) => (
                   <option key={name} value={name}>
                     {name}
                   </option>
                 ))}
+
               </select>
 
               {phases.map((phase, index) => (

@@ -7,9 +7,19 @@ import { format } from "date-fns";
 
 import {
   EditOutlined,
+  DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+interface Employee {
+  EmpID: string | number;
+  firstName: string;
+  lastName: string
+  role: string;
+  dob: string | Date;
+  EmployeeID: string;
+  status: number;
+}
 // import dayjs from "dayjs";
 
 // interface SalesInfoData {
@@ -42,6 +52,7 @@ interface SalesInfoData {
   dateData: string;
   EmployeeID: string;
   created_at: string;
+  RegisterBy: string;
 }
 interface Props {
   data: SalesInfoData[];
@@ -49,52 +60,73 @@ interface Props {
   setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const SaleInfoFormList = () => {
+const AdminSaleInfotechFormList = () => {
   const [data, setData] = useState<SalesInfoData[]>([]);
+  const [recordToDelete, setRecordToDelete] = useState<SalesInfoData | null>(
+    null
+  );
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
+  const [deleteId, setDeleteId] = useState<number>();
   const [editId, setEditId] = useState<number>();
-  const [selectedPortal, setSelectedPortal] = useState<string>("");
-
   const [search, setSearch] = useState<string>("");
   const [employeeData, setEmployeeData] = useState<any>([]);
   const Navigate = useNavigate();
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+  const location = useLocation();
+  const passedRecord = location.state?.record;
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [state, setState] = useState<boolean>(false);
-  const [selectedRegister, setSelectedRegister] = useState<string>("");
-  const [statusNames, setStatusNames] = useState<string[]>([]);
-
-  const uniqueStatusNames = Array.from(new Set(statusNames));
   const formattedDate = format(currentDate, "yyyy-MM-dd");
-  const myDataString = localStorage.getItem('myData');
-  let empIdMatch = "";
-  if (myDataString) {
-    const myData = JSON.parse(myDataString);
-    empIdMatch = myData.EmployeeID;
-  }
-  const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch);
+  const [state, setState] = useState<boolean>(false);
+  const [registerNames, setRegisterNames] = useState<string[]>([]);
+  const [statusNames, setStatusNames] = useState<string[]>([]);
+  const [selectedPortal, setSelectedPortal] = useState<string>("");
+  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+  const [selectedDays, setSelectedDays] = useState<string>("");
+  const [selectedRegister, setSelectedRegister] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const uniqueStatusNames = Array.from(new Set(statusNames));
+  // Modal for delete confirmation
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setRecordToDelete(null);
+  };
+
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
     setState(true);
   };
+
   const handleProjectChange = (value: string) => {
     setSelectedRegister(value);
     filterData(value);
   };
+  const handleProjectStatus = (value: string) => {
+    setSelectedStatus(value);
+    filterData(value);
+  };
+  const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedPortal(selectedValue);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
         "https://empbackend.base2brand.com/salesinfodata"
-        //   , {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
+        // , {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // }
       )
       .then((response) => {
         setStatusNames(response.data.map((item: { status: string }) => item.status));
         const resData = response.data;
+        console.log("resData", resData);
         setData(resData);
         setFilteredData(resData);
         let filteData = response.data;
@@ -108,8 +140,6 @@ const SaleInfoFormList = () => {
             return taskDate >= startDate && taskDate <= endDate;
           });
         }
-
-        // Sort and structure the filtered data
         const sortedData = filteData.sort(
           (a: SalesInfoData, b: SalesInfoData) => Number(b.created_at) - Number(a.created_at)
         );
@@ -130,17 +160,83 @@ const SaleInfoFormList = () => {
   }, [dateRange, formattedDate]);
 
   useEffect(() => {
+    axios
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        const salesInfotechEmployees = response.data.filter(
+          (employee) => employee.role === 'Sales Infotech'
+        );
+        const salesInfotechNames = salesInfotechEmployees.map(
+          (employee) => employee.firstName
+        );
+        setRegisterNames(salesInfotechNames)
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+
+  useEffect(() => {
     filterData(search);
   }, [data]);
 
-  const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-    setSelectedPortal(selectedValue);
+  // delete methods
+  const handleDelete = (id: number) => {
+    setDeleteId(id);
+    axios
+      .delete(
+        `https://empbackend.base2brand.com/deletesalesinfo/${id}`
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        //   },
+        // }
+      )
+      .then((response) => {
+        console.log("res@", response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // Update the main data state
+    const updatedData = data.filter((e: any) => e.id !== id);
+    setData(updatedData);
+    // Check if the data is currently filtered
+    filterData(search);
+    // close consfirmation modal
+    setIsModalOpen(false);
+    // Null values of delete id
+    setRecordToDelete(null);
   };
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedDays(selectedValue);
+  };
+  const filterByDateRange = (range: string) => {
+    const currentDate = new Date();
+    const startDate = new Date(currentDate);
+    startDate.setDate(currentDate.getDate() - parseInt(range));
+    const filteredData = data.filter((item: any) => {
+      const itemDate = new Date(item.created_at);
+      return itemDate >= startDate && itemDate <= currentDate;
+    });
+    setData(filteredData);
+  };
+
+  useEffect(() => {
+    if (selectedDays !== "") {
+      filterByDateRange(selectedDays);
+    }
+  }, [selectedDays]);
 
   const filterByPortalType = (portalType: string) => {
     if (portalType === "") {
-      setFilteredData(data); // Show all data if no portal is selected
+      setFilteredData(data);
     } else {
       const filteredResult = data.filter((item: SalesInfoData) => {
         return item.portalType.toLowerCase() === portalType.toLowerCase();
@@ -156,9 +252,9 @@ const SaleInfoFormList = () => {
     }
   }, [selectedPortal]);
 
+
   // edit methods
   const handleEdit = (id: number) => {
-    console.log("id", id)
     console.log(`update form with id ${id}`);
     setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
@@ -173,6 +269,7 @@ const SaleInfoFormList = () => {
   //       console.error(`No record found with id ${id}`);
   //     }
   //   };
+  // ... (existing code)
 
   const columns = [
     {
@@ -222,26 +319,16 @@ const SaleInfoFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Comm. mode",
-      dataIndex: "communicationMode",
-      key: "communicationMode",
+      title: "Register By",
+      dataIndex: "RegisterBy",
+      key: "RegisterBy",
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Status Reason",
+      title: "Status reason",
       dataIndex: "statusReason",
       key: "statusReason",
-      render: (text: string | string[], record: SalesInfoData) => (
-        <div>
-          {Array.isArray(text) ? (
-            text.map((reason: string, index: number) => (
-              <div key={index}>{reason}</div>
-            ))
-          ) : (
-            <div>{text}</div>
-          )}
-        </div>
-      ),
+      render: (text: string) => <div>{text}</div>,
     },
     {
       title: "Additional",
@@ -249,6 +336,13 @@ const SaleInfoFormList = () => {
       key: "communicationReason",
       render: (text: string) => <div>{text}</div>,
     },
+    {
+      title: "Comm. mode",
+      dataIndex: "communicationMode",
+      key: "communicationMode",
+      render: (text: string) => <div>{text}</div>,
+    },
+
     {
       title: "Action",
       key: "action",
@@ -260,6 +354,17 @@ const SaleInfoFormList = () => {
             onClick={() => handleEdit(record.id)}
           >
             Edit
+          </Button>
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              setRecordToDelete(record);
+              showModal();
+            }}
+          >
+            Delete
           </Button>
         </span>
       ),
@@ -273,21 +378,50 @@ const SaleInfoFormList = () => {
       const result = data.filter(
         (e) =>
           e.clientName.toLowerCase().includes(lowercasedInput) ||
+          e.status.toLowerCase().includes(lowercasedInput) ||
           e.communicationMode.toLowerCase().includes(lowercasedInput) ||
           e.communicationReason.toLowerCase().includes(lowercasedInput) ||
           e.handleBy.toLowerCase().includes(lowercasedInput) ||
           e.portalType.toLowerCase().includes(lowercasedInput) ||
           e.profileName.toLowerCase().includes(lowercasedInput) ||
-          e.status.toLowerCase().includes(lowercasedInput) ||
           e.statusReason.toLowerCase().includes(lowercasedInput) ||
           e.url.toLowerCase().includes(lowercasedInput) ||
-          e.dateData.toLowerCase().includes(lowercasedInput)
+          e.dateData.toLowerCase().includes(lowercasedInput) ||
+          e.RegisterBy.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {
       setFilteredData(data);
     }
+    if (selectedPortal !== "") {
+      const result = filteredData.filter((e) => e.portalType === selectedPortal);
+      setFilteredData(result);
+    }
   };
+  const handleGoButtonClick = () => {
+    const filteredResult = data.filter((item) => {
+      const statusMatch =
+        selectedStatus ?
+          item.status.toLowerCase() === selectedStatus.toLowerCase() :
+          true;
+      const portalMatch =
+        selectedPortal ?
+          item.portalType.toLowerCase() === selectedPortal.toLowerCase() :
+          true;
+      const registerMatch =
+        selectedRegister ?
+          item.RegisterBy.toLowerCase().includes(selectedRegister.toLowerCase()) :
+          true;
+      const matchDate =
+        selectedDays && item.dateData ?
+          new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
+          true;
+      return statusMatch && registerMatch && matchDate && portalMatch
+    });
+    setFilteredData(filteredResult);
+  };
+
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setSearch(inputValue);
@@ -328,12 +462,15 @@ const SaleInfoFormList = () => {
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="SalecampusFormList-default-os">
+
+
                   <div
                     style={{
                       display: "flex",
                       width: "100%",
                       alignItems: "center",
                       gap: '7px',
+                      margin: '0 0 11px'
                     }}
                   >
                     <div
@@ -354,8 +491,8 @@ const SaleInfoFormList = () => {
                         // onChange={handleChange}
                         className="adjust-inputs"
                         id="project"
-                        value={selectedRegister}
-                        onChange={(e) => handleProjectChange(e.target.value)}
+                        value={selectedStatus}
+                        onChange={(e) => handleProjectStatus(e.target.value)}
                       >
                         <option value="">Select a Status</option>
                         {uniqueStatusNames.map((item) => (
@@ -363,6 +500,36 @@ const SaleInfoFormList = () => {
                             {item}
                           </option>
                         ))}
+                      </select>
+                    </div>
+                    <div>
+                      <select
+                        // onChange={handleChange}
+                        className="adjust-inputs"
+                        id="project"
+                        value={selectedRegister}
+                        onChange={(e) => handleProjectChange(e.target.value)}
+                      >
+                        <option value="">Select a RegisterBy</option>
+                        {registerNames.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <select
+                        className="adjust-inputs"
+                        value={selectedDays === "" ? "" : `${selectedDays}`}
+                        onChange={handleSelectChange}
+                      >
+                        <option value="">Select date range</option>
+                        <option value="7">Last 1 week</option>
+                        <option value="30">Last 1 month</option>
+                        <option value="90">Last 3 months</option>
+                        <option value="180">Last 6 months</option>
+                        <option value="365">Last 1 year</option>
                       </select>
                     </div>
                     <div>
@@ -380,10 +547,14 @@ const SaleInfoFormList = () => {
                         <option value="Other">Other</option>
                       </select>
                     </div>
+                    <div>
+                      <button className="go-button" onClick={handleGoButtonClick}>Go</button>
+                    </div>
                   </div>
+
                   {state === false &&
                     <Table
-                      dataSource={matchedData.slice().reverse()}
+                      dataSource={filteredData.slice().reverse()}
                       // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
                       columns={columns}
                       // rowClassName={() => "header-row"}
@@ -395,6 +566,19 @@ const SaleInfoFormList = () => {
                       columns={columns}
                       rowClassName={getStatusRowClassName}
                     />}
+
+                  <Modal
+                    title="Confirmation"
+                    open={isModalOpen}
+                    onOk={() => {
+                      if (recordToDelete) {
+                        handleDelete(recordToDelete.id);
+                      }
+                    }}
+                    onCancel={handleCancel}
+                  >
+                    <p>Are you sure, you want to delete</p>
+                  </Modal>
                 </div>
               </div>
             </section>
@@ -405,4 +589,4 @@ const SaleInfoFormList = () => {
   );
 };
 
-export default SaleInfoFormList;
+export default AdminSaleInfotechFormList;

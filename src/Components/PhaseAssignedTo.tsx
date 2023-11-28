@@ -68,12 +68,13 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
       EmployeeID: [],
     }
   );
-  console.log(assignedEmployees, "ggggg-----ggg----");
-  console.log(assignee, "jjjj---");
+
   const navigate = useNavigate();
+  const filteredData = data.filter((item:any) => item.status === 1);
+
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees",{
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -88,9 +89,10 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
       })
       .catch((error) => console.log(error));
   }, [setData]);
+
   useEffect(() => {
     axios
-      .get<Project[]>("https://empbackend.base2brand.com/get/projects",{
+      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -99,17 +101,17 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
         setProjectNames(response.data.map((project) => project.projectName));
       });
   }, []);
+
   useEffect(() => {
-    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases",{
+    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases", {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
     })
-    .then((response) => {
-      setPhases(response.data);
-    });
+      .then((response) => {
+        setPhases(response.data);
+      });
   }, []);
-
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
     const currentPhase = phases.find((phase) => phase.projectName === value);
@@ -142,7 +144,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
 
   const handleCheckboxChange = (employee: Employee) => {
     if (assignee.some((e) => e.EmployeeID === employee.EmployeeID)) {
-        console.log(employee.EmployeeID,"jjjjj---kkk");
+      console.log(employee.EmployeeID, "jjjjj---kkk");
 
       setAssignee((prev) =>
         prev.filter((e) => e.EmployeeID !== employee.EmployeeID)
@@ -162,7 +164,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
 
   const handleSubmit = () => {
     axios
-      .post("https://empbackend.base2brand.com/api/add-phaseAssignee", assignedEmployees ,{
+      .post("https://empbackend.base2brand.com/api/add-phaseAssignee", assignedEmployees, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -215,7 +217,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
                 onChange={(e) => handleProjectChange(e.target.value)}
               >
                 <option value="">Select a project</option>
-                {projectNames.map((project) => (
+                {projectNames.sort((a, b) => a.localeCompare(b)).map((project) => (
                   <option key={project} value={project}>
                     {project}
                   </option>
@@ -242,13 +244,11 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
                     );
                   })}
               </select>
-              <div>
-                <label className="add-label">
+              <label className="add-label">
                   Assigned to <span style={{ color: "red" }}>*</span>
                 </label>
-
-                <br />
-                {data.map((employee) => (
+              <div style={{ overflow: "auto", height: "230px",marginTop: "8px" }}>
+                {filteredData.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((employee) => (
                   <div
                     style={{ display: "flex", flexDirection: "column" }}
                     key={employee.EmployeeID}
@@ -267,7 +267,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
                 ))}
               </div>
               <button className="add-button" onClick={handleSubmit}>
-              Assign
+                Assign
               </button>
             </div>
             <div
