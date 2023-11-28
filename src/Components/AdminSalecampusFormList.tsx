@@ -143,6 +143,10 @@ const AdminSaleCampusFormList = () => {
 
 
 
+
+
+
+  
   // delete methods
   const handleDelete = (id: number) => {
     setDeleteId(id);
