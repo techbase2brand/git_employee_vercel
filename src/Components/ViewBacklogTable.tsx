@@ -46,7 +46,7 @@ const ViewBacklogTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<BacklogTask[]>("http://empbackend.base2brand.com/get/BacklogTasks", {
+        const response = await axios.get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
