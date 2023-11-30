@@ -238,7 +238,7 @@ const EveningDashboard: React.FC = () => {
               />
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div style={{}}>
+              <div style={{}} className="dashboard-handle">
                 <DashboardEveningTasktable
                   data={data}
                   totalUpwork={totalUpwork}
