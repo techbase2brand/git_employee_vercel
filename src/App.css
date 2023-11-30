@@ -47,7 +47,7 @@ th.ant-table-cell {
   background-color: rgba(81, 181, 176);
   color: black;
 } */
-tbody > tr > td:nth-child(12) {
+tbody > tr > td:nth-child(13) {
   background-color: rgba(184, 237, 104);
   color: black;
 }
@@ -91,14 +91,25 @@ tbody > tr > td:nth-child(12) {
 }
 
 .menu-div {
-  width: 20vw;
+  width: 14vw;
   height: 90vh;
   background-color: white;
   overflow: auto;
 }
-
+.total-size{
+  font-size:2rem;
+  margin-left: 45px;
+  color: #2723cd;
+}
+.total-lengthPortal{
+  display: flex;
+  margin-left: 55px;
+  gap: 25px;
+  font-size: 1rem;
+}
+.portal{color:red;}
 .form-container {
-  width: 80vw;
+  width: 85vw;
   height: 90vh;
   background-color: #f7f9ff;
   padding: 2rem;
@@ -112,6 +123,9 @@ tbody > tr > td:nth-child(12) {
   width: 60%;
   background-color: #f7f9ff;
   padding: 2rem 4rem;
+}
+.hidden {
+  display: none;
 }
 
 .form-div {
@@ -395,15 +409,17 @@ css .campus_form {
   border-style: none !important;
   margin-top: 9px !important;
 }
-thead.ant-table-thead tr th:nth-child(1),
-thead.ant-table-thead tr th:nth-child(2),
-thead.ant-table-thead tr th:nth-child(3),
-thead.ant-table-thead tr th:nth-child(4),
-thead.ant-table-thead tr th:nth-child(6),
-thead.ant-table-thead tr th:nth-child(7),
-thead.ant-table-thead tr th:nth-child(8),
-thead.ant-table-thead tr th:nth-child(11),
-thead.ant-table-thead tr th:nth-child(12) {
+.infotech-form thead.ant-table-thead tr th:nth-child(1),
+.infotech-form thead.ant-table-thead tr th:nth-child(2),
+.infotech-form thead.ant-table-thead tr th:nth-child(3),
+.infotech-form thead.ant-table-thead tr th:nth-child(4),
+.infotech-form thead.ant-table-thead tr th:nth-child(5),
+.infotech-form thead.ant-table-thead tr th:nth-child(6),
+.infotech-form thead.ant-table-thead tr th:nth-child(7),
+.infotech-form thead.ant-table-thead tr th:nth-child(8),
+.infotech-form thead.ant-table-thead tr th:nth-child(11),
+.infotech-form thead.ant-table-thead tr th:nth-child(12),
+.infotech-form thead.ant-table-thead tr th:nth-child(13) {
   min-width: 100px;
 }
 .adjust-inputs{

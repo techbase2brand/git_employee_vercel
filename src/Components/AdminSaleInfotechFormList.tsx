@@ -53,6 +53,7 @@ interface SalesInfoData {
   EmployeeID: string;
   created_at: string;
   RegisterBy: string;
+  inviteBid: string;
 }
 interface Props {
   data: SalesInfoData[];
@@ -83,10 +84,25 @@ const AdminSaleInfotechFormList = () => {
   const [selectedDays, setSelectedDays] = useState<string>("");
   const [selectedRegister, setSelectedRegister] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [gettingData, setGettingData] = useState<SalesInfoData[]>([]);
+  const totalLength = filteredData.length;
   const uniqueStatusNames = Array.from(new Set(statusNames));
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState<string[]>([]);
+
+  const showModal = (text: string | string[]) => {
+    const reasons = Array.isArray(text) ? text : text.split(',');
+    setModalContent(reasons);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalContent([]);
+  };
+  const showModalDel = () => {
     setIsModalOpen(true);
   };
   const handleCancel = () => {
@@ -110,7 +126,34 @@ const AdminSaleInfotechFormList = () => {
   const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedPortal(selectedValue);
+    if (selectedValue === "") {
+      setFilteredData(gettingData);
+    }
   };
+  const paginationSettings = {
+    pageSize: 100,
+  };
+
+  const upworkData = filteredData.filter(item => item.portalType === 'upwork');
+  const upworkLength = upworkData.length
+
+  const linkedinData = filteredData.filter(item => item.portalType === 'linkedin');
+  const linkedinLength = linkedinData.length
+
+  const PPHData = filteredData.filter(item => item.portalType === 'PPH');
+  const PPHLength = PPHData.length
+
+  const FreelancerData = filteredData.filter(item => item.portalType === 'freelancer');
+  const FreelancerLength = FreelancerData.length
+
+  const WebsiteData = filteredData.filter(item => item.portalType === 'website');
+  const WebsiteLength = WebsiteData.length
+
+  const OtherData = filteredData.filter(item => item.portalType === 'other');
+  const OtherLength = OtherData.length
+
+
+
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -129,6 +172,7 @@ const AdminSaleInfotechFormList = () => {
         console.log("resData", resData);
         setData(resData);
         setFilteredData(resData);
+        setGettingData(resData);
         let filteData = response.data;
 
         if (dateRange[0] && dateRange[1]) {
@@ -216,6 +260,9 @@ const AdminSaleInfotechFormList = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedDays(selectedValue);
+    if (selectedValue === "") {
+      setFilteredData(gettingData);
+    }
   };
   const filterByDateRange = (range: string) => {
     const currentDate = new Date();
@@ -300,11 +347,7 @@ const AdminSaleInfotechFormList = () => {
       dataIndex: "profileName",
       key: "profileName",
     },
-    {
-      title: "Url",
-      dataIndex: "url",
-      key: "url",
-    },
+
 
     {
       title: "Handle by",
@@ -325,10 +368,14 @@ const AdminSaleInfotechFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Status reason",
+      title: "Status Reason",
       dataIndex: "statusReason",
       key: "statusReason",
-      render: (text: string) => <div>{text}</div>,
+      render: (text: string | string[], record: SalesInfoData) => (
+        <div>
+          <button onClick={() => showModal(text)} style={{color:'blue'}}>View Reasons</button>
+        </div>
+      ),
     },
     {
       title: "Additional",
@@ -337,9 +384,20 @@ const AdminSaleInfotechFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
+      title: "Url",
+      dataIndex: "url",
+      key: "url",
+    },
+    {
       title: "Comm. mode",
       dataIndex: "communicationMode",
       key: "communicationMode",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Bid-By/Invite",
+      dataIndex: "inviteBid",
+      key: "inviteBid",
       render: (text: string) => <div>{text}</div>,
     },
 
@@ -361,7 +419,7 @@ const AdminSaleInfotechFormList = () => {
             icon={<DeleteOutlined />}
             onClick={() => {
               setRecordToDelete(record);
-              showModal();
+              showModalDel();
             }}
           >
             Delete
@@ -387,7 +445,8 @@ const AdminSaleInfotechFormList = () => {
           e?.statusReason?.toLowerCase().includes(lowercasedInput) ||
           e?.url?.toLowerCase().includes(lowercasedInput) ||
           e?.dateData?.toLowerCase().includes(lowercasedInput) ||
-          e?.RegisterBy?.toLowerCase().includes(lowercasedInput)
+          e?.RegisterBy?.toLowerCase().includes(lowercasedInput) ||
+          e?.inviteBid?.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {
@@ -461,97 +520,104 @@ const AdminSaleInfotechFormList = () => {
             </div>
             <section className="SalecampusForm-section-os">
               <div className="form-container">
-                <div className="SalecampusFormList-default-os">
-
-
+                <div className="total-lengthPortal">
+                  <div>upwork:<span className="portal">{upworkLength}</span></div>
+                  <div>Linkdin:<span className="portal">{linkedinLength}</span></div>
+                  <div>PPH:<span className="portal">{PPHLength}</span></div>
+                  <div>Freelancer:<span className="portal">{FreelancerLength}</span></div>
+                  <div>Website:<span className="portal">{WebsiteLength}</span></div>
+                  <div>other:<span className="portal">{OtherLength}</span></div> =
+                  <div>Total:<span className="portal">{totalLength}</span></div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    gap: '7px',
+                    margin: '10px 0 0 48px'
+                  }}
+                >
                   <div
+                    className="search"
                     style={{
-                      display: "flex",
-                      width: "100%",
-                      alignItems: "center",
-                      gap: '7px',
-                      margin: '0 0 11px'
+                      width: "fit-content",
                     }}
                   >
-                    <div
-                      className="search"
-                      style={{
-                        width: "fit-content",
-                      }}
-                    >
-                      <Input
-                        placeholder="Search..."
-                        prefix={<SearchOutlined className="search-icon" />}
-                        onChange={handleSearch}
-                      />
-                    </div>
-                    <div><RangePicker onChange={handleDateRangeChange} /></div>
-                    <div>
-                      <select
-                        // onChange={handleChange}
-                        className="adjust-inputs"
-                        id="project"
-                        value={selectedStatus}
-                        onChange={(e) => handleProjectStatus(e.target.value)}
-                      >
-                        <option value="">Select a Status</option>
-                        {uniqueStatusNames.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <select
-                        // onChange={handleChange}
-                        className="adjust-inputs"
-                        id="project"
-                        value={selectedRegister}
-                        onChange={(e) => handleProjectChange(e.target.value)}
-                      >
-                        <option value="">Select a RegisterBy</option>
-                        {registerNames.map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <select
-                        className="adjust-inputs"
-                        value={selectedDays === "" ? "" : `${selectedDays}`}
-                        onChange={handleSelectChange}
-                      >
-                        <option value="">Select date range</option>
-                        <option value="7">Last 1 week</option>
-                        <option value="30">Last 1 month</option>
-                        <option value="90">Last 3 months</option>
-                        <option value="180">Last 6 months</option>
-                        <option value="365">Last 1 year</option>
-                      </select>
-                    </div>
-                    <div>
-                      <select
-                        value={selectedPortal === "" ? "" : `${selectedPortal}`}
-                        onChange={handlePortalChange}
-                        className="adjust-inputs"
-                      >
-                        <option value="">Select portal</option>
-                        <option value="Upwork">Upwork</option>
-                        <option value="PPH">PPH</option>
-                        <option value="Freelancer">Freelancer</option>
-                        <option value="Linkedin">Linkedin</option>
-                        <option value="Website">Website</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <button className="go-button" onClick={handleGoButtonClick}>Go</button>
-                    </div>
+                    <Input
+                      placeholder="Search..."
+                      prefix={<SearchOutlined className="search-icon" />}
+                      onChange={handleSearch}
+                    />
                   </div>
-
+                  <div><RangePicker onChange={handleDateRangeChange} /></div>
+                  <div>
+                    <select
+                      // onChange={handleChange}
+                      className="adjust-inputs"
+                      id="project"
+                      value={selectedStatus}
+                      onChange={(e) => handleProjectStatus(e.target.value)}
+                    >
+                      <option value="">Select a Status</option>
+                      {uniqueStatusNames.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <select
+                      // onChange={handleChange}
+                      className="adjust-inputs"
+                      id="project"
+                      value={selectedRegister}
+                      onChange={(e) => handleProjectChange(e.target.value)}
+                    >
+                      <option value="">Select a RegisterBy</option>
+                      {registerNames.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <select
+                      className="adjust-inputs"
+                      value={selectedDays === "" ? "" : `${selectedDays}`}
+                      onChange={handleSelectChange}
+                    >
+                      <option value="">Select date range</option>
+                      <option value="7">Last 1 week</option>
+                      <option value="30">Last 1 month</option>
+                      <option value="90">Last 3 months</option>
+                      <option value="180">Last 6 months</option>
+                      <option value="365">Last 1 year</option>
+                    </select>
+                  </div>
+                  <div>
+                    <select
+                      value={selectedPortal === "" ? "" : `${selectedPortal}`}
+                      onChange={handlePortalChange}
+                      className="adjust-inputs"
+                    >
+                      <option value="">Select portal</option>
+                      <option value="Upwork">Upwork</option>
+                      <option value="PPH">PPH</option>
+                      <option value="Freelancer">Freelancer</option>
+                      <option value="Linkedin">Linkedin</option>
+                      <option value="Website">Website</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <button className="go-button" onClick={handleGoButtonClick}>Go</button>
+                  </div>
+                </div>
+                <div className="SalecampusFormList-default-os">
+                  <div className="infotech-form">
                   {state === false &&
                     <Table
                       dataSource={filteredData.slice().reverse()}
@@ -559,14 +625,29 @@ const AdminSaleInfotechFormList = () => {
                       columns={columns}
                       // rowClassName={() => "header-row"}
                       rowClassName={getStatusRowClassName}
+                      pagination={paginationSettings}
                     />}
                   {state === true &&
                     <Table
                       dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
                       columns={columns}
                       rowClassName={getStatusRowClassName}
+                      pagination={paginationSettings}
                     />}
-
+                    </div>
+                  <Modal
+                    title="Status Reasons"
+                    visible={modalVisible}
+                    onCancel={closeModal}
+                    footer={null}
+                  >
+                    {modalContent.map((reason: string, index: number) => (
+                      <div key={index}>
+                        {reason.trim()}
+                        {index !== modalContent.length - 1 && <br />&& <br />&& <br />}
+                      </div>
+                    ))}
+                  </Modal>
                   <Modal
                     title="Confirmation"
                     open={isModalOpen}
