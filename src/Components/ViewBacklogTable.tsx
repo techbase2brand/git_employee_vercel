@@ -183,12 +183,14 @@ const ViewBacklogTable: React.FC = () => {
       <div style={{ marginBottom: "16px" }}>
         <RangePicker onChange={onDateRangeChange} format="YYYY-MM-DD" allowClear />
       </div>
+      <div className="backlog-table">
       <Table
         style={{ width: "80vw" }}
         dataSource={data}
         columns={columns}
         rowClassName={() => "header-row"}
       />
+      </div>
     </>
   );
 };

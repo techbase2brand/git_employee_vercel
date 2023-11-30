@@ -55,7 +55,6 @@ const SaleInfoFormList = () => {
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
   const [editId, setEditId] = useState<number>();
   const [selectedPortal, setSelectedPortal] = useState<string>("");
-
   const [search, setSearch] = useState<string>("");
   const [employeeData, setEmployeeData] = useState<any>([]);
   const Navigate = useNavigate();
@@ -64,7 +63,7 @@ const SaleInfoFormList = () => {
   const [state, setState] = useState<boolean>(false);
   const [selectedRegister, setSelectedRegister] = useState<string>("");
   const [statusNames, setStatusNames] = useState<string[]>([]);
-
+  const [gettingData, setGettingData] = useState<SalesInfoData[]>([]);
   const uniqueStatusNames = Array.from(new Set(statusNames));
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const myDataString = localStorage.getItem('myData');
@@ -84,6 +83,12 @@ const SaleInfoFormList = () => {
     setModalVisible(true);
   };
 
+  const showModalUrl = (text: string | string[]) => {
+    const url = Array.isArray(text) ? text : text.split(',');
+    setModalContent(url);
+    setModalVisible(true);
+  };
+  
   const closeModal = () => {
     setModalVisible(false);
     setModalContent([]);
@@ -92,10 +97,23 @@ const SaleInfoFormList = () => {
     setDateRange(dateStrings);
     setState(true);
   };
+  // const handleProjectChange = (value: string) => {
+  //   setSelectedRegister(value);
+  //   filterData(value);
+  // };
   const handleProjectChange = (value: string) => {
     setSelectedRegister(value);
-    filterData(value);
+    
+    if (value === "") {
+      setFilteredData(data);
+    } else {
+      const filteredResult = data.filter((item: SalesInfoData) => {
+        return item.status.toLowerCase() === value.toLowerCase();
+      });
+      setFilteredData(filteredResult);
+    }
   };
+  
   const paginationSettings = {
     pageSize: 100,
   };
@@ -116,6 +134,7 @@ const SaleInfoFormList = () => {
         const resData = response.data;
         setData(resData);
         setFilteredData(resData);
+        setGettingData(resData);
         let filteData = response.data;
 
         if (dateRange[0] && dateRange[1]) {
@@ -155,6 +174,9 @@ const SaleInfoFormList = () => {
   const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedPortal(selectedValue);
+    if (selectedValue === "") {
+      setFilteredData(gettingData);
+    }
   };
 
   const filterByPortalType = (portalType: string) => {
@@ -195,7 +217,7 @@ const SaleInfoFormList = () => {
 
   const columns = [
     {
-      title: "Date",
+      title: "Lead Date",
       dataIndex: "dateData",
       key: "dateData",
       render: (text: string) => <div>{text}</div>,
@@ -203,6 +225,16 @@ const SaleInfoFormList = () => {
         const dateA = new Date(a.dateData).getTime();
         const dateB = new Date(b.dateData).getTime();
         return dateA - dateB;
+      },
+    },
+    {
+      title: "Data Entry Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text: string) => {
+        const date = new Date(text);
+        const formattedDate = date.toISOString().split('T')[0];
+        return <div>{formattedDate}</div>;
       },
     },
     {
@@ -236,11 +268,12 @@ const SaleInfoFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Comm. mode",
-      dataIndex: "communicationMode",
-      key: "communicationMode",
+      title: "Bid-By/Invite",
+      dataIndex: "inviteBid",
+      key: "inviteBid",
       render: (text: string) => <div>{text}</div>,
     },
+   
     // {
     //   title: "Status Reason",
     //   dataIndex: "statusReason",
@@ -271,20 +304,25 @@ const SaleInfoFormList = () => {
       ),
     },
     {
-      title: "Additional",
-      dataIndex: "communicationReason",
-      key: "communicationReason",
-      render: (text: string) => <div>{text}</div>,
-    },
-    {
       title: "Url",
       dataIndex: "url",
       key: "url",
+      render: (text: string | string[], record: SalesInfoData) => (
+        <div>
+          <button onClick={() => showModalUrl(text)} style={{ color: 'blue' }}>View Url</button>
+        </div>
+      ),
     },
     {
-      title: "Bid-By/Invite",
-      dataIndex: "inviteBid",
-      key: "inviteBid",
+      title: "Comm. mode",
+      dataIndex: "communicationMode",
+      key: "communicationMode",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Additional",
+      dataIndex: "communicationReason",
+      key: "communicationReason",
       render: (text: string) => <div>{text}</div>,
     },
     {
@@ -421,7 +459,7 @@ const SaleInfoFormList = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="infotech-form">
+                  <div className="saleInfo-form">
                   {state === false &&
                     <Table
                       dataSource={matchedData.slice().reverse()}
@@ -441,7 +479,7 @@ const SaleInfoFormList = () => {
                     </div>
                 </div>
                 <Modal
-                  title="Status Reasons"
+                  title="View Data :"
                   visible={modalVisible}
                   onCancel={closeModal}
                   footer={null}

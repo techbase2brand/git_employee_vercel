@@ -30,11 +30,8 @@
 .yellow-row {
   background-color: yellow !important;
 }
-.ant-table-content{
-  overflow: auto;
-}
 th.ant-table-cell {
-  min-width: 300px;
+  min-width: 200px;
 }
 .star-red{
   position: absolute;
@@ -47,7 +44,7 @@ th.ant-table-cell {
   background-color: rgba(81, 181, 176);
   color: black;
 } */
-tbody > tr > td:nth-child(13) {
+tbody > tr > td:nth-child(14) {
   background-color: rgba(184, 237, 104);
   color: black;
 }
@@ -409,6 +406,68 @@ css .campus_form {
   border-style: none !important;
   margin-top: 9px !important;
 }
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(1),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(2),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(3),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(4),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(5),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(6),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(7),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(8),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(9),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(10),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(11),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(12),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(13),
+.saleCampus-form  thead.ant-table-thead tr th:nth-child(14){
+  min-width: 100px;
+
+}
+
+.view-phase thead.ant-table-thead tr th:nth-child(1),
+.view-phase thead.ant-table-thead tr th:nth-child(1),
+.view-phase thead.ant-table-thead tr th:nth-child(1){
+  min-width: 100px;
+}
+
+.backlog-table thead.ant-table-thead tr th:nth-child(1),
+.backlog-table thead.ant-table-thead tr th:nth-child(3),
+.backlog-table thead.ant-table-thead tr th:nth-child(4),
+.backlog-table thead.ant-table-thead tr th:nth-child(5),
+.backlog-table thead.ant-table-thead tr th:nth-child(6) {
+  min-width: 100px;
+}
+.employee-list thead.ant-table-thead tr th:nth-child(1),
+.employee-list thead.ant-table-thead tr th:nth-child(2),
+.employee-list thead.ant-table-thead tr th:nth-child(3),
+.employee-list thead.ant-table-thead tr th:nth-child(4),
+.employee-list thead.ant-table-thead tr th:nth-child(5),
+.employee-list thead.ant-table-thead tr th:nth-child(6) {
+  min-width: 100px;
+}
+
+.dashboard-handle thead.ant-table-thead tr th:nth-child(1),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(2),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(3),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(5),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(6) {
+  min-width: 100px;
+}
+.saleInfo-form thead.ant-table-thead tr th:nth-child(1),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(2),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(3),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(4),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(5),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(6),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(7),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(8),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(9),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(10),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(11),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(12),
+.saleInfo-form thead.ant-table-thead tr th:nth-child(13){
+  min-width: 100px;
+}
 .infotech-form thead.ant-table-thead tr th:nth-child(1),
 .infotech-form thead.ant-table-thead tr th:nth-child(2),
 .infotech-form thead.ant-table-thead tr th:nth-child(3),
@@ -417,9 +476,12 @@ css .campus_form {
 .infotech-form thead.ant-table-thead tr th:nth-child(6),
 .infotech-form thead.ant-table-thead tr th:nth-child(7),
 .infotech-form thead.ant-table-thead tr th:nth-child(8),
+.infotech-form thead.ant-table-thead tr th:nth-child(9),
+.infotech-form thead.ant-table-thead tr th:nth-child(10),
 .infotech-form thead.ant-table-thead tr th:nth-child(11),
 .infotech-form thead.ant-table-thead tr th:nth-child(12),
-.infotech-form thead.ant-table-thead tr th:nth-child(13) {
+.infotech-form thead.ant-table-thead tr th:nth-child(13),
+.infotech-form thead.ant-table-thead tr th:nth-child(14){
   min-width: 100px;
 }
 .adjust-inputs{

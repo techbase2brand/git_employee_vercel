@@ -6,8 +6,8 @@ import {
   faEye,
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import {  UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { Button, Form, Input} from "antd";
 import { useNavigate } from "react-router";
 import { GlobalInfo } from "../App";
 // import { Console } from "console";
@@ -17,9 +17,7 @@ const Login: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   // const [getEmployeeID, setGetEmployeeID] = useState("");
   const [employeedata] = useState<unknown>();
-  const { getEmpInfo ,  setEmpInfo } = useContext(GlobalInfo);
-
-
+  const { getEmpInfo, setEmpInfo } = useContext(GlobalInfo);
 
   const onFinish = (values: { email: string; password: string }) => {
     console.log("Received values of form: ", values);
@@ -41,8 +39,7 @@ const Login: React.FC = () => {
           // Store the user data and the token in localStorage
           localStorage.setItem("myData", dataString);
           localStorage.setItem("myToken", token);
-
-          navigate("/add-morning-task");
+            navigate("/add-morning-task"); 
         }
       })
       .catch((error) => {
@@ -51,13 +48,9 @@ const Login: React.FC = () => {
       });
   };
 
-
-
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-
-
   return (
     <>
       <div className="outer-container">

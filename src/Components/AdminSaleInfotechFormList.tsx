@@ -67,6 +67,7 @@ const AdminSaleInfotechFormList = () => {
     null
   );
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
+  console.log("filteredData", filteredData)
   const [deleteId, setDeleteId] = useState<number>();
   const [editId, setEditId] = useState<number>();
   const [search, setSearch] = useState<string>("");
@@ -87,14 +88,21 @@ const AdminSaleInfotechFormList = () => {
   const [gettingData, setGettingData] = useState<SalesInfoData[]>([]);
   const totalLength = filteredData.length;
   const uniqueStatusNames = Array.from(new Set(statusNames));
+
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState<string[]>([]);
 
+
   const showModal = (text: string | string[]) => {
     const reasons = Array.isArray(text) ? text : text.split(',');
     setModalContent(reasons);
+    setModalVisible(true);
+  };
+  const showModalUrl = (text: string | string[]) => {
+    const url = Array.isArray(text) ? text : text.split(',');
+    setModalContent(url);
     setModalVisible(true);
   };
 
@@ -117,12 +125,28 @@ const AdminSaleInfotechFormList = () => {
 
   const handleProjectChange = (value: string) => {
     setSelectedRegister(value);
-    filterData(value);
+    if (value === "") {
+      setFilteredData(gettingData);
+    } else {
+      const filteredResult = gettingData.filter((item: SalesInfoData) => {
+        return item.RegisterBy.toLowerCase().includes(value.toLowerCase());
+      });
+      setFilteredData(filteredResult);
+    }
   };
+  
   const handleProjectStatus = (value: string) => {
     setSelectedStatus(value);
-    filterData(value);
+    if (value === "") {
+      setFilteredData(gettingData);
+    } else {
+      const filteredResult = gettingData.filter((item: SalesInfoData) => {
+        return item.status.toLowerCase() === value.toLowerCase();
+      });
+      setFilteredData(filteredResult);
+    }
   };
+  
   const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedPortal(selectedValue);
@@ -133,7 +157,6 @@ const AdminSaleInfotechFormList = () => {
   const paginationSettings = {
     pageSize: 100,
   };
-
   const upworkData = filteredData.filter(item => item.portalType === 'upwork');
   const upworkLength = upworkData.length
 
@@ -152,8 +175,16 @@ const AdminSaleInfotechFormList = () => {
   const OtherData = filteredData.filter(item => item.portalType === 'other');
   const OtherLength = OtherData.length
 
+  const hiredStatu = statusNames.filter((status) => status === "Hired");
+  const totalHiredLength = hiredStatu.length;
 
+  const closedStatus = statusNames.filter((status) => status === "Closed");
+  const totalClosedLength = closedStatus.length;
 
+  const sortedData = data.sort((a, b) => {
+    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  });
+  const createdDates = sortedData.map(item => item.created_at);
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -169,7 +200,6 @@ const AdminSaleInfotechFormList = () => {
       .then((response) => {
         setStatusNames(response.data.map((item: { status: string }) => item.status));
         const resData = response.data;
-        console.log("resData", resData);
         setData(resData);
         setFilteredData(resData);
         setGettingData(resData);
@@ -302,7 +332,6 @@ const AdminSaleInfotechFormList = () => {
 
   // edit methods
   const handleEdit = (id: number) => {
-    console.log(`update form with id ${id}`);
     setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/saleinfoform", { state: { record: recordToEdit } });
@@ -320,7 +349,7 @@ const AdminSaleInfotechFormList = () => {
 
   const columns = [
     {
-      title: "Date",
+      title: "Lead Date",
       dataIndex: "dateData",
       key: "dateData",
       render: (text: string) => <div>{text}</div>,
@@ -328,6 +357,16 @@ const AdminSaleInfotechFormList = () => {
         const dateA = new Date(a.dateData).getTime();
         const dateB = new Date(b.dateData).getTime();
         return dateA - dateB;
+      },
+    },
+    {
+      title: "Data Entry Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (text: string) => {
+        const date = new Date(text);
+        const formattedDate = date.toISOString().split('T')[0];
+        return <div>{formattedDate}</div>;
       },
     },
     {
@@ -362,6 +401,12 @@ const AdminSaleInfotechFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
+      title: "Bid-By/Invite",
+      dataIndex: "inviteBid",
+      key: "inviteBid",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
       title: "Register By",
       dataIndex: "RegisterBy",
       key: "RegisterBy",
@@ -373,20 +418,19 @@ const AdminSaleInfotechFormList = () => {
       key: "statusReason",
       render: (text: string | string[], record: SalesInfoData) => (
         <div>
-          <button onClick={() => showModal(text)} style={{color:'blue'}}>View Reasons</button>
+          <button onClick={() => showModal(text)} style={{ color: 'blue' }}>View Reasons</button>
         </div>
       ),
-    },
-    {
-      title: "Additional",
-      dataIndex: "communicationReason",
-      key: "communicationReason",
-      render: (text: string) => <div>{text}</div>,
     },
     {
       title: "Url",
       dataIndex: "url",
       key: "url",
+      render: (text: string | string[], record: SalesInfoData) => (
+        <div>
+          <button onClick={() => showModalUrl(text)} style={{ color: 'blue' }}>View Url</button>
+        </div>
+      ),
     },
     {
       title: "Comm. mode",
@@ -395,12 +439,11 @@ const AdminSaleInfotechFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Bid-By/Invite",
-      dataIndex: "inviteBid",
-      key: "inviteBid",
+      title: "Additional",
+      dataIndex: "communicationReason",
+      key: "communicationReason",
       render: (text: string) => <div>{text}</div>,
     },
-
     {
       title: "Action",
       key: "action",
@@ -529,6 +572,14 @@ const AdminSaleInfotechFormList = () => {
                   <div>other:<span className="portal">{OtherLength}</span></div> =
                   <div>Total:<span className="portal">{totalLength}</span></div>
                 </div>
+                <div style={{
+                  display: 'flex',
+                  gap: '39px',
+                  marginLeft: '55px'
+                }}>
+                  <div>Hired:<span className="portal">{totalHiredLength}</span></div>
+                  <div>Closed:<span className="portal">{totalClosedLength}</span></div>
+                </div>
                 <div
                   style={{
                     display: "flex",
@@ -618,25 +669,25 @@ const AdminSaleInfotechFormList = () => {
                 </div>
                 <div className="SalecampusFormList-default-os">
                   <div className="infotech-form">
-                  {state === false &&
-                    <Table
-                      dataSource={filteredData.slice().reverse()}
-                      // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
-                      columns={columns}
-                      // rowClassName={() => "header-row"}
-                      rowClassName={getStatusRowClassName}
-                      pagination={paginationSettings}
-                    />}
-                  {state === true &&
-                    <Table
-                      dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
-                      columns={columns}
-                      rowClassName={getStatusRowClassName}
-                      pagination={paginationSettings}
-                    />}
-                    </div>
+                    {state === false &&
+                      <Table
+                        dataSource={filteredData.slice().reverse()}
+                        // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
+                        columns={columns}
+                        // rowClassName={() => "header-row"}
+                        rowClassName={getStatusRowClassName}
+                        pagination={paginationSettings}
+                      />}
+                    {state === true &&
+                      <Table
+                        dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
+                        columns={columns}
+                        rowClassName={getStatusRowClassName}
+                        pagination={paginationSettings}
+                      />}
+                  </div>
                   <Modal
-                    title="Status Reasons"
+                    title="View Data :"
                     visible={modalVisible}
                     onCancel={closeModal}
                     footer={null}
@@ -644,7 +695,7 @@ const AdminSaleInfotechFormList = () => {
                     {modalContent.map((reason: string, index: number) => (
                       <div key={index}>
                         {reason.trim()}
-                        {index !== modalContent.length - 1 && <br />&& <br />&& <br />}
+                        {index !== modalContent.length - 1 && <br />}
                       </div>
                     ))}
                   </Modal>

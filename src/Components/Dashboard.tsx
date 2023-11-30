@@ -176,7 +176,7 @@ const Dashboard: React.FC = () => {
                   {/* <RangePicker onChange={handleDateRangeChange} /> */}
                 </div>
               </div>
-              <div style={{}}>
+              <div style={{}} className="dashboard-handle">
                 <TaskTable data={data} totalEstHrs={totalEstHrs} setTotalEstHrs={setTotalEstHrs}
                   setTotalUpWorkHrs={setTotalUpWorkHrs} setSetTotalUpWorkHrs={setSetTotalUpWorkHrs}
                   selectedRole={selectedRole} searchQuery={searchQuery}
