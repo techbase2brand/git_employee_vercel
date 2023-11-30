@@ -121,6 +121,10 @@ const AdminSaleCampusFormList = () => {
     filterData(dateSearch, dateSearch, search);
   }, [data]);
 
+  const paginationSettings = {
+    pageSize: 100,
+  };
+
 
   useEffect(() => {
     axios
@@ -489,6 +493,7 @@ filterData(dateSearch, dateSearch, search);
                     rowClassName={(record) =>
                       record.status.replace(/\s+/g, "-")
                     } // Convert spaces to hyphens
+                    pagination={paginationSettings}
                   />
 
                   <Modal

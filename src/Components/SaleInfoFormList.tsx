@@ -42,6 +42,7 @@ interface SalesInfoData {
   dateData: string;
   EmployeeID: string;
   created_at: string;
+  inviteBid: string;
 }
 interface Props {
   data: SalesInfoData[];
@@ -73,6 +74,20 @@ const SaleInfoFormList = () => {
     empIdMatch = myData.EmployeeID;
   }
   const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch);
+  const totalLength = matchedData.length;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState<string[]>([]);
+
+  const showModal = (text: string | string[]) => {
+    const reasons = Array.isArray(text) ? text : text.split(',');
+    setModalContent(reasons);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalContent([]);
+  };
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
     setState(true);
@@ -81,6 +96,10 @@ const SaleInfoFormList = () => {
     setSelectedRegister(value);
     filterData(value);
   };
+  const paginationSettings = {
+    pageSize: 100,
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
@@ -203,11 +222,6 @@ const SaleInfoFormList = () => {
       dataIndex: "profileName",
       key: "profileName",
     },
-    {
-      title: "Url",
-      dataIndex: "url",
-      key: "url",
-    },
 
     {
       title: "Handle by",
@@ -227,19 +241,32 @@ const SaleInfoFormList = () => {
       key: "communicationMode",
       render: (text: string) => <div>{text}</div>,
     },
+    // {
+    //   title: "Status Reason",
+    //   dataIndex: "statusReason",
+    //   key: "statusReason",
+    //   render: (text: string | string[], record: SalesInfoData) => (
+    //     <div>
+    //       {Array.isArray(text) ? (
+    //         text.map((reason: string, index: number) => (
+    //           <div key={index}>{reason}</div>
+    //         ))
+    //       ) :text.split(",").map((reason: string, index: number) => (
+    //         <div key={index}>
+    //           {reason.trim()}
+    //           {index !== text.split(",").length - 1 && <br />}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Status Reason",
       dataIndex: "statusReason",
       key: "statusReason",
       render: (text: string | string[], record: SalesInfoData) => (
         <div>
-          {Array.isArray(text) ? (
-            text.map((reason: string, index: number) => (
-              <div key={index}>{reason}</div>
-            ))
-          ) : (
-            <div>{text}</div>
-          )}
+          <button onClick={() => showModal(text)} style={{ color: 'blue' }}>View Reasons</button>
         </div>
       ),
     },
@@ -247,6 +274,17 @@ const SaleInfoFormList = () => {
       title: "Additional",
       dataIndex: "communicationReason",
       key: "communicationReason",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Url",
+      dataIndex: "url",
+      key: "url",
+    },
+    {
+      title: "Bid-By/Invite",
+      dataIndex: "inviteBid",
+      key: "inviteBid",
       render: (text: string) => <div>{text}</div>,
     },
     {
@@ -281,7 +319,8 @@ const SaleInfoFormList = () => {
           e?.status?.toLowerCase().includes(lowercasedInput) ||
           e?.statusReason?.toLowerCase().includes(lowercasedInput) ||
           e?.url?.toLowerCase().includes(lowercasedInput) ||
-          e?.dateData?.toLowerCase().includes(lowercasedInput)
+          e?.dateData?.toLowerCase().includes(lowercasedInput) ||
+          e?.inviteBid?.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {
@@ -327,6 +366,7 @@ const SaleInfoFormList = () => {
             </div>
             <section className="SalecampusForm-section-os">
               <div className="form-container">
+                <div className="total-size">Total:{totalLength}</div>
                 <div className="SalecampusFormList-default-os">
                   <div
                     style={{
@@ -381,6 +421,7 @@ const SaleInfoFormList = () => {
                       </select>
                     </div>
                   </div>
+                  <div className="infotech-form">
                   {state === false &&
                     <Table
                       dataSource={matchedData.slice().reverse()}
@@ -388,14 +429,30 @@ const SaleInfoFormList = () => {
                       columns={columns}
                       // rowClassName={() => "header-row"}
                       rowClassName={getStatusRowClassName}
+                      pagination={paginationSettings}
                     />}
                   {state === true &&
                     <Table
                       dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
                       columns={columns}
                       rowClassName={getStatusRowClassName}
+                      pagination={paginationSettings}
                     />}
+                    </div>
                 </div>
+                <Modal
+                  title="Status Reasons"
+                  visible={modalVisible}
+                  onCancel={closeModal}
+                  footer={null}
+                >
+                  {modalContent.map((reason: string, index: number) => (
+                    <div key={index}>
+                      {reason.trim()}
+                      {index !== modalContent.length - 1 && <br/>&&<br/>&&<br/>}
+                    </div>
+                  ))}
+                </Modal>
               </div>
             </section>
           </div>

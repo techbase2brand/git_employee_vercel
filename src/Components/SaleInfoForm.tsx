@@ -25,6 +25,7 @@ interface FormData {
   EmployeeID: string;
   RegisterBy: string;
   commModeOther: string;
+  inviteBid: string;
 }
 
 interface communicationModeInterface {
@@ -42,11 +43,14 @@ function SaleInfoForm(): JSX.Element {
   const [state, setState] = useState<boolean>(false);
   let employeeID = "";
   let employeeName = "";
+  let rolled = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
     employeeID = myData.EmployeeID;
     employeeName = `${myData.firstName} ${myData.lastName}`;
+    rolled = myData.role;
   }
+
   const today = new Date().toISOString().split("T")[0];
   const initialFormData: FormData = {
     portalType: "upwork",
@@ -68,6 +72,7 @@ function SaleInfoForm(): JSX.Element {
     EmployeeID: employeeID,
     RegisterBy: employeeName,
     commModeOther: "",
+    inviteBid: "",
   };
   //
   const initialCommunicationModeInterface: communicationModeInterface = {
@@ -86,14 +91,13 @@ function SaleInfoForm(): JSX.Element {
 
   // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
-  console.log("formData",formData)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [communicationMode, setCommunicationMode] =
     useState<communicationModeInterface>(initialCommunicationModeInterface);
   useEffect(() => {
     if (record) {
-      console.log("Record from location state:", record);
+      console.log("recorddddd",record)
       setFormData(record);
       if (typeof record.statusReason === 'string' && (record.statusReason as string).trim().length > 0) {
         const reasonsArray = (record.statusReason as string).split(',');
@@ -105,6 +109,15 @@ function SaleInfoForm(): JSX.Element {
   const handleAddReason = () => {
     setStatusReasons([...statusReasons, '']);
     setState(true)
+  };
+  const handleDateChange = (date: string, index: number) => {
+    const newStatusReasons = [...statusReasons];
+    newStatusReasons[index] = `(${date}) => ${newStatusReasons[index]}`;
+    setStatusReasons(newStatusReasons);
+    setFormData((prevData) => ({
+      ...prevData,
+      statusReason: newStatusReasons,
+    }));
   };
 
   const handleChangeReason = (value: string, index: number) => {
@@ -234,7 +247,12 @@ function SaleInfoForm(): JSX.Element {
     axios
       .put(`https://empbackend.base2brand.com/updatesale/${updatedFormData.id}`, updatedFormData)
       .then((response) => {
-        Navigate("/saleinfoformlist"); // Navigate back to the list after update
+        if (rolled === "Sales Infotech") {
+          Navigate("/saleinfoformlist");
+        } else {
+          Navigate("/AdminSaleInfotechFormList");
+        }
+        // Navigate back to the list after update
         console.log("handleUpdate-working-os");
         setSubmitted(true);
       })
@@ -426,6 +444,20 @@ function SaleInfoForm(): JSX.Element {
                         )}
                       </div>
 
+
+                      <div className="SalecampusForm-col-os">
+                        <div className="SalecampusForm-input-os">
+                          <input
+                            type="text"
+                            name="inviteBid"
+                            placeholder="Bid-By/Invite"
+                            value={formData.inviteBid}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+
+
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
                           <input
@@ -470,13 +502,19 @@ function SaleInfoForm(): JSX.Element {
                       {statusReasons.map((reason, index) => (
                         <div key={index} className="SalecampusForm-col-os">
                           <div className="SalecampusForm-input-os">
-                            <input
-                              type="text"
+                            <textarea
+                              className="additional-notes"
+                              // type="text"
                               placeholder={`Status Reason ${index + 1}`}
                               value={reason}
                               onChange={(e) => handleChangeReason(e.target.value, index)}
-                              // readOnly={formData.statusReason.includes(reason[index])}
+                            // readOnly={formData.statusReason.includes(reason[index])}
                             />
+                            {formData.id && index === statusReasons.length - 1 && reason === "" &&
+                              <input
+                                type="date"
+                                onChange={(e) => handleDateChange(e.target.value, index)}
+                              />}
                           </div>
                           {formData.id && index === statusReasons.length - 1 && (
                             <div style={{

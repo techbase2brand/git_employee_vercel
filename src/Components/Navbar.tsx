@@ -1,6 +1,7 @@
-
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect, useContext, useCallback } from "react";
+import PropTypes from 'prop-types';
+
 import {
   Input,
   Layout,
@@ -35,7 +36,6 @@ interface BacklogTask {
 
 
 }
-
 const Navbar: React.FunctionComponent = () => {
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
     useState(false);
@@ -48,6 +48,12 @@ const Navbar: React.FunctionComponent = () => {
 
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
+  const myDataString = localStorage.getItem('myData');
+  let rolled = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    rolled = myData.email;
+  }
   // console.log(myData,"myData");
 
 
@@ -139,8 +145,8 @@ const Navbar: React.FunctionComponent = () => {
     (assigneeEmployeeID: unknown) => {
       console.log("handleTaskAssigned called");
 
-      if (myData  && myData?.EmployeeID === assigneeEmployeeID) {
-          setAssignedTaskCount((prevCount) => prevCount + 1);
+      if (myData && myData?.EmployeeID === assigneeEmployeeID) {
+        setAssignedTaskCount((prevCount) => prevCount + 1);
       }
     },
     [assignedTaskCount]
@@ -172,26 +178,27 @@ const Navbar: React.FunctionComponent = () => {
 
   useEffect(() => {
 
-      const socket = io("https://empbackend.base2brand.com");
+    const socket = io("https://empbackend.base2brand.com");
 
 
-      socket.on('notification' ,(data)=>{
-        const visitedNotificationIds = getVisitedNotificationIds();
+    socket.on('notification', (data) => {
+      console.log("ewrew", data)
+      const visitedNotificationIds = getVisitedNotificationIds();
 
-        const filteredData = data?.data?.filter(
-          (item: { backlogTaskID: any; employeeID: any; }) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
+      const filteredData = data?.data?.filter(
+        (item: { backlogTaskID: any; employeeID: any; }) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
 
-        );
-        const sortedData = filteredData.sort(
-          (a: { backlogTaskID: any; }, b: { backlogTaskID: any; }) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
+      );
+      const sortedData = filteredData.sort(
+        (a: { backlogTaskID: any; }, b: { backlogTaskID: any; }) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+      );
 
-        setNotifications(sortedData);
-        updateNotificationCount(); // Update the notification count
+      setNotifications(sortedData);
+      updateNotificationCount(); // Update the notification count
 
-        console.log("datadatadata===============",data)
+      console.log("datadatadata===============", data)
 
-  })
+    })
     socket.on("taskAssigned", handleTaskAssigned);
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
@@ -204,7 +211,7 @@ const Navbar: React.FunctionComponent = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
- const markNotificationAsVisited = (notificationId: number) => {
+  const markNotificationAsVisited = (notificationId: number) => {
     const visitedNotificationIds = getVisitedNotificationIds();
     visitedNotificationIds.push(notificationId);
     localStorage.setItem(
@@ -212,36 +219,36 @@ const Navbar: React.FunctionComponent = () => {
       JSON.stringify(visitedNotificationIds)
     );
   };
-// useEffect(() => {
-//     axios
-//       .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-//         },
+  // useEffect(() => {
+  //     axios
+  //       .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+  //         },
 
-//       })
-//       .then((response) => {
-//         const visitedNotificationIds = getVisitedNotificationIds();
-//         const filteredData = response?.data?.filter(
-//           (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
+  //       })
+  //       .then((response) => {
+  //         const visitedNotificationIds = getVisitedNotificationIds();
+  //         const filteredData = response?.data?.filter(
+  //           (item) => !visitedNotificationIds.includes(item.backlogTaskID) && item.employeeID === myData.EmployeeID
 
-//         );
-//         const sortedData = filteredData.sort(
-//           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-//         );
+  //         );
+  //         const sortedData = filteredData.sort(
+  //           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+  //         );
 
-//         setNotifications(sortedData);
-//         updateNotificationCount(); // Update the notification count
-//       })
-//       .catch((error) => {
-//         console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
+  //         setNotifications(sortedData);
+  //         updateNotificationCount(); // Update the notification count
+  //       })
+  //       .catch((error) => {
+  //         console.log(localStorage.getItem("myToken"),"mmmyyyy tokennnn");
 
-//         // console.error("Error fetching data:", error);
-//         // console.log("Error details:", error.response);
-//       });
-//   }, []);
+  //         // console.error("Error fetching data:", error);
+  //         // console.log("Error details:", error.response);
+  //       });
+  //   }, []);
 
- const listStyle = {
+  const listStyle = {
     padding: "10px",
     backgroundColor: "#f5f5f5",
     borderRadius: "5px",
@@ -317,77 +324,97 @@ const Navbar: React.FunctionComponent = () => {
       navigate("/");
     }
   };
+  useEffect(() => {
+    const hideMenuButton = document.getElementById("hideMenuButton");
+    const menuDivs = document.querySelectorAll(".menu-div");
 
-    return (
-      <div>
-        <Header
+    if (hideMenuButton) {
+      hideMenuButton.addEventListener("click", function () {
+        menuDivs.forEach(function (menuDiv) {
+          menuDiv.classList.toggle("hidden");
+        });
+      });
+    }
+  }, []); // Empty dependency array ensures this runs once after component mount
+const handleBack =()=>{
+  if(rolled==="rakeshbase2brand@gmail.com"){
+    navigate("/dashboard")
+  }
+}
+  return (
+    <div>
+      <Header
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+        className="navbar"
+      >
+        <div
           style={{
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "white",
+            justifyContent: "space-between",
+            width: "40%",
           }}
-          className="navbar"
+        >
+          <div className="logo" onClick={handleBack}>
+            <img src="./b2b.png" alt="Company Logo"/>
+          </div>
+          <button id="hideMenuButton" style={{
+            width: '35px',
+            height: '34px',
+            margin: '26px',
+            marginRight: '41%'
+          }}>☰</button>
+
+          <div className="search">
+            <Input
+              placeholder="Search..."
+              // eslint-disable-next-line react/react-in-jsx-scope
+              prefix={<SearchOutlined className="search-icon" />}
+            />
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "60%",
+            float: "right",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+          className="right-menu"
         >
           <div
             style={{
+              width: "25%",
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              width: "40%",
-            }}
-          >
-            <div className="logo">
-              <img src="./b2b.png" alt="Company Logo" />
-            </div>
-
-            <div className="search">
-              <Input
-                placeholder="Search..."
-                // eslint-disable-next-line react/react-in-jsx-scope
-                prefix={<SearchOutlined className="search-icon" />}
-              />
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              width: "60%",
-              float: "right",
               alignItems: "center",
-              justifyContent: "flex-end",
             }}
-            className="right-menu"
           >
-            <div
-              style={{
-                width: "25%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Badge style={{ marginRight: "3%" }} count={notifications.length}>
-                <Popover
-                  style={{ width: "20vw" }}
-                  content={notificationList}
-                  placement="bottomRight"
-                >
-                  <BellOutlined className="notification-icon" />
-                </Popover>
-              </Badge>
+            <Badge style={{ marginRight: "3%" }} count={notifications.length}>
+              <Popover
+                style={{ width: "20vw" }}
+                content={notificationList}
+                placement="bottomRight"
+              >
+                <BellOutlined className="notification-icon" />
+              </Popover>
+            </Badge>
 
-              <Avatar className="avatar" icon={<UserOutlined />} />
-              <span className="username">{myData?.firstName} {myData?.lastName}</span>
-              <button onClick={logout}>logout</button>
-            </div>
+            <Avatar className="avatar" icon={<UserOutlined />} />
+            <span className="username">{myData?.firstName} {myData?.lastName}</span>
+            <button onClick={logout}>logout</button>
           </div>
-        </Header>
-      </div>
-    );
-  };
-
-
+        </div>
+      </Header>
+    </div>
+  );
+};
 export default Navbar;
