@@ -30,7 +30,7 @@ interface SalecampusData {
   description: string;
   created_at: string;
   updated_at: string;
-  EmployeeID :string;
+  EmployeeID: string;
 }
 
 
@@ -145,16 +145,16 @@ const AdminSaleCampusFormList = () => {
     return employee ? employee.firstName : '-';
   }
 
-    
 
 
 
 
 
 
-  
 
-  
+
+
+
   // delete methods
   const handleDelete = (id: number) => {
     setDeleteId(id);
@@ -178,15 +178,15 @@ const AdminSaleCampusFormList = () => {
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);
     // Check if the data is currently filtered
-  // Check if the data is currently filtered
-filterData(dateSearch, dateSearch, search);
-// Corrected this line
+    // Check if the data is currently filtered
+    filterData(dateSearch, dateSearch, search);
+    // Corrected this line
 
     // close consfirmation modal
     setIsModalOpen(false);
     // Null values of delete id
     setRecordToDelete(null);
-};
+  };
 
 
   // edit methods
@@ -468,14 +468,14 @@ filterData(dateSearch, dateSearch, search);
                     style={{
                       width: "60%",
                       paddingBottom: "2rem",
-                      display:'flex',
+                      display: 'flex',
                       gap: '16px'
                     }}
                   >
-                   <RangePicker onChange={handleDateRangeChange} />
+                    <RangePicker onChange={handleDateRangeChange} />
 
                     <Input
-                    style={{width:"auto"}}
+                      style={{ width: "auto" }}
                       placeholder="Search..."
                       prefix={<SearchOutlined />}
                       onChange={handleSearch}
@@ -486,16 +486,16 @@ filterData(dateSearch, dateSearch, search);
                   <p style={{ fontWeight: "bold", marginBottom: "20px" }}>
                     Number of Records: {filteredData.length}
                   </p>
-
-                  <Table
-                    dataSource={filteredData.slice().reverse()}
-                    columns={columns}
-                    rowClassName={(record) =>
-                      record.status.replace(/\s+/g, "-")
-                    } // Convert spaces to hyphens
-                    pagination={paginationSettings}
-                  />
-
+                  <div className="saleCampus-form">
+                    <Table
+                      dataSource={filteredData.slice().reverse()}
+                      columns={columns}
+                      rowClassName={(record) =>
+                        record.status.replace(/\s+/g, "-")
+                      } // Convert spaces to hyphens
+                      pagination={paginationSettings}
+                    />
+                  </div>
                   <Modal
                     title="Confirmation"
                     open={isModalOpen}

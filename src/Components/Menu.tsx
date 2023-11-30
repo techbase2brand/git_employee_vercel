@@ -62,6 +62,7 @@ const AppMenu = () => {
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
+          <Menu.SubMenu key="manageProject" icon={<TableOutlined rev={undefined} />} title="Manage Projects">
           <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
             <Link to="/add-project">Add Project</Link>
           </Menu.Item>
@@ -95,6 +96,7 @@ const AppMenu = () => {
           >
             <Link to="/ViewPhaseAssign">View Phase AssignedTo</Link>
           </Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
             <Link to="/LeavePage">LeavePage for approval </Link>
           </Menu.Item>

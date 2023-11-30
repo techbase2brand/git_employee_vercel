@@ -26,10 +26,10 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
     })
-    .then((response) => {
-      const sortedData = response.data.sort((a, b) => Number(b.phaseID) - Number(a.phaseID));
-      setphaseArr(sortedData);
-    });
+      .then((response) => {
+        const sortedData = response.data.sort((a, b) => Number(b.phaseID) - Number(a.phaseID));
+        setphaseArr(sortedData);
+      });
   }, []);
 
   const handleEdit = (phaseID: number) => {
@@ -44,12 +44,12 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
     })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
     setphaseArr(phaseArr.filter((phase) => phase.phaseID.toString() !== phaseID));
   };
 
@@ -110,13 +110,14 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
         </div>
         {/* <button onClick={() => { setSearchTerm(''); }}>Reset Search</button> */}
       </div>
-
-      <Table
-        style={{ width: '80vw' }}
-        dataSource={filteredData}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
+      <div className="view-phase">
+        <Table
+          style={{ width: '80vw' }}
+          dataSource={filteredData}
+          columns={columns}
+          rowClassName={() => "header-row"}
+        />
+      </div>
     </>
   );
 };

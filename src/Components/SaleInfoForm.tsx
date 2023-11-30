@@ -51,7 +51,7 @@ function SaleInfoForm(): JSX.Element {
     rolled = myData.role;
   }
 
-  const today = new Date().toISOString().split("T")[0];
+  // const today = new Date().toISOString().split("T")[0];
   const initialFormData: FormData = {
     portalType: "upwork",
     profileName: "",
@@ -68,7 +68,7 @@ function SaleInfoForm(): JSX.Element {
     commModeWhatsapp: "",
     commModeEmail: "",
     commModePortal: "",
-    dateData: today,
+    dateData: "",
     EmployeeID: employeeID,
     RegisterBy: employeeName,
     commModeOther: "",

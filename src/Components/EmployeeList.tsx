@@ -54,7 +54,7 @@ const EmployeeList: React.FC = () => {
               </p>
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div>
+              <div className="employee-list">
                 <EmployeeTable empObj={empObj} setEmpObj={setEmpObj} />
               </div>
             </div>
