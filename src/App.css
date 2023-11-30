@@ -453,12 +453,12 @@ css .campus_form {
 .dashboard-handle thead.ant-table-thead tr th:nth-child(6) {
   min-width: 100px;
 }
-.evening-handle thead.ant-table-thead tr th:nth-child(1),
-.evening-handle thead.ant-table-thead tr th:nth-child(2),
-.evening-handle thead.ant-table-thead tr th:nth-child(3),
-.evening-handle thead.ant-table-thead tr th:nth-child(5),
-.evening-handle thead.ant-table-thead tr th:nth-child(6),
-.evening-handle thead.ant-table-thead tr th:nth-child(7) {
+.evening-handle table thead.ant-table-thead tr th:nth-child(1),
+.evening-handle table thead.ant-table-thead tr th:nth-child(2),
+.evening-handle table thead.ant-table-thead tr th:nth-child(3),
+.evening-handle table thead.ant-table-thead tr th:nth-child(5),
+.evening-handle table thead.ant-table-thead tr th:nth-child(6),
+.evening-handle table thead.ant-table-thead tr th:nth-child(7) {
   min-width: 100px;
 }
 
