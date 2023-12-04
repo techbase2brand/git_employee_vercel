@@ -7,29 +7,35 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input} from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { useNavigate } from "react-router";
 import { GlobalInfo } from "../App";
-// import { Console } from "console";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   // const [getEmployeeID, setGetEmployeeID] = useState("");
   const [employeedata] = useState<unknown>();
   const { getEmpInfo, setEmpInfo } = useContext(GlobalInfo);
-
+  const [apiResponse, setApiResponse] = useState<any>(null);
   const onFinish = (values: { email: string; password: string }) => {
     console.log("Received values of form: ", values);
 
     axios
       .post("https://empbackend.base2brand.com/user/login", values)
       .then((res) => {
+        setApiResponse(res.data);
+        console.log("res", res)
         if (res?.data === "Invalid username or password") {
           alert("Invalid username or password");
         } else {
           console.log("Login successful");
-
+          if (res.data.user.logged === 0) {
+            setShowTermsModal(true);
+          } else {
+            navigate("/add-morning-task");
+          }
           // Save user info and token in state and local storage
           const { user, token } = res.data;
 
@@ -39,13 +45,33 @@ const Login: React.FC = () => {
           // Store the user data and the token in localStorage
           localStorage.setItem("myData", dataString);
           localStorage.setItem("myToken", token);
-            navigate("/add-morning-task"); 
+          // navigate("/add-morning-task"); 
         }
+
       })
       .catch((error) => {
         console.log(error.response?.data); // Log the error message
         // Show an error message to the user
       });
+  };
+  const handleAcceptTerms = () => {
+    if (apiResponse && apiResponse.user) {
+      axios
+        .put(`https://empbackend.base2brand.com/employeeUpdatelogged/${apiResponse.user.EmpID}`, {
+          logged: 1,
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        })
+        .then((response) => {
+          setShowTermsModal(false);
+          navigate('/add-morning-task');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -178,6 +204,21 @@ const Login: React.FC = () => {
                   </h3>
                 </Button>
               </div>
+              <Modal
+                title="Terms and Conditions"
+                visible={showTermsModal}
+                onCancel={() => setShowTermsModal(false)}
+                footer={[
+                  <Button key="back" onClick={() => setShowTermsModal(false)}>
+                    Decline
+                  </Button>,
+                  <Button key="submit" type="primary" onClick={handleAcceptTerms}>
+                    Accept
+                  </Button>,
+                ]}
+              >
+                <p>Powered By Base2 Brand..</p>
+              </Modal>
             </Form>
           </div>
         </div>

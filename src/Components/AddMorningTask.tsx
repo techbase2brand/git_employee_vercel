@@ -19,6 +19,7 @@ interface Task {
   upWorkHrs: string;
   employeeID: string;
   currDate: string;
+  selectDate: string;
 }
 
 interface AssignedEmployees {
@@ -74,18 +75,17 @@ const AddModule: React.FC<unknown> = () => {
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
 
-  console.log("ggggg", employeeID);
-
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
-  projectName: "",
-  phaseName: "",
-  module: "",
-  task: "",
-  estTime: "",
-  upWorkHrs: "0:00", // Set the initial value to "0:00"
-  employeeID: "",
-  currDate: formattedDate,
+    projectName: "",
+    phaseName: "",
+    module: "",
+    task: "",
+    estTime: "",
+    upWorkHrs: "0:00", // Set the initial value to "0:00"
+    employeeID: "",
+    currDate: formattedDate,
+    selectDate: formattedDate,
   });
   const token = localStorage.getItem("myToken");
 
@@ -100,6 +100,7 @@ const AddModule: React.FC<unknown> = () => {
           },
         })
         .then((response) => {
+          console.log("response++++",response)
           const res = response.data.filter(
             (e: Task) => e.MrngTaskID === location?.state?.MrngTaskID
           );
@@ -115,6 +116,7 @@ const AddModule: React.FC<unknown> = () => {
               upWorkHrs: res[0]?.upWorkHrs,
               employeeID: res[0]?.employeeID,
               currDate: res[0]?.currDate,
+              selectDate: res[0]?.selectDate,
             });
 
             // Update the state variables
@@ -126,6 +128,7 @@ const AddModule: React.FC<unknown> = () => {
             setSelectedProject(res[0]?.projectName);
             setSelectedPhase(res[0]?.phaseName);
             setSelectedModule(res[0]?.module);
+            
           }
         })
         .catch((error) => {
@@ -159,7 +162,7 @@ const AddModule: React.FC<unknown> = () => {
         const sortedData = response?.data?.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
-          console.log(sortedData);
+        console.log(sortedData);
 
         setPhaseAssignedArr(sortedData);
 
@@ -191,7 +194,6 @@ const AddModule: React.FC<unknown> = () => {
             )
             .map((obj) => obj.phaseName);
 
-          console.log(arr, "zzzzzzz");
 
           const phasesArr = arr.map((phase, index) => ({
             phaseID: index + 1,
@@ -236,7 +238,6 @@ const AddModule: React.FC<unknown> = () => {
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
     const currentPhase = phases.find((phase) => phase.projectName === value);
-    console.log(currentPhase?.phases[0], "dddffff---------");
 
     if (currentPhase) {
       setMorningTask((prev) => ({
@@ -265,6 +266,12 @@ const AddModule: React.FC<unknown> = () => {
     setMorningTask({
       ...morningTask,
       task: value,
+    });
+  };
+  const handleDateChange =(value: string) => {
+    setMorningTask({
+      ...morningTask,
+      selectDate: value,
     });
   };
 
@@ -307,6 +314,7 @@ const AddModule: React.FC<unknown> = () => {
           }
         )
         .then((response) => {
+          console.log("response",response)
           if (response.data === "All fields are required.") {
             alert("All compulsory fields are required.");
           } else {
@@ -475,30 +483,30 @@ const AddModule: React.FC<unknown> = () => {
                   </select>
                 </div> */}
 
-                  <div style={{display:'flex', flexDirection:'column'}}>
-        {/* <label className="add-label">Module</label> */}
-        <label className="add-label">
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {/* <label className="add-label">Module</label> */}
+                  <label className="add-label">
                     Module<span style={{ color: "red" }}>*</span>
                   </label>
-          <select
-            className="add-input"
-            id="module"
-            name="module"
-            value={selectedModule}
-            onChange={(e) => handleModuleChange(e.target.value)}
-          >
-            <option value="">Select a module</option>
-            {modules
-              .filter((module) => module.phaseName == selectedPhase && module.projectName == selectedProject)
-              .map((module) => {
-                return (
-                  <option key={module.modID} value={module.modules}>
-                    {module.modules}
-                  </option>
-                );
-            })}
-          </select>
-        </div>
+                  <select
+                    className="add-input"
+                    id="module"
+                    name="module"
+                    value={selectedModule}
+                    onChange={(e) => handleModuleChange(e.target.value)}
+                  >
+                    <option value="">Select a module</option>
+                    {modules
+                      .filter((module) => module.phaseName == selectedPhase && module.projectName == selectedProject)
+                      .map((module) => {
+                        return (
+                          <option key={module.modID} value={module.modules}>
+                            {module.modules}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
 
                 {/* )} */}
               </div>
@@ -507,28 +515,39 @@ const AddModule: React.FC<unknown> = () => {
                 <label className="add-label">
                   task:<span style={{ color: "red" }}>*</span>
                 </label>
-
                 {/* <div style={{ width: "89%" }} className="form-control"> */}
                 <div style={{ width: "89%" }} className="form-control">
-    <textarea
-        style={{
-            outline: "none",
-            border: "none",
-            // maxWidth: "100%",
-            width:"100%",
-            height:"10vh",
-            resize: "none",  // Add this line
-            boxSizing: "content-box", // set boxSizing to content-box
-        }}
-        name="task"
-        className="textarea-control" // use the new class
-        value={morningTask.task}
-        onChange={(e) => handleTaskChange(e.target.value)}
-        required
-    />
-</div>
-
-
+                  <textarea
+                    style={{
+                      outline: "none",
+                      border: "none",
+                      // maxWidth: "100%",
+                      width: "100%",
+                      height: "10vh",
+                      resize: "none",  // Add this line
+                      boxSizing: "content-box", // set boxSizing to content-box
+                    }}
+                    name="task"
+                    className="textarea-control" // use the new class
+                    value={morningTask.task}
+                    onChange={(e) => handleTaskChange(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="SalecampusForm-col-os">
+              <label className="add-label">
+                  Date:
+                </label>
+                <div className="SalecampusForm-input-os">
+                  <input
+                  style={{width: 'auto'}}
+                    type="date"
+                    name="selectDate"
+                    value={morningTask?.selectDate}
+                    onChange={(e) => handleDateChange(e.target.value)}
+                  />
+                </div>
               </div>
               <div
                 style={{
@@ -541,7 +560,7 @@ const AddModule: React.FC<unknown> = () => {
                 <div className="form-group">
                   {/* <label className="add-label">Estimate Hrs</label> */}
                   <label className="add-label">
-                  Estimate Hrs<span style={{ color: "red" }}>*</span>
+                    Estimate Hrs<span style={{ color: "red" }}>*</span>
                   </label>
                   <select
                     style={{ width: "16.8vw" }}
@@ -559,16 +578,13 @@ const AddModule: React.FC<unknown> = () => {
                         }
                         return (
                           <option
-                            key={`${hour}:${
-                              minute < 10 ? "0" + minute : minute
-                            }`}
-                            value={`${hour}:${
-                              minute < 10 ? "0" + minute : minute
-                            }`}
+                            key={`${hour}:${minute < 10 ? "0" + minute : minute
+                              }`}
+                            value={`${hour}:${minute < 10 ? "0" + minute : minute
+                              }`}
                           >
-                            {`${hour} hour${
-                              hour !== 1 ? "s" : ""
-                            } ${minute} min${minute !== 1 ? "s" : ""}`}
+                            {`${hour} hour${hour !== 1 ? "s" : ""
+                              } ${minute} min${minute !== 1 ? "s" : ""}`}
                           </option>
                         );
                       })
@@ -577,27 +593,27 @@ const AddModule: React.FC<unknown> = () => {
                 </div>
 
                 <div className="form-group">
-  <label className="add-label">Upwork Hrs</label>
-  <select
-    style={{ width: "16.8vw" }}
-    name="upWorkHrs"
-    className="form-control"
-    value={morningTask.upWorkHrs}
-    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
-  >
-    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
-    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-      [0, 10, 20, 30, 40, 50].map((minute) => (
-        <option
-          key={`${hour}:${minute}`}
-          value={`${hour}:${minute}`}
-        >
-          {`${hour} hours ${minute} mins`}
-        </option>
-      ))
-    )}
-  </select>
-</div>
+                  <label className="add-label">Upwork Hrs</label>
+                  <select
+                    style={{ width: "16.8vw" }}
+                    name="upWorkHrs"
+                    className="form-control"
+                    value={morningTask.upWorkHrs}
+                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
+                  >
+                    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
+                        <option
+                          key={`${hour}:${minute}`}
+                          value={`${hour}:${minute}`}
+                        >
+                          {`${hour} hours ${minute} mins`}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
               </div>
               <button className="add-button" onClick={handleSubmit}>
                 Submit

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Table, DatePicker } from "antd";
+import { Table, DatePicker, Select } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
-
+const { Option } = Select;
 interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
@@ -16,15 +16,36 @@ interface BacklogTask {
   isCompleted: number;
   AssignedBy: string;
 }
-
+interface Employee {
+  EmpID: string | number;
+  firstName: string;
+  role: string;
+  dob: string | Date;
+  EmployeeID: string;
+}
 const { RangePicker } = DatePicker;
 
 const ViewBacklogTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedAssignee, setSelectedAssignee] = useState('');
+  const [originalData, setOriginalData] = useState<BacklogTask[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [selectedOption, setSelectedOption] = useState('');
+  useEffect(() => {
+    let filteredData = originalData;
 
+    if (selectedAssignee) {
+      filteredData = originalData.filter((item) => item.assigneeName === selectedAssignee);
+    }
 
+    setData(filteredData);
+  }, [selectedAssignee, originalData])
 
+  const handleAssigneeChange = (value: string) => {
+    setSelectedAssignee(value);
+  };
 
   const onDateRangeChange = (values: RangeValue<dayjs.Dayjs>, formatString: [string, string]) => {
     if (values === null || values[0] === null || values[1] === null) {
@@ -33,15 +54,80 @@ const ViewBacklogTable: React.FC = () => {
       setDateRange([values[0].toDate(), values[1].toDate()]);
     }
   };
+  const handleGoButtonClick = () => {
+    const filteredResult = originalData.filter((item) => {
+      const dateMatch =
+        selectedOption && item.currdate ?
+          new Date(item.currdate) >= new Date(new Date().getTime() - parseInt(selectedOption) * 24 * 60 * 60 * 1000) :
+          true;
 
+      const assigneeMatch =
+        selectedAssignee ?
+          item.assigneeName.toLowerCase().includes(selectedAssignee.toLowerCase()) :
+          true;
+
+      return dateMatch && assigneeMatch;
+    });
+
+    setData(filteredResult);
+  };
+
+
+  useEffect(() => {
+    axios
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        const sortedData = response?.data.sort(
+          (a, b) => Number(b.EmpID) - Number(a.EmpID)
+        );
+
+        setEmployees(sortedData);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const storedData = JSON.parse(localStorage.getItem("myData") || "");
-  console.log(storedData);
-
-  const adminID = storedData ? storedData.EmployeeID : ""; // Access the adminID from storedData
+  const adminID = storedData ? storedData.EmployeeID : "";
   const UserEmail = storedData ? storedData.email : "";
-  console.log(UserEmail,"UserEmail");
 
+  const paginationSettings = {
+    pageSize: 100,
+  };
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    let filteredData = originalData;
+
+    if (selectedValue === "7") {
+      const lastWeekDate = new Date();
+      lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+      filteredData = originalData.filter((item) => new Date(item.currdate) >= lastWeekDate);
+    } else if (selectedValue === "30") {
+      const lastMonthDate = new Date();
+      lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+      filteredData = originalData.filter((item) => new Date(item.currdate) >= lastMonthDate);
+    } else if (selectedValue === "90") {
+      const lastThreeMonthsDate = new Date();
+      lastThreeMonthsDate.setMonth(lastThreeMonthsDate.getMonth() - 3);
+      filteredData = originalData.filter((item) => new Date(item.currdate) >= lastThreeMonthsDate);
+    } else if (selectedValue === "180") {
+      const lastSixMonthsDate = new Date();
+      lastSixMonthsDate.setMonth(lastSixMonthsDate.getMonth() - 6);
+      filteredData = originalData.filter((item) => new Date(item.currdate) >= lastSixMonthsDate);
+    } else if (selectedValue === "365") {
+      const lastYearDate = new Date();
+      lastYearDate.setFullYear(lastYearDate.getFullYear() - 1);
+      filteredData = originalData.filter((item) => new Date(item.currdate) >= lastYearDate);
+    } else {
+      filteredData = originalData;
+    }
+    setSelectedOption(selectedValue)
+    setData(filteredData);
+  };
+  const filteringData = employees.filter((item:any) => item.status === 1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,36 +137,32 @@ const ViewBacklogTable: React.FC = () => {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         });
-
-
+        setOriginalData(response.data)
         const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
-        console.log("Sorted data:", sortedData);
+        const filteredData = sortedData?.filter((e) => {
+          e.UserEmail === UserEmail;
+          const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
+          const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
+          return assigneeMatch || assignedByMatch
+        });
 
-        const filteredData = sortedData.filter((e) => e.UserEmail === UserEmail);
-
-        console.log("Filtered data:", filteredData);
-
+        setData(filteredData);
         const today = new Date();
-      const tenDaysAgo = new Date();
-      tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
-      const finalFilteredData = filteredData.filter((e) => {
-        const taskDate = new Date(e.currdate);
-        const isDateInRange =
-          taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
-          (dateRange === null ||
-            (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
-              taskDate <= (dateRange[1] || today)));
+        const tenDaysAgo = new Date();
+        tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
+        const finalFilteredData = filteredData?.filter((e) => {
+          const taskDate = new Date(e.currdate);
+          const isDateInRange =
+            taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
+            (dateRange === null ||
+              (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
+                taskDate <= (dateRange[1] || today)));
 
-          // Check if the task is assigned by the admin based on email ID
           const isAssignedByAdmin = e.UserEmail === UserEmail;
-
-          console.log("Task Date:", taskDate, "Is Date in Range:", isDateInRange, "Is Assigned by Admin:", isAssignedByAdmin);
 
           return isDateInRange && isAssignedByAdmin;
         });
 
-
-        console.log("Final filtered data:", finalFilteredData);
 
         setData(finalFilteredData);
       } catch (error: any) {
@@ -90,7 +172,7 @@ const ViewBacklogTable: React.FC = () => {
     };
 
     fetchData();
-  }, [adminID, dateRange]);
+  }, [adminID, dateRange, searchTerm]);
 
 
   const formatDate = (dateString: string) => {
@@ -178,18 +260,74 @@ const ViewBacklogTable: React.FC = () => {
     },
   ];
 
+
+
   return (
     <>
       <div style={{ marginBottom: "16px" }}>
         <RangePicker onChange={onDateRangeChange} format="YYYY-MM-DD" allowClear />
+        <input
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search..."
+          style={{
+            marginLeft: 10, border: '1px solid #d9d9d9',
+            borderRadius: '6px', height: '30px'
+          }}
+        />
+        <Select
+          style={{
+            marginLeft: 10,
+            borderRadius: '6px', height: '42px', width: '10%'
+          }}
+          placeholder="Select Assignee"
+          value={selectedAssignee}
+          onChange={handleAssigneeChange}
+          showSearch
+          filterOption={(input, option) =>
+            option && option.children
+              ? option.children.toString().toLowerCase().includes(input.toLowerCase())
+              : false
+          }
+        >
+          <Option value="">All</Option>
+          {filteringData.map((assignee, i) => (
+            <Option key={i} value={assignee.firstName}>
+              {assignee.firstName}
+            </Option>
+          ))}
+        </Select>
+        <select
+          style={{
+            marginLeft: 10
+          }}
+          className="adjust-inputs"
+          value={selectedOption}
+          onChange={handleSelectChange}
+        >
+          <option value="">Select date range</option>
+          <option value="7">Last 1 week</option>
+          <option value="30">Last 1 month</option>
+          <option value="90">Last 3 months</option>
+          <option value="180">Last 6 months</option>
+          <option value="365">Last 1 year</option>
+        </select>
+        <button
+          className="go-button"
+          style={{ marginLeft: 10 }}
+          onClick={handleGoButtonClick}
+        >
+          Go
+        </button>
       </div>
       <div className="backlog-table">
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={data}
+          columns={columns}
+          rowClassName={() => "header-row"}
+          pagination={paginationSettings}
+        />
       </div>
     </>
   );

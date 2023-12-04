@@ -14,6 +14,7 @@ interface Employee {
   dob: string | Date;
   EmployeeID: string;
   status: number;
+  logged: number;
 }
 
 interface Props {
@@ -110,7 +111,31 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
         console.log(error);
       });
   };
+  const handleloggedChange = (EmpID: string | number, currentStatus: number) => {
+    const newLogged = currentStatus === 1 ? 0 : 1;
 
+    // Call the API to update the status
+    axios.put(`https://empbackend.base2brand.com/employeeUpdatelogged/${EmpID}`, {
+      logged: newLogged
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+      },
+    })
+      .then((response) => {
+        // Update the local data state
+        setData(prevData =>
+          prevData.map(employee =>
+            employee.EmpID === EmpID
+              ? { ...employee, logged: newLogged }
+              : employee
+          )
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const columns = [
     {
@@ -152,6 +177,18 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
       ),
     },
     {
+      title: "logged",
+      dataIndex: "logged",
+      key: "logged",
+      render: (_: any, record: Employee) => (
+        <input
+          type="checkbox"
+          checked={record.logged === 1}
+          onChange={() => handleloggedChange(record.EmpID, record.logged)}
+        />
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (_: any, record: Employee) => (
@@ -189,7 +226,8 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     team: employee.role,
     date: employee.dob.toString(),
     EmployeeID: employee.EmployeeID,
-    status: employee.status
+    status: employee.status,
+    logged: employee.logged
   }));
   const filteredData = rows.filter(project =>
     project.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -197,18 +235,60 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     project.EmployeeID.toLowerCase().includes(searchTerm.toLowerCase()) ||
     project.lastName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const handleCheckAll = () => {
+    const allCheckedIn = data.every(employee => employee.logged === 1);
+    const newStatus = allCheckedIn ? 0 : 1;
+
+    data.forEach(employee => {
+      axios.put(`https://empbackend.base2brand.com/employeeUpdatelogged/${employee.EmpID}`, {
+        logged: newStatus
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+        .then((response) => {
+          setData(prevData =>
+            prevData.map(emp =>
+              emp.EmpID === employee.EmpID ? { ...emp, logged: newStatus } : emp
+            )
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  };
   return (
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
-        <div style={{ marginBottom: 10 }}>
+        <div style={{ marginBottom: 10, display: 'flex' }}>
           <input
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search"
-            style={{ marginLeft: 10 }}
+            style={{
+              marginLeft: 10, border: '1px solid #d9d9d9',
+              borderRadius: '6px', height: '30px'
+            }}
           />
+          <div style={{
+            marginBottom: 10, marginLeft: '49%',
+            position: 'absolute',
+            marginTop: '26px',
+            color: 'red'
+          }}>
+            Term & condition
+
+            <input
+              type="checkbox"
+              checked={data.every(employee => employee.logged === 1)}
+              onChange={handleCheckAll}
+            />
+            <span>Logged</span>
+          </div>
         </div>
-      </div>
+      </div >
       <Table dataSource={filteredData} columns={columns} />
     </>
   )

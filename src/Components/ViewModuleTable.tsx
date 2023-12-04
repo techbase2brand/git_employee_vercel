@@ -90,9 +90,10 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
   return (
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
-        <div style={{ marginBottom: 10 }}>
-          <label>Search by Project, Phase or Module:</label>
+        <div>
           <input
+          style={{height:'30px',border: '1px solid #d9d9d9',
+          borderRadius: '6px'}}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search..."

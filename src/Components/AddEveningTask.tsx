@@ -19,6 +19,7 @@ interface Task {
   actTime: string;
   employeeID: string;
   currDate: string;
+  selectDate: string;
 }
 interface AssignedEmployees {
   EmployeeID: string;
@@ -68,6 +69,7 @@ const AddModule: React.FC<any> = () => {
     upWorkHrs: "0:00",
     employeeID: "",
     currDate: formattedDate,
+    selectDate: formattedDate,
   });
 
   const navigate = useNavigate();
@@ -84,37 +86,38 @@ const AddModule: React.FC<any> = () => {
 
   useEffect(() => {
     if (location?.state?.EvngTaskID) {
-    axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskEvening",{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      })
-      .then((response) => {
-        const res = response?.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
+      axios
+        .get<Task[]>("https://empbackend.base2brand.com/get/addTaskEvening", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        })
+        .then((response) => {
+          const res = response?.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
 
-        setSelectedProject(res[0]?.projectName);
-        setSelectedPhase(res[0]?.phaseName);
-        setSelectedModule(res[0]?.module); // Add this line to set the module
-        handleEstTimeChange(res[0]?.estTime || "");
+          setSelectedProject(res[0]?.projectName);
+          setSelectedPhase(res[0]?.phaseName);
+          setSelectedModule(res[0]?.module); // Add this line to set the module
+          handleEstTimeChange(res[0]?.estTime || "");
 
-        setEveningTask((prevEveningTask) => ({
-          ...prevEveningTask,
-          EvngTaskID: res[0]?.EvngTaskID,
-          projectName: res[0]?.projectName,
-          phaseName: res[0]?.phaseName,
-          module: res[0]?.module,
-          task: res[0]?.task,
-          estTime: res[0]?.estTime,
-          actTime: res[0]?.actTime,
-          upWorkHrs: res[0]?.upWorkHrs,
-          employeeID: res[0]?.employeeID,
-          currDate: res[0]?.currDate,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+          setEveningTask((prevEveningTask) => ({
+            ...prevEveningTask,
+            EvngTaskID: res[0]?.EvngTaskID,
+            projectName: res[0]?.projectName,
+            phaseName: res[0]?.phaseName,
+            module: res[0]?.module,
+            task: res[0]?.task,
+            estTime: res[0]?.estTime,
+            actTime: res[0]?.actTime,
+            upWorkHrs: res[0]?.upWorkHrs,
+            employeeID: res[0]?.employeeID,
+            currDate: res[0]?.currDate,
+            selectDate: res[0]?.selectDate,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     }
   }, [evngEditID]); // Remove handleEstTimeChange from here
 
@@ -242,7 +245,12 @@ const AddModule: React.FC<any> = () => {
       phaseName: value,
     }));
   };
-
+  const handleDateChange =(value: string) => {
+    setEveningTask({
+      ...eveningTask,
+      selectDate: value,
+    });
+  };
   const handleTaskChange = (value: string) => {
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
@@ -260,7 +268,7 @@ const AddModule: React.FC<any> = () => {
 
 
   const handleActTimeChange = (value: string) => {
-    console.log(value,"valuevaluevalue");
+    console.log(value, "valuevaluevalue");
 
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
@@ -269,7 +277,7 @@ const AddModule: React.FC<any> = () => {
   };
 
   const handleUpWorkHrsChange = (value: string) => {
-    console.log(value,"valuevaluevammmlue");
+    console.log(value, "valuevaluevammmlue");
 
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
@@ -303,7 +311,7 @@ const AddModule: React.FC<any> = () => {
         });
     } else {
       axios
-        .post("https://empbackend.base2brand.com/create/addTaskEvening", eveningTask,{
+        .post("https://empbackend.base2brand.com/create/addTaskEvening", eveningTask, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
@@ -365,7 +373,7 @@ const AddModule: React.FC<any> = () => {
           >
             <div className="add-div">
               <p className="add-heading">
-              {location?.state?.EvngTaskID ? "Update Evening Task" : "Add Evening Task"}
+                {location?.state?.EvngTaskID ? "Update Evening Task" : "Add Evening Task"}
               </p>
               <label className="add-label">
                 Project Name<span style={{ color: "red" }}>*</span>
@@ -437,7 +445,7 @@ const AddModule: React.FC<any> = () => {
                   >
                     <option value="">Select a module</option>
                     {modules
-                      .filter((module) => module.phaseName === selectedPhase && module.projectName == selectedProject )
+                      .filter((module) => module.phaseName === selectedPhase && module.projectName == selectedProject)
                       .map((module) => {
                         return (
                           <option key={module.modID} value={module.modules}>
@@ -457,25 +465,39 @@ const AddModule: React.FC<any> = () => {
                 </label>
 
                 <div style={{ width: "89%" }} className="form-control">
-  <textarea
-     style={{
-      outline: "none",
-      border: "none",
-      // maxWidth: "100%",
-      width:"100%",
-      height:"10vh",
-      resize: "none",  // Add this line
-      boxSizing: "content-box", // set boxSizing to content-box
-  }}
-    name="task"
-    className="textarea-control" // use the new class
-    value={eveningTask.task}
-    onChange={(e) => handleTaskChange(e.target.value)}
-    required
-  />
-</div>
+                  <textarea
+                    style={{
+                      outline: "none",
+                      border: "none",
+                      // maxWidth: "100%",
+                      width: "100%",
+                      height: "10vh",
+                      resize: "none",  // Add this line
+                      boxSizing: "content-box", // set boxSizing to content-box
+                    }}
+                    name="task"
+                    className="textarea-control" // use the new class
+                    value={eveningTask.task}
+                    onChange={(e) => handleTaskChange(e.target.value)}
+                    required
+                  />
+                </div>
 
 
+              </div>
+              <div className="SalecampusForm-col-os">
+                <label className="add-label">
+                  Date:
+                </label>
+                <div className="SalecampusForm-input-os">
+                  <input
+                    style={{ width: 'auto' }}
+                    type="date"
+                    name="selectDate"
+                    value={eveningTask?.selectDate}
+                    onChange={(e) => handleDateChange(e.target.value)}
+                  />
+                </div>
               </div>
               <div
                 style={{
@@ -528,16 +550,13 @@ const AddModule: React.FC<any> = () => {
                         }
                         return (
                           <option
-                            key={`${hour}:${
-                              minute < 10 ? "0" + minute : minute
-                            }`}
-                            value={`${hour}:${
-                              minute < 10 ? "0" + minute : minute
-                            }`}
+                            key={`${hour}:${minute < 10 ? "0" + minute : minute
+                              }`}
+                            value={`${hour}:${minute < 10 ? "0" + minute : minute
+                              }`}
                           >
-                            {`${hour} hour${
-                              hour !== 1 ? "s" : ""
-                            } ${minute} min${minute !== 1 ? "s" : ""}`}
+                            {`${hour} hour${hour !== 1 ? "s" : ""
+                              } ${minute} min${minute !== 1 ? "s" : ""}`}
                           </option>
                         );
                       })

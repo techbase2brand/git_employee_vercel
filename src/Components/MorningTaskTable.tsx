@@ -12,6 +12,7 @@ interface Task {
   task: string;
   estTime: string;
   upWorkHrs: number;
+  selectDate: string;
 }
 
 interface Props {
@@ -42,7 +43,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
     return propsData.reduce((acc, curr) => acc + convertTimeToDecimal(curr.estTime), 0);
   }, [propsData]);
 
-  console.log(totalEstHours,"totalEstHours");
+  console.log(totalEstHours, "totalEstHours");
 
 
   // const totalUpWorkHours = useMemo(() => {
@@ -51,10 +52,10 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
 
   const totalUpWorkHours = useMemo(() => {
     return propsData.reduce((acc, curr) => acc + convertTimeToDecimal(String(curr.upWorkHrs)), 0);
-}, [propsData]);
+  }, [propsData]);
 
 
-  console.log(totalUpWorkHours,"totalUpWorkHourstotalUpWorkHourstotalUpWorkHours");
+  console.log(totalUpWorkHours, "totalUpWorkHourstotalUpWorkHourstotalUpWorkHours");
 
 
   useEffect(() => {
@@ -133,6 +134,11 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       dataIndex: "upWorkHrs",
       key: "upWorkHrs",
     },
+    {
+      title: "Date",
+      dataIndex: "selectDate",
+      key: "selectDate",
+    },
 
     {
       title: "Action",
@@ -149,7 +155,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
 
   return (
     <>
-         <p>{employeeFirstname}</p>
+      <p>{employeeFirstname}</p>
       <Table
         dataSource={propsData}
         columns={columns}

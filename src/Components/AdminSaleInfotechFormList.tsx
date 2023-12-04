@@ -67,7 +67,6 @@ const AdminSaleInfotechFormList = () => {
     null
   );
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
-  console.log("filteredData", filteredData)
   const [deleteId, setDeleteId] = useState<number>();
   const [editId, setEditId] = useState<number>();
   const [search, setSearch] = useState<string>("");
