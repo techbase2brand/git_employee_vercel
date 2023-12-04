@@ -14,6 +14,7 @@ interface Task {
   estTime: string;
   actTime: string;
   upWorkHrs: string;
+  selectDate: string;
 }
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
+  console.log("dataaaa",data)
   const [propsData, setPropsData] = useState<Task[]>([]);
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const navigate = useNavigate();
@@ -125,7 +127,11 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
       dataIndex: "upWorkHrs",
       key: "upWorkHrs",
     },
-
+    {
+      title: "Date",
+      dataIndex: "selectDate",
+      key: "selectDate",
+    },
     {
       title: "Action",
       key: "action",
@@ -152,7 +158,7 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
   ];
 
   return (
-    <>
+    <div style={{ overflow: 'auto' }}>
     <p>{employeeFirstname}</p>
       <div className="totals" style={{ marginBottom: '20px' }}>
         <p><strong>Estimated Time Total: </strong> {convertDecimalToTime(totalEstTime)} hrs</p>
@@ -161,7 +167,7 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
       </div>
       <Table dataSource={propsData} columns={columns} rowClassName={() => "header-row"} />
 
-  </>
+  </div>
   )
 };
 

@@ -22,6 +22,7 @@ interface Task {
   upWorkHrs: number;
   employeeID: string;
   currDate: string;
+  selectDate: string;
 }
 
 const ViewMorningTask: React.FC = () => {
@@ -73,9 +74,6 @@ const ViewMorningTask: React.FC = () => {
     () => (dataString ? JSON.parse(dataString) : []),
     [dataString]
   );
-
-
-  console.log(employeeInfo,"jjj---");
 
 
   useEffect(() => {
