@@ -14,6 +14,7 @@ interface Task {
   estTime: string;
   upWorkHrs: number;
   employeeID: string;
+  currDate: string;
 }
 
 interface EmployeeTime {
@@ -27,7 +28,7 @@ interface Props {
   setTotalEstHrs: React.Dispatch<React.SetStateAction<any>>;
   setTotalUpWorkHrs: any;
   setSetTotalUpWorkHrs: React.Dispatch<React.SetStateAction<any>>;
-  selectedRole:any;
+  selectedRole: any;
   searchQuery: any;
 
 }
@@ -88,7 +89,7 @@ const TaskTable: React.FC<Props> = ({
         );
 
         const employeeArray = sortedData?.map((e) => e.EmployeeID);
-        const filteredData = sortedData.filter((emp)=> emp.status === 1  )
+        const filteredData = sortedData.filter((emp) => emp.status === 1)
 
         setEmployeeArr(filteredData); // Set the sorted employees
       })
@@ -129,9 +130,9 @@ const TaskTable: React.FC<Props> = ({
       key: "estTime",
     },
     {
-      title: "UpWork(hrs)",
-      dataIndex: "upWorkHrs",
-      key: "upWorkHrs",
+      title: "Date",
+      dataIndex: "currDate",
+      key: "currDate",
     },
   ];
 
@@ -204,12 +205,12 @@ const TaskTable: React.FC<Props> = ({
     employeeUpworkTimes.push({ employeeID, formattedTime });
   }
 
- let filteredEmployees;
-   if(selectedRole){
+  let filteredEmployees;
+  if (selectedRole) {
     filteredEmployees = employeeArr.filter((emp: Employee) => emp.role === selectedRole);
-   }else{
+  } else {
     filteredEmployees = employeeArr;
-   }
+  }
   // per object upworkTime end
 
   const totalMinutesUpwork = arrayOfArray.reduce((acc: any, curr: any) => {
@@ -232,99 +233,99 @@ const TaskTable: React.FC<Props> = ({
   setSetTotalUpWorkHrs(formattedTimesUpwork);
 
   const tables = filteredEmployees
-  .filter((emp: Employee) => {
+    .filter((emp: Employee) => {
 
-    // if (emp.role == selectedRole  )  {
-    //   console.log(selectedRole,"selectedRole");
-    //   console.log(emp,"emp.role.toLowerCase()");
+      // if (emp.role == selectedRole  )  {
+      //   console.log(selectedRole,"selectedRole");
+      //   console.log(emp,"emp.role.toLowerCase()");
 
-    //   return true;
-    // }
-    if (!searchQuery) return true; // Show all if there's no search query
-    // console.log(emp,"emp.role.toLowerCase()");
-
-
-    // Check if the employee's name matches the searchQuery
-    if (emp.firstName.toLowerCase().includes(searchQuery)  || emp.lastName.toLowerCase().includes(searchQuery))  {
-      return true;
-    }
-
-    // Find tasks for this employee
-    // const tasksForEmployee = arrayOfArray.find(
-    //   (e) => e[0]?.employeeID === emp.EmployeeID
-    // );
-
-    // // If there are tasks for this employee, check if any task matches the searchQuery
-    // if (tasksForEmployee) {
-    //   return tasksForEmployee.some(task =>
-    //     task.phaseName.toLowerCase().includes(searchQuery) ||
-    //     task.projectName.toLowerCase().includes(searchQuery) ||
-    //     task.module.toLowerCase().includes(searchQuery)
-    //   );
-    // }
-
-    return false;
-  }).map((employee: Employee) => {
-    const tasksForEmployee = arrayOfArray.find(
-      (taskArray: Task[]) => taskArray[0].employeeID === employee.EmployeeID
-    );
-
-    const filteredEstTime = employeeTimes.find(
-      (obj) => obj.employeeID === employee.EmployeeID
-    );
-
-    const filteredUpworkTime = employeeUpworkTimes.find(
-      (obj) => obj.employeeID === employee.EmployeeID
-    );
-    const filteredactTime = employeeUpworkTimes.find(
-      (obj) => obj.employeeID === employee.EmployeeID
-    );
-
-    const renderEmptyText = () => (
-      <div style={{ color: 'red' }}>
-        No data found for this employee.
-      </div>
-    );
+      //   return true;
+      // }
+      if (!searchQuery) return true; // Show all if there's no search query
+      // console.log(emp,"emp.role.toLowerCase()");
 
 
-    return (
-      <div key={employee.EmpID}>
-        <div style={{ display: "flex", flexDirection: "row"  , marginTop:'30px'}}>
-          <p>{employee.firstName} {employee.lastName}</p>
-          <div
-            style={{
-              marginLeft: "51%",
-              display: "flex",
-              flexDirection: "row",
-              float: "right",
-            }}
-          >
-            <p>{filteredEstTime?.formattedTime}</p>
-            <p style={{ marginLeft: "5vw" }}>{filteredactTime?.formattedTime}</p>
-            <p style={{ marginLeft: "10vw" }}>
-              {filteredUpworkTime?.formattedTime}
-            </p>
-          </div>
+      // Check if the employee's name matches the searchQuery
+      if (emp.firstName.toLowerCase().includes(searchQuery) || emp.lastName.toLowerCase().includes(searchQuery)) {
+        return true;
+      }
+
+      // Find tasks for this employee
+      // const tasksForEmployee = arrayOfArray.find(
+      //   (e) => e[0]?.employeeID === emp.EmployeeID
+      // );
+
+      // // If there are tasks for this employee, check if any task matches the searchQuery
+      // if (tasksForEmployee) {
+      //   return tasksForEmployee.some(task =>
+      //     task.phaseName.toLowerCase().includes(searchQuery) ||
+      //     task.projectName.toLowerCase().includes(searchQuery) ||
+      //     task.module.toLowerCase().includes(searchQuery)
+      //   );
+      // }
+
+      return false;
+    }).map((employee: Employee) => {
+      const tasksForEmployee = arrayOfArray.find(
+        (taskArray: Task[]) => taskArray[0].employeeID === employee.EmployeeID
+      );
+
+      const filteredEstTime = employeeTimes.find(
+        (obj) => obj.employeeID === employee.EmployeeID
+      );
+
+      const filteredUpworkTime = employeeUpworkTimes.find(
+        (obj) => obj.employeeID === employee.EmployeeID
+      );
+      const filteredactTime = employeeUpworkTimes.find(
+        (obj) => obj.employeeID === employee.EmployeeID
+      );
+
+      const renderEmptyText = () => (
+        <div style={{ color: 'red' }}>
+          No data found for this employee.
         </div>
-        <Table
-  dataSource={tasksForEmployee || []}
-  columns={columns}
-  rowClassName={() => "header-row"}
-  locale={{
-    emptyText: renderEmptyText
-  }}
-/>
-
-      </div>
-    );
-  });
+      );
 
 
+      return (
+        <div key={employee.EmpID}>
+          <div style={{ display: "flex", flexDirection: "row", marginTop: '30px' }}>
+            <p>{employee.firstName} {employee.lastName}</p>
+            <div
+              style={{
+                marginLeft: "51%",
+                display: "flex",
+                flexDirection: "row",
+                float: "right",
+              }}
+            >
+              <p>{filteredEstTime?.formattedTime}</p>
+              <p style={{ marginLeft: "5vw" }}>{filteredactTime?.formattedTime}</p>
+              <p style={{ marginLeft: "10vw" }}>
+                {filteredUpworkTime?.formattedTime}
+              </p>
+            </div>
+          </div>
+          <Table
+            dataSource={tasksForEmployee || []}
+            columns={columns}
+            rowClassName={() => "header-row"}
+            locale={{
+              emptyText: renderEmptyText
+            }}
+          />
+
+        </div>
+      );
+    });
 
 
-    // ... [rest of the code]
 
-    return <>{tables}</>;
+
+  // ... [rest of the code]
+
+  return <>{tables}</>;
 };
 
 export default TaskTable;

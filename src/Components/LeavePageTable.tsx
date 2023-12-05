@@ -199,7 +199,9 @@ const getRowClassName = (record: LeaveData) => {
       ),
     },
   ];
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
   return (
     <>
       <Table
@@ -208,6 +210,7 @@ const getRowClassName = (record: LeaveData) => {
         columns={columns}
         rowKey={(record) => record.LeaveInfoID.toString()} // Specify a unique row key
         rowClassName={getRowClassName} // Apply custom row class name
+        pagination={paginationSettings}
       />
     </>
   );

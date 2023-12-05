@@ -123,7 +123,9 @@ const ViewPhaseassignedTable: React.FC = () => {
       ),
     },
   ];
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
   return (
     <>
       <Input
@@ -138,6 +140,7 @@ const ViewPhaseassignedTable: React.FC = () => {
         dataSource={filteredData.length > 0 ? filteredData : data}
         columns={columns}
         rowClassName={() => "header-row"}
+        pagination={paginationSettings}
       />
     </>
   );

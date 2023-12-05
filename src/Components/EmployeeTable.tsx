@@ -259,6 +259,9 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
         });
     });
   };
+  const paginationSettings = {
+    pageSize: 100,
+  };
   return (
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
@@ -289,7 +292,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
           </div>
         </div>
       </div >
-      <Table dataSource={filteredData} columns={columns} />
+      <Table dataSource={filteredData} columns={columns} pagination={paginationSettings}/>
     </>
   )
 };

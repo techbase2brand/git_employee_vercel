@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent ,Input } from "antd";
+import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent, Input } from "antd";
 // import { Select, Space } from 'antd';
 import Menu from "./Menu";
 import Navbar from "./Navbar";
@@ -72,7 +72,7 @@ const EveningDashboard: React.FC = () => {
 
   useEffect(() => {
     const apiUrl = "https://empbackend.base2brand.com/get/addTaskEvening";
-   axios
+    axios
       .get<Task[]>(apiUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -91,14 +91,12 @@ const EveningDashboard: React.FC = () => {
             return taskDate >= startDate && taskDate <= endDate;
 
           });
-        console.log("filteData1",filteredData)
 
         } else {
           filteredData = response.data.filter(
             (obj) => obj.currDate === formattedDate
           );
         }
-        console.log("filteData2",filteredData)
 
         const sortedData = filteredData.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
@@ -119,7 +117,6 @@ const EveningDashboard: React.FC = () => {
       });
   }, [dateRange, formattedDate]);
 
-  console.log(data,"dataresultresultresultresultresult");
 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,76 +145,76 @@ const EveningDashboard: React.FC = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column" , paddingTop:"16px" }}
+            style={{ display: "flex", flexDirection: "column", paddingTop: "16px" }}
             className="form-container"
           >
             <div
-            style={{ display: "flex", flexDirection: "row" ,width:"100%" }}
+              style={{ display: "flex", flexDirection: "row", width: "100%" }}
             >
-            <div
-          style={{
-            display: "flex",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <RangePicker onChange={handleDateRangeChange} />
-        </div>
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <RangePicker onChange={handleDateRangeChange} />
+              </div>
 
 
-  <div style={{
-  display: "flex",
-  width: "100%",
-  alignItems: "center",
-  justifyContent: "space-between",
-}}> {/* This ensures the dropdown takes up as much space as possible */}
-    <select
-      id="roleSelect"
-      style={{
-        width: 300,
-        padding: '10px 12px',
-        borderRadius: '5px',
-        border: '1px solid #ccc',
-        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-        appearance: 'none',
-        backgroundColor: '#f7f7f7'
-      }}
-      value={selectedRole}
-      onChange={handleRoleChange}
-    >
-      <option value="" disabled hidden>Select a role</option>
-      <option value="">All Roles</option>
-      <option value="Software Developer">Software Developer</option>
-      <option value="Digital Marketer">Digital Marketer</option>
-      <option value="Graphic Designer">Graphic Designer</option>
-      <option value="HR">HR</option>
-      <option value="QA">QA</option>
-      <option value="Sales Campus">Sales Campus</option>
-      <option value="Sales Infotech">Sales Infotech</option>
-    </select>
-  </div>
+              <div style={{
+                display: "flex",
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}> {/* This ensures the dropdown takes up as much space as possible */}
+                <select
+                  id="roleSelect"
+                  style={{
+                    width: 300,
+                    padding: '10px 12px',
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                    boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+                    appearance: 'none',
+                    backgroundColor: '#f7f7f7'
+                  }}
+                  value={selectedRole}
+                  onChange={handleRoleChange}
+                >
+                  <option value="" disabled hidden>Select a role</option>
+                  <option value="">All Roles</option>
+                  <option value="Software Developer">Software Developer</option>
+                  <option value="Digital Marketer">Digital Marketer</option>
+                  <option value="Graphic Designer">Graphic Designer</option>
+                  <option value="HR">HR</option>
+                  <option value="QA">QA</option>
+                  <option value="Sales Campus">Sales Campus</option>
+                  <option value="Sales Infotech">Sales Infotech</option>
+                </select>
+              </div>
 
 
 
 
 
-        <div style={{
-  display: "flex",
-  width: "100%",
-  alignItems: "center",
-  justifyContent: "space-between",
-}}>
-  <Search
-    placeholder="Search by employee, phase, module, or project"
-    onChange={handleSearchChange}
-    style={{ width: 300 }}
-  />
-  {/* <RangePicker onChange={handleDateRangeChange} /> */}
-</div>
+              <div style={{
+                display: "flex",
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}>
+                <Search
+                  placeholder="Search by employee, phase, module, or project"
+                  onChange={handleSearchChange}
+                  style={{ width: 300 }}
+                />
+                {/* <RangePicker onChange={handleDateRangeChange} /> */}
+              </div>
 
 
-   </div>
+            </div>
 
             <div
               style={{
@@ -228,7 +225,7 @@ const EveningDashboard: React.FC = () => {
               }}
             >
               <EveningDashboardTable
-               data={data}
+                data={data}
                 totalUpwork={totalUpwork}
                 setTotalUpWork={setTotalUpWork}
                 totalEstHrs={totalEstHrs}

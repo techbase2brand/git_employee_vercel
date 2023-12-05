@@ -17,6 +17,7 @@ interface Task {
   upWorkHrs: number | string;
   employeeID: string;
   actTime: string;
+  currDate: string;
 }
 
 interface Props {
@@ -151,6 +152,11 @@ console.log(employeeArr,"employeeArr");
       title: "UpWork(hrs)",
       dataIndex: "upWorkHrs",
       key: "upWorkHrs",
+    },
+    {
+      title: "Date",
+      dataIndex: "currDate",
+      key: "currDate",
     },
   ];
 

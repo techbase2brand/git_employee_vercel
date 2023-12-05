@@ -86,7 +86,9 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
       ),
     },
   ];
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
   return (
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
@@ -106,6 +108,7 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
         dataSource={filteredData}
         columns={columns}
         rowClassName={() => "header-row"}
+        pagination={paginationSettings}
       />
     </>
   );
