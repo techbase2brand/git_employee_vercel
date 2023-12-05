@@ -34,8 +34,6 @@ interface Task {
   upWorkHrs: number;
   employeeID: string;
   currDate: string;
-
-
 }
 
 

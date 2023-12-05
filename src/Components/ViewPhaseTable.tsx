@@ -95,7 +95,9 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
       ),
     },
   ];
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
   return (
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
@@ -117,6 +119,7 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
           dataSource={filteredData}
           columns={columns}
           rowClassName={() => "header-row"}
+          pagination={paginationSettings}
         />
       </div>
     </>

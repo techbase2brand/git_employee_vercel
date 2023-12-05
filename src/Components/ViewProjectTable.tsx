@@ -92,18 +92,20 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
       ),
     },
   ];
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
   return (
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
         <div style={{ marginBottom: 10 }}>
-            <label>Search by Client or Project:</label>
-            <input
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder="Search by Client or Project Name"
-                style={{ marginLeft: 10 }}
-            />
+          <label>Search by Client or Project:</label>
+          <input
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search by Client or Project Name"
+            style={{ marginLeft: 10 }}
+          />
         </div>
       </div>
       <Table
@@ -111,6 +113,7 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
         dataSource={filteredData}
         columns={columns}
         rowClassName={() => "header-row"}
+        pagination={paginationSettings}
       />
     </>
   );

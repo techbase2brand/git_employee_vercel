@@ -11,6 +11,13 @@ import { Button, Form, Input, Modal } from "antd";
 import { useNavigate } from "react-router";
 import { GlobalInfo } from "../App";
 
+interface Task {
+  TermID: number;
+  term: string;
+  currdate: string;
+  date: string;
+}
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -19,6 +26,7 @@ const Login: React.FC = () => {
   const [employeedata] = useState<unknown>();
   const { getEmpInfo, setEmpInfo } = useContext(GlobalInfo);
   const [apiResponse, setApiResponse] = useState<any>(null);
+  const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
   const onFinish = (values: { email: string; password: string }) => {
     console.log("Received values of form: ", values);
 
@@ -54,6 +62,32 @@ const Login: React.FC = () => {
         // Show an error message to the user
       });
   };
+  useEffect(() => {
+    axios
+      .get<Task[]>("https://empbackend.base2brand.com/get/addTermCondition", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        setTermsAndConditions(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+  
+  useEffect(() => {
+    axios.get('https://api.ipify.org?format=json')
+      .then(response => {
+        const ipAddress = response.data.ip;
+        console.log('Public IP Address:', ipAddress.json());
+        // You can send this ipAddress to your backend
+      })
+      .catch(error => {
+        console.error('Error fetching IP Address:', error);
+      });
+  })
   const handleAcceptTerms = () => {
     if (apiResponse && apiResponse.user) {
       axios
@@ -217,7 +251,14 @@ const Login: React.FC = () => {
                   </Button>,
                 ]}
               >
-                <p>Powered By Base2 Brand..</p>
+                {termsAndConditions.map((item) => {
+                  return (
+                    <div key={item.TermID}>
+                      <p>{item.term}</p>
+                      <p>{item.date}</p>
+                    </div>
+                  );
+                })}
               </Modal>
             </Form>
           </div>

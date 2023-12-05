@@ -220,6 +220,12 @@ const AppMenu = () => {
           <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
             <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
           </Menu.Item>
+          <Menu.Item key="TermCondition" icon={<TableOutlined />}>
+            <Link to="/TermCondition">TermCondition</Link>
+          </Menu.Item>
+          <Menu.Item key="ViewTermCondition" icon={<TableOutlined />}>
+            <Link to="/ViewTermCondition">ViewTermCondition</Link>
+          </Menu.Item>
         </>
       )}
 
