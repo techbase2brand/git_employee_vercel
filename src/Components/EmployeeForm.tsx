@@ -26,7 +26,6 @@ interface IEmployee {
   doj: Date;
   bloodGroup: string;
   highestQualification: string;
-  logged: string;
 }
 
 const validateName = (name: string) => {
@@ -79,7 +78,6 @@ const EmployeeForm: React.FC = () => {
     doj: new Date(),
     bloodGroup: "",
     highestQualification: "",
-    logged: "",
   });
 
   const [data, setData] = useState<any>();
@@ -212,7 +210,6 @@ const EmployeeForm: React.FC = () => {
         highestQualification: employee.highestQualification,
         parentPhone: employee.parentPhone,
         EmployeeID: employee.EmployeeID,
-        logged: employee.logged,
       };
 
       axios
@@ -255,7 +252,6 @@ const EmployeeForm: React.FC = () => {
         EmployeeID: employee.EmployeeID,
         password: employee.password,
         confirmPassword: employee.confirmPassword,
-        logged: employee.logged,
       };
 
       // console.log(localStorage.getItem('myToken'),'myToken');

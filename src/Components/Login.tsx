@@ -31,36 +31,36 @@ const Login: React.FC = () => {
     console.log("Received values of form: ", values);
 
     axios
-      .post("https://empbackend.base2brand.com/user/login", values)
-      .then((res) => {
-        setApiResponse(res.data);
-        console.log("res", res)
-        if (res?.data === "Invalid username or password") {
-          alert("Invalid username or password");
+    .post("https://empbackend.base2brand.com/user/login", values)
+    .then((res) => {
+      setApiResponse(res.data);
+      console.log("res", res)
+      if (res?.data === "Invalid username or password") {
+        alert("Invalid username or password");
+      } else {
+        console.log("Login successful");
+        if (res.data.user.logged === 0) {
+          setShowTermsModal(true);
         } else {
-          console.log("Login successful");
-          if (res.data.user.logged === 0) {
-            setShowTermsModal(true);
-          } else {
-            navigate("/add-morning-task");
-          }
-          // Save user info and token in state and local storage
-          const { user, token } = res.data;
-
-          // Convert the user data to a JSON string
-          const dataString = JSON.stringify(user);
-
-          // Store the user data and the token in localStorage
-          localStorage.setItem("myData", dataString);
-          localStorage.setItem("myToken", token);
-          // navigate("/add-morning-task"); 
+          navigate("/add-morning-task");
         }
+        // Save user info and token in state and local storage
+        const { user, token } = res.data;
 
-      })
-      .catch((error) => {
-        console.log(error.response?.data); // Log the error message
-        // Show an error message to the user
-      });
+        // Convert the user data to a JSON string
+        const dataString = JSON.stringify(user);
+
+        // Store the user data and the token in localStorage
+        localStorage.setItem("myData", dataString);
+        localStorage.setItem("myToken", token);
+        // navigate("/add-morning-task"); 
+      }
+
+    })
+    .catch((error) => {
+      console.log(error.response?.data); // Log the error message
+      // Show an error message to the user
+    });
   };
   useEffect(() => {
     axios
@@ -77,17 +77,6 @@ const Login: React.FC = () => {
       });
   }, []);
   
-  useEffect(() => {
-    axios.get('https://api.ipify.org?format=json')
-      .then(response => {
-        const ipAddress = response.data.ip;
-        console.log('Public IP Address:', ipAddress.json());
-        // You can send this ipAddress to your backend
-      })
-      .catch(error => {
-        console.error('Error fetching IP Address:', error);
-      });
-  })
   const handleAcceptTerms = () => {
     if (apiResponse && apiResponse.user) {
       axios

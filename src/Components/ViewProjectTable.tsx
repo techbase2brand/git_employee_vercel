@@ -99,12 +99,15 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
     <>
       <div className="search-section" style={{ marginBottom: 20 }}>
         <div style={{ marginBottom: 10 }}>
-          <label>Search by Client or Project:</label>
           <input
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search by Client or Project Name"
-            style={{ marginLeft: 10 }}
+            placeholder="Search.."
+            style={{ marginLeft: 10,
+              border: '1px solid rgb(217, 217, 217)',
+              borderRadius: '6px',
+              height: '30px'
+          }}
           />
         </div>
       </div>
