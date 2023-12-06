@@ -47,6 +47,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
         },
       })
       .then((response) => {
+        
         const sortedData = response?.data.sort(
           (a, b) => Number(b.EmpID) - Number(a.EmpID)
         );
@@ -227,7 +228,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     date: employee.dob.toString(),
     EmployeeID: employee.EmployeeID,
     status: employee.status,
-    logged: employee.logged
+    logged: employee.logged,
   }));
   const filteredData = rows.filter(project =>
     project.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
