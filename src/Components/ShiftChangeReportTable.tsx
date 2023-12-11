@@ -22,7 +22,7 @@ const ViewShiftChangeTable: React.FC = () => {
   const [data, setData] = useState<{ [key: string]: ShiftChangeData[] }>({});
 
   const fetchData = async () => {
-    const response = await axios.get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo", {
+    const response = await axios.get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
       },
@@ -46,7 +46,7 @@ const ViewShiftChangeTable: React.FC = () => {
 
   const deleteShiftChange = (id: number) => {
     axios
-      .delete(`https://empbackend.base2brand.com/delete/changeShiftInfo/${id}`, {
+      .delete(`http://localhost:5000/delete/changeShiftInfo/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

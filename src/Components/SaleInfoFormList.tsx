@@ -194,7 +194,7 @@ const SaleInfoFormList = () => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-        "https://empbackend.base2brand.com/salesinfodata"
+        "http://localhost:5000/salesinfodata"
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,

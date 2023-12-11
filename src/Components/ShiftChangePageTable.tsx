@@ -25,7 +25,7 @@
 //   // const navigate = useNavigate();
 //   useEffect(() => {
 //     axios
-//       .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo",  {
+//       .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo",  {
 //         headers: {
 //           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
 //         },
@@ -43,7 +43,7 @@
 //   const token = localStorage.getItem("myToken");
 
 //     axios
-//       .put(`https://empbackend.base2brand.com/approveShiftChangeHR/${ShiftChangeTableID}`,{
+//       .put(`http://localhost:5000/approveShiftChangeHR/${ShiftChangeTableID}`,{
 //         headers: {
 //           Authorization: `Bearer ${token}`,
 //         },
@@ -61,7 +61,7 @@
 //     const token = localStorage.getItem("myToken");
 
 //     axios
-//       .put(`https://empbackend.base2brand.com/denyShiftChangeHR/${ShiftChangeTableID}`, {}, {
+//       .put(`http://localhost:5000/denyShiftChangeHR/${ShiftChangeTableID}`, {}, {
 //         headers: {
 //           Authorization: `Bearer ${token}`,
 //         },
@@ -77,7 +77,7 @@
 
 //   const fetchData = () => {
 //     axios
-//       .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo",  {
+//       .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo",  {
 //         headers: {
 //           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
 //         },
@@ -201,7 +201,7 @@ const ShiftChangePageTable : React.FC = () => {
 
 
     axios
-      .put(`https://empbackend.base2brand.com/approveShiftChangeTL/${ShiftChangeTableID}`,{},{
+      .put(`http://localhost:5000/approveShiftChangeTL/${ShiftChangeTableID}`,{},{
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -221,7 +221,7 @@ const ShiftChangePageTable : React.FC = () => {
     const token = localStorage.getItem("myToken");
 
     axios
-      .put(`https://empbackend.base2brand.com/denyShiftChangeTL/${ShiftChangeTableID}`, {},
+      .put(`http://localhost:5000/denyShiftChangeTL/${ShiftChangeTableID}`, {},
        {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -239,7 +239,7 @@ const ShiftChangePageTable : React.FC = () => {
 
   const fetchData = () => {
     axios
-      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo",  {
+      .get<ShiftChangeData[]>("http://localhost:5000/get/changeShiftInfo",  {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

@@ -51,7 +51,7 @@ const EditModule: React.FC<any> = () => {
     };
 
     axios
-      .put(`https://empbackend.base2brand.com/update/module/${location?.state?.modulejEditObj?.modID}`, data,{
+      .put(`http://localhost:5000/update/module/${location?.state?.modulejEditObj?.modID}`, data,{
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }

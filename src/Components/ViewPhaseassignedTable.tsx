@@ -29,7 +29,7 @@ const ViewPhaseassignedTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
+      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -67,7 +67,7 @@ const ViewPhaseassignedTable: React.FC = () => {
 
   const handleDelete = (PhaseAssigneeID: number) => {
     axios
-      .delete(`https://empbackend.base2brand.com/delete/phaseAssignee/${PhaseAssigneeID}`, {
+      .delete(`http://localhost:5000/delete/phaseAssignee/${PhaseAssigneeID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },

@@ -23,7 +23,7 @@ const ViewSalesMaster: React.FC = () => {
 
     useEffect(() => {
         axios
-            .get<Task[]>("https://empbackend.base2brand.com/get/addSales", {
+            .get<Task[]>("http://localhost:5000/get/addSales", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
                 },

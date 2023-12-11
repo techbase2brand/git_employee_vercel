@@ -82,7 +82,7 @@ const ViewBacklogTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>("http://localhost:5000/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -139,7 +139,7 @@ const ViewBacklogTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
+        const response = await axios.get<BacklogTask[]>("http://localhost:5000/get/BacklogTasks", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },

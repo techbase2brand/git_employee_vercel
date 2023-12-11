@@ -32,7 +32,7 @@ const LeavePageTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -48,7 +48,7 @@ const LeavePageTable: React.FC = () => {
   const handleApprove = (LeaveInfoID: number) => {
     axios
       .put(
-        `https://empbackend.base2brand.com/approveLeave/${LeaveInfoID}`,
+        `http://localhost:5000/approveLeave/${LeaveInfoID}`,
         {},
         {
           headers: {
@@ -69,7 +69,7 @@ const LeavePageTable: React.FC = () => {
   const handleDeny = (LeaveInfoID: number) => {
     axios
       .put(
-        `https://empbackend.base2brand.com/denyLeave/${LeaveInfoID}`,
+        `http://localhost:5000/denyLeave/${LeaveInfoID}`,
         {},
         {
           headers: {
@@ -90,7 +90,7 @@ const LeavePageTable: React.FC = () => {
 
   const fetchData = () => {
     axios
-      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+      .get<LeaveData[]>("http://localhost:5000/get/leaveinfo", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
