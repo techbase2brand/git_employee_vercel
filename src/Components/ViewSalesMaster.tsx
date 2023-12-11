@@ -10,7 +10,7 @@ interface Task {
     saleId: number;
     SalesData: string;
     currdate: string;
-    date: string;
+    dated: string;
 }
 
 const ViewSalesMaster: React.FC = () => {
