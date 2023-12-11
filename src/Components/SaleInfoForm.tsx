@@ -41,6 +41,7 @@ function SaleInfoForm(): JSX.Element {
   const myDataString = localStorage.getItem('myData');
   const [statusReasons, setStatusReasons] = useState(['']);
   const [state, setState] = useState<boolean>(false);
+  const [statusNames, setStatusNames] = useState<Array<{ saleId: number; SalesData: string }>>([]);
   let employeeID = "";
   let employeeName = "";
   let rolled = "";
@@ -50,7 +51,6 @@ function SaleInfoForm(): JSX.Element {
     employeeName = `${myData.firstName} ${myData.lastName}`;
     rolled = myData.role;
   }
-
   // const today = new Date().toISOString().split("T")[0];
   const initialFormData: FormData = {
     portalType: "upwork",
@@ -60,7 +60,7 @@ function SaleInfoForm(): JSX.Element {
     handleBy: "",
     status: "Discussion",
     statusReason: [],
-    communicationMode: "skype",
+    communicationMode:'',
     communicationReason: "",
     othermode: "",
     commModeSkype: "",
@@ -110,6 +110,18 @@ function SaleInfoForm(): JSX.Element {
     setStatusReasons([...statusReasons, '']);
     setState(true)
   };
+
+  useEffect(() => {
+    axios
+      .get(`https://empbackend.base2brand.com/get/addSales`)
+      .then((response) => {
+       setStatusNames(response.data)
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
   const handleDateChange = (date: string, index: number) => {
     const newStatusReasons = [...statusReasons];
     newStatusReasons[index] = `(${date}) => ${newStatusReasons[index]}`;
@@ -129,30 +141,6 @@ function SaleInfoForm(): JSX.Element {
       statusReason: newStatusReasons,
     }));
   };
-  // course options array
-  const status = [
-    {
-      id: 0,
-      value: "Hired",
-      label: "Hired",
-    },
-    {
-      id: 1,
-      value: "Discussion",
-      label: "Discussion",
-    },
-    {
-      id: 2,
-      value: "Closed",
-      label: "Closed",
-    },
-    {
-      id: 3,
-      value: "Pending",
-      label: "Pending",
-    },
-  ];
-
   // input handlechange
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -245,7 +233,7 @@ function SaleInfoForm(): JSX.Element {
       statusReason: statusReasonString,
     };
     axios
-      .put(`https://empbackend.base2brand.com/updatesale/${updatedFormData.id}`, updatedFormData)
+      .put(`https://empbackend.base2brand.com/updatesale/${updatedFormData?.id}`, updatedFormData)
       .then((response) => {
         if (rolled === "Sales Infotech") {
           Navigate("/saleinfoformlist");
@@ -267,7 +255,6 @@ function SaleInfoForm(): JSX.Element {
       ...prevState,
       [name]: checked,
     }));
-    console.log(communicationMode);
   };
 
   return (
@@ -484,10 +471,10 @@ function SaleInfoForm(): JSX.Element {
                           >
                             <option value="">Choose a status</option>
 
-                            {status.map((item) => {
+                            {statusNames?.map((item) => {
                               return (
-                                <option key={item.id} value={item.value}>
-                                  {item.label}
+                                <option key={item.saleId} value={item.SalesData}>
+                                  {item.SalesData}
                                 </option>
                               );
                             })}

@@ -43,6 +43,12 @@ interface SalesInfoData {
   EmployeeID: string;
   created_at: string;
   inviteBid: string;
+  commModeEmail: string;
+  commModeOther: string;
+  commModePhone: string;
+  commModePortal: string;
+  commModeWhatsapp: string;
+  commModeSkype: string;
 }
 interface Props {
   data: SalesInfoData[];
@@ -61,7 +67,6 @@ const SaleInfoFormList = () => {
   const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [state, setState] = useState<boolean>(false);
-  const [selectedRegister, setSelectedRegister] = useState<string>("");
   const [statusNames, setStatusNames] = useState<string[]>([]);
   const [gettingData, setGettingData] = useState<SalesInfoData[]>([]);
   const uniqueStatusNames = Array.from(new Set(statusNames));
@@ -76,6 +81,9 @@ const SaleInfoFormList = () => {
   const totalLength = matchedData.length;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState<string[]>([]);
+  const [filteredByDateRange, setFilteredByDateRange] = useState<SalesInfoData[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [selectedDays, setSelectedDays] = useState<string>("");
 
   const showModal = (text: string | string[]) => {
     const reasons = Array.isArray(text) ? text : text.split(',');
@@ -88,34 +96,98 @@ const SaleInfoFormList = () => {
     setModalContent(url);
     setModalVisible(true);
   };
-  
+
   const closeModal = () => {
     setModalVisible(false);
     setModalContent([]);
   };
+  // const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+  //   const [startDate, endDate] = dateStrings;
+  //   if ((!startDate || startDate.trim() === '') && (!endDate || endDate.trim() === '')) {
+  //     setState(false);
+  //   } else {
+  //     setDateRange(dateStrings);
+  //     setState(true);
+  //   }
+  // };
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
-    setDateRange(dateStrings);
-    setState(true);
+    const [startDate, endDate] = dateStrings;
+    if ((!startDate || startDate.trim() === '') && (!endDate || endDate.trim() === '')) {
+      setFilteredByDateRange([]); // Reset to empty array if date range is not selected
+    } else {
+      const filteredData = gettingData.filter((item) => {
+        const taskDate = new Date(item.dateData).getTime();
+        const startDateTime = startDate ? new Date(startDate).getTime() : 0;
+        const endDateTime = endDate ? new Date(endDate).getTime() : Infinity;
+
+        return taskDate >= startDateTime && taskDate <= endDateTime;
+      });
+
+      setFilteredByDateRange(filteredData); // Update filtered data based on the date range
+    }
+  };
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedDays(selectedValue);
   };
   // const handleProjectChange = (value: string) => {
   //   setSelectedRegister(value);
   //   filterData(value);
   // };
-  const handleProjectChange = (value: string) => {
-    setSelectedRegister(value);
-    
-    if (value === "") {
-      setFilteredData(data);
-    } else {
-      const filteredResult = data.filter((item: SalesInfoData) => {
-        return item.status.toLowerCase() === value.toLowerCase();
-      });
-      setFilteredData(filteredResult);
-    }
+  const handleProjectStatus = (value: string) => {
+    setSelectedStatus(value);
   };
-  
+
   const paginationSettings = {
     pageSize: 100,
+  };
+  // const upworkData = filteredData.filter(item => item.portalType === 'upwork');
+  // const upworkLength = upworkData.length
+
+  // const linkedinData = filteredData.filter(item => item.portalType === 'linkedin');
+  // const linkedinLength = linkedinData.length
+
+  // const PPHData = filteredData.filter(item => item.portalType === 'PPH');
+  // const PPHLength = PPHData.length
+
+  // const FreelancerData = filteredData.filter(item => item.portalType === 'freelancer');
+  // const FreelancerLength = FreelancerData.length
+
+  // const WebsiteData = filteredData.filter(item => item.portalType === 'website');
+  // const WebsiteLength = WebsiteData.length
+
+  // const OtherData = filteredData.filter(item => item.portalType === 'other');
+  // const OtherLength = OtherData.length
+
+  const handleGoButtonClick = () => {
+    const filteredResult = gettingData.filter((item) => {
+      const statusMatch =
+        selectedStatus ?
+          item.status.toLowerCase() === selectedStatus.toLowerCase() :
+          true;
+      const portalMatch =
+        selectedPortal ?
+          item.portalType.toLowerCase() === selectedPortal.toLowerCase() :
+          true;
+      const dateRangeMatch = filteredByDateRange.length > 0
+        ? filteredByDateRange.includes(item)
+        : true;
+      // const matchDate =
+      //   selectedDays && item.dateData ?
+      //     new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
+      //     true;
+      const today = new Date().getTime();
+      const selectedDaysInMilliseconds = parseInt(selectedDays) * 24 * 60 * 60 * 1000;
+      const fromDate = selectedDays ? today - selectedDaysInMilliseconds : 0;
+      const matchDate = !selectedDays || new Date(item?.created_at).getTime() >= fromDate;
+      return statusMatch && matchDate && portalMatch && dateRangeMatch;
+    });
+    if (dateRange[0] === null && dateRange[1] === null) {
+      setState(false);
+    } else {
+      setState(true);
+    }
+    setFilteredData(filteredResult);
   };
 
   useEffect(() => {
@@ -174,37 +246,32 @@ const SaleInfoFormList = () => {
   const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedPortal(selectedValue);
-    if (selectedValue === "") {
-      setFilteredData(gettingData);
-    }
   };
 
-  const filterByPortalType = (portalType: string) => {
-    if (portalType === "") {
-      setFilteredData(data); // Show all data if no portal is selected
-    } else {
-      const filteredResult = data.filter((item: SalesInfoData) => {
-        return item.portalType.toLowerCase() === portalType.toLowerCase();
-      });
-      setFilteredData(filteredResult);
-    }
-  };
+  // const filterByPortalType = (portalType: string) => {
+  //   if (portalType === "") {
+  //     setFilteredData(data); // Show all data if no portal is selected
+  //   } else {
+  //     const filteredResult = data.filter((item: SalesInfoData) => {
+  //       return item.portalType.toLowerCase() === portalType.toLowerCase();
+  //     });
+  //     setFilteredData(filteredResult);
+  //   }
+  // };
 
-
-  useEffect(() => {
-    if (selectedPortal !== "") {
-      filterByPortalType(selectedPortal);
-    }
-  }, [selectedPortal]);
+  // useEffect(() => {
+  //   if (selectedPortal !== "") {
+  //     filterByPortalType(selectedPortal);
+  //   }
+  // }, [selectedPortal]);
 
   // edit methods
   const handleEdit = (id: number) => {
-    console.log("id", id)
-    console.log(`update form with id ${id}`);
     setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/saleinfoform", { state: { record: recordToEdit } });
   };
+
   //   const handleEdit = (id: number) => {
   //     console.log(`update form with id ${id}`);
   //     const recordToEdit = data.find((e: any) => e.id === id);
@@ -214,6 +281,30 @@ const SaleInfoFormList = () => {
   //       console.error(`No record found with id ${id}`);
   //     }
   //   };
+  const generateCommModeContent = (record: any) => {
+    const {
+      commModeSkype,
+      commModePhone,
+      commModeWhatsapp,
+      commModeEmail,
+      commModePortal,
+      commModeOther,
+
+
+    } = record;
+
+    const modes = [
+      `Skype: ${commModeSkype}`,
+      `Phone: ${commModePhone}`,
+      `Whatsapp: ${commModeWhatsapp}`,
+      `Email: ${commModeEmail}`,
+      `Portal: ${commModePortal}`,
+      `Other: ${commModeOther}`,
+    ];
+
+    return modes.join(', '); // Join modes into a single string
+  };
+
 
   const columns = [
     {
@@ -273,7 +364,6 @@ const SaleInfoFormList = () => {
       key: "inviteBid",
       render: (text: string) => <div>{text}</div>,
     },
-   
     // {
     //   title: "Status Reason",
     //   dataIndex: "statusReason",
@@ -315,9 +405,15 @@ const SaleInfoFormList = () => {
     },
     {
       title: "Comm. mode",
-      dataIndex: "communicationMode",
-      key: "communicationMode",
-      render: (text: string) => <div>{text}</div>,
+      dataIndex: "commModePortal",
+      key: "commModePortal",
+      render: (text: string, record: SalesInfoData) => (
+        <div>
+          <Button onClick={() => showModal(generateCommModeContent(record))}>
+            View Comm. Modes
+          </Button>
+        </div>
+      ),
     },
     {
       title: "Additional",
@@ -364,6 +460,10 @@ const SaleInfoFormList = () => {
     } else {
       setFilteredData(data);
     }
+    if (selectedPortal !== "") {
+      const result = filteredData.filter((e) => e.portalType === selectedPortal);
+      setFilteredData(result);
+    }
   };
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -379,6 +479,8 @@ const SaleInfoFormList = () => {
       return "red-row";
     } else if (record.status === "Pending") {
       return "pending-row";
+    } else if (record.status === "May Work Again") {
+      return "work-row";
     } else {
       return "";
     }
@@ -406,6 +508,15 @@ const SaleInfoFormList = () => {
               <div className="form-container">
                 <div className="total-size">Total:{totalLength}</div>
                 <div className="SalecampusFormList-default-os">
+                  {/* <div style={{ display: 'flex', marginLeft: '4px', gap: '25px', fontSize: '1rem' }}>
+                    <div>upwork:<span className="portal">{upworkLength}</span></div>
+                    <div>Linkdin:<span className="portal">{linkedinLength}</span></div>
+                    <div>PPH:<span className="portal">{PPHLength}</span></div>
+                    <div>Freelancer:<span className="portal">{FreelancerLength}</span></div>
+                    <div>Website:<span className="portal">{WebsiteLength}</span></div>
+                    <div>other:<span className="portal">{OtherLength}</span></div> =
+                    <div>Total:<span className="portal">{totalLength}</span></div>
+                  </div> */}
                   <div
                     style={{
                       display: "flex",
@@ -432,8 +543,9 @@ const SaleInfoFormList = () => {
                         // onChange={handleChange}
                         className="adjust-inputs"
                         id="project"
-                        value={selectedRegister}
-                        onChange={(e) => handleProjectChange(e.target.value)}
+                        value={selectedStatus}
+                        // onChange={(e) => handleProjectChange(e.target.value)}
+                        onChange={(e) => handleProjectStatus(e.target.value)}
                       >
                         <option value="">Select a Status</option>
                         {uniqueStatusNames.map((item) => (
@@ -458,25 +570,42 @@ const SaleInfoFormList = () => {
                         <option value="Other">Other</option>
                       </select>
                     </div>
+                    <div>
+                      <select
+                        className="adjust-inputs"
+                        value={selectedDays === "" ? "" : `${selectedDays}`}
+                        onChange={handleSelectChange}
+                      >
+                        <option value="">Select date range</option>
+                        <option value="7">Last 1 week</option>
+                        <option value="30">Last 1 month</option>
+                        <option value="90">Last 3 months</option>
+                        <option value="180">Last 6 months</option>
+                        <option value="365">Last 1 year</option>
+                      </select>
+                    </div>
+                    <div>
+                      <button className="go-button" onClick={handleGoButtonClick}>Go</button>
+                    </div>
                   </div>
                   <div className="saleInfo-form">
-                  {state === false &&
-                    <Table
-                      dataSource={matchedData.slice().reverse()}
-                      // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
-                      columns={columns}
-                      // rowClassName={() => "header-row"}
-                      rowClassName={getStatusRowClassName}
-                      pagination={paginationSettings}
-                    />}
-                  {state === true &&
-                    <Table
-                      dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
-                      columns={columns}
-                      rowClassName={getStatusRowClassName}
-                      pagination={paginationSettings}
-                    />}
-                    </div>
+                    {state === false &&
+                      <Table
+                        dataSource={matchedData.slice().reverse()}
+                        // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
+                        columns={columns}
+                        // rowClassName={() => "header-row"}
+                        rowClassName={getStatusRowClassName}
+                        pagination={paginationSettings}
+                      />}
+                    {state === true &&
+                      <Table
+                        dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
+                        columns={columns}
+                        rowClassName={getStatusRowClassName}
+                        pagination={paginationSettings}
+                      />}
+                  </div>
                 </div>
                 <Modal
                   title="View Data :"
@@ -487,7 +616,7 @@ const SaleInfoFormList = () => {
                   {modalContent.map((reason: string, index: number) => (
                     <div key={index}>
                       {reason.trim()}
-                      {index !== modalContent.length - 1 && <br/>&&<br/>&&<br/>}
+                      {index !== modalContent.length - 1 && <br /> && <br /> && <br />}
                     </div>
                   ))}
                 </Modal>

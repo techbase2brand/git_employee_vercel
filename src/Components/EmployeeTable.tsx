@@ -15,6 +15,7 @@ interface Employee {
   EmployeeID: string;
   status: number;
   logged: number;
+  IpAddress: string;
 }
 
 interface Props {
@@ -190,6 +191,11 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
       ),
     },
     {
+      title: "IpAddress",
+      dataIndex: "IpAddress",
+      key: "IpAddress",
+    },
+    {
       title: "Action",
       key: "action",
       render: (_: any, record: Employee) => (
@@ -229,6 +235,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     EmployeeID: employee.EmployeeID,
     status: employee.status,
     logged: employee.logged,
+    IpAddress: employee.IpAddress,
   }));
   const filteredData = rows.filter(project =>
     project.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||

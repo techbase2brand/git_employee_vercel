@@ -33,6 +33,13 @@ const ViewBacklogTable: React.FC = () => {
   const [originalData, setOriginalData] = useState<BacklogTask[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedOption, setSelectedOption] = useState('');
+  const myDataString = localStorage.getItem('myData');
+  let employeeName = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    employeeName = `${myData.jobPosition}`;
+  }
+
   useEffect(() => {
     let filteredData = originalData;
 
@@ -127,7 +134,7 @@ const ViewBacklogTable: React.FC = () => {
     setSelectedOption(selectedValue)
     setData(filteredData);
   };
-  const filteringData = employees.filter((item:any) => item.status === 1);
+  const filteringData = employees.filter((item: any) => item.status === 1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,21 +157,31 @@ const ViewBacklogTable: React.FC = () => {
         const today = new Date();
         const tenDaysAgo = new Date();
         tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
-        const finalFilteredData = filteredData?.filter((e) => {
-          const taskDate = new Date(e.currdate);
-          const isDateInRange =
-            taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
-            (dateRange === null ||
-              (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
-                taskDate <= (dateRange[1] || today)));
+        if (
+          employeeName === "Managing Director") {
+          const filteredData = sortedData?.filter((e) => {
+            e.UserEmail === UserEmail;
+            const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
+            const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
+            return assigneeMatch || assignedByMatch
+          });
+          setData(filteredData);
+        } else {
+          const finalFilteredData = filteredData?.filter((e) => {
+            const taskDate = new Date(e.currdate);
+            const isDateInRange =
+              taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
+              (dateRange === null ||
+                (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
+                  taskDate <= (dateRange[1] || today)));
 
-          const isAssignedByAdmin = e.UserEmail === UserEmail;
+            const isAssignedByAdmin = e.UserEmail === UserEmail;
 
-          return isDateInRange && isAssignedByAdmin;
-        });
+            return isDateInRange && isAssignedByAdmin;
+          });
+          setData(finalFilteredData);
+        }
 
-
-        setData(finalFilteredData);
       } catch (error: any) {
         console.error("Error fetching data:", error);
         console.log("Error details:", (error as AxiosError)?.response);
@@ -190,6 +207,12 @@ const ViewBacklogTable: React.FC = () => {
   };
 
   const columns = [
+    {
+      title: "Assigned By:",
+      dataIndex: "AssignedBy",
+      key: "AssignedBy",
+      render: (text: string) => <div>{text}</div>,
+    },
     {
       title: "Assigned To:",
       dataIndex: "assigneeName",
@@ -275,50 +298,56 @@ const ViewBacklogTable: React.FC = () => {
             borderRadius: '6px', height: '30px'
           }}
         />
-        <Select
-          style={{
-            marginLeft: 10,
-            borderRadius: '6px', height: '42px', width: '10%'
-          }}
-          placeholder="Select Assignee"
-          value={selectedAssignee}
-          onChange={handleAssigneeChange}
-          showSearch
-          filterOption={(input, option) =>
-            option && option.children
-              ? option.children.toString().toLowerCase().includes(input.toLowerCase())
-              : false
-          }
-        >
-          <Option value="">All</Option>
-          {filteringData.map((assignee, i) => (
-            <Option key={i} value={assignee.firstName}>
-              {assignee.firstName}
-            </Option>
-          ))}
-        </Select>
-        <select
-          style={{
-            marginLeft: 10
-          }}
-          className="adjust-inputs"
-          value={selectedOption}
-          onChange={handleSelectChange}
-        >
-          <option value="">Select date range</option>
-          <option value="7">Last 1 week</option>
-          <option value="30">Last 1 month</option>
-          <option value="90">Last 3 months</option>
-          <option value="180">Last 6 months</option>
-          <option value="365">Last 1 year</option>
-        </select>
-        <button
-          className="go-button"
-          style={{ marginLeft: 10 }}
-          onClick={handleGoButtonClick}
-        >
-          Go
-        </button>
+        {
+          employeeName === "Managing Director" &&
+
+          <div>
+            <Select
+              style={{
+                marginLeft: 10,
+                borderRadius: '6px', height: '42px', width: '10%'
+              }}
+              placeholder="Select Assignee"
+              value={selectedAssignee}
+              onChange={handleAssigneeChange}
+              showSearch
+              filterOption={(input, option) =>
+                option && option.children
+                  ? option.children.toString().toLowerCase().includes(input.toLowerCase())
+                  : false
+              }
+            >
+              <Option value="">All</Option>
+              {filteringData.map((assignee, i) => (
+                <Option key={i} value={assignee.firstName}>
+                  {assignee.firstName}
+                </Option>
+              ))}
+            </Select>
+            <select
+              style={{
+                marginLeft: 10
+              }}
+              className="adjust-inputs"
+              value={selectedOption}
+              onChange={handleSelectChange}
+            >
+              <option value="">Select date range</option>
+              <option value="7">Last 1 week</option>
+              <option value="30">Last 1 month</option>
+              <option value="90">Last 3 months</option>
+              <option value="180">Last 6 months</option>
+              <option value="365">Last 1 year</option>
+            </select>
+            <button
+              className="go-button"
+              style={{ marginLeft: 10 }}
+              onClick={handleGoButtonClick}
+            >
+              Go
+            </button>
+          </div>
+        }
       </div>
       <div className="backlog-table">
         <Table

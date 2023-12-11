@@ -32,6 +32,7 @@ const currentDate = new Date().toISOString().split("T")[0];
 
 const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
   const [elementCount, setElementCount] = useState(1);
+  const [data, setData] = useState<Employee[]>([]);
   const [showIncrement, setShowIncrement] = useState(true);
   const [deadline, setDeadline] = useState<Dayjs | null>(null);
   const [assignedBy, setAssignedBy] = useState<any | null>(null);
@@ -44,6 +45,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
     },
   ]);
   const [formattedTasks, setFormattedTasks] = useState<any[]>([]);
+  const filteredData = data.filter((item: any) => item.status === 1);
 
   const adminInfo = localStorage.getItem("myData");
 
@@ -55,6 +57,22 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
   } else {
     console.log("No admin info found in local storage");
   }
+
+  useEffect(() => {
+    axios
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      })
+      .then((response) => {
+        const sortedData = response?.data.sort(
+          (a, b) => Number(b.EmpID) - Number(a.EmpID)
+        );
+        setData(sortedData);
+      })
+      .catch((error) => console.log(error));
+  }, [setData]);
 
   useEffect(() => {
     axios
@@ -306,7 +324,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
                     onChange={(e) => handleAssignee(e.target.value, index)}
                   >
                     <option value="">Assgn. To</option>
-                    {employees.map((employee) => (
+                    {filteredData.map((employee) => (
                       <option
                         value={employee.firstName}
                         key={employee.EmployeeID}

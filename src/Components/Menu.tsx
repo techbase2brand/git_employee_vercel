@@ -17,8 +17,20 @@ const AppMenu = () => {
           <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
             <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
           <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
             <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
             <Link to="/add-morning-task">Add Morning Task</Link>
@@ -31,18 +43,6 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
             <Link to="/view-evening-task">ViewEveningTask</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="AssignTaskPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AssignTaskPage">Assign Task </Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewBacklogPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item
             key="AboutProject"
@@ -63,39 +63,39 @@ const AppMenu = () => {
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
           <Menu.SubMenu key="manageProject" icon={<TableOutlined rev={undefined} />} title="Manage Projects">
-          <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/add-project">Add Project</Link>
-          </Menu.Item>
-          <Menu.Item key="add-phase" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/add-phase">Add Phase</Link>
-          </Menu.Item>
-          <Menu.Item key="add-module" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/add-module">Add Module</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="view-project"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/view-project">View Project</Link>
-          </Menu.Item>
-          <Menu.Item key="view-phase" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/view-phase">View Phase</Link>
-          </Menu.Item>
-          <Menu.Item key="view-module" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/view-module">View Module</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="add-PhaseAssignedTo"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/PhaseAssignedTo">Assign Phase</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewPhaseAssign"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewPhaseAssign">View Phase AssignedTo</Link>
-          </Menu.Item>
+            <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/add-project">Add Project</Link>
+            </Menu.Item>
+            <Menu.Item key="add-phase" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/add-phase">Add Phase</Link>
+            </Menu.Item>
+            <Menu.Item key="add-module" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/add-module">Add Module</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="view-project"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/view-project">View Project</Link>
+            </Menu.Item>
+            <Menu.Item key="view-phase" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/view-phase">View Phase</Link>
+            </Menu.Item>
+            <Menu.Item key="view-module" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/view-module">View Module</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="add-PhaseAssignedTo"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/PhaseAssignedTo">Assign Phase</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="ViewPhaseAssign"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/ViewPhaseAssign">View Phase AssignedTo</Link>
+            </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
             <Link to="/LeavePage">LeavePage for approval </Link>
@@ -148,6 +148,9 @@ const AppMenu = () => {
           >
             <Link to="/AssignTaskPage">Assign Task </Link>
           </Menu.Item>
+          <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
+            <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
           <Menu.Item
             key="ViewBacklogPage"
             icon={<TableOutlined rev={undefined} />}
@@ -155,39 +158,39 @@ const AppMenu = () => {
             <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.SubMenu key="manageProject" icon={<TableOutlined rev={undefined} />} title="Manage Projects">
-          <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/add-project">Add Project</Link>
-          </Menu.Item>
-          <Menu.Item key="add-phase" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/add-phase">Add Phase</Link>
-          </Menu.Item>
-          <Menu.Item key="add-module" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/add-module">Add Module</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="add-PhaseAssignedTo"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/PhaseAssignedTo">Assign Phase</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="view-project"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/view-project">View Project</Link>
-          </Menu.Item>
-          <Menu.Item key="view-phase" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/view-phase">View Phase</Link>
-          </Menu.Item>
-          <Menu.Item key="view-module" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/view-module">View Module</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewPhaseAssign"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewPhaseAssign">View Phase AssignedTo</Link>
-          </Menu.Item>
+            <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/add-project">Add Project</Link>
+            </Menu.Item>
+            <Menu.Item key="add-phase" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/add-phase">Add Phase</Link>
+            </Menu.Item>
+            <Menu.Item key="add-module" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/add-module">Add Module</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="add-PhaseAssignedTo"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/PhaseAssignedTo">Assign Phase</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="view-project"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/view-project">View Project</Link>
+            </Menu.Item>
+            <Menu.Item key="view-phase" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/view-phase">View Phase</Link>
+            </Menu.Item>
+            <Menu.Item key="view-module" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/view-module">View Module</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="ViewPhaseAssign"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/ViewPhaseAssign">View Phase AssignedTo</Link>
+            </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item
             key="AboutProject"
@@ -226,13 +229,34 @@ const AppMenu = () => {
           <Menu.Item key="ViewTermCondition" icon={<TableOutlined />}>
             <Link to="/ViewTermCondition">ViewTermCondition</Link>
           </Menu.Item>
+          <Menu.SubMenu key="masterProject" icon={<TableOutlined rev={undefined} />} title="Masters">
+
+            <Menu.Item key="SalesMaster" icon={<TableOutlined />}>
+              <Link to="/SalesMaster">SalesForm</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewSalesMaster" icon={<TableOutlined />}>
+              <Link to="/ViewSalesMaster">ViewSalesData</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
       {info.jobPosition == "BDE Campus" && (
         <>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
           <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
             <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
             <Link to="/add-morning-task">Add Morning Task</Link>
@@ -270,8 +294,20 @@ const AppMenu = () => {
 
       {info.jobPosition == "BDE" && (
         <>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
           <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
             <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
             <Link to="/add-morning-task">Add Morning Task</Link>
@@ -297,22 +333,34 @@ const AppMenu = () => {
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
-          <>
-          <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
+         
+            <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
               <Link to="/SaleInfoForm">Sale Infotech Form</Link>
             </Menu.Item>
 
             <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
               <Link to="/saleinfoformlist">Sale Infotech List</Link>
             </Menu.Item>
-          </>
+        
         </>
       )}
 
       {info.jobPosition == "Employee" && (
         <>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
           <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
             <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
             <Link to="/add-morning-task">Add Morning Task</Link>
@@ -343,8 +391,20 @@ const AppMenu = () => {
 
       {info.jobPosition == "Team Lead" && (
         <>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
           <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
             <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
             <Link to="/add-morning-task">Add Morning Task</Link>
@@ -370,13 +430,32 @@ const AppMenu = () => {
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
+          <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
+              <Link to="/SaleInfoForm">Sale Infotech Form</Link>
+            </Menu.Item>
+
+            <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
+              <Link to="/saleinfoformlist">Sale Infotech List</Link>
+            </Menu.Item>
         </>
       )}
 
       {info.jobPosition == "QA" && (
         <>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
           <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
             <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
           </Menu.Item>
           <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
             <Link to="/add-morning-task">Add Morning Task</Link>
@@ -407,6 +486,21 @@ const AppMenu = () => {
 
       {info?.jobPosition == "HR" && (
         <>
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
+          <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
+            <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
+          </Menu.Item>
           <Menu.Item key="employee-form" icon={<DashboardOutlined />}>
             <Link to="/employee-form">Add Employee</Link>
           </Menu.Item>

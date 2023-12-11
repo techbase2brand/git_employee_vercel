@@ -48,7 +48,9 @@ import ShiftChangePage from "./Components/ShiftChangePage";
 import AdminSaleCampusFormList from "./Components/AdminSalecampusFormList";
 import AdminSaleInfotechFormList from "./Components/AdminSaleInfotechFormList";
 import ViewTermCondition from "./Components/ViewTermCondition";
+import ViewSalesMaster from "./Components/ViewSalesMaster";
 import TermCondition from "./Components/TermCondition";
+import SalesMaster from "./Components/SalesMaster";
 import AssignTaskPage from "./Components/AssignTaskPage";
 import ViewBacklogPage from "./Components/ViewBacklogPage";
 import AssignedTasks from "./Components/AssignedTasks";
@@ -174,11 +176,27 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/ViewSalesMaster"
+            element={
+              <ProtectedRoute>
+                <ViewSalesMaster />
+              </ProtectedRoute>
+            }
+          />
            <Route
             path="/TermCondition"
             element={
               <ProtectedRoute>
                 <TermCondition />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/SalesMaster"
+            element={
+              <ProtectedRoute>
+                <SalesMaster />
               </ProtectedRoute>
             }
           />

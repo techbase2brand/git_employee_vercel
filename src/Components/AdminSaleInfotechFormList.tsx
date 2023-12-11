@@ -54,6 +54,12 @@ interface SalesInfoData {
   created_at: string;
   RegisterBy: string;
   inviteBid: string;
+  commModeEmail: string;
+  commModeOther: string;
+  commModePhone: string;
+  commModePortal: string;
+  commModeWhatsapp: string;
+  commModeSkype: string;
 }
 interface Props {
   data: SalesInfoData[];
@@ -73,7 +79,6 @@ const AdminSaleInfotechFormList = () => {
   const [employeeData, setEmployeeData] = useState<any>([]);
   const Navigate = useNavigate();
   const location = useLocation();
-  const passedRecord = location.state?.record;
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [state, setState] = useState<boolean>(false);
@@ -85,9 +90,10 @@ const AdminSaleInfotechFormList = () => {
   const [selectedRegister, setSelectedRegister] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [gettingData, setGettingData] = useState<SalesInfoData[]>([]);
+  const sortedDataa = [...filteredData].sort((a, b) => a.id - b.id);
   const totalLength = filteredData.length;
   const uniqueStatusNames = Array.from(new Set(statusNames));
-
+  const [filteredByDateRange, setFilteredByDateRange] = useState<SalesInfoData[]>([]);
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -117,41 +123,46 @@ const AdminSaleInfotechFormList = () => {
     setRecordToDelete(null);
   };
 
+  // const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+  //   setDateRange(dateStrings);
+  //   setState(true);
+  // };
+  // const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+  //   const [startDate, endDate] = dateStrings;
+  //   if ((!startDate || startDate.trim() === '') && (!endDate || endDate.trim() === '')) {
+  //     setState(false);
+  //   } else {
+  //     setDateRange(dateStrings);
+  //   }
+  // };
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
-    setDateRange(dateStrings);
-    setState(true);
+    const [startDate, endDate] = dateStrings;
+    if ((!startDate || startDate.trim() === '') && (!endDate || endDate.trim() === '')) {
+      setFilteredByDateRange([]); // Reset to empty array if date range is not selected
+    } else {
+      const filteredData = gettingData.filter((item) => {
+        const taskDate = new Date(item.dateData).getTime();
+        const startDateTime = startDate ? new Date(startDate).getTime() : 0;
+        const endDateTime = endDate ? new Date(endDate).getTime() : Infinity;
+  
+        return taskDate >= startDateTime && taskDate <= endDateTime;
+      });
+  
+      setFilteredByDateRange(filteredData); // Update filtered data based on the date range
+    }
   };
 
   const handleProjectChange = (value: string) => {
     setSelectedRegister(value);
-    if (value === "") {
-      setFilteredData(gettingData);
-    } else {
-      const filteredResult = gettingData.filter((item: SalesInfoData) => {
-        return item.RegisterBy.toLowerCase().includes(value.toLowerCase());
-      });
-      setFilteredData(filteredResult);
-    }
   };
-  
+
   const handleProjectStatus = (value: string) => {
     setSelectedStatus(value);
-    if (value === "") {
-      setFilteredData(gettingData);
-    } else {
-      const filteredResult = gettingData.filter((item: SalesInfoData) => {
-        return item.status.toLowerCase() === value.toLowerCase();
-      });
-      setFilteredData(filteredResult);
-    }
   };
-  
+
   const handlePortalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedPortal(selectedValue);
-    if (selectedValue === "") {
-      setFilteredData(gettingData);
-    }
   };
   const paginationSettings = {
     pageSize: 100,
@@ -174,11 +185,11 @@ const AdminSaleInfotechFormList = () => {
   const OtherData = filteredData.filter(item => item.portalType === 'other');
   const OtherLength = OtherData.length
 
-  const hiredStatu = statusNames.filter((status) => status === "Hired");
+  const hiredStatu = filteredData.filter(item => item.status === "Hired");
   const totalHiredLength = hiredStatu.length;
 
-  const closedStatus = statusNames.filter((status) => status === "Closed");
-  const totalClosedLength = closedStatus.length;
+  const closedStatus = filteredData.filter(item => item.status === "Closed");
+  const totalClosedLength = closedStatus?.length;
 
   const sortedData = data.sort((a, b) => {
     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
@@ -289,35 +300,27 @@ const AdminSaleInfotechFormList = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedDays(selectedValue);
-    if (selectedValue === "") {
-      setFilteredData(gettingData);
-    }
   };
-  const filterByDateRange = (range: string) => {
-    const currentDate = new Date();
-    const startDate = new Date(currentDate);
-    startDate.setDate(currentDate.getDate() - parseInt(range));
-    const filteredData = data.filter((item: any) => {
-      const itemDate = new Date(item.created_at);
-      return itemDate >= startDate && itemDate <= currentDate;
-    });
-    setData(filteredData);
-  };
+  // const filterByDateRange = (range: string) => {
+  //   const currentDate = new Date();
+  //   const startDate = new Date(currentDate);
+  //   startDate.setDate(currentDate.getDate() - parseInt(range));
+  //   const filteredData = data.filter((item: any) => {
+  //     const itemDate = new Date(item.created_at);
+  //     return itemDate >= startDate && itemDate <= currentDate;
+  //   });
+  //   setData(filteredData);
+  // };
 
-  useEffect(() => {
-    if (selectedDays !== "") {
-      filterByDateRange(selectedDays);
-    }
-  }, [selectedDays]);
+  // useEffect(() => {
+  //   if (selectedDays !== "") {
+  //     filterByDateRange(selectedDays);
+  //   }
+  // }, [selectedDays]);
 
   const filterByPortalType = (portalType: string) => {
     if (portalType === "") {
       setFilteredData(data);
-    } else {
-      const filteredResult = data.filter((item: SalesInfoData) => {
-        return item.portalType.toLowerCase() === portalType.toLowerCase();
-      });
-      setFilteredData(filteredResult);
     }
   };
 
@@ -335,6 +338,7 @@ const AdminSaleInfotechFormList = () => {
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/saleinfoform", { state: { record: recordToEdit } });
   };
+
   //   const handleEdit = (id: number) => {
   //     console.log(`update form with id ${id}`);
   //     const recordToEdit = data.find((e: any) => e.id === id);
@@ -345,7 +349,30 @@ const AdminSaleInfotechFormList = () => {
   //     }
   //   };
   // ... (existing code)
-
+  const generateCommModeContent = (record:any) => {
+    const {
+      commModeSkype,
+      commModePhone,
+      commModeWhatsapp,
+      commModeEmail,
+      commModePortal,
+      commModeOther,
+      
+      
+    } = record;
+  
+    const modes = [
+      `Email: ${commModeSkype}`,
+      `Other: ${commModePhone}`,
+      `Phone: ${commModeWhatsapp}`,
+      `Portal: ${commModeEmail}`,
+      `Whatsapp: ${commModePortal}`,
+      `Skype: ${commModeOther}`,
+    ];
+  
+    return modes.join(', '); // Join modes into a single string
+  };
+  
   const columns = [
     {
       title: "Lead Date",
@@ -433,9 +460,15 @@ const AdminSaleInfotechFormList = () => {
     },
     {
       title: "Comm. mode",
-      dataIndex: "communicationMode",
-      key: "communicationMode",
-      render: (text: string) => <div>{text}</div>,
+      dataIndex: "commModePortal",
+      key: "commModePortal",
+      render: (text: string, record: SalesInfoData) => (
+        <div>
+      <Button onClick={() => showModal(generateCommModeContent(record))}>
+        View Comm. Modes
+      </Button>
+    </div>
+      ),
     },
     {
       title: "Additional",
@@ -500,7 +533,7 @@ const AdminSaleInfotechFormList = () => {
     }
   };
   const handleGoButtonClick = () => {
-    const filteredResult = data.filter((item) => {
+    const filteredResult = gettingData.filter((item) => {
       const statusMatch =
         selectedStatus ?
           item.status.toLowerCase() === selectedStatus.toLowerCase() :
@@ -513,12 +546,24 @@ const AdminSaleInfotechFormList = () => {
         selectedRegister ?
           item.RegisterBy.toLowerCase().includes(selectedRegister.toLowerCase()) :
           true;
-      const matchDate =
-        selectedDays && item.dateData ?
-          new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
-          true;
-      return statusMatch && registerMatch && matchDate && portalMatch
+          const dateRangeMatch = filteredByDateRange.length > 0
+      ? filteredByDateRange.includes(item)
+      : true;
+      // const matchDate =
+      //   selectedDays && item.dateData ?
+      //     new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
+      //     true;
+      const today = new Date().getTime();
+      const selectedDaysInMilliseconds = parseInt(selectedDays) * 24 * 60 * 60 * 1000;
+      const fromDate = selectedDays ? today - selectedDaysInMilliseconds : 0;
+      const matchDate = !selectedDays || new Date(item?.created_at).getTime() >= fromDate;
+      return statusMatch && registerMatch && matchDate && portalMatch && dateRangeMatch;
     });
+    if (dateRange[0] === null && dateRange[1] === null) {
+      setState(false);
+    } else {
+      setState(true);
+    }
     setFilteredData(filteredResult);
   };
 
@@ -537,6 +582,8 @@ const AdminSaleInfotechFormList = () => {
       return "red-row";
     } else if (record.status === "Pending") {
       return "pending-row";
+    } else if (record.status === "May Work Again") {
+      return "work-row";
     } else {
       return "";
     }
@@ -670,7 +717,7 @@ const AdminSaleInfotechFormList = () => {
                   <div className="infotech-form">
                     {state === false &&
                       <Table
-                        dataSource={filteredData.slice().reverse()}
+                        dataSource={sortedDataa.slice().reverse()}
                         // dataSource={(Object.values(employeeData) as SalesInfoData[][]).flat().reverse()}
                         columns={columns}
                         // rowClassName={() => "header-row"}
