@@ -80,7 +80,7 @@ console.log(employeeArr,"employeeArr");
     // console.log(`Delete task with id ${MrngTaskID}`);
 
     axios
-      .delete(`http://localhost:5000/delete/eveningDashboard/${EvngTaskID}`, {
+      .delete(`https://empbackend.base2brand.com/delete/eveningDashboard/${EvngTaskID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -95,7 +95,7 @@ console.log(employeeArr,"employeeArr");
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },

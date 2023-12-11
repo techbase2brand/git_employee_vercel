@@ -62,7 +62,7 @@ const TaskTable: React.FC<Props> = ({
 
   const handleDelete = (MrngTaskID: number) => {
     axios
-      .delete(`http://localhost:5000/delete/morningDashboard/${MrngTaskID}`, {
+      .delete(`https://empbackend.base2brand.com/delete/morningDashboard/${MrngTaskID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -77,7 +77,7 @@ const TaskTable: React.FC<Props> = ({
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },

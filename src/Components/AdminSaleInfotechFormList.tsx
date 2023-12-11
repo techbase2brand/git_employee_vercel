@@ -200,7 +200,7 @@ const AdminSaleInfotechFormList = () => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-        "http://localhost:5000/salesinfodata"
+        "https://empbackend.base2brand.com/salesinfodata"
         // , {
         //   headers: {
         //     Authorization: `Bearer ${token}`,
@@ -245,7 +245,7 @@ const AdminSaleInfotechFormList = () => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -274,7 +274,7 @@ const AdminSaleInfotechFormList = () => {
     setDeleteId(id);
     axios
       .delete(
-        `http://localhost:5000/deletesalesinfo/${id}`
+        `https://empbackend.base2brand.com/deletesalesinfo/${id}`
         // {
         //   headers: {
         //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,

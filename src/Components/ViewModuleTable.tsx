@@ -22,7 +22,7 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get<Modules[]>("http://localhost:5000/get/modules", {
+    axios.get<Modules[]>("https://empbackend.base2brand.com/get/modules", {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -40,7 +40,7 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
   };
 
   const handleDelete = (modID: string) => {
-    axios.delete(`http://localhost:5000/delete/module/${modID}`, {
+    axios.delete(`https://empbackend.base2brand.com/delete/module/${modID}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }

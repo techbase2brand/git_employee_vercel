@@ -113,7 +113,7 @@ function SaleInfoForm(): JSX.Element {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/get/addSales`)
+      .get(`https://empbackend.base2brand.com/get/addSales`)
       .then((response) => {
        setStatusNames(response.data)
       })
@@ -174,7 +174,7 @@ function SaleInfoForm(): JSX.Element {
     } else {
       console.log("submitForm-else-os");
       axios
-        .post(`http://localhost:5000/submit-salesform`, formData)
+        .post(`https://empbackend.base2brand.com/submit-salesform`, formData)
         .then((response) => {
           console.log("response.data", response);
           setSubmitted(true);
@@ -233,7 +233,7 @@ function SaleInfoForm(): JSX.Element {
       statusReason: statusReasonString,
     };
     axios
-      .put(`http://localhost:5000/updatesale/${updatedFormData?.id}`, updatedFormData)
+      .put(`https://empbackend.base2brand.com/updatesale/${updatedFormData?.id}`, updatedFormData)
       .then((response) => {
         if (rolled === "Sales Infotech") {
           Navigate("/saleinfoformlist");

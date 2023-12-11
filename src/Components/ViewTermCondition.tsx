@@ -25,7 +25,7 @@ const ViewTermCondition: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Task[]>("http://localhost:5000/get/addTermCondition", {
+      .get<Task[]>("https://empbackend.base2brand.com/get/addTermCondition", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

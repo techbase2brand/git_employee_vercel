@@ -246,7 +246,7 @@ const AboutProject: React.FC = () => {
   useEffect(() => {
     // Fetch employees from the backend API
     axios
-      .get<AssignedEmployees[]>("http://localhost:5000/get/PhaseAssignedTo", {
+      .get<AssignedEmployees[]>("https://empbackend.base2brand.com/get/PhaseAssignedTo", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -343,7 +343,7 @@ const AboutProject: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Project[]>("http://localhost:5000/get/projects", {
+      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -355,7 +355,7 @@ const AboutProject: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Task[]>("http://localhost:5000/get/addTaskEvening", {
+      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskEvening", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

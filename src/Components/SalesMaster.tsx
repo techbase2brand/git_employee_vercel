@@ -28,7 +28,7 @@ const SalesMaster: React.FC<unknown> = () => {
   useEffect(() => {
     if (location?.state?.saleId) {
       axios
-        .get<Task[]>(`http://localhost:5000/get/addSales`, {
+        .get<Task[]>(`https://empbackend.base2brand.com/get/addSales`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -70,8 +70,8 @@ const SalesMaster: React.FC<unknown> = () => {
     }
     console.log("location?.state", location)
     const apiEndpoint = isEditMode
-      ? `http://localhost:5000/update/addSales/${location?.state?.saleId}`
-      : "http://localhost:5000/create/addSales";
+      ? `https://empbackend.base2brand.com/update/addSales/${location?.state?.saleId}`
+      : "https://empbackend.base2brand.com/create/addSales";
 
     axios({
       method: isEditMode ? "put" : "post",

@@ -42,7 +42,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -71,7 +71,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     console.log(`Delete employee with id ${EmpID}`);
 
     axios
-      .delete(`http://localhost:5000/users/${EmpID}`, {
+      .delete(`https://empbackend.base2brand.com/users/${EmpID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -92,7 +92,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     const newStatus = currentStatus === 1 ? 0 : 1;
 
     // Call the API to update the status
-    axios.put(`http://localhost:5000/employeeUpdateStatus/${EmpID}`, {
+    axios.put(`https://empbackend.base2brand.com/employeeUpdateStatus/${EmpID}`, {
       status: newStatus
     }, {
       headers: {
@@ -117,7 +117,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     const newLogged = currentStatus === 1 ? 0 : 1;
 
     // Call the API to update the status
-    axios.put(`http://localhost:5000/employeeUpdatelogged/${EmpID}`, {
+    axios.put(`https://empbackend.base2brand.com/employeeUpdatelogged/${EmpID}`, {
       logged: newLogged
     }, {
       headers: {
@@ -248,7 +248,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     const newStatus = allCheckedIn ? 0 : 1;
 
     data.forEach(employee => {
-      axios.put(`http://localhost:5000/employeeUpdatelogged/${employee.EmpID}`, {
+      axios.put(`https://empbackend.base2brand.com/employeeUpdatelogged/${employee.EmpID}`, {
         logged: newStatus
       }, {
         headers: {

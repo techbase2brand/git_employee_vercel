@@ -90,7 +90,7 @@ const SalecampusFormList = () => {
 
 
     axios
-      .get("http://localhost:5000/salecampusdata"
+      .get("https://empbackend.base2brand.com/salecampusdata"
         // Uncomment below if your server requires the token for authentication
         //   , {
         //     headers: {
@@ -121,7 +121,7 @@ const SalecampusFormList = () => {
     setDeleteId(id);
     axios
       .delete(
-        `http://localhost:5000/delete/${id}`
+        `https://empbackend.base2brand.com/delete/${id}`
         // {
         //   headers: {
         //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,

@@ -69,7 +69,7 @@ const AddProject: React.FC = (navigation) => {
 
 
       axios
-      .put(`http://localhost:5000/updateProject/${location?.state?.projEditObj.ProID}`, data,{
+      .put(`https://empbackend.base2brand.com/updateProject/${location?.state?.projEditObj.ProID}`, data,{
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
@@ -99,7 +99,7 @@ const AddProject: React.FC = (navigation) => {
       };
 
       axios
-        .post("http://localhost:5000/add/projects", data, {
+        .post("https://empbackend.base2brand.com/add/projects", data, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('myToken')}`
           }

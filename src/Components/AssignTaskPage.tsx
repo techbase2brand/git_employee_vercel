@@ -60,7 +60,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -76,7 +76,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<any[]>("http://localhost:5000/employees", {
+      .get<any[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -222,7 +222,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
     axios
       .post(
-        "http://localhost:5000/create/addBacklogTasks",
+        "https://empbackend.base2brand.com/create/addBacklogTasks",
         { tasks: outputTasks },
         {
           headers: {
@@ -242,7 +242,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

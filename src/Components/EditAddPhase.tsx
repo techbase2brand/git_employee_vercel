@@ -35,7 +35,7 @@ const EditAddPhase: React.FC = () => {
   });
 
   useEffect(() => {
-    axios.get<Project[]>("http://localhost:5000/get/projects",{
+    axios.get<Project[]>("https://empbackend.base2brand.com/get/projects",{
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
@@ -62,7 +62,7 @@ const EditAddPhase: React.FC = () => {
     };
 
     if (location.state.phaseEditObj) {
-      axios.put(`http://localhost:5000/api/update-phase/${location.state.phaseEditObj.phaseID}`, data,{
+      axios.put(`https://empbackend.base2brand.com/api/update-phase/${location.state.phaseEditObj.phaseID}`, data,{
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }

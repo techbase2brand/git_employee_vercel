@@ -21,7 +21,7 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get<Phases[]>("http://localhost:5000/get/phases", {
+    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases", {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -39,7 +39,7 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
   };
 
   const handleDelete = (phaseID: string) => {
-    axios.delete(`http://localhost:5000/api/delete-phase/${phaseID}`, {
+    axios.delete(`https://empbackend.base2brand.com/api/delete-phase/${phaseID}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }

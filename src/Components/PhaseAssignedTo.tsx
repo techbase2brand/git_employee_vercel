@@ -74,7 +74,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:5000/employees", {
+      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -92,7 +92,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<Project[]>("http://localhost:5000/get/projects", {
+      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -103,7 +103,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
   }, []);
 
   useEffect(() => {
-    axios.get<Phases[]>("http://localhost:5000/get/phases", {
+    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases", {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -164,7 +164,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
 
   const handleSubmit = () => {
     axios
-      .post("http://localhost:5000/api/add-phaseAssignee", assignedEmployees, {
+      .post("https://empbackend.base2brand.com/api/add-phaseAssignee", assignedEmployees, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }

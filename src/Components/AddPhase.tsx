@@ -76,7 +76,7 @@ const AddPhase: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Project[]>("http://localhost:5000/get/projects", {
+      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
@@ -112,7 +112,7 @@ const AddPhase: React.FC = () => {
     };
 
     axios
-      .post("http://localhost:5000/api/add-phase", data, {
+      .post("https://empbackend.base2brand.com/api/add-phase", data, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
