@@ -22,7 +22,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
-  // const [getEmployeeID, setGetEmployeeID] = useState("");
+  const [getIp, setGetIp] = useState("");
   const [employeedata] = useState<unknown>();
   const { getEmpInfo, setEmpInfo } = useContext(GlobalInfo);
   const [apiResponse, setApiResponse] = useState<any>(null);
@@ -41,6 +41,24 @@ const Login: React.FC = () => {
         console.log("Login successful");
         if (res.data.user.logged === 0) {
           setShowTermsModal(true);
+          axios
+          .put(
+            `https://empbackend.base2brand.com/employeeipAddress/${res?.data?.user?.EmpID}`,
+            {
+              IpAddress: getIp,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log('IpAddress updated successfully');
+          })
+          .catch((error) => {
+            console.error('Error updating IpAddress:', error);
+          });
         } else {
           navigate("/add-morning-task");
         }
@@ -62,6 +80,7 @@ const Login: React.FC = () => {
       // Show an error message to the user
     });
   };
+  
   useEffect(() => {
     axios
       .get<Task[]>("https://empbackend.base2brand.com/get/addTermCondition", {
@@ -77,6 +96,17 @@ const Login: React.FC = () => {
       });
   }, []);
   
+  useEffect(() => {
+    axios.get('https://api.ipify.org?format=json')
+      .then((response) => {
+        console.log("resssss",response.data.ip)
+        setGetIp(response.data.ip)
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []); 
+
   const handleAcceptTerms = () => {
     if (apiResponse && apiResponse.user) {
       axios

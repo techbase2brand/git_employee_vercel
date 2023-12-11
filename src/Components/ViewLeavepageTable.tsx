@@ -22,8 +22,6 @@ interface LeaveData {
 
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-
-
   const dataString = localStorage.getItem("myData");
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
   console.log(employeeInfo,"employeeInfoemployeeInfo");

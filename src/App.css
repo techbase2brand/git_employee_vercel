@@ -59,6 +59,14 @@ tbody > tr > td:nth-child(14) {
   background-color: rgb(105, 125, 184) !important;
 }
 
+.work-row {
+  background-color: rgb(54, 121, 58) !important;
+}
+
+.work-row {
+  background-color: rgb(189, 80, 183) !important;
+}
+
 .employee-name {
   font-weight: 500;
 }

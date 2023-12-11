@@ -4,7 +4,6 @@ import Menu from "./Menu";
 import Navbar from "./Navbar";
 import TermConditionTable from "./TermConditionTable";
 import axios from "axios";
-import { format } from "date-fns";
 import { GlobalInfo } from "../App";
 
 interface Task {

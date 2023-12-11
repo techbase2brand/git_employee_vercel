@@ -118,7 +118,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
         })
         .then((response) => {
           console.log(response.data);
-          navigate("/ViewLeavePage");
+          navigate("/HRsection");
         })
         .catch((error) => {
           console.error("Error submitting leave data:", error);
