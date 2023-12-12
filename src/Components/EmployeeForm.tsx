@@ -359,6 +359,7 @@ const EmployeeForm: React.FC = () => {
                         <option value="BDE Campus">BDE Campus</option>
                         <option value="QA">QA</option>
                         <option value="HR">HR</option>
+                        <option value="Sales-Dashboard">Sales-Dashboard</option>
                       </select>
                     </div>
                   </div>
