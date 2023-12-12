@@ -8,7 +8,7 @@ interface Task {
     saleId: number;
     SalesData: string;
     currdate: string;
-  date: string;
+    dated: string;
 }
 
 interface Props {
@@ -63,12 +63,12 @@ const SalesTable: React.FC<Props> = ({ data, setMrngEditID }) => {
             title: "currdate",
             dataIndex: "currdate",
             key: "currdate",
-          },
-          {
+        },
+        {
             title: "date",
-            dataIndex: "date",
-            key: "date",
-          },
+            dataIndex: "dated",
+            key: "dated",
+        },
         {
             title: "Action",
             key: "action",

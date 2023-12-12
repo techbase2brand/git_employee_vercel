@@ -10,7 +10,7 @@ interface Task {
   saleId: number;
   SalesData: string;
   currdate: string;
-  date: string;
+  dated: string;
 }
 const SalesMaster: React.FC<unknown> = () => {
   const [currentDate] = useState<Date>(new Date());
@@ -20,7 +20,7 @@ const SalesMaster: React.FC<unknown> = () => {
     saleId: 0,
     SalesData: "",
     currdate: formattedDate,
-    date: formattedDate,
+    dated: formattedDate,
   });
   const token = localStorage.getItem("myToken");
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const SalesMaster: React.FC<unknown> = () => {
               saleId: res[0]?.saleId,
               SalesData: res[0]?.SalesData,
               currdate: res[0]?.currdate,
-              date: res[0]?.date,
+              dated: res[0]?.dated,
             });
           }
         })
@@ -101,7 +101,7 @@ const SalesMaster: React.FC<unknown> = () => {
   const handleDateChange = (value: string) => {
     setTermTask({
       ...termTask,
-      date: value,
+      dated: value,
     });
   };
   return (
@@ -149,7 +149,7 @@ const SalesMaster: React.FC<unknown> = () => {
                     style={{ width: 'auto' }}
                     type="date"
                     name="selectDate"
-                    value={termTask?.date}
+                    value={termTask?.dated}
                     onChange={(e) => handleDateChange(e.target.value)}
                   />
                 </div>
