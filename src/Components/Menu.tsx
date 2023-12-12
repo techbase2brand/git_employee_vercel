@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "antd";
+
 import {
   DashboardOutlined,
   TableOutlined,
@@ -9,7 +10,7 @@ import {
 
 const AppMenu = () => {
   const info = JSON.parse(localStorage.getItem("myData") || "{}");
-
+  
   return (
     <Menu mode="inline">
       {info.jobPosition == "Project Manager" && (
@@ -192,43 +193,49 @@ const AppMenu = () => {
               <Link to="/ViewPhaseAssign">View Phase AssignedTo</Link>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.Item
-            key="AboutProject"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AboutProject">Projects Report</Link>
-          </Menu.Item>
-          <Menu.Item key="HrLeaveReport" icon={<TableOutlined />}>
-            <Link to="/HrLeaveReport">HrLeaveReport </Link>
-          </Menu.Item>
-          <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
-            <Link to="/LeavePage">LeavePage for approval</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ShiftChangePage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ShiftChangePage">ShiftChangePage</Link>
-          </Menu.Item>
-          {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
+          <Menu.SubMenu key="projectReport" icon={<TableOutlined rev={undefined} />} title="Reports">
+            <Menu.Item
+              key="AboutProject"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/AboutProject">Projects Report</Link>
+            </Menu.Item>
+            <Menu.Item key="HrLeaveReport" icon={<TableOutlined />}>
+              <Link to="/HrLeaveReport">HrLeaveReport </Link>
+            </Menu.Item>
+            <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/LeavePage">LeavePage for approval</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="ShiftChangePage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/ShiftChangePage">ShiftChangePage</Link>
+            </Menu.Item>
+            {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
          <Link to="/salecampusformlist">Sale Campus List</Link>
        </Menu.Item> */}
 
-          <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
-            <Link to="/HRshiftChangeSection">ShiftChange for approval</Link>
-          </Menu.Item>
-          <Menu.Item key="AdminSaleCampusFormList" icon={<TableOutlined />}>
-            <Link to="/AdminSaleCampusFormList">AdminSaleCampusFormList</Link>
-          </Menu.Item>
-          <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
-            <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
-          </Menu.Item>
-          <Menu.Item key="TermCondition" icon={<TableOutlined />}>
-            <Link to="/TermCondition">TermCondition</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewTermCondition" icon={<TableOutlined />}>
-            <Link to="/ViewTermCondition">ViewTermCondition</Link>
-          </Menu.Item>
+            <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
+              <Link to="/HRshiftChangeSection">ShiftChange for approval</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="admin" icon={<TableOutlined rev={undefined} />} title="Admin">
+            <Menu.Item key="AdminSaleCampusFormList" icon={<TableOutlined />}>
+              <Link to="/AdminSaleCampusFormList">AdminSaleCampusFormList</Link>
+            </Menu.Item>
+            <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
+              <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="terms" icon={<TableOutlined rev={undefined} />} title="Terms">
+            <Menu.Item key="TermCondition" icon={<TableOutlined />}>
+              <Link to="/TermCondition">TermCondition</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewTermCondition" icon={<TableOutlined />}>
+              <Link to="/ViewTermCondition">ViewTermCondition</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
           <Menu.SubMenu key="masterProject" icon={<TableOutlined rev={undefined} />} title="Masters">
 
             <Menu.Item key="SalesMaster" icon={<TableOutlined />}>
@@ -333,15 +340,15 @@ const AppMenu = () => {
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
-         
-            <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
-              <Link to="/SaleInfoForm">Sale Infotech Form</Link>
-            </Menu.Item>
 
-            <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
-              <Link to="/saleinfoformlist">Sale Infotech List</Link>
-            </Menu.Item>
-        
+          <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
+            <Link to="/SaleInfoForm">Sale Infotech Form</Link>
+          </Menu.Item>
+
+          <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
+            <Link to="/saleinfoformlist">Sale Infotech List</Link>
+          </Menu.Item>
+
         </>
       )}
 
@@ -431,12 +438,12 @@ const AppMenu = () => {
             <Link to="/ViewShiftChange">View Shift change </Link>
           </Menu.Item>
           <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
-              <Link to="/SaleInfoForm">Sale Infotech Form</Link>
-            </Menu.Item>
+            <Link to="/SaleInfoForm">Sale Infotech Form</Link>
+          </Menu.Item>
 
-            <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
-              <Link to="/saleinfoformlist">Sale Infotech List</Link>
-            </Menu.Item>
+          <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
+            <Link to="/saleinfoformlist">Sale Infotech List</Link>
+          </Menu.Item>
         </>
       )}
 
@@ -543,6 +550,66 @@ const AppMenu = () => {
           <Menu.Item key="HrLeaveReport" icon={<TableOutlined />}>
             <Link to="/HrLeaveReport">HrLeaveReport </Link>
           </Menu.Item>
+        </>
+      )}
+
+{info.jobPosition == "Sales-Dashboard" && (
+        <>
+         <Menu.Item
+            key="dashboard"
+            icon={<DashboardOutlined rev={undefined} />}
+          >
+            <Link to="/dashboard">Dashboard</Link>
+          </Menu.Item>
+          
+          <Menu.Item
+            key="AssignTaskPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/AssignTaskPage">Assign Task </Link>
+          </Menu.Item>
+          <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
+            <Link to="/AssignedTasks">AssignedTasks</Link>
+          </Menu.Item>
+          <Menu.Item
+            key="ViewBacklogPage"
+            icon={<TableOutlined rev={undefined} />}
+          >
+            <Link to="/ViewBacklogPage">View Backlog Page</Link>
+          </Menu.Item>
+          <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
+            <Link to="/add-morning-task">Add Morning Task</Link>
+          </Menu.Item>
+          <Menu.Item key="ViewMorningTask" icon={<TableOutlined />}>
+            <Link to="/view-morning-task">ViewMorningTask</Link>
+          </Menu.Item>
+          <Menu.Item key="add-evening-task" icon={<ScheduleOutlined />}>
+            <Link to="/add-evening-task">Add Evening Task</Link>
+          </Menu.Item>
+          <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
+            <Link to="/view-evening-task">ViewEveningTask</Link>
+          </Menu.Item>
+          <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
+            <Link to="/LeaveForm">LeaveForm</Link>
+          </Menu.Item>
+          <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
+            <Link to="/ViewLeavePage">ViewLeavePage</Link>
+          </Menu.Item>
+          <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
+            <Link to="/ShiftChangeForm">Shift change form</Link>
+          </Menu.Item>
+          <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
+            <Link to="/ViewShiftChange">View Shift change </Link>
+          </Menu.Item>
+
+          <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
+            <Link to="/SaleInfoForm">Sale Infotech Form</Link>
+          </Menu.Item>
+
+          <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
+            <Link to="/saleinfoformlist">Sale Infotech List</Link>
+          </Menu.Item>
+
         </>
       )}
     </Menu>
