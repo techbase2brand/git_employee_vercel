@@ -26,6 +26,7 @@ interface IEmployee {
   doj: Date;
   bloodGroup: string;
   highestQualification: string;
+  IpAddress: string;
 }
 
 const validateName = (name: string) => {
@@ -78,6 +79,7 @@ const EmployeeForm: React.FC = () => {
     doj: new Date(),
     bloodGroup: "",
     highestQualification: "",
+    IpAddress:"",
   });
 
   const [data, setData] = useState<any>();
@@ -210,6 +212,7 @@ const EmployeeForm: React.FC = () => {
         highestQualification: employee.highestQualification,
         parentPhone: employee.parentPhone,
         EmployeeID: employee.EmployeeID,
+        IpAddress: employee.IpAddress,
       };
 
       axios

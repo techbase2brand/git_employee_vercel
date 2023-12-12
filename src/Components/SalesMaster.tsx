@@ -69,6 +69,10 @@ const SalesMaster: React.FC<unknown> = () => {
       return;
     }
     console.log("location?.state", location)
+    const dataToSend = isEditMode
+    ? termTask
+    : { SalesData: termTask.SalesData, dated: termTask.dated,currdate: termTask.currdate };
+    
     const apiEndpoint = isEditMode
       ? `https://empbackend.base2brand.com/update/addSales/${location?.state?.saleId}`
       : "https://empbackend.base2brand.com/create/addSales";
@@ -76,7 +80,7 @@ const SalesMaster: React.FC<unknown> = () => {
     axios({
       method: isEditMode ? "put" : "post",
       url: apiEndpoint,
-      data: termTask,
+      data: dataToSend,
       headers: {
         Authorization: `Bearer ${token}`,
       },
