@@ -11,6 +11,7 @@ interface Task {
     SalesData: string;
     currdate: string;
     dated: string;
+    
 }
 
 const ViewSalesMaster: React.FC = () => {
