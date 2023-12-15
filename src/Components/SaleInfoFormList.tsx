@@ -160,6 +160,37 @@ const SaleInfoFormList = () => {
   // const OtherLength = OtherData.length
 
   const handleGoButtonClick = () => {
+    const today = new Date(); 
+    const currentYear = today.getFullYear();
+    let startDate: Date | null = null;
+    let endDate: Date | null = null;
+  
+    switch (selectedDays) {
+      case "7":
+        startDate = new Date(today);
+        startDate.setDate(today.getDate() - 7);
+        break;
+      case "30":
+        startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 1);
+        break;
+      case "90":
+        startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 3);
+        break;
+      case "180":
+        startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 6);
+        break;
+      case "365":
+        startDate = new Date(today);
+        startDate.setFullYear(currentYear - 1);
+        break;
+      default:
+        break;
+    }
+    endDate = new Date(today);
+    endDate.setHours(23, 59, 59, 999);
     const filteredResult = gettingData.filter((item) => {
       const statusMatch =
         selectedStatus ?
@@ -176,10 +207,10 @@ const SaleInfoFormList = () => {
       //   selectedDays && item.dateData ?
       //     new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
       //     true;
-      const today = new Date().getTime();
-      const selectedDaysInMilliseconds = parseInt(selectedDays) * 24 * 60 * 60 * 1000;
-      const fromDate = selectedDays ? today - selectedDaysInMilliseconds : 0;
-      const matchDate = !selectedDays || new Date(item?.created_at).getTime() >= fromDate;
+      const itemDate = new Date(item.dateData);
+      const itemDateTimestamp = itemDate.getTime();
+      const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
+        (!endDate || itemDateTimestamp <= endDate.getTime());
       return statusMatch && matchDate && portalMatch && dateRangeMatch;
     });
     if (dateRange[0] === null && dateRange[1] === null) {

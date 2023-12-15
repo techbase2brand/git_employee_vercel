@@ -144,6 +144,8 @@ const ViewBacklogTable: React.FC = () => {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         });
+        console.log("response",response)
+
         setOriginalData(response.data)
         const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
         const filteredData = sortedData?.filter((e) => {
@@ -170,9 +172,9 @@ const ViewBacklogTable: React.FC = () => {
           const finalFilteredData = filteredData?.filter((e) => {
             const taskDate = new Date(e.currdate);
             const isDateInRange =
-              taskDate >= tenDaysAgo && // Here, change threeDaysAgo to tenDaysAgo
+              taskDate >= tenDaysAgo &&
               (dateRange === null ||
-                (taskDate >= (dateRange[0] || tenDaysAgo) && // Here, change threeDaysAgo to tenDaysAgo
+                (taskDate >= (dateRange[0] || tenDaysAgo) && 
                   taskDate <= (dateRange[1] || today)));
 
             const isAssignedByAdmin = e.UserEmail === UserEmail;
