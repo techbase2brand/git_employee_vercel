@@ -46,12 +46,10 @@ const EveningDashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedRole, setSelectedRole] = useState<string>("");
-
+  const [del, setDel] = useState(false);
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
   };
-
-
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
 
@@ -115,7 +113,7 @@ const EveningDashboard: React.FC = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [dateRange, formattedDate]);
+  }, [dateRange, formattedDate,del]);
 
 
 
@@ -247,6 +245,8 @@ const EveningDashboard: React.FC = () => {
                   searchQuery={searchQuery}
                   selectedRole={selectedRole}
                   setSelectedRole={setSelectedRole}
+                  del={del}
+                  setDel={setDel}
                 />
               </div>
             </div>

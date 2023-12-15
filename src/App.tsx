@@ -32,6 +32,7 @@ import SalecampusFormList from "./Components/SalecampusFormList";
 import SaleInfoForm from "./Components/SaleInfoForm";
 import DocForm from "./Components/DocForm";
 import DocTable from "./Components/DocTable";
+import ViewDocumentation from "./Components/ViewDocumentation";
 import SaleInfoFormList from "./Components/SaleInfoFormList";
 import EveningDashboard from "./Components/EveningDashboard";
 import AddProject from "./Components/AddProject";
@@ -419,6 +420,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <DocTable />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ViewDocumentation"
+            element={
+              <ProtectedRoute>
+                <ViewDocumentation />
               </ProtectedRoute>
             }
           />

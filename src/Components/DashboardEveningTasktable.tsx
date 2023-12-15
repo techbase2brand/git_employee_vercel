@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Table, Button , DatePicker  } from "antd";
+import { Table, Button, DatePicker, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -30,7 +30,9 @@ interface Props {
   setTotalUpworkhrs: React.Dispatch<React.SetStateAction<any>>;
   searchQuery: any;
   setSelectedRole: React.Dispatch<React.SetStateAction<any>>;
-  selectedRole:any;
+  selectedRole: any;
+  del:any;
+  setDel:any;
 }
 
 interface EmployeeTime {
@@ -45,7 +47,7 @@ interface Employee {
   role: string;
   dob: string | Date;
   EmployeeID: string;
-  status:number;
+  status: number;
 }
 
 const handleEdit = (EmpID: string | number) => {
@@ -62,23 +64,31 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   setTotalUpworkhrs,
   searchQuery,
   setSelectedRole,
-  selectedRole
+  selectedRole,
+  del,
+  setDel,
 
 }) => {
   const [employeeArr, setEmployeeArr] = useState<any>([]);
   const [filteredEmployee, setFilteredEmployee] = useState<any>([]);
   const [dateRange, setDateRange] = useState<any>([null, null]); // Start and end date
-
-console.log(selectedRole,"selectedRole");
-console.log(employeeArr,"employeeArr");
+  const [recordToDelete, setRecordToDelete] = useState<Task | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDateChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
   };
-
+  const showModalDel = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setRecordToDelete(null);
+  };
   const handleDelete = (EvngTaskID: number) => {
     // console.log(`Delete task with id ${MrngTaskID}`);
-
     axios
       .delete(`https://empbackend.base2brand.com/delete/eveningDashboard/${EvngTaskID}`, {
         headers: {
@@ -86,12 +96,16 @@ console.log(employeeArr,"employeeArr");
         },
       })
       .then((response) => {
-        console.log(response.data,"response.data");
+        console.log(response.data, "response.data");
+        setDel(true)
       })
       .catch((error) => {
         console.log(error);
       });
+    setIsModalOpen(false);
+
   };
+
 
   useEffect(() => {
     axios
@@ -101,18 +115,19 @@ console.log(employeeArr,"employeeArr");
         },
       })
       .then((response) => {
-        // Here's where we sort the employees by their first name
         const sortedData = response.data.sort(
-          (a, b) => a.firstName.localeCompare(b.firstName) // sort by firstName
+          (a, b) => a.firstName.localeCompare(b.firstName)
         );
-        const filteredData = sortedData.filter((emp)=> emp.status === 1  )
+        const filteredData = sortedData.filter((emp) => emp.status === 1)
 
 
         setEmployeeArr(filteredData);
 
+        setDel(false)
+
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [del]);
 
   const arrayOfArray = Object.values(data);
 
@@ -157,6 +172,26 @@ console.log(employeeArr,"employeeArr");
       title: "Date",
       dataIndex: "currDate",
       key: "currDate",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: Task) => (
+        <span>
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            // onClick={() => handleDelete(record.EvngTaskID)}
+            onClick={() => {
+              setRecordToDelete(record);
+              showModalDel();
+            }}
+          >
+            Delete
+          </Button>
+        </span>
+      ),
     },
   ];
 
@@ -306,98 +341,107 @@ console.log(employeeArr,"employeeArr");
     const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
     employeeactTimes.push({ employeeID, formattedTime });
   }
-   let filteredEmployees;
-   if(selectedRole){
+  let filteredEmployees;
+  if (selectedRole) {
     filteredEmployees = employeeArr.filter((emp: Employee) => emp.role === selectedRole);
-   }else{
+  } else {
     filteredEmployees = employeeArr;
-   }
+  }
 
 
 
   const tables = filteredEmployees
-  .filter((emp: Employee) => {
+    .filter((emp: Employee) => {
 
-    // if (emp.role == selectedRole  )  {
-    //   console.log(selectedRole,"selectedRole");
-    //   console.log(emp,"emp.role.toLowerCase()");
+      // if (emp.role == selectedRole  )  {
+      //   console.log(selectedRole,"selectedRole");
+      //   console.log(emp,"emp.role.toLowerCase()");
 
-    //   return true;
-    // }
-    if (!searchQuery) return true; // Show all if there's no search query
-    // console.log(emp,"emp.role.toLowerCase()");
+      //   return true;
+      // }
+      if (!searchQuery) return true; // Show all if there's no search query
+      // console.log(emp,"emp.role.toLowerCase()");
 
 
-    // Check if the employee's name matches the searchQuery
-    if (emp.firstName.toLowerCase().includes(searchQuery)  || emp.lastName.toLowerCase().includes(searchQuery))  {
-      return true;
-    }
+      // Check if the employee's name matches the searchQuery
+      if (emp.firstName.toLowerCase().includes(searchQuery) || emp.lastName.toLowerCase().includes(searchQuery)) {
+        return true;
+      }
 
-    // Find tasks for this employee
-    const tasksForEmployee = arrayOfArray.find(
-      (e) => e[0]?.employeeID === emp.EmployeeID
-    );
-
-    // If there are tasks for this employee, check if any task matches the searchQuery
-    if (tasksForEmployee) {
-      return tasksForEmployee.some(task =>
-        task.phaseName.toLowerCase().includes(searchQuery) ||
-        task.projectName.toLowerCase().includes(searchQuery) ||
-        task.module.toLowerCase().includes(searchQuery)
+      // Find tasks for this employee
+      const tasksForEmployee = arrayOfArray.find(
+        (e) => e[0]?.employeeID === emp.EmployeeID
       );
-    }
+      // If there are tasks for this employee, check if any task matches the searchQuery
+      if (tasksForEmployee) {
+        return tasksForEmployee.some(task =>
+          task.phaseName.toLowerCase().includes(searchQuery) ||
+          task.projectName.toLowerCase().includes(searchQuery) ||
+          task.module.toLowerCase().includes(searchQuery)
+        );
+      }
 
-    return false;
-  })
-  .map((emp: Employee) => {
-    const tasksForEmployee = arrayOfArray.find(
-      (e) => e[0]?.employeeID === emp.EmployeeID
-    );
+      return false;
+    })
+    .map((emp: Employee) => {
+      const tasksForEmployee = arrayOfArray.find(
+        (e) => e[0]?.employeeID === emp.EmployeeID
+      );
 
-    const filteredEstTime = employeeTimes.find(
-      (obj) => obj.employeeID === emp.EmployeeID
-    );
-    const filteredUpworkTime = employeeUpworkTimes.find(
-      (obj) => obj.employeeID === emp.EmployeeID
-    );
-    const filteredactTime = employeeactTimes.find(
-      (obj) => obj.employeeID === emp.EmployeeID
-    );
+      const filteredEstTime = employeeTimes.find(
+        (obj) => obj.employeeID === emp.EmployeeID
+      );
+      const filteredUpworkTime = employeeUpworkTimes.find(
+        (obj) => obj.employeeID === emp.EmployeeID
+      );
+      const filteredactTime = employeeactTimes.find(
+        (obj) => obj.employeeID === emp.EmployeeID
+      );
 
-    const renderEmptyText = () => (
-      <div style={{ color: 'red' }}>
-        No data found for this employee.
-      </div>
-    );
+      const renderEmptyText = () => (
+        <div style={{ color: 'red' }}>
+          No data found for this employee.
+        </div>
+      );
       return (
 
         <div key={emp.EmpID}>
-        <div style={{ display: "flex", flexDirection: "row"  , marginTop:'30px'}}>
-          <p>{emp.firstName} {emp.lastName}</p>
-          <div
-            style={{
-              marginLeft: "71%",
-              display: "flex",
-              flexDirection: "row",
-              float: "right",
-            }}
-          >
-            <p style={{ marginRight: "2vw" }}>{filteredEstTime?.formattedTime}</p>
-            <p style={{ marginLeft: "5vw" }}>{filteredactTime?.formattedTime}</p>
-            <p style={{ marginLeft: "5vw" }}>{filteredUpworkTime?.formattedTime}</p>
+          <div style={{ display: "flex", flexDirection: "row", marginTop: '30px' }}>
+            <p>{emp.firstName} {emp.lastName}</p>
+            <div
+              style={{
+                marginLeft: "71%",
+                display: "flex",
+                flexDirection: "row",
+                float: "right",
+              }}
+            >
+              <p style={{ marginRight: "2vw" }}>{filteredEstTime?.formattedTime}</p>
+              <p style={{ marginLeft: "5vw" }}>{filteredactTime?.formattedTime}</p>
+              <p style={{ marginLeft: "5vw" }}>{filteredUpworkTime?.formattedTime}</p>
+            </div>
           </div>
+          <Table
+            dataSource={tasksForEmployee || []}
+            columns={columns}
+            rowClassName={() => "header-row"}
+            locale={{
+              emptyText: renderEmptyText
+            }}
+          />
+          <Modal
+            title="Confirmation"
+            open={isModalOpen}
+            onOk={() => {
+              if (recordToDelete) {
+                handleDelete(recordToDelete.EvngTaskID);
+              }
+            }}
+            onCancel={handleCancel}
+          >
+            <p>Are you sure, you want to delete</p>
+          </Modal>
         </div>
-
-        <Table
-  dataSource={tasksForEmployee || []}
-  columns={columns}
-  rowClassName={() => "header-row"}
-  locale={{
-    emptyText: renderEmptyText
-  }}
-/>
-
-      </div>
       );
     })
     .filter(Boolean); // filter out any nulls

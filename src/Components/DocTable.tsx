@@ -17,27 +17,47 @@ interface SalesInfoData {
   discription: string;
   EmployeeID: string;
   created_at: string;
+  image_url: string[];
+  sendTo: string;
+  isCompleted: number;
+  category: string;
 }
 
 const DocTable = () => {
+
   const [data, setData] = useState<SalesInfoData[]>([]);
+  console.log("data",data)
+
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
+  console.log("filteredData",filteredData)
+  console.log()
   const [search, setSearch] = useState<string>("");
   const Navigate = useNavigate();
   const myDataString = localStorage.getItem('myData');
   let empIdMatch = "";
+  let jobPosition = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
     empIdMatch = myData.EmployeeID;
+    jobPosition = myData.jobPosition;
+
   }
   const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch);
+  console.log("matchedData",matchedData)
   const totalLength = matchedData.length;
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisiblee, setModalVisiblee] = useState(false);
   const [modalContent, setModalContent] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<SalesInfoData | null>(
     null
   );
+  const [currentImage, setCurrentImage] = useState('');
+
+  const handleImageClick = (imageUrl: string) => {
+    setCurrentImage(imageUrl);
+    setModalVisiblee(true);
+  };
   const showModalUrl = (text: string | string[]) => {
     const url = Array.isArray(text) ? text : text.split(',');
     setModalContent(url);
@@ -54,7 +74,6 @@ const DocTable = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setRecordToDelete(null);
-
   };
   const paginationSettings = {
     pageSize: 100,
@@ -93,6 +112,8 @@ const DocTable = () => {
       )
       .then((response) => {
         const resData = response.data;
+        console.log("resData", resData)
+
         setData(resData);
         setFilteredData(resData);
       });
@@ -125,12 +146,6 @@ const DocTable = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "EmployeeID",
-      dataIndex: "EmployeeID",
-      key: "EmployeeID",
-      render: (text: string) => <div>{text}</div>,
-    },
-    {
       title: "Url",
       dataIndex: "url",
       key: "url",
@@ -141,31 +156,49 @@ const DocTable = () => {
       ),
     },
     {
-      title: "Images",
-      dataIndex: "image_url",
-      key: "image_url",
-      render: (text: string | string[]) => (
-        <div>
-          {Array.isArray(text) ? (
-            text.map((imageUrl: string, index: number) => (
+      title: 'Images',
+      dataIndex: 'image_url',
+      key: 'image_url',
+      render: (text: string | string[]) => {
+        let images: { url: string }[] = [];
+
+        if (typeof text === 'string') {
+          try {
+            const parsedImages = JSON.parse(text);
+
+            if (Array.isArray(parsedImages)) {
+              images = parsedImages.map((image: any) => ({ url: image.url }));
+            } else {
+              images = [{ url: parsedImages.url }];
+            }
+          } catch (error) {
+            console.error('Error parsing image URLs:', error);
+          }
+        } else {
+          images = (text as string[]).map((url: string) => ({ url }));
+        }
+
+        return (
+          <div>
+            {images.map((imageObj: { url: string }, index: number) => (
               <img
                 key={index}
-                src={imageUrl}
-                alt={`Image ${index + 1}`}
-                style={{ width: '20px', height: '20px', marginRight: '5px' }}
+                src={imageObj.url}
+                alt={`Img ${index + 1}`}
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  marginRight: '5px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleImageClick(imageObj.url)}
               />
-            ))
-          ) : (
-            <img
-              src={text}
-              alt="Image"
-              style={{ width: '20px', height: '20px', marginRight: '5px' }}
-            />
-          )}
-        </div>
-      ),
+            ))}
+          </div>
+        );
+      },
     },
-    
+
     {
       title: "Discription",
       dataIndex: "discription",
@@ -189,9 +222,34 @@ const DocTable = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
+      title: "Send To",
+      dataIndex: "sendTo",
+      key: "sendTo",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Status",
+      dataIndex: "isCompleted",
+      key: "status",
+      render: (isCompleted: number) => (
+        isCompleted ? (
+          <span style={{ color: "green" }}>&#10003;</span>
+        ) : (
+          <span style={{ color: "red" }}>&#10005;</span>
+        )
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (_: any, record: SalesInfoData) => (
+        record?.isCompleted === null ?
         <span>
           <Button
             type="link"
@@ -212,6 +270,7 @@ const DocTable = () => {
             Delete
           </Button>
         </span>
+        : ""
       ),
     },
   ];
@@ -259,7 +318,6 @@ const DocTable = () => {
             </div>
             <section className="SalecampusForm-section-os">
               <div className="form-container">
-                <div className="total-size">Total:{totalLength}</div>
                 <div className="SalecampusFormList-default-os">
 
                   <div
@@ -284,11 +342,20 @@ const DocTable = () => {
                     </div>
                   </div>
                   <div className="saleInfo-form">
-                    <Table
-                      dataSource={matchedData.slice().reverse()}
-                      columns={columns}
-                      pagination={paginationSettings}
-                    />
+                    {jobPosition === "Managing Director" ?
+                      <Table
+                        dataSource={filteredData.slice().reverse()}
+                        columns={columns}
+                        pagination={paginationSettings}
+                      />
+                      :
+                      <Table
+                        dataSource={matchedData.slice().reverse()}
+                        columns={columns}
+                        pagination={paginationSettings}
+                      />
+
+                    }
                   </div>
                 </div>
                 <Modal
@@ -305,17 +372,27 @@ const DocTable = () => {
                   ))}
                 </Modal>
                 <Modal
-                    title="Confirmation"
-                    open={isModalOpen}
-                    onOk={() => {
-                      if (recordToDelete) {
-                        handleDelete(recordToDelete.id);
-                      }
-                    }}
-                    onCancel={handleCancel}
-                  >
-                    <p>Are you sure, you want to delete</p>
-                  </Modal>
+                  title="Confirmation"
+                  open={isModalOpen}
+                  onOk={() => {
+                    if (recordToDelete) {
+                      handleDelete(recordToDelete.id);
+                    }
+                  }}
+                  onCancel={handleCancel}
+                >
+                  <p>Are you sure, you want to delete</p>
+                </Modal>
+                <Modal
+                  centered
+                  width={1000}
+                  title="Image Preview"
+                  visible={modalVisiblee}
+                  onCancel={() => setModalVisiblee(false)}
+                  footer={null}
+                >
+                  <img src={currentImage} alt="Preview" style={{ width: '100%' }} />
+                </Modal>
               </div>
             </section>
           </div>

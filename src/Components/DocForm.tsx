@@ -13,8 +13,16 @@ interface FormData {
     discription: string;
     EmployeeID: string;
     postedBy: string;
+    sendTo: string;
+    category: string;
 }
-
+interface Employee {
+    EmpID: string | number;
+    firstName: string;
+    role: string;
+    dob: string | Date;
+    EmployeeID: string;
+}
 function DocForm(): JSX.Element {
     const myDataString = localStorage.getItem('myData');
     let employeeID = "";
@@ -35,19 +43,22 @@ function DocForm(): JSX.Element {
         discription: "",
         EmployeeID: employeeID,
         postedBy: employeeName,
+        sendTo: "",
+        category: "",
     };
     const location = useLocation();
     const Navigate = useNavigate();
     const record: FormData | undefined = location.state?.record;
     const [statusUrl, setStatusUrl] = useState(['']);
     const [state, setState] = useState<boolean>(false);
-    const [file, setFile] = useState<string | null>('');
     const [formData, setFormData] = useState<FormData>(record || initialFormData);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [submitted, setSubmitted] = useState(false);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const filteredData = employees.filter((item: any) => item.status === 1);
+    console.log("filteredData", filteredData)
     useEffect(() => {
         if (record) {
             setFormData(record);
@@ -68,10 +79,6 @@ function DocForm(): JSX.Element {
         }
     };
 
-  
-      
-      
-      
     const handleRemoveImage = (index: number) => {
         const newImageFiles = [...imageFiles];
         newImageFiles.splice(index, 1);
@@ -133,7 +140,30 @@ function DocForm(): JSX.Element {
             url: newStatusUrl,
         }));
     };
+    useEffect(() => {
+        axios
+            .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                },
+            })
+            .then((response) => {
+                const sortedData = response?.data.sort(
+                    (a, b) => Number(b.EmpID) - Number(a.EmpID)
+                );
 
+                setEmployees(sortedData);
+            })
+            .catch((error) => console.log(error));
+    }, []);
+    const handleAssignee = (value: string, index: number) => {
+        const selectedEmployee = employees.find((emp) => emp.firstName === value);
+        const newTasks = [];
+        newTasks[index] = {
+            assigneeName: value,
+            assigneeEmployeeID: selectedEmployee?.EmployeeID,
+        };
+    };
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -188,7 +218,24 @@ function DocForm(): JSX.Element {
                 console.log(error);
             });
     };
-
+    const Language = [
+        {
+            "id": 1,
+            "firstName": "Shopify-app",
+        },
+        {
+            "id": 2,
+            "firstName": "Shopify-theme",
+        },
+        {
+            "id": 3,
+            "firstName": "React",
+        },
+        {
+            "id": 4,
+            "firstName": "Wordpress",
+        }
+    ];
     return (
         <>
             <div className="emp-main-div">
@@ -299,6 +346,48 @@ function DocForm(): JSX.Element {
                                                         {formErrors.discription}
                                                     </div>
                                                 )}
+                                            </div>
+                                            <div className="SalecampusForm-col-os">
+                                                <div className="SalecampusForm-input-os">
+                                                    <select
+                                                        className="add-input"
+                                                        id="sendTo"
+                                                        name="sendTo"
+                                                        value={formData?.sendTo}
+                                                        onChange={handleChange}
+                                                    >
+                                                        <option value="">Send To</option>
+                                                        {filteredData.map((employee) => (
+                                                            <option
+                                                                value={employee.firstName}
+                                                                key={employee.EmployeeID}
+                                                            >
+                                                                {employee.firstName}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="SalecampusForm-col-os">
+                                                <div className="SalecampusForm-input-os">
+                                                    <select
+                                                        className="add-input"
+                                                        id="category"
+                                                        name="category"
+                                                        value={formData?.category}
+                                                        onChange={handleChange}
+                                                    >
+                                                        <option value="">Select Category</option>
+                                                        {Language.map((item) => (
+                                                            <option
+                                                                value={item.firstName}
+                                                                key={item.id}
+                                                            >
+                                                                {item.firstName}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div className="SalecampusForm-submit-os">
                                                 <button onClick={handleSubmit} type="submit">

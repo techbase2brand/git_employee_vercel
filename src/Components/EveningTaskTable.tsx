@@ -24,7 +24,6 @@ interface Props {
 }
 
 const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
-  console.log("dataaaa",data)
   const [propsData, setPropsData] = useState<Task[]>([]);
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const navigate = useNavigate();
