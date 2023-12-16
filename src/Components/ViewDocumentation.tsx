@@ -2,13 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table, Button, Input, Modal } from "antd";
+import { Table, Input, Modal } from "antd";
 import {
-    EditOutlined,
-    DeleteOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router";
 
 interface SalesInfoData {
     id: number;
@@ -20,23 +17,18 @@ interface SalesInfoData {
     image_url: string[];
     sendTo: string;
     isCompleted: boolean;
-
+    category: string;
 }
 
 const ViewDocumentation = () => {
     const [data, setData] = useState<SalesInfoData[]>([]);
     const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
-    console.log("filteredData", filteredData)
     const [search, setSearch] = useState<string>("");
-    const Navigate = useNavigate();
     const myDataString = localStorage.getItem('myData');
-    let empIdMatch = "";
-    let jobPosition = "";
+ 
     let clientName = "";
     if (myDataString) {
         const myData = JSON.parse(myDataString);
-        empIdMatch = myData.EmployeeID;
-        jobPosition = myData.jobPosition;
         clientName = myData.firstName;
 
     }
@@ -120,13 +112,7 @@ const ViewDocumentation = () => {
         filterData(search);
     }, [data]);
 
-    const handleEdit = (id: number) => {
-        const recordToEdit = data.find((e: any) => e.id === id);
-        Navigate("/DocForm", { state: { record: recordToEdit } });
-    };
     const getCheckboxState = (id: number) => {
-        console.log("backlogTaskID", id)
-
         const item = localStorage.getItem(`task-${id}`);
         if (item !== null) {
             return JSON.parse(item);
@@ -259,6 +245,12 @@ const ViewDocumentation = () => {
             render: (text: string) => <div>{text}</div>,
         },
         {
+            title: "Category",
+            dataIndex: "category",
+            key: "category",
+            render: (text: string) => <div>{text}</div>,
+        },
+        {
             title: "Completed",
             dataIndex: "isCompleted",
             key: "isCompleted",
@@ -317,7 +309,6 @@ const ViewDocumentation = () => {
                         </div>
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
-                                <div className="total-size">Total:{totalLength}</div>
                                 <div className="SalecampusFormList-default-os">
 
                                     <div

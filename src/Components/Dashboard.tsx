@@ -56,9 +56,6 @@ const Dashboard: React.FC = () => {
     setSearchQuery(query.toLowerCase());
   };
   useEffect(() => {
-
-
-
     axios
       .get<Task[]>("https://empbackend.base2brand.com/get/addTaskMorning", {
         headers: {

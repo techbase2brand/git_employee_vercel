@@ -58,7 +58,7 @@ function DocForm(): JSX.Element {
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
     const filteredData = employees.filter((item: any) => item.status === 1);
-    console.log("filteredData", filteredData)
+
     useEffect(() => {
         if (record) {
             setFormData(record);
@@ -68,8 +68,13 @@ function DocForm(): JSX.Element {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files: FileList | null = e.target.files;
         if (files) {
+            console.log("files", files)
             const newFilesArray: File[] = Array.from(files);
+            console.log("newFilesArray", newFilesArray)
+
             const newImageUrls = newFilesArray.map((file) => URL.createObjectURL(file));
+            console.log("newImageUrls", newImageUrls)
+
             setImageFiles([...imageFiles, ...newFilesArray]);
             setImagePreviews([...imagePreviews, ...newImageUrls]);
             setFormData((prevData) => ({
@@ -78,6 +83,7 @@ function DocForm(): JSX.Element {
             }));
         }
     };
+
 
     const handleRemoveImage = (index: number) => {
         const newImageFiles = [...imageFiles];
@@ -156,14 +162,7 @@ function DocForm(): JSX.Element {
             })
             .catch((error) => console.log(error));
     }, []);
-    const handleAssignee = (value: string, index: number) => {
-        const selectedEmployee = employees.find((emp) => emp.firstName === value);
-        const newTasks = [];
-        newTasks[index] = {
-            assigneeName: value,
-            assigneeEmployeeID: selectedEmployee?.EmployeeID,
-        };
-    };
+
     const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -261,6 +260,8 @@ function DocForm(): JSX.Element {
                                     <form onSubmit={handleSubmit}>
                                         <div className="SalecampusForm-row-os">
                                             <div className="SalecampusForm-col-os">
+                                                <label>Title</label>
+
                                                 <div className="SalecampusForm-input-os">
                                                     <input
                                                         type="text"
@@ -273,6 +274,8 @@ function DocForm(): JSX.Element {
                                             </div>
                                             {statusUrl.map((reason, index) => (
                                                 <div key={index} className="SalecampusForm-col-os">
+                                                    <label>Add Url</label>
+
                                                     <div className="SalecampusForm-input-os">
                                                         <input
                                                             type="text"
@@ -305,6 +308,7 @@ function DocForm(): JSX.Element {
                                             ))}
 
                                             <div className="SalecampusForm-col-os">
+                                                <label>Add Images</label>
                                                 <div className="SalecampusForm-input-os">
                                                     <input
                                                         type="file"
@@ -324,6 +328,8 @@ function DocForm(): JSX.Element {
                                                             </div>
                                                         </div>
                                                     ))}
+
+
                                                 </div>
                                                 {formErrors.image_url && (
                                                     <div className="error-message-os">
@@ -332,6 +338,7 @@ function DocForm(): JSX.Element {
                                                 )}
                                             </div>
                                             <div className="SalecampusForm-col-os">
+                                                <label>Discription</label>
                                                 <div className="SalecampusForm-input-os">
                                                     <textarea
                                                         name="discription"

@@ -259,6 +259,8 @@ const Login: React.FC = () => {
               </div>
               <Modal
                 title="Terms and Conditions"
+                centered
+                width={1200}
                 visible={showTermsModal}
                 onCancel={() => setShowTermsModal(false)}
                 footer={[

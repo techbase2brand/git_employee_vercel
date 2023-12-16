@@ -61,11 +61,6 @@ const TermCondition: React.FC<unknown> = () => {
 
   const handleSubmit = () => {
     const isEditMode = !!location?.state?.TermID;
-    if (!termTask.term || !termTask.date) {
-      alert("All fields are required.");
-      return;
-    }
-
     const apiEndpoint = isEditMode
       ? `https://empbackend.base2brand.com/update/addTermCondition/${location?.state?.TermID}`
       : "https://empbackend.base2brand.com/create/addTermCondition";
@@ -119,18 +114,14 @@ const TermCondition: React.FC<unknown> = () => {
             <div className="add-div">
               <h1>Term & Conditions</h1>
 
-              <div>
                 <label className="add-label">
                   Term:<span style={{ color: "red" }}>*</span>
                 </label>
-                <div style={{ width: "89%" }} className="form-control">
                   <textarea
                     style={{
-                      outline: "none",
                       border: "none",
                       width: "100%",
-                      height: "10vh",
-                      resize: "none",
+                      height: "20vh",
                       boxSizing: "content-box",
                     }}
                     name="task"
@@ -139,8 +130,6 @@ const TermCondition: React.FC<unknown> = () => {
                     onChange={(e) => handleTermChange(e.target.value)}
                     required
                   />
-                </div>
-              </div>
               <div className="SalecampusForm-col-os">
                 <label className="add-label">
                   Date:
