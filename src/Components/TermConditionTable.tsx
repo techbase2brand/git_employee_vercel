@@ -55,11 +55,6 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
 
   const columns = [
     {
-      title: "TermID",
-      dataIndex: "TermID",
-      key: "TermID",
-    },
-    {
       title: "term",
       dataIndex: "term",
       key: "term",

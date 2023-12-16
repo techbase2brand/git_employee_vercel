@@ -26,6 +26,8 @@ interface Props {
 // Define the Table component
 const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   const [data, setData] = useState<Employee[]>([]);
+  const loggedEmployees = data.filter(employee => employee.logged===0);
+
   const [editID, setEditID] = useState<string | number | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -36,9 +38,11 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     const filteredObj = data.filter((obj) => {
       return obj.EmpID === editID;
     });
+
     setEmpObj(filteredObj[0]);
     navigate("/employee-form", { state: { empEditObj: filteredObj[0] } });
   }
+
 
   useEffect(() => {
     axios
@@ -246,7 +250,6 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   const handleCheckAll = () => {
     const allCheckedIn = data.every(employee => employee.logged === 1);
     const newStatus = allCheckedIn ? 0 : 1;
-
     data.forEach(employee => {
       axios.put(`https://empbackend.base2brand.com/employeeUpdatelogged/${employee.EmpID}`, {
         logged: newStatus

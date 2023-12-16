@@ -26,11 +26,7 @@ interface SalesInfoData {
 const DocTable = () => {
 
   const [data, setData] = useState<SalesInfoData[]>([]);
-  console.log("data",data)
-
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
-  console.log("filteredData",filteredData)
-  console.log()
   const [search, setSearch] = useState<string>("");
   const Navigate = useNavigate();
   const myDataString = localStorage.getItem('myData');
@@ -43,8 +39,6 @@ const DocTable = () => {
 
   }
   const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch);
-  console.log("matchedData",matchedData)
-  const totalLength = matchedData.length;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisiblee, setModalVisiblee] = useState(false);
   const [modalContent, setModalContent] = useState<string[]>([]);
@@ -112,8 +106,6 @@ const DocTable = () => {
       )
       .then((response) => {
         const resData = response.data;
-        console.log("resData", resData)
-
         setData(resData);
         setFilteredData(resData);
       });
@@ -249,28 +241,28 @@ const DocTable = () => {
       title: "Action",
       key: "action",
       render: (_: any, record: SalesInfoData) => (
-        record?.isCompleted === null ?
-        <span>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record.id)}
-          >
-            Edit
-          </Button>
-          <Button
-            type="link"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => {
-              setRecordToDelete(record);
-              showModalDel();
-            }}
-          >
-            Delete
-          </Button>
-        </span>
-        : ""
+        record?.isCompleted === 0 || record?.isCompleted === null || jobPosition === "Managing Director" ?
+          <span>
+            <Button
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record.id)}
+            >
+              Edit
+            </Button>
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => {
+                setRecordToDelete(record);
+                showModalDel();
+              }}
+            >
+              Delete
+            </Button>
+          </span>
+          : ""
       ),
     },
   ];
