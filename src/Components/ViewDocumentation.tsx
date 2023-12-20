@@ -18,6 +18,7 @@ interface SalesInfoData {
     sendTo: string;
     isCompleted: boolean;
     category: string;
+    pdfData: string;
 }
 
 const ViewDocumentation = () => {
@@ -25,7 +26,7 @@ const ViewDocumentation = () => {
     const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
     const [search, setSearch] = useState<string>("");
     const myDataString = localStorage.getItem('myData');
- 
+
     let clientName = "";
     if (myDataString) {
         const myData = JSON.parse(myDataString);
@@ -42,10 +43,16 @@ const ViewDocumentation = () => {
         null
     );
     const [currentImage, setCurrentImage] = useState('');
+    const [currentPdf, setCurrentPdf] = useState<string>('');
+    const [modalVisiblePdf, setModalVisiblePdf] = useState<boolean>(false);
 
     const handleImageClick = (imageUrl: string) => {
         setCurrentImage(imageUrl);
         setModalVisiblee(true);
+    };
+    const handlePdfClick = (pdfUrl: string) => {
+        setCurrentPdf(pdfUrl);
+        setModalVisiblePdf(true);
     };
     const showModalUrl = (text: string | string[]) => {
         const url = Array.isArray(text) ? text : text.split(',');
@@ -177,30 +184,20 @@ const ViewDocumentation = () => {
             dataIndex: 'image_url',
             key: 'image_url',
             render: (text: string | string[]) => {
-                let images: { url: string }[] = [];
+                let images: string[] = [];
 
-                if (typeof text === 'string') {
-                    try {
-                        const parsedImages = JSON.parse(text);
-
-                        if (Array.isArray(parsedImages)) {
-                            images = parsedImages.map((image: any) => ({ url: image.url }));
-                        } else {
-                            images = [{ url: parsedImages.url }];
-                        }
-                    } catch (error) {
-                        console.error('Error parsing image URLs:', error);
-                    }
-                } else {
-                    images = (text as string[]).map((url: string) => ({ url }));
+                if (Array.isArray(text)) {
+                    images = text;
+                } else if (typeof text === 'string') {
+                    images = text.split(',');
                 }
 
                 return (
                     <div>
-                        {images.map((imageObj: { url: string }, index: number) => (
+                        {images.map((imageUrl: string, index: number) => (
                             <img
                                 key={index}
-                                src={imageObj.url}
+                                src={imageUrl}
                                 alt={`Img ${index + 1}`}
                                 style={{
                                     width: '50px',
@@ -208,8 +205,32 @@ const ViewDocumentation = () => {
                                     marginRight: '5px',
                                     cursor: 'pointer',
                                 }}
-                                onClick={() => handleImageClick(imageObj.url)}
+                                onClick={() => handleImageClick(imageUrl)}
                             />
+                        ))}
+                    </div>
+                );
+            },
+        },
+        {
+            title: 'PDF Data',
+            dataIndex: 'pdfData',
+            key: 'pdfData',
+            render: (pdf: string | string[]) => {
+                let pdfFiles: string[] = [];
+
+                if (Array.isArray(pdf)) {
+                    pdfFiles = pdf;
+                } else if (typeof pdf === 'string') {
+                    pdfFiles = [pdf];
+                }
+
+                return (
+                    <div>
+                        {pdfFiles.map((pdfUrl: string, index: number) => (
+                            <div key={index}>
+                                <button onClick={() => handlePdfClick(pdfUrl)} style={{ color: 'blue' }}>Open PDF</button>
+                            </div>
                         ))}
                     </div>
                 );
@@ -251,7 +272,7 @@ const ViewDocumentation = () => {
             render: (text: string) => <div>{text}</div>,
         },
         {
-            title: "Completed",
+            title: "Approved",
             dataIndex: "isCompleted",
             key: "isCompleted",
             render: (isCompleted: boolean, record: SalesInfoData) => (
@@ -368,12 +389,48 @@ const ViewDocumentation = () => {
                                 <Modal
                                     centered
                                     width={1500}
-                                    title="Image Preview"
+                                    title={
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <span style={{ color: 'red' }}>Image Preview - {currentImage}</span>
+                                            <a href={currentImage} download="image.jpg" style={{ color: 'blue' }}>
+                                                Download
+                                            </a>
+                                        </div>
+                                    }
                                     visible={modalVisiblee}
                                     onCancel={() => setModalVisiblee(false)}
                                     footer={null}
                                 >
                                     <img src={currentImage} alt="Preview" style={{ width: '100%' }} />
+                                </Modal>
+                                {/* <Modal
+                                    centered
+                                    width={800}
+                                    title={<span style={{ color: 'red' }}>PDF Preview</span>}
+                                    visible={modalVisiblePdf}
+                                    onCancel={() => setModalVisiblePdf(false)}
+                                    footer={null}
+                                >
+                                    <iframe src={currentPdf} style={{ width: '100%', height: '500px' }} />
+                                </Modal> */}
+                                <Modal
+                                    centered
+                                    width={800}
+                                    title={<span style={{ color: 'red' }}>File Preview</span>}
+                                    visible={modalVisiblePdf}
+                                    onCancel={() => setModalVisiblePdf(false)}
+                                    footer={null}
+                                >
+                                    {currentPdf.endsWith('.pdf') ? (
+                                        <iframe src={currentPdf} style={{ width: '100%', height: '500px' }} />
+                                    ) : (
+                                        <div>
+                                            <p>Unable to preview this file. Click below to download:</p>
+                                            <a href={currentPdf} download>
+                                                Download File
+                                            </a>
+                                        </div>
+                                    )}
                                 </Modal>
                             </div>
                         </section>

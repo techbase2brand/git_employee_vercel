@@ -7,7 +7,6 @@ import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent, Input } from 
 // import { Select, Space } from 'antd';
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import EmployeeTable from "./EmployeeTable";
 import TaskTable from "./TaskTable";
 import DashboardTable from "./DashboardTable";
 import axios from "axios";
@@ -125,7 +124,7 @@ const Dashboard: React.FC = () => {
                 setSetTotalUpWorkHrs={setSetTotalUpWorkHrs} />
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div style={{display: 'flex'}}>
+              <div style={{ display: 'flex' }}>
                 <div style={{
                   display: "flex",
                   width: "100%",

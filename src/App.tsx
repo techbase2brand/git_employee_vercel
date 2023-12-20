@@ -57,9 +57,7 @@ import SalesMaster from "./Components/SalesMaster";
 import AssignTaskPage from "./Components/AssignTaskPage";
 import ViewBacklogPage from "./Components/ViewBacklogPage";
 import AssignedTasks from "./Components/AssignedTasks";
-import axios from "axios";
-
-
+import ChatMessagePage from "./Components/ChatMessagePage";
 export const GlobalInfo = createContext<any>({});
 
 export const AssignedTaskCountContext = createContext<{
@@ -128,6 +126,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ChatMessagePage"
+            element={
+              <ProtectedRoute>
+                <ChatMessagePage />
               </ProtectedRoute>
             }
           />

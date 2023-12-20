@@ -15,6 +15,7 @@ interface FormData {
     postedBy: string;
     sendTo: string;
     category: string;
+    pdfData: string;
 }
 interface Employee {
     EmpID: string | number;
@@ -45,6 +46,7 @@ function DocForm(): JSX.Element {
         postedBy: employeeName,
         sendTo: "",
         category: "",
+        pdfData: "",
     };
     const location = useLocation();
     const Navigate = useNavigate();
@@ -58,33 +60,68 @@ function DocForm(): JSX.Element {
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
     const filteredData = employees.filter((item: any) => item.status === 1);
+    const [pdfFiles, setPdfFiles] = useState<File[]>([]);
+
+    const handlePdfChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files: FileList | null = e.target.files;
+        if (files) {
+            setPdfFiles(Array.from(files));
+            const formData = new FormData();
+            Array.from(files).forEach((file: File) => {
+                formData.append("pdf_files[]", file);
+            });
+            try {
+                const response = await axios.post("https://empbackend.base2brand.com/upload-pdf", formData);
+                const pdfUrl = response.data.pdf_url;
+                setFormData((prevData) => ({
+                    ...prevData,
+                    pdfData: pdfUrl,
+                }));
+            } catch (error) {
+                console.error("Error uploading PDF:", error);
+            }
+        }
+    };
 
     useEffect(() => {
         if (record) {
             setFormData(record);
+            if (Array.isArray(record.image_url) && record.image_url.length > 0) {
+                setImagePreviews([...record.image_url]);
+            } else if (typeof record.image_url === 'string') {
+                const trimmedUrl = (record.image_url as string).trim();
+                if (trimmedUrl.length > 0) {
+                    setImagePreviews([trimmedUrl]);
+                } else {
+                    setImagePreviews([]);
+                }
+            } else {
+                setImagePreviews([]);
+            }
         }
     }, [record]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files: FileList | null = e.target.files;
         if (files) {
-            console.log("files", files)
-            const newFilesArray: File[] = Array.from(files);
-            console.log("newFilesArray", newFilesArray)
-
-            const newImageUrls = newFilesArray.map((file) => URL.createObjectURL(file));
-            console.log("newImageUrls", newImageUrls)
-
-            setImageFiles([...imageFiles, ...newFilesArray]);
-            setImagePreviews([...imagePreviews, ...newImageUrls]);
-            setFormData((prevData) => ({
-                ...prevData,
-                image_url: [...prevData.image_url, ...newImageUrls],
-            }));
+            const formData = new FormData();
+            Array.from(files).forEach((file: File) => {
+                formData.append("images", file);
+            });
+            try {
+                const response = await axios.post("https://empbackend.base2brand.com/upload", formData);
+                const newImageUrls = response.data.image_urls;
+                setImageFiles((prevFiles: File[]) => [...prevFiles, ...Array.from(files)]);
+                setImagePreviews((prevPreviews: string[]) => [...prevPreviews, ...newImageUrls]);
+                setFormData((prevData: FormData) => ({
+                    ...prevData,
+                    image_url: [...prevData.image_url, ...newImageUrls],
+                }));
+            } catch (error) {
+                console.error("Error uploading images:", error);
+            }
         }
     };
-
-
     const handleRemoveImage = (index: number) => {
         const newImageFiles = [...imageFiles];
         newImageFiles.splice(index, 1);
@@ -93,8 +130,13 @@ function DocForm(): JSX.Element {
         const newImagePreviews = [...imagePreviews];
         newImagePreviews.splice(index, 1);
         setImagePreviews(newImagePreviews);
+
         setFormData((prevData) => {
-            const updatedImageUrls = prevData.image_url.filter((_, i) => i !== index);
+            console.log("prevData", prevData)
+            let updatedImageUrls = prevData.image_url;
+            if (Array.isArray(prevData.image_url)) {
+                updatedImageUrls = prevData.image_url.filter((_, i) => i !== index);
+            }
             return {
                 ...prevData,
                 image_url: updatedImageUrls,
@@ -102,7 +144,6 @@ function DocForm(): JSX.Element {
         });
     };
 
-    // input handlechange
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
@@ -178,16 +219,12 @@ function DocForm(): JSX.Element {
         if (formData.id) {
             handleUpdate();
         } else {
-            console.log("submitForm-else-os");
-            axios
-                .post(`https://empbackend.base2brand.com/submit-document`, formData)
-                .then((response) => {
-                    console.log("response.data", response);
-                    setSubmitted(true);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            try {
+                const response = await axios.post("https://empbackend.base2brand.com/submit-document", formData);
+                setSubmitted(true);
+            } catch (error) {
+                console.error("Error adding new entry:", error);
+            }
         }
     };
 
@@ -195,28 +232,43 @@ function DocForm(): JSX.Element {
         e.preventDefault();
         const newErrors: Record<string, string> = {};
         setFormErrors(newErrors);
+
         if (Object.keys(newErrors).length === 0) {
-            submitForm();
-            Navigate("/DocTable");
+            if (formData.id) {
+                handleUpdate();
+            } else {
+                const formPayload = {
+                    ...formData,
+                    image_url: imagePreviews,
+                };
+
+                try {
+                    const response = await axios.post("https://empbackend.base2brand.com/submit-document", formPayload);
+                    setSubmitted(true);
+                    Navigate("/DocTable");
+                } catch (error) {
+                    console.error("Error submitting form:", error);
+                }
+            }
         }
     };
-
     const handleUpdate = () => {
-        const statusUrlString = statusUrl.join(',');
         const updatedFormData = {
             ...formData,
-            url: statusUrlString,
+            url: statusUrl.join(','),
         };
+
         axios
-            .put(`https://empbackend.base2brand.com/updatedocument/${updatedFormData?.id}`, updatedFormData)
+            .put(`https://empbackend.base2brand.com/updatedocument/${updatedFormData.id}`, updatedFormData)
             .then((response) => {
-                Navigate("/DocTable");
                 setSubmitted(true);
+                Navigate("/DocTable");
             })
             .catch((error) => {
-                console.log(error);
+                console.error("Error updating form:", error);
             });
     };
+
     const Language = [
         {
             "id": 1,
@@ -257,7 +309,7 @@ function DocForm(): JSX.Element {
                             <div className="form-container">
                                 <div className="SalecampusForm-data-os">
                                     <h2>Documentation Form</h2>
-                                    <form onSubmit={handleSubmit}>
+                                    <form action="/upload" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>
                                         <div className="SalecampusForm-row-os">
                                             <div className="SalecampusForm-col-os">
                                                 <label>Title</label>
@@ -306,37 +358,75 @@ function DocForm(): JSX.Element {
                                                     )}
                                                 </div>
                                             ))}
+                                            {!formData.id &&
+                                                <div className="SalecampusForm-col-os">
+                                                    <label>Add Images</label>
+                                                    <div className="SalecampusForm-input-os">
+                                                        <input
+                                                            type="file"
+                                                            name="image_url"
+                                                            accept="image/*"
+                                                            multiple
+                                                            onChange={handleImageChange}
+                                                        />
+                                                        {imageFiles.map((file, index) => (
+                                                            <div key={index} className="SalecampusForm-image-preview">
+                                                                <img
+                                                                    src={URL.createObjectURL(file)}
+                                                                    alt={`Image ${index + 1}`}
+                                                                    style={{ width: '10%' }}
+                                                                />
+                                                                <div
+                                                                    style={{ float: 'right' }}
+                                                                    onClick={() => handleRemoveImage(index)}
+                                                                >
+                                                                    <MinusCircleOutlined rev={undefined} />
+                                                                </div>
+                                                            </div>
+                                                        ))}
 
-                                            <div className="SalecampusForm-col-os">
-                                                <label>Add Images</label>
-                                                <div className="SalecampusForm-input-os">
-                                                    <input
-                                                        type="file"
-                                                        name="image_url"
-                                                        accept="image/*"
-                                                        multiple
-                                                        onChange={handleImageChange}
-                                                    />
-                                                    {imagePreviews.map((preview, index) => (
+                                                        {/* {formData.id && imageUrlArray.map((imageUrl, index) => (
                                                         <div key={index} className="SalecampusForm-image-preview">
-                                                            <img src={preview} alt={`Image ${index + 1} not found`} style={{ width: '10%' }} />
+                                                            <img
+                                                                src={imageUrl.trim()}
+                                                                alt={`Image ${index + 1}`}
+                                                                style={{ width: '10%' }}
+                                                            />
                                                             <div
                                                                 style={{ float: 'right' }}
-                                                                onClick={() => handleRemoveImage(index)}
+                                                                onClick={() => handleRemoveImage(imageFiles?.findIndex((file, fileIndex) => fileIndex === index))}
                                                             >
                                                                 <MinusCircleOutlined rev={undefined} />
                                                             </div>
                                                         </div>
-                                                    ))}
+                                                    ))} */}
 
-
-                                                </div>
-                                                {formErrors.image_url && (
-                                                    <div className="error-message-os">
-                                                        {formErrors.image_url}
                                                     </div>
-                                                )}
-                                            </div>
+                                                    {formErrors.image_url && (
+                                                        <div className="error-message-os">
+                                                            {formErrors.image_url}
+                                                        </div>
+                                                    )}
+                                                </div>}
+                                            {!formData.id &&
+                                                <div className="SalecampusForm-col-os">
+                                                    <label>Add All Type of File</label>
+                                                    <div className="SalecampusForm-input-os">
+                                                        <input
+                                                            type="file"
+                                                            name="pdf_file"
+                                                            accept=".pdf, .txt, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                            multiple
+                                                            onChange={handlePdfChange}
+                                                        />
+
+                                                    </div>
+                                                    {pdfFiles.map((file, index) => (
+                                                        <div key={index}>
+                                                            <p>{file.name}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>}
                                             <div className="SalecampusForm-col-os">
                                                 <label>Discription</label>
                                                 <div className="SalecampusForm-input-os">
@@ -397,7 +487,7 @@ function DocForm(): JSX.Element {
                                                 </div>
                                             </div>
                                             <div className="SalecampusForm-submit-os">
-                                                <button onClick={handleSubmit} type="submit">
+                                                <button type="submit">
                                                     {formData.id ? "Update" : "Submit"}
                                                 </button>
                                             </div>
