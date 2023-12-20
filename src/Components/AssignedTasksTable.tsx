@@ -1,7 +1,8 @@
-import React, { useState, useEffect,useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Table } from "antd";
 import axios from "axios";
 
+import io from "socket.io-client";
 interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
@@ -17,7 +18,7 @@ interface BacklogTask {
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
 
-  const isWithinLastOneMonth = (dateString :any) => {
+  const isWithinLastOneMonth = (dateString: any) => {
     const taskDate = new Date(dateString);
     const currentDate = new Date();
     const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
@@ -31,33 +32,46 @@ const AssignedTasksTable: React.FC = () => {
     () => (dataString ? JSON.parse(dataString) : []),
     [dataString]
   );
-  console.log(employeeInfo);
 
 
+  // useEffect(() => {
+  //   axios
+  //     .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
+  //     )
+  //     .then((response) => {
+  //       const sortedData = response.data.sort(
+  //         (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+  //       );
+  //       console.log(sortedData);
+  //      console.log(employeeInfo?.EmployeeID);
+
+
+
+
+  //       const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
+  //       );
+  //       setData(filteredData);
+  //       console.log(filteredData);
+
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       console.log("Error details:", error.response);
+  //     });
+  // }, []);
   useEffect(() => {
-    axios
-      .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
-      )
-      .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-        );
-        console.log(sortedData);
-       console.log(employeeInfo?.EmployeeID);
-
-
-
-
-        const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
-        );
-        setData(filteredData);
-        console.log(filteredData);
-
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        console.log("Error details:", error.response);
-      });
+    const socket = io("http://localhost:5000");
+    socket.on("notification", (data: { data: any[] }) => {
+      const sortedData = data?.data?.sort(
+        (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+      );
+      const filteredData = sortedData?.filter(
+        (task) =>
+          isWithinLastOneMonth(task?.currdate) &&
+          task?.employeeID === employeeInfo?.EmployeeID
+      );
+      setData(filteredData);
+    });
   }, []);
 
   const handleCheckboxChange = (isChecked: boolean, backlogTaskID: number) => {
@@ -68,20 +82,20 @@ const AssignedTasksTable: React.FC = () => {
 
     // Call the API endpoint to update the task completion status
     axios
-    .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
-      { isCompleted: isChecked },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response.data.message);
-    })
-    .catch((error) => {
-      console.error("Error updating task completion status:", error);
-    });
+      .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
+        { isCompleted: isChecked },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data.message);
+      })
+      .catch((error) => {
+        console.error("Error updating task completion status:", error);
+      });
 
 
     localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(isChecked));

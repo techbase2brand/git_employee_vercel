@@ -59,6 +59,7 @@ const AddModule: React.FC<unknown> = () => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
+  console.log("modules",modules)
   const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
     []
   );
@@ -482,7 +483,6 @@ const AddModule: React.FC<unknown> = () => {
                       })}
                   </select>
                 </div> */}
-
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   {/* <label className="add-label">Module</label> */}
                   <label className="add-label">

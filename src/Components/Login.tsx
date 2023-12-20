@@ -23,64 +23,64 @@ const Login: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [getIp, setGetIp] = useState("");
-  const [employeedata] = useState<unknown>();
-  const { getEmpInfo, setEmpInfo } = useContext(GlobalInfo);
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
   const onFinish = (values: { email: string; password: string }) => {
     console.log("Received values of form: ", values);
 
     axios
-    .post("https://empbackend.base2brand.com/user/login", values)
-    .then((res) => {
-      setApiResponse(res.data);
-      console.log("res", res)
-      if (res?.data === "Invalid username or password") {
-        alert("Invalid username or password");
-      } else {
-        console.log("Login successful");
-        if (res.data.user.logged === 0) {
-          setShowTermsModal(true);
-          axios
-          .put(
-            `https://empbackend.base2brand.com/employeeipAddress/${res?.data?.user?.EmpID}`,
-            {
-              IpAddress: getIp,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-              },
-            }
-          )
-          .then((response) => {
-            console.log('IpAddress updated successfully');
-          })
-          .catch((error) => {
-            console.error('Error updating IpAddress:', error);
-          });
+      .post("https://empbackend.base2brand.com/user/login", values)
+      .then((res) => {
+        setApiResponse(res.data);
+        console.log("res", res)
+        console.log("res?.data?.user?.EmpID", res?.data?.user?.EmpID)
+
+        if (res?.data === "Invalid username or password") {
+          alert("Invalid username or password");
         } else {
-          navigate("/add-morning-task");
+          console.log("Login successful");
+          if (res.data.user.logged === 0) {
+            setShowTermsModal(true);
+            axios.get('https://api.ipify.org?format=json')
+              .then((response) => {
+                const ipAddress = response.data.ip;
+                setGetIp(ipAddress);
+                axios
+                  .put(
+                    `https://empbackend.base2brand.com/employeeipAddress/${res?.data?.user?.EmpID}`,
+                    {
+                      IpAddress: ipAddress,
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                      },
+                    }
+                  )
+                  .then((response) => {
+                    console.log('IpAddress updated successfully');
+                  })
+                  .catch((error) => {
+                    console.error('Error updating IpAddress:', error);
+                  });
+              })
+              .catch((error) => {
+                console.error('Error fetching data:', error);
+              });
+          } else {
+            navigate("/add-morning-task");
+          }
+          const { user, token } = res.data;
+          const dataString = JSON.stringify(user);
+          localStorage.setItem("myData", dataString);
+          localStorage.setItem("myToken", token);
         }
-        // Save user info and token in state and local storage
-        const { user, token } = res.data;
-
-        // Convert the user data to a JSON string
-        const dataString = JSON.stringify(user);
-
-        // Store the user data and the token in localStorage
-        localStorage.setItem("myData", dataString);
-        localStorage.setItem("myToken", token);
-        // navigate("/add-morning-task"); 
-      }
-
-    })
-    .catch((error) => {
-      console.log(error.response?.data); // Log the error message
-      // Show an error message to the user
-    });
+      })
+      .catch((error) => {
+        console.log(error.response?.data);
+      });
   };
-  
+
   useEffect(() => {
     axios
       .get<Task[]>("https://empbackend.base2brand.com/get/addTermCondition", {
@@ -95,17 +95,17 @@ const Login: React.FC = () => {
         console.error("Error fetching data:", error);
       });
   }, []);
-  
-  useEffect(() => {
-    axios.get('https://api.ipify.org?format=json')
-      .then((response) => {
-        console.log("resssss",response.data.ip)
-        setGetIp(response.data.ip)
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []); 
+
+  // useEffect(() => {
+  //   axios.get('https://api.ipify.org?format=json')
+  //     .then((response) => {
+  //       console.log("resssss",response.data.ip)
+  //       setGetIp(response.data.ip)
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching data:', error);
+  //     });
+  // }, []); 
 
   const handleAcceptTerms = () => {
     if (apiResponse && apiResponse.user) {

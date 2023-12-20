@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-
+import io from "socket.io-client";
 interface LeaveData {
   LeaveInfoID: number;
   employeeName: string;
@@ -86,6 +86,30 @@ const LeavePageTable: React.FC = () => {
         console.error("Error denying leave data:", error);
       });
   };
+  useEffect(() => {
+    const socket = io("http://localhost:5000");
+
+    socket.on("leaveinfo", (data: { data: any[] }) => {
+      console.log(data, "dataaaaaaddd");
+
+      const sortedData = data?.data?.sort(
+        (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+      );
+
+      const employeeInfo = JSON.parse(localStorage.getItem("myData") || "{}");
+      console.log(employeeInfo);
+
+      const approverID = employeeInfo.EmployeeID;
+      console.log(approverID, "approverIDapproverID");
+
+      // Filter the sortedData based on the adminID
+      const filteredData = sortedData.filter(
+        (data) => data.adminID === approverID
+      );
+
+      setData(filteredData);
+    });
+  }, []);
 
 
   const fetchData = () => {

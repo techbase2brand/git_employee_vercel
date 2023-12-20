@@ -1,7 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect, useContext, useCallback } from "react";
-import PropTypes from 'prop-types';
-
 import {
   Input,
   Layout,
@@ -11,8 +9,10 @@ import {
   List,
   // notification,
 } from "antd";
-import { SearchOutlined, BellOutlined, UserOutlined } from "@ant-design/icons";
-import axios from "axios";
+import {
+  SearchOutlined, BellOutlined, UserOutlined, MessageOutlined,
+  PhoneOutlined
+} from "@ant-design/icons";
 import { AssignedTaskCountContext } from "../App";
 import io from "socket.io-client";
 // import { message } from "antd";
@@ -33,14 +33,39 @@ interface BacklogTask {
   AssignedBy: string;
   isCompleted: boolean;
   employeeID: string;
-
-
 }
+
+interface LeaveData {
+  LeaveInfoID: number;
+  employeeName: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  leaveType: string;
+  leaveReason: string;
+  teamLead: string;
+  employeeID: string;
+  adminID: string;
+  approvalOfTeamLead: string;
+  approvalOfHR: string;
+}
+
+interface BaseNotification {
+  id: number; // Common identifier for all notificationss
+  type: "task" | "leave";
+}
+
+// Extending the specific notification types to include common properties
+interface TaskNotification extends BacklogTask, BaseNotification { }
+interface LeaveNotification extends LeaveData, BaseNotification { }
+
+type Notification = TaskNotification | LeaveNotification;
+
 const Navbar: React.FunctionComponent = () => {
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
     useState(false);
 
-  const [notifications, setNotifications] = useState<BacklogTask[]>([]);
+  const [notificationss, setNotificationss] = useState<BacklogTask[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
@@ -58,7 +83,7 @@ const Navbar: React.FunctionComponent = () => {
 
 
 
-  // console.log(notifications,"notifications");
+  // console.log(notificationss,"notificationss");
   // console.log(assignedTaskCount,"assignedTaskCount");
 
   // const initialNotificationCount = Number(
@@ -70,15 +95,14 @@ const Navbar: React.FunctionComponent = () => {
 
 
   const updateNotificationCount = () => {
-    // setNotificationCount(notifications.length);
+    // setNotificationCount(notificationss.length);
   };
 
-  // Call updateNotificationCount() whenever you update the notifications state
+  // Call updateNotificationCount() whenever you update the notificationss state
 
 
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
-      console.log("This browser does not support desktop notifications.");
       return;
     }
     if (Notification.permission !== "granted") {
@@ -102,7 +126,6 @@ const Navbar: React.FunctionComponent = () => {
         icon: "path/to/your/icon.png",
       });
 
-      console.log("ggggg-----iiiii");
 
       if (onClick) {
         notification.onclick = onClick;
@@ -125,12 +148,12 @@ const Navbar: React.FunctionComponent = () => {
   //      console.log(newTasks,"newTasks ");
   //      console.log(response.data[0].assigneeEmployeeID,"response.data[0].assigneeEmployeeID");
   //      console.log(assigneeEmployeeID,"assigneeEmployeeID");
-  //      console.log(notifications);
+  //      console.log(notificationss);
 
 
 
-  //           // Add the new tasks to notifications.
-  //           setNotifications((prevNotifications) => [...prevNotifications, ...newTasks]);
+  //           // Add the new tasks to notificationss.
+  //           setNotificationss((prevNotifications) => [...prevNotifications, ...newTasks]);
   //         })
   //         .catch(error => {
   //           console.error('Error fetching tasks:', error);
@@ -143,7 +166,6 @@ const Navbar: React.FunctionComponent = () => {
 
   const handleTaskAssigned = useCallback(
     (assigneeEmployeeID: unknown) => {
-      console.log("handleTaskAssigned called");
 
       if (myData && myData?.EmployeeID === assigneeEmployeeID) {
         setAssignedTaskCount((prevCount) => prevCount + 1);
@@ -177,12 +199,49 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
+    const socket = io("http://localhost:5000");
+    socket.on("notification", (taskData) => {
+      const taskNotifications = taskData?.data
+        ?.filter((item: TaskNotification) => item.employeeID === myData.EmployeeID)
+        .map((item: TaskNotification) => ({
+          ...item,
+          type: "task",
+          id: item.backlogTaskID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = taskNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
 
-    const socket = io("https://empbackend.base2brand.com");
+    socket.on("leaveinfo", (leaveData) => {
+      const leaveNotifications = leaveData?.data
+        ?.filter((item: LeaveData) => item.adminID === myData.EmployeeID)
+        .map((item: LeaveData) => ({
+          ...item,
+          type: "leave",
+          id: item.LeaveInfoID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id); // Sort by id in descending order
 
+      setNotifications((prevNotifications) => {
+        const newNotifications = leaveNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
 
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
     socket.on('notification', (data) => {
-      console.log("ewrew", data)
       const visitedNotificationIds = getVisitedNotificationIds();
 
       const filteredData = data?.data?.filter(
@@ -193,10 +252,9 @@ const Navbar: React.FunctionComponent = () => {
         (a: { backlogTaskID: any; }, b: { backlogTaskID: any; }) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
       );
 
-      setNotifications(sortedData);
+      setNotificationss(sortedData);
       updateNotificationCount(); // Update the notification count
 
-      console.log("datadatadata===============", data)
 
     })
     socket.on("taskAssigned", handleTaskAssigned);
@@ -204,21 +262,40 @@ const Navbar: React.FunctionComponent = () => {
       socket.off("taskAssigned", handleTaskAssigned);
       socket.disconnect();
     };
-  }, [handleTaskAssigned]);
-
-
+  }, [handleTaskAssigned, myData.EmployeeID]);
+  const getVisitedNotificationObjects = () => {
+    const visitedNotifications = localStorage.getItem("visitedNotificationObjects");
+    return visitedNotifications ? JSON.parse(visitedNotifications) : [];
+  };
+  // Function to mark a notification as visited and store it in local storage
+  const markNotificationAsVisited = (notification: Notification) => {
+    const visitedNotificationObjects = getVisitedNotificationObjects();
+    const notificationObject = {
+      notificationId: notification.id,
+      employeeID: notification.employeeID,
+    };
+    if (!visitedNotificationObjects.some((obj: { notificationId: number; employeeID: string; }) =>
+      obj.notificationId === notificationObject.notificationId &&
+      obj.employeeID === notificationObject.employeeID)) {
+      visitedNotificationObjects.push(notificationObject);
+      localStorage.setItem(
+        "visitedNotificationObjects",
+        JSON.stringify(visitedNotificationObjects)
+      );
+    }
+  };
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
-  const markNotificationAsVisited = (notificationId: number) => {
-    const visitedNotificationIds = getVisitedNotificationIds();
-    visitedNotificationIds.push(notificationId);
-    localStorage.setItem(
-      "visitedNotificationIds",
-      JSON.stringify(visitedNotificationIds)
-    );
-  };
+  // const markNotificationAsVisited = (notificationId: number) => {
+  //   const visitedNotificationIds = getVisitedNotificationIds();
+  //   visitedNotificationIds.push(notificationId);
+  //   localStorage.setItem(
+  //     "visitedNotificationIds",
+  //     JSON.stringify(visitedNotificationIds)
+  //   );
+  // };
   // useEffect(() => {
   //     axios
   //       .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
@@ -237,7 +314,7 @@ const Navbar: React.FunctionComponent = () => {
   //           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
   //         );
 
-  //         setNotifications(sortedData);
+  //         setNotificationss(sortedData);
   //         updateNotificationCount(); // Update the notification count
   //       })
   //       .catch((error) => {
@@ -274,49 +351,69 @@ const Navbar: React.FunctionComponent = () => {
     const truncatedWords = words.slice(0, maxWords);
     return truncatedWords.join(' ');
   };
-
+  const isTaskNotification = (
+    notification: Notification
+  ): notification is TaskNotification => {
+    return notification.type === "task";
+  };
   const notificationList = (
     <List
       itemLayout="horizontal"
-      dataSource={notifications}
-      renderItem={(item) => (
-        <List.Item
-          key={item.backlogTaskID}
-          onClick={() => {
-            navigate("/AssignedTasks");
-            markNotificationAsVisited(item.backlogTaskID);
-            setNotifications((prevNotifications) =>
-              prevNotifications.filter(
-                (notification) => notification.backlogTaskID !== item.backlogTaskID
-              )
-            );
-            updateNotificationCount(); // Update the notification count
-            console.log(item, "ffggg-------");
-          }}
-          style={listItemStyle}
-        >
-          <List.Item.Meta
-            title={`A new task assigned by ${item?.AssignedBy}: ${getShortTaskDescription(
-              item.taskName
-            )}`}
-          />
-          <CloseOutlined
-            onClick={(e) => {
-              e.stopPropagation(); // Prevents the parent click event from triggering
-              markNotificationAsVisited(item.backlogTaskID);
-              setNotifications((prevNotifications) =>
-                prevNotifications.filter(
-                  (notification) => notification.backlogTaskID !== item.backlogTaskID
-                )
-              );
-              updateNotificationCount(); // Update the notification count
-            }}
-          />
-        </List.Item>
-      )}
+      dataSource={notifications.filter(notification =>
+        !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
+          obj.notificationId === notification.id &&
+          obj.employeeID === notification.employeeID))}
+      renderItem={(item) => {
+        let title;
+        let isLeaveNotification = false;
+
+        if (isTaskNotification(item)) {
+          title = `A new task assigned by ${item.AssignedBy}: ${getShortTaskDescription(item.taskName)}`;
+        } else {
+          title = `Leave request from ${item.employeeName}`;
+          isLeaveNotification = true;
+        }
+
+        const handleItemClick = () => {
+          markNotificationAsVisited(item);
+          if (isLeaveNotification) {
+            navigate("/LeavePage"); // Replace with your actual route to the LeavePage
+          } else {
+            navigate("/AssignedTasks"); 
+          }
+        };
+
+        return (
+          <List.Item
+            key={item.id}
+            onClick={handleItemClick}
+            style={listItemStyle}
+          >
+            <List.Item.Meta title={title} />
+            <CloseOutlined
+              onClick={(e) => {
+                e.stopPropagation();
+                markNotificationAsVisited(item);
+                setNotifications((prevNotifications) =>
+                  prevNotifications.filter(
+                    (notification) => notification.id !== item.id
+                  )
+                );
+              }}
+            />
+          </List.Item>
+        );
+      }}
       style={listStyle}
     />
+
   );
+  const unvisitedNotificationCount = notifications.filter(notification =>
+    !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
+      obj.notificationId === notification.id &&
+      obj.employeeID === notification.employeeID)).length;
+
+  const badgeContent = unvisitedNotificationCount > 9 ? '9+' : unvisitedNotificationCount;
 
   const logout = () => {
     if (window.confirm('Do you really want to logout?')) {
@@ -336,11 +433,11 @@ const Navbar: React.FunctionComponent = () => {
       });
     }
   }, []); // Empty dependency array ensures this runs once after component mount
-const handleBack =()=>{
-  if(rolled==="rakeshbase2brand@gmail.com"){
-    navigate("/dashboard")
+  const handleBack = () => {
+    if (rolled === "rakeshbase2brand@gmail.com") {
+      navigate("/dashboard")
+    }
   }
-}
   return (
     <div>
       <Header
@@ -361,7 +458,7 @@ const handleBack =()=>{
           }}
         >
           <div className="logo" onClick={handleBack}>
-            <img src="./b2b.png" alt="Company Logo"/>
+            <img src="./b2b.png" alt="Company Logo" />
           </div>
           <button id="hideMenuButton" style={{
             width: '35px',
@@ -378,6 +475,46 @@ const handleBack =()=>{
             />
           </div>
         </div>
+        <div
+          style={{
+            marginLeft: "15px",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            minWidth: "4%",
+          }}
+        >
+          <Badge count="5">
+            {" "}
+            {/* unreadChatCount is the number of unread chat messages */}
+            <Popover
+              style={{ width: "20vw" }}
+              content="" // chatList can be a component showing recent chats or messages
+              placement="bottomRight"
+            >
+              <MessageOutlined
+                className="chat-icon"
+                onClick={() => {
+                  navigate("/chatMessagePage");
+                }}
+              />
+            </Popover>
+          </Badge>
+
+          {/* Call Icon with Notification Badge */}
+          <Badge count="3">
+            {" "}
+            {/* Replace "3" with the number of missed calls */}
+            <Popover
+              style={{ width: "20vw" }}
+              content="" // Replace with your callList component
+              placement="bottomRight"
+            >
+              <PhoneOutlined className="call-icon" />
+            </Popover>
+          </Badge>
+        </div>
+
         <div
           style={{
             display: "flex",
@@ -398,7 +535,7 @@ const handleBack =()=>{
               alignItems: "center",
             }}
           >
-            <Badge style={{ marginRight: "3%" }} count={notifications.length}>
+            <Badge count={badgeContent}>
               <Popover
                 style={{ width: "20vw" }}
                 content={notificationList}
