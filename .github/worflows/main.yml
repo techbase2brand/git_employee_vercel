@@ -1,0 +1,34 @@
+name: Employee Management Frontend
+
+on:
+  push:
+    branches: [ "main" ]
+  
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.16.1]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build 
+    - name: ssh deploy
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_DEPLOY_KEY_LIVE }}
+          REMOTE_HOST: ${{ secrets.HOST_LIVE }}
+          REMOTE_USER: ${{ secrets.USER }}
+          TARGET: "/var/www/html/employee_front/"
+          SOURCE: "build/*"
