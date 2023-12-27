@@ -24,6 +24,8 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: npm run build 
+      env:
+          CI: false
     - name: ssh deploy
       uses: easingthemes/ssh-deploy@main
       env:
