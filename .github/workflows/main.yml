@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: npm i
     - run: npm run build 
     - name: ssh deploy
       uses: easingthemes/ssh-deploy@main
