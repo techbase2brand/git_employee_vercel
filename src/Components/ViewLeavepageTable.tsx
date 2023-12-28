@@ -30,7 +30,7 @@ useEffect(() => {
   const token = localStorage.getItem("myToken");
 
   axios
-    .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+    .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -50,7 +50,7 @@ useEffect(() => {
   //   const token = localStorage.getItem("myToken");
 
   //   axios
-  //     .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+  //     .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
   //       headers: {
   //         Authorization: `Bearer ${token}`,
   //       },

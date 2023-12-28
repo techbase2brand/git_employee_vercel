@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
@@ -25,7 +25,7 @@ const ViewTermCondition: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTermCondition", {
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTermCondition`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

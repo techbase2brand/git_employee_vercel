@@ -27,7 +27,7 @@ const TermCondition: React.FC<unknown> = () => {
   useEffect(() => {
     if (location?.state?.TermID) {
       axios
-        .get<Task[]>(`https://empbackend.base2brand.com/get/addTermCondition`, {
+        .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTermCondition`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -62,8 +62,8 @@ const TermCondition: React.FC<unknown> = () => {
   const handleSubmit = () => {
     const isEditMode = !!location?.state?.TermID;
     const apiEndpoint = isEditMode
-      ? `https://empbackend.base2brand.com/update/addTermCondition/${location?.state?.TermID}`
-      : "https://empbackend.base2brand.com/create/addTermCondition";
+      ? `${process.env.REACT_APP_API_BASE_URL}/update/addTermCondition/${location?.state?.TermID}`
+      : `${process.env.REACT_APP_API_BASE_URL}/create/addTermCondition`;
 
     axios({
       method: isEditMode ? "put" : "post",

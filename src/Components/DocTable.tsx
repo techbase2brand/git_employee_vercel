@@ -86,7 +86,7 @@ const DocTable = () => {
   const handleDelete = (id: number) => {
     axios
       .delete(
-        `https://empbackend.base2brand.com/deletedocument/${id}`
+        `${process.env.REACT_APP_API_BASE_URL}/deletedocument/${id}`
         // {
         //   headers: {
         //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
@@ -104,11 +104,13 @@ const DocTable = () => {
     filterData(search);
     setIsModalOpen(false);
   };
+  
+
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-        "https://empbackend.base2brand.com/documentdata"
+        `${process.env.REACT_APP_API_BASE_URL}/documentdata`
         , {
           headers: {
             Authorization: `Bearer ${token}`,

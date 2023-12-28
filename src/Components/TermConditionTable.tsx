@@ -35,7 +35,7 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
 
   const handleDelete = (TermID: number) => {
     axios
-      .delete(`https://empbackend.base2brand.com/delete/addTermCondition/${TermID}`, {
+      .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/addTermCondition/${TermID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

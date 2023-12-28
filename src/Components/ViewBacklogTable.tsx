@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, DatePicker, Select } from "antd";
+import { Table, DatePicker, Select, Modal } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
@@ -15,6 +15,9 @@ interface BacklogTask {
   UserEmail: string;
   isCompleted: number;
   AssignedBy: string;
+  clientName: string;
+  projectName: string;
+  comment: string;
 }
 interface Employee {
   EmpID: string | number;
@@ -82,7 +85,7 @@ const ViewBacklogTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -139,12 +142,12 @@ const ViewBacklogTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks", {
+        const response = await axios.get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         });
-        console.log("response",response)
+        console.log("response", response)
 
         setOriginalData(response.data)
         const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
@@ -152,7 +155,9 @@ const ViewBacklogTable: React.FC = () => {
           e.UserEmail === UserEmail;
           const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
           const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
-          return assigneeMatch || assignedByMatch
+          const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+          const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+          return assigneeMatch || assignedByMatch || clientNameMatch || projectNameMatch;
         });
 
         setData(filteredData);
@@ -165,7 +170,10 @@ const ViewBacklogTable: React.FC = () => {
             e.UserEmail === UserEmail;
             const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
             const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
-            return assigneeMatch || assignedByMatch
+            const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+            const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+            return assigneeMatch || assignedByMatch || clientNameMatch || projectNameMatch;
+
           });
           setData(filteredData);
         } else {
@@ -174,7 +182,7 @@ const ViewBacklogTable: React.FC = () => {
             const isDateInRange =
               taskDate >= tenDaysAgo &&
               (dateRange === null ||
-                (taskDate >= (dateRange[0] || tenDaysAgo) && 
+                (taskDate >= (dateRange[0] || tenDaysAgo) &&
                   taskDate <= (dateRange[1] || today)));
 
             const isAssignedByAdmin = e.UserEmail === UserEmail;
@@ -210,19 +218,31 @@ const ViewBacklogTable: React.FC = () => {
 
   const columns = [
     {
-      title: "Assigned By:",
+      title: "Assigned By",
       dataIndex: "AssignedBy",
       key: "AssignedBy",
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Assigned To:",
+      title: "Assigned To",
       dataIndex: "assigneeName",
       key: "assigneeName",
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Task",
+      title: "Client Name",
+      dataIndex: "clientName",
+      key: "clientName",
+      render: (text: string) => <div>{text || "N/A"}</div>,
+    },
+    {
+      title: "Project Name",
+      dataIndex: "projectName",
+      key: "projectName",
+      render: (text: string) => <div>{text || "N/A"}</div>,
+    },
+    {
+      title: "Task Name",
       dataIndex: "taskName",
       key: "taskName",
       render: (text: string) => <div>{text}</div>,
@@ -283,9 +303,13 @@ const ViewBacklogTable: React.FC = () => {
         )
       ),
     },
+    {
+      title: "comment",
+      dataIndex: "comment",
+      key: "comment",
+      render: (text: string) => <div>{text || "N/A"}</div>,
+    },
   ];
-
-
 
   return (
     <>

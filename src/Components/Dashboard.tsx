@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
   };
   useEffect(() => {
     axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskMorning", {
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }

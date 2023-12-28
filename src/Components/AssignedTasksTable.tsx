@@ -12,11 +12,15 @@ interface BacklogTask {
   deadlineEnd: string;
   currdate: string;
   UserEmail: string;
-  isCompleted: boolean;
+  isCompleted: boolean | number;
+  clientName: string;
+  projectName: string;
+  comment: string;
 }
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
+  const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
 
   const isWithinLastOneMonth = (dateString: any) => {
     const taskDate = new Date(dateString);
@@ -25,7 +29,13 @@ const AssignedTasksTable: React.FC = () => {
 
     return taskDate >= fiveDaysAgo;
   };
-
+  useEffect(() => {
+    const disabledFieldsString = localStorage.getItem("disabledFields");
+    if (disabledFieldsString) {
+      const disabledFieldsData = JSON.parse(disabledFieldsString);
+      setDisabledFields(new Set(disabledFieldsData));
+    }
+  }, []);
 
   const dataString = localStorage.getItem("myData");
   const employeeInfo = useMemo(
@@ -36,7 +46,7 @@ const AssignedTasksTable: React.FC = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks"
+  //     .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`
   //     )
   //     .then((response) => {
   //       const sortedData = response.data.sort(
@@ -60,7 +70,7 @@ const AssignedTasksTable: React.FC = () => {
   //     });
   // }, []);
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
     socket.on("notification", (data: { data: any[] }) => {
       const sortedData = data?.data?.sort(
         (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
@@ -79,10 +89,8 @@ const AssignedTasksTable: React.FC = () => {
       task.backlogTaskID === backlogTaskID ? { ...task, isCompleted: isChecked } : task
     );
     setData(updatedData);
-
-    // Call the API endpoint to update the task completion status
     axios
-      .put(`https://empbackend.base2brand.com/update/task-completion/${backlogTaskID}`,
+      .put(`${process.env.REACT_APP_API_BASE_URL}update/task-completion/${backlogTaskID}`,
         { isCompleted: isChecked },
         {
           headers: {
@@ -110,9 +118,57 @@ const AssignedTasksTable: React.FC = () => {
       return false;
     }
   };
+  const handleCommentChange = (comment: string, backlogTaskID: number) => {
+    const updatedData = data.map((task) =>
+      task.backlogTaskID === backlogTaskID ? { ...task, comment } : task
+    );
+    setData(updatedData);
+  };
+
+  const handleCommentSave = (backlogTaskID: number) => {
+    const task = data.find((task) => task.backlogTaskID === backlogTaskID);
+    if (!task) {
+      console.error("Task not found");
+      return;
+    }
+    axios
+      .put(`${process.env.REACT_APP_API_BASE_URL}update/task-comment/${backlogTaskID}`, { comment: task.comment })
+      .then((response) => {
+        console.log(response.data.message);
+        const updatedData = data.map((task) =>
+          task.backlogTaskID === backlogTaskID ? { ...task, comment: '' } : task
+        );
+        setData(updatedData);
+        setDisabledFields((prev) => {
+          const updatedDisabledFields = new Set(prev.add(backlogTaskID));
+          const updatedDisabledFieldsArray = Array.from(updatedDisabledFields);
+          localStorage.setItem("disabledFields", JSON.stringify(updatedDisabledFieldsArray));
+          return updatedDisabledFields;
+        });
+        localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(true));
+
+        // Update checkbox state in UI
+        handleCheckboxChange(true, backlogTaskID);
+      })
+      .catch((error) => {
+        console.error("Error updating task comment:", error);
+      });
+  };
 
   const columns = [
 
+    {
+      title: "Client Name",
+      dataIndex: "clientName",
+      key: "clientName",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
+      title: "Project Name",
+      dataIndex: "projectName",
+      key: "projectName",
+      render: (text: string) => <div>{text}</div>,
+    },
     {
       title: "Task",
       dataIndex: "taskName",
@@ -123,7 +179,7 @@ const AssignedTasksTable: React.FC = () => {
       title: "AssignedBy",
       dataIndex: "AssignedBy",
       key: "AssignedBy",
-      render: (text: string) => <div>{text}</div>,
+      render: (text: string) => <div >{text}</div>,
     },
     {
       title: "Deadline Start",
@@ -138,7 +194,7 @@ const AssignedTasksTable: React.FC = () => {
       render: (text: string) => <div>{formatDate(text)}</div>,
     },
     {
-      title: "Completed",
+      title: "Status",
       dataIndex: "isCompleted",
       key: "isCompleted",
       render: (isCompleted: boolean, record: BacklogTask) => (
@@ -148,7 +204,28 @@ const AssignedTasksTable: React.FC = () => {
           onChange={(event) =>
             handleCheckboxChange(event.target.checked, record.backlogTaskID)
           }
+          disabled={!disabledFields.has(record.backlogTaskID)}
         />
+      ),
+    },
+    {
+      title: "Comment",
+      dataIndex: "comment",
+      key: "comment",
+      render: (text: string, record: BacklogTask) => (
+        <div>
+          {!disabledFields.has(record.backlogTaskID) && <textarea
+            value={text}
+            onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
+            disabled={disabledFields.has(record.backlogTaskID)}
+          />}
+          {!disabledFields.has(record.backlogTaskID) &&
+            <button onClick={() => handleCommentSave(record.backlogTaskID)}
+              disabled={disabledFields.has(record.backlogTaskID)}>
+              Save
+            </button>}
+          {disabledFields.has(record.backlogTaskID) && <div>{text || "N/A"}</div>}
+        </div>
       ),
     },
   ];
@@ -160,14 +237,14 @@ const AssignedTasksTable: React.FC = () => {
     ).padStart(2, "0")}`;
   };
   return (
-    <>
+    <div className="assign-task">
       <Table
         style={{ width: "80vw" }}
         dataSource={data}
         columns={columns}
         rowClassName={() => "header-row"}
       />
-    </>
+    </div>
   );
 };
 

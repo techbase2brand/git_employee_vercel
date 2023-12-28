@@ -95,10 +95,11 @@ tbody > tr > td:nth-child(14) {
 }
 
 .menu-div {
-  width: 14vw;
+  /* width: 14vw; */
   height: 90vh;
   background-color: white;
-  overflow: auto;
+  /* overflow: auto; */
+  min-width: auto;
 }
 .total-size{
   font-size:2rem;
@@ -438,10 +439,26 @@ css .campus_form {
 }
 
 .backlog-table thead.ant-table-thead tr th:nth-child(1),
+.backlog-table thead.ant-table-thead tr th:nth-child(2),
 .backlog-table thead.ant-table-thead tr th:nth-child(3),
 .backlog-table thead.ant-table-thead tr th:nth-child(4),
 .backlog-table thead.ant-table-thead tr th:nth-child(5),
-.backlog-table thead.ant-table-thead tr th:nth-child(6) {
+.backlog-table thead.ant-table-thead tr th:nth-child(6),
+.backlog-table thead.ant-table-thead tr th:nth-child(7),
+.backlog-table thead.ant-table-thead tr th:nth-child(8),
+.backlog-table thead.ant-table-thead tr th:nth-child(9),
+.backlog-table thead.ant-table-thead tr th:nth-child(10)
+ {
+  min-width: 100px;
+}
+.assign-task thead.ant-table-thead tr th:nth-child(1),
+.assign-task thead.ant-table-thead tr th:nth-child(2),
+.assign-task thead.ant-table-thead tr th:nth-child(4),
+.assign-task thead.ant-table-thead tr th:nth-child(5),
+.assign-task thead.ant-table-thead tr th:nth-child(6),
+.assign-task thead.ant-table-thead tr th:nth-child(7),
+.assign-task thead.ant-table-thead tr th:nth-child(8)
+ {
   min-width: 100px;
 }
 .employee-list thead.ant-table-thead tr th:nth-child(1),
@@ -500,6 +517,8 @@ css .campus_form {
 .infotech-form thead.ant-table-thead tr th:nth-child(14){
   min-width: 100px;
 }
+
+
 .adjust-inputs{
   height: 27px !important;
   min-height: 32px;

@@ -15,7 +15,6 @@ import {
 } from "@ant-design/icons";
 import { AssignedTaskCountContext } from "../App";
 import io from "socket.io-client";
-// import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined } from "@ant-design/icons";
 
@@ -48,43 +47,87 @@ interface LeaveData {
   approvalOfTeamLead: string;
   approvalOfHR: string;
 }
-
+interface ShiftChangeData {
+  ShiftChangeTableID: 0,
+  employeeName: string;
+  employeeID: string;
+  applyDate: string;
+  inTime: string;
+  outTime: string;
+  reason: string;
+  currDate: Date;
+  teamLead: string;
+  adminID: string;
+  approvalOfTeamLead: string;
+  approvalOfHR: string;
+}
+interface FormData {
+  id?: number;
+  portalType: string;
+  profileName: string;
+  url: string;
+  clientName: string;
+  handleBy: string;
+  status: string;
+  statusReason: string[];
+  communicationMode: string;
+  communicationReason: string;
+  othermode: string;
+  commModeSkype: string;
+  commModePhone: string;
+  commModeWhatsapp: string;
+  commModeEmail: string;
+  commModePortal: string;
+  dateData: string;
+  EmployeeID: string;
+  RegisterBy: string;
+  commModeOther: string;
+  inviteBid: string;
+}
 interface BaseNotification {
   id: number; // Common identifier for all notificationss
-  type: "task" | "leave";
+  type: "task" | "leave" | "done" | "approving" | "deny" | "shiftChange" | "aprovedShift" | "deniedShift" | "sale";
 }
 
 // Extending the specific notification types to include common properties
 interface TaskNotification extends BacklogTask, BaseNotification { }
 interface LeaveNotification extends LeaveData, BaseNotification { }
+interface shiftNotification extends ShiftChangeData, BaseNotification { }
 
-type Notification = TaskNotification | LeaveNotification;
+type Notification = TaskNotification | LeaveNotification | shiftNotification;
 
 const Navbar: React.FunctionComponent = () => {
-  const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] =
-    useState(false);
+
+  const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] = useState(false);
 
   const [notificationss, setNotificationss] = useState<BacklogTask[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
+  console.log("notifications111",notifications);
+  
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
   );
 
+
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
+
   const myDataString = localStorage.getItem('myData');
   let rolled = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
     rolled = myData.email;
   }
-  // console.log(myData,"myData");
 
-
-
-  // console.log(notificationss,"notificationss");
-  // console.log(assignedTaskCount,"assignedTaskCount");
+  const myDataStatus = localStorage.getItem('visitedNotificationObjects');
+  if (myDataStatus) {
+    try {
+      const notificationObjects = JSON.parse(myDataStatus) as { notificationId: number; employeeID: string }[];
+      const notificationIds = notificationObjects.map(obj => obj.notificationId);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+    }
+  }
 
   // const initialNotificationCount = Number(
   //   localStorage.getItem("notificationCount") || 0
@@ -99,8 +142,6 @@ const Navbar: React.FunctionComponent = () => {
   };
 
   // Call updateNotificationCount() whenever you update the notificationss state
-
-
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
       return;
@@ -141,7 +182,7 @@ const Navbar: React.FunctionComponent = () => {
   //       setAssignedTaskCount((prevCount) => prevCount + 1);
 
   //       // Fetch all tasks.
-  //       axios.get<BacklogTask[]>(`https://empbackend.base2brand.com/get/BacklogTasks`)
+  //       axios.get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`)
   //         .then(response => {
   //           // Filter the tasks assigned to the current user.
   //           const newTasks = response.data.filter(task => task.assigneeEmployeeID === assigneeEmployeeID);
@@ -199,7 +240,7 @@ const Navbar: React.FunctionComponent = () => {
   }, [newTaskAssignedWhileHidden]);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
     socket.on("notification", (taskData) => {
       const taskNotifications = taskData?.data
         ?.filter((item: TaskNotification) => item.employeeID === myData.EmployeeID)
@@ -228,8 +269,7 @@ const Navbar: React.FunctionComponent = () => {
           type: "leave",
           id: item.LeaveInfoID,
         }))
-        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id); // Sort by id in descending order
-
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
       setNotifications((prevNotifications) => {
         const newNotifications = leaveNotifications?.filter(
           (newItem: { id: number }) =>
@@ -241,6 +281,147 @@ const Navbar: React.FunctionComponent = () => {
         return [...newNotifications, ...prevNotifications];
       });
     });
+    socket.on("checked", (data) => {
+      const taskNotificationsByEmail = data?.data
+        ?.filter((item: TaskNotification) => item.UserEmail === myData.email)
+        .map((item: TaskNotification) => ({
+          ...item,
+          type: "done",
+          id: item.backlogTaskID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = taskNotificationsByEmail?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
+    socket.on("approvedLeave", (data) => {
+      const leaveNotifications = data?.data
+        ?.filter((item: LeaveNotification) => item.employeeID === myData?.EmployeeID)
+        .map((item: LeaveNotification) => ({
+          ...item,
+          type: "approving",
+          id: item.LeaveInfoID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = leaveNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem?.id === newItem?.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
+    socket.on("deniedLeave", (data) => {
+      const leaveNotifications = data?.data
+        ?.filter((item: LeaveNotification) => item.employeeID === myData?.EmployeeID)
+        .map((item: LeaveNotification) => ({
+          ...item,
+          type: "deny",
+          id: item.LeaveInfoID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = leaveNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem?.id === newItem?.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
+    socket.on("shift", (shiftData) => {
+      const leaveNotifications = shiftData?.data
+        ?.filter((item: shiftNotification) => item.adminID === myData.EmployeeID)
+        .map((item: shiftNotification) => ({
+          ...item,
+          type: "shiftChange",
+          id: item.ShiftChangeTableID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = leaveNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
+
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
+    socket.on("aprovedShiftLeave", (data) => {
+      const leaveNotifications = data?.data
+        ?.filter((item: shiftNotification) => item.employeeID === myData?.EmployeeID)
+        .map((item: shiftNotification) => ({
+          ...item,
+          type: "aprovedShift",
+          id: item.ShiftChangeTableID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = leaveNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem?.id === newItem?.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+    socket.on("deniedShiftLeave", (data) => {
+      const leaveNotifications = data?.data
+        ?.filter((item: shiftNotification) => item.employeeID === myData?.EmployeeID)
+        .map((item: shiftNotification) => ({
+          ...item,
+          type: "deniedShift",
+          id: item.ShiftChangeTableID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = leaveNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem?.id === newItem?.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
+    socket.on("saleInfoForm", (data) => {
+      const SaleNotifications = data?.data
+        ?.filter((item: FormData) => myData.EmployeeID === "B2B00100")
+        .map((item: FormData) => ({
+          ...item,
+          type: "sale",
+          id: item.id,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = SaleNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
+
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
     socket.on('notification', (data) => {
       const visitedNotificationIds = getVisitedNotificationIds();
 
@@ -254,10 +435,10 @@ const Navbar: React.FunctionComponent = () => {
 
       setNotificationss(sortedData);
       updateNotificationCount(); // Update the notification count
-
-
     })
+
     socket.on("taskAssigned", handleTaskAssigned);
+
     return () => {
       socket.off("taskAssigned", handleTaskAssigned);
       socket.disconnect();
@@ -267,7 +448,6 @@ const Navbar: React.FunctionComponent = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationObjects");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
-  // Function to mark a notification as visited and store it in local storage
   const markNotificationAsVisited = (notification: Notification) => {
     const visitedNotificationObjects = getVisitedNotificationObjects();
     const notificationObject = {
@@ -298,7 +478,7 @@ const Navbar: React.FunctionComponent = () => {
   // };
   // useEffect(() => {
   //     axios
-  //       .get<BacklogTask[]>("https://empbackend.base2brand.com/get/BacklogTasks",{
+  //       .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`,{
   //         headers: {
   //           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
   //         },
@@ -367,19 +547,62 @@ const Navbar: React.FunctionComponent = () => {
         let title;
         let isLeaveNotification = false;
 
+        // if (isTaskNotification(item)) {
+        //   console.log("item", item)
+        //   title = `A new task assigned by ${item.AssignedBy}: ${getShortTaskDescription(item.taskName)}`;
+        // } else {
+        //   { item?.type === "done" ? title = `Comment Updated` : title = `Leave request from ${item.employeeName}` }
+        //   {item?.type==='approving' ? title = `approved` :""}
+        //   isLeaveNotification = true;
+        // }
         if (isTaskNotification(item)) {
           title = `A new task assigned by ${item.AssignedBy}: ${getShortTaskDescription(item.taskName)}`;
         } else {
-          title = `Leave request from ${item.employeeName}`;
+          console.log("item", item);
+          if (item?.type === "done") {
+            if ('assigneeName' in item && 'comment' in item) {
+              title = `Comment Updated by ${item.assigneeName} : ${item.comment}`;
+            }
+          }
+          else if (item?.type === "sale") {
+            if ('RegisterBy' in item && 'clientName' in item) {
+              title = `SaleInfotech filled by ${item.RegisterBy} : ${item.clientName}`;
+            }
+          }
+          else if (item?.type === 'approving') {
+            title = `Leave request approved by ${item.teamLead}`;
+          } else if (item?.type === 'deny') {
+            title = `Leave request Denied by ${item.teamLead}`;
+          } else if (item?.type === 'shiftChange') {
+            if ('employeeName' in item && 'reason' in item) {
+              title = `Shift Changed  by ${item.employeeName}: ${item.reason}`;
+            }
+          } else if (item?.type === 'aprovedShift') {
+            title = `Approved Shift by ${item.teamLead}`;
+          } else if (item?.type === 'deniedShift') {
+            title = `Denied Shift by ${item.teamLead}`;
+          } else {
+            if (`employeeName` in item && `leaveReason` in item) {
+              title = `Leave request from ${item.employeeName}: ${item.leaveReason}`;
+            }
+          }
           isLeaveNotification = true;
         }
 
+
         const handleItemClick = () => {
           markNotificationAsVisited(item);
-          if (isLeaveNotification) {
-            navigate("/LeavePage"); // Replace with your actual route to the LeavePage
+          if (item?.type === "leave") {
+            navigate("/LeavePage");
           } else {
-            navigate("/AssignedTasks"); 
+            { item?.type === "done" ? navigate("/ViewBacklogPage") : navigate("/AssignedTasks") }
+            { item?.type === 'approving' && navigate("/ViewLeavePage") }
+            { item?.type === 'deny' && navigate("/ViewLeavePage") }
+            { item?.type === 'shiftChange' && navigate("/ShiftChangePage") }
+            { item?.type === 'aprovedShift' && navigate("/ViewShiftChange") }
+            { item?.type === 'deniedShift' && navigate("/ViewShiftChange") }
+            { item?.type === 'sale' && navigate("/AdminSaleInfotechFormList") }
+
           }
         };
 
@@ -484,7 +707,7 @@ const Navbar: React.FunctionComponent = () => {
             minWidth: "4%",
           }}
         >
-          <Badge count="5">
+          <Badge count="5" style={{ lineHeight: '18px', minWidth: '19px', minHeight: '19px', top: '-2px' }}>
             {" "}
             {/* unreadChatCount is the number of unread chat messages */}
             <Popover
@@ -502,7 +725,7 @@ const Navbar: React.FunctionComponent = () => {
           </Badge>
 
           {/* Call Icon with Notification Badge */}
-          <Badge count="3">
+          <Badge count="3" style={{ lineHeight: '18px', minWidth: '19px', minHeight: '19px', top: '-2px' }}>
             {" "}
             {/* Replace "3" with the number of missed calls */}
             <Popover
@@ -535,7 +758,7 @@ const Navbar: React.FunctionComponent = () => {
               alignItems: "center",
             }}
           >
-            <Badge count={badgeContent}>
+            <Badge count={badgeContent} style={{ lineHeight: '18px', minWidth: '19px', minHeight: '19px', top: '-2px' }}>
               <Popover
                 style={{ width: "20vw" }}
                 content={notificationList}

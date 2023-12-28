@@ -69,7 +69,7 @@ const EveningDashboard: React.FC = () => {
 
 
   useEffect(() => {
-    const apiUrl = "https://empbackend.base2brand.com/get/addTaskEvening";
+    const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`;
     axios
       .get<Task[]>(apiUrl, {
         headers: {

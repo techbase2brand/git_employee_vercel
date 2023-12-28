@@ -29,7 +29,7 @@ const Login: React.FC = () => {
     console.log("Received values of form: ", values);
 
     axios
-      .post("https://empbackend.base2brand.com/user/login", values)
+      .post(`${process.env.REACT_APP_API_BASE_URL}/user/login`, values)
       .then((res) => {
         setApiResponse(res.data);
         console.log("res", res)
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
                 setGetIp(ipAddress);
                 axios
                   .put(
-                    `https://empbackend.base2brand.com/employeeipAddress/${res?.data?.user?.EmpID}`,
+                    `${process.env.REACT_APP_API_BASE_URL}/employeeipAddress/${res?.data?.user?.EmpID}`,
                     {
                       IpAddress: ipAddress,
                     },
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTermCondition", {
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTermCondition`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -110,7 +110,7 @@ const Login: React.FC = () => {
   const handleAcceptTerms = () => {
     if (apiResponse && apiResponse.user) {
       axios
-        .put(`https://empbackend.base2brand.com/employeeUpdatelogged/${apiResponse.user.EmpID}`, {
+        .put(`${process.env.REACT_APP_API_BASE_URL}/employeeUpdatelogged/${apiResponse.user.EmpID}`, {
           logged: 1,
         }, {
           headers: {

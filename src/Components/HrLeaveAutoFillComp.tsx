@@ -111,7 +111,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
         leaveCategory: leaveCategoryState,
       };
       axios
-        .post("https://empbackend.base2brand.com/createLeave", leaveData, {
+        .post(`${process.env.REACT_APP_API_BASE_URL}/createLeave`, leaveData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
@@ -154,7 +154,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
     const token = localStorage.getItem("myToken");
 
     axios
-      .get<Admin[]>("https://empbackend.base2brand.com/get/admin", {
+      .get<Admin[]>(`${process.env.REACT_APP_API_BASE_URL}/get/admin`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -169,7 +169,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

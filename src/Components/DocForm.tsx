@@ -71,7 +71,7 @@ function DocForm(): JSX.Element {
                 formData.append("pdf_files[]", file);
             });
             try {
-                const response = await axios.post("https://empbackend.base2brand.com/upload-pdf", formData);
+                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/upload-pdf`, formData);
                 const pdfUrl = response.data.pdf_url;
                 setFormData((prevData) => ({
                     ...prevData,
@@ -109,7 +109,7 @@ function DocForm(): JSX.Element {
                 formData.append("images", file);
             });
             try {
-                const response = await axios.post("https://empbackend.base2brand.com/upload", formData);
+                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/upload`, formData);
                 const newImageUrls = response.data.image_urls;
                 setImageFiles((prevFiles: File[]) => [...prevFiles, ...Array.from(files)]);
                 setImagePreviews((prevPreviews: string[]) => [...prevPreviews, ...newImageUrls]);
@@ -189,7 +189,7 @@ function DocForm(): JSX.Element {
     };
     useEffect(() => {
         axios
-            .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+            .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
                 },
@@ -220,7 +220,7 @@ function DocForm(): JSX.Element {
             handleUpdate();
         } else {
             try {
-                const response = await axios.post("https://empbackend.base2brand.com/submit-document", formData);
+                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-document`, formData);
                 setSubmitted(true);
             } catch (error) {
                 console.error("Error adding new entry:", error);
@@ -243,7 +243,7 @@ function DocForm(): JSX.Element {
                 };
 
                 try {
-                    const response = await axios.post("https://empbackend.base2brand.com/submit-document", formPayload);
+                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-document`, formPayload);
                     setSubmitted(true);
                     Navigate("/DocTable");
                 } catch (error) {
@@ -259,7 +259,7 @@ function DocForm(): JSX.Element {
         };
 
         axios
-            .put(`https://empbackend.base2brand.com/updatedocument/${updatedFormData.id}`, updatedFormData)
+            .put(`${process.env.REACT_APP_API_BASE_URL}/updatedocument/${updatedFormData.id}`, updatedFormData)
             .then((response) => {
                 setSubmitted(true);
                 Navigate("/DocTable");

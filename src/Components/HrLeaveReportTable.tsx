@@ -52,7 +52,7 @@ console.log("recent--");
     const token = localStorage.getItem("myToken");
 
     axios
-      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+      .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,7 +65,7 @@ console.log("recent--");
       });
 
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

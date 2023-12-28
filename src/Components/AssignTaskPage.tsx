@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GlobalInfo } from "../App";
-// import { Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
 import { DatePicker } from "antd";
 import enUS from "antd/lib/date-picker/locale/en_US";
 
 import dayjs, { Dayjs } from "dayjs";
-
-import { Moment } from "moment";
 
 const { RangePicker } = DatePicker;
 
@@ -27,16 +23,20 @@ interface Employee {
   dob: string | Date;
   EmployeeID: string;
 }
-
+interface Project {
+  ProID: string | number;
+  clientName: string;
+  projectName: string;
+  projectDescription: string;
+}
 const currentDate = new Date().toISOString().split("T")[0];
 
 const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
   const [elementCount, setElementCount] = useState(1);
   const [data, setData] = useState<Employee[]>([]);
-  const [showIncrement, setShowIncrement] = useState(true);
-  const [deadline, setDeadline] = useState<Dayjs | null>(null);
   const [assignedBy, setAssignedBy] = useState<any | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [data1, setData1] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<any[]>([
     {
       createdDate: currentDate,
@@ -44,9 +44,14 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       deadlineEnd: null,
     },
   ]);
-  const [formattedTasks, setFormattedTasks] = useState<any[]>([]);
-  const filteredData = data.filter((item: any) => item.status === 1);
 
+  const sortedData = [...data1];
+  sortedData.sort((a, b) => a.clientName.localeCompare(b.clientName));
+  const sortedProject = [...data1];
+  sortedProject.sort((a, b) => a.projectName.localeCompare(b.projectName));
+  const filteredData = data.filter((item: any) => item.status === 1);
+  const sortedEmployees = [...filteredData];
+  sortedEmployees.sort((a, b) => a.firstName.localeCompare(b.firstName));
   const adminInfo = localStorage.getItem("myData");
 
   let userEmail: string | null = null;
@@ -58,25 +63,10 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
     console.log("No admin info found in local storage");
   }
 
-  useEffect(() => {
-    axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      })
-      .then((response) => {
-        const sortedData = response?.data.sort(
-          (a, b) => Number(b.EmpID) - Number(a.EmpID)
-        );
-        setData(sortedData);
-      })
-      .catch((error) => console.log(error));
-  }, [setData]);
 
   useEffect(() => {
     axios
-      .get<any[]>("https://empbackend.base2brand.com/employees", {
+      .get<any[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -85,15 +75,12 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
         const sortedData = response?.data.sort(
           (a, b) => Number(b.EmpID) - Number(a.EmpID)
         );
-
-        console.log("Userlogin fetched:", sortedData);
-
+        setData(sortedData);
         const filteredData = sortedData.filter((e) => e?.email === userEmail);
-
         setAssignedBy(filteredData[0].firstName);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [setData]);
 
   useEffect(() => {
     console.log(tasks);
@@ -140,6 +127,27 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       ...newTasks[index],
       assigneeName: value,
       assigneeEmployeeID: selectedEmployee?.EmployeeID,
+      createdDate: currentDate,
+    };
+    setTasks(newTasks);
+  };
+
+  const handleProjectName = (value: string, index: number) => {
+    const newTasks = [...tasks];
+    const currentDate = new Date().toISOString().split("T")[0];
+    newTasks[index] = {
+      ...newTasks[index],
+      projectName: value,
+      createdDate: currentDate,
+    };
+    setTasks(newTasks);
+  };
+  const handleClientName = (value: string, index: number) => {
+    const newTasks = [...tasks];
+    const currentDate = new Date().toISOString().split("T")[0];
+    newTasks[index] = {
+      ...newTasks[index],
+      clientName: value,
       createdDate: currentDate,
     };
     setTasks(newTasks);
@@ -215,6 +223,9 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
         userEmail: userEmail,
         assignedBy: assignedBy,
         isCompleted: false,
+        clientName: task.clientName,
+        projectName: task.projectName,
+        comment: task.comment,
       };
     });
 
@@ -222,7 +233,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
     axios
       .post(
-        "https://empbackend.base2brand.com/create/addBacklogTasks",
+       ` ${process.env.REACT_APP_API_BASE_URL}/create/addBacklogTasks`,
         { tasks: outputTasks },
         {
           headers: {
@@ -242,7 +253,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -251,10 +262,22 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
         const sortedData = response?.data.sort(
           (a, b) => Number(b.EmpID) - Number(a.EmpID)
         );
-
         setEmployees(sortedData);
       })
       .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    axios.get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+      }
+    }).then((response) => {
+      const sortedData = response.data.sort(
+        (a, b) => Number(b.ProID) - Number(a.ProID)
+      );
+      setData1(sortedData);
+    });
   }, []);
 
   return (
@@ -314,6 +337,39 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
                     onChange={(e) => handleTask(e.target.value, index)}
                     placeholder="Please write task"
                   />
+                  <select
+                    style={{ marginLeft: "15px" }}
+                    className="add-input"
+                    value={tasks[index]?.clientName || ""}
+                    onChange={(e) => handleClientName(e.target.value, index)}
+                  >
+                    <option value="">Client Name</option>
+                    {sortedData.map((project) => (
+                      <option
+                        value={project.clientName}
+                        key={project.ProID}
+                      >
+                        {project.clientName}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    style={{ marginLeft: "15px" }}
+                    className="add-input"
+                    value={tasks[index]?.projectName || ""}
+                    onChange={(e) => handleProjectName(e.target.value, index)}
+                  >
+                    <option value="">Project Name</option>
+                    {sortedProject.map((project) => (
+                      <option
+                        value={project.projectName}
+                        key={project.ProID}
+                      >
+                        {project.projectName}
+                      </option>
+                    ))}
+                  </select>
 
                   <select
                     style={{ marginLeft: "15px" }}
@@ -324,7 +380,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
                     onChange={(e) => handleAssignee(e.target.value, index)}
                   >
                     <option value="">Assgn. To</option>
-                    {filteredData.map((employee) => (
+                    {sortedEmployees.map((employee) => (
                       <option
                         value={employee.firstName}
                         key={employee.EmployeeID}

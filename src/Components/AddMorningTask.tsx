@@ -95,7 +95,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>(`https://empbackend.base2brand.com/get/addTaskMorning`, {
+        .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -151,7 +151,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     axios
       .get<AssignedEmployees[]>(
-        "https://empbackend.base2brand.com/get/PhaseAssignedTo",
+       ` ${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -212,7 +212,7 @@ const AddModule: React.FC<unknown> = () => {
 
     // Fetch employees from the backend API
     axios
-      .get<Module[]>("https://empbackend.base2brand.com/get/modules", {
+      .get<Module[]>(`${process.env.REACT_APP_API_BASE_URL}/get/modules`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -306,7 +306,7 @@ const AddModule: React.FC<unknown> = () => {
     if (location?.state?.MrngTaskID) {
       axios
         .put(
-          `https://empbackend.base2brand.com/update/addMrngTask/${location?.state?.MrngTaskID}`,
+          `${process.env.REACT_APP_API_BASE_URL}/update/addMrngTask/${location?.state?.MrngTaskID}`,
           morningTask,
           {
             headers: {
@@ -331,7 +331,7 @@ const AddModule: React.FC<unknown> = () => {
 
       axios
         .post(
-          "https://empbackend.base2brand.com/create/addTaskMorning",
+          `${process.env.REACT_APP_API_BASE_URL}/create/addTaskMorning`,
           morningTask,
           {
             headers: {
