@@ -17,6 +17,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v2.0
+      with:
+        envkey_REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
+
     - name: Use Node ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
