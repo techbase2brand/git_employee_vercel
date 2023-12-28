@@ -24,7 +24,6 @@ const LeavePageTable: React.FC = () => {
   const navigate = useNavigate();
 
   const employeeInfo = localStorage.getItem("myData");
-  console.log(employeeInfo, "employeeInfoemployeeInfoemployeeInfo");
 
   const approvedRowStyle = {
     backgroundColor: 'lightgreen',
@@ -32,7 +31,7 @@ const LeavePageTable: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+      .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -48,7 +47,7 @@ const LeavePageTable: React.FC = () => {
   const handleApprove = (LeaveInfoID: number) => {
     axios
       .put(
-        `https://empbackend.base2brand.com/approveLeave/${LeaveInfoID}`,
+        `${process.env.REACT_APP_API_BASE_URL}/approveLeave/${LeaveInfoID}`,
         {},
         {
           headers: {
@@ -57,7 +56,6 @@ const LeavePageTable: React.FC = () => {
         }
       )
       .then((response) => {
-        console.log(response.data);
         // Refresh the table data after approval
         fetchData();
       })
@@ -69,7 +67,7 @@ const LeavePageTable: React.FC = () => {
   const handleDeny = (LeaveInfoID: number) => {
     axios
       .put(
-        `https://empbackend.base2brand.com/denyLeave/${LeaveInfoID}`,
+        `${process.env.REACT_APP_API_BASE_URL}/denyLeave/${LeaveInfoID}`,
         {},
         {
           headers: {
@@ -78,7 +76,6 @@ const LeavePageTable: React.FC = () => {
         }
       )
       .then((response) => {
-        console.log(response.data);
         // Refresh the table data after denial
         fetchData();
       })
@@ -87,21 +84,13 @@ const LeavePageTable: React.FC = () => {
       });
   };
   useEffect(() => {
-    const socket = io("http://localhost:5000");
-
+    const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
     socket.on("leaveinfo", (data: { data: any[] }) => {
-      console.log(data, "dataaaaaaddd");
-
       const sortedData = data?.data?.sort(
         (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
       );
-
       const employeeInfo = JSON.parse(localStorage.getItem("myData") || "{}");
-      console.log(employeeInfo);
-
       const approverID = employeeInfo.EmployeeID;
-      console.log(approverID, "approverIDapproverID");
-
       // Filter the sortedData based on the adminID
       const filteredData = sortedData.filter(
         (data) => data.adminID === approverID
@@ -114,7 +103,7 @@ const LeavePageTable: React.FC = () => {
 
   const fetchData = () => {
     axios
-      .get<LeaveData[]>("https://empbackend.base2brand.com/get/leaveinfo", {
+      .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -127,12 +116,7 @@ const LeavePageTable: React.FC = () => {
 
         // Retrieve the adminID from the localStorage
         const employeeInfo = JSON.parse(localStorage.getItem("myData") || "{}");
-        console.log(employeeInfo);
-
         const approverID = employeeInfo.EmployeeID;
-        console.log(approverID,"approverIDapproverID");
-
-
         // Filter the sortedData based on the adminID
         const filteredData = sortedData.filter(
           (data) => data.adminID === approverID
@@ -151,8 +135,6 @@ const LeavePageTable: React.FC = () => {
   // Custom row style function
   // Custom row style function
 const getRowClassName = (record: LeaveData) => {
-  console.log(record,"recordrecord");
-
   if (record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved") {
 
     return "approved-row"; // This class will be applied to rows with both approvals

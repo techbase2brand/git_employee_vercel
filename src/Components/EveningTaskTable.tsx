@@ -55,7 +55,7 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
 
   const handleDelete = (EvngTaskID: number) => {
     axios
-      .delete(`https://empbackend.base2brand.com/delete/eveningDashboard/${EvngTaskID}`, {
+      .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/eveningDashboard/${EvngTaskID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

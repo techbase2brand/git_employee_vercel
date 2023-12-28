@@ -35,7 +35,7 @@ const SalesTable: React.FC<Props> = ({ data, setMrngEditID }) => {
 
     const handleDelete = (saleId: number) => {
         axios
-            .delete(`https://empbackend.base2brand.com/delete/addSales/${saleId}`, {
+            .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/addSales/${saleId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
                 },

@@ -55,7 +55,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
 
   useEffect(() => {
     axios
-      .get<Project[]>("https://empbackend.base2brand.com/get/projects", {
+      .get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
@@ -66,7 +66,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
   }, []);
 
   useEffect(() => {
-    axios.get<Phases[]>("https://empbackend.base2brand.com/get/phases", {
+    axios.get<Phases[]>(`${process.env.REACT_APP_API_BASE_URL}/get/phases`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
@@ -136,7 +136,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
   };
   const handleSubmit = () => {
     axios
-      .post("https://empbackend.base2brand.com/api/add-module", module, {
+      .post(`${process.env.REACT_APP_API_BASE_URL}/api/add-module`, module, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }

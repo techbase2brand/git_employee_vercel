@@ -90,7 +90,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   const handleDelete = (EvngTaskID: number) => {
     // console.log(`Delete task with id ${MrngTaskID}`);
     axios
-      .delete(`https://empbackend.base2brand.com/delete/eveningDashboard/${EvngTaskID}`, {
+      .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/eveningDashboard/${EvngTaskID}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -109,7 +109,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },

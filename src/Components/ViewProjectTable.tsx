@@ -22,7 +22,7 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get<Project[]>("https://empbackend.base2brand.com/get/projects", {
+    axios.get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -43,7 +43,7 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
   };
 
   const handleDelete = (projectName: string) => {
-    axios.delete(`https://empbackend.base2brand.com/project/${projectName}`, {
+    axios.delete(`${process.env.REACT_APP_API_BASE_URL}/project/${projectName}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }

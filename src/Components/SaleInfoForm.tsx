@@ -113,7 +113,7 @@ function SaleInfoForm(): JSX.Element {
 
   useEffect(() => {
     axios
-      .get(`https://empbackend.base2brand.com/get/addSales`)
+      .get(`${process.env.REACT_APP_API_BASE_URL}/get/addSales`)
       .then((response) => {
        setStatusNames(response.data)
       })
@@ -174,7 +174,7 @@ function SaleInfoForm(): JSX.Element {
     } else {
       console.log("submitForm-else-os");
       axios
-        .post(`https://empbackend.base2brand.com/submit-salesform`, formData)
+        .post(`${process.env.REACT_APP_API_BASE_URL}/submit-salesform`, formData)
         .then((response) => {
           console.log("response.data", response);
           setSubmitted(true);
@@ -194,6 +194,9 @@ function SaleInfoForm(): JSX.Element {
     }
     if (!formData.clientName) {
       newErrors.clientName = "Client name is required.";
+    }
+    if (!formData.dateData) {
+      newErrors.dateData = "Lead date is  required.";
     }
     // else if (!emailRegex.test(formData.email)) {
     //   newErrors.email = "Invalid email format.";
@@ -233,7 +236,7 @@ function SaleInfoForm(): JSX.Element {
       statusReason: statusReasonString,
     };
     axios
-      .put(`https://empbackend.base2brand.com/updatesale/${updatedFormData?.id}`, updatedFormData)
+      .put(`${process.env.REACT_APP_API_BASE_URL}/updatesale/${updatedFormData?.id}`, updatedFormData)
       .then((response) => {
         if (rolled === "Sales Infotech") {
           Navigate("/saleinfoformlist");
@@ -515,6 +518,9 @@ function SaleInfoForm(): JSX.Element {
                         </div>
                       ))}
                       <div className="SalecampusForm-col-os">
+                      <h4 style={{ paddingBottom: "1rem" }}>
+                          Lead Date
+                        </h4>
                         <div className="SalecampusForm-input-os">
                           <input
                             type="date"

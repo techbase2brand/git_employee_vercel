@@ -24,7 +24,7 @@ const ViewShiftChangeTable: React.FC = () => {
   // const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo", {
+      .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -40,7 +40,7 @@ const ViewShiftChangeTable: React.FC = () => {
 
   const fetchData = () => {
     axios
-      .get<ShiftChangeData[]>("https://empbackend.base2brand.com/get/changeShiftInfo", {
+      .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

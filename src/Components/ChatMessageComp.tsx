@@ -18,7 +18,7 @@ interface ChatmenuProps {
   setChatMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 // Initialize socket connection outside of the component
-const socket = io("http://localhost:5000");
+const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
 
 const ChatMessageComp: React.FC<ChatmenuProps> = ({
   selectedEmployee,
@@ -65,7 +65,7 @@ const ChatMessageComp: React.FC<ChatmenuProps> = ({
       };
 
       axios
-        .post("https://empbackend.base2brand.com/chat", data, {
+        .post(`${process.env.REACT_APP_API_BASE_URL}/chat`, data, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },

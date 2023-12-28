@@ -102,7 +102,7 @@ const AdminSaleCampusFormList = () => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-        "https://empbackend.base2brand.com/salecampusdata"
+        `${process.env.REACT_APP_API_BASE_URL}/salecampusdata`
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,
@@ -128,7 +128,7 @@ const AdminSaleCampusFormList = () => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("https://empbackend.base2brand.com/employees", {
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
@@ -160,7 +160,7 @@ const AdminSaleCampusFormList = () => {
     setDeleteId(id);
     axios
       .delete(
-        `https://empbackend.base2brand.com/delete/${id}`
+        `${process.env.REACT_APP_API_BASE_URL}/delete/${id}`
         // {
         //   headers: {
         //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,

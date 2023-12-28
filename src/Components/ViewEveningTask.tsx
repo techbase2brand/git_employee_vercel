@@ -49,9 +49,8 @@ const ViewEveningTask: React.FC = () => {
   // };
 
   useEffect(() => {
-    console.log("234567890234567890-");
     axios
-      .get<Task[]>("https://empbackend.base2brand.com/get/addTaskEvening",{
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },

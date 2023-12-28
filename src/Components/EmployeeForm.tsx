@@ -134,7 +134,7 @@ const EmployeeForm: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<IEmployee[]>("https://empbackend.base2brand.com/employees", {
+      .get<IEmployee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -217,7 +217,7 @@ const EmployeeForm: React.FC = () => {
 
       axios
         .put(
-          `https://empbackend.base2brand.com/employeeUpdate/${location?.state?.empEditObj?.EmpID}`,
+          `${process.env.REACT_APP_API_BASE_URL}/employeeUpdate/${location?.state?.empEditObj?.EmpID}`,
           data,
           {
             headers: {
@@ -260,7 +260,7 @@ const EmployeeForm: React.FC = () => {
       // console.log(localStorage.getItem('myToken'),'myToken');
 
       axios
-        .post("https://empbackend.base2brand.com/create", data, {
+        .post(`${process.env.REACT_APP_API_BASE_URL}/create`, data, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
