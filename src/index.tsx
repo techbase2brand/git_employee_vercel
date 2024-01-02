@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
+import { ToastContainer } from "react-toastify";
 
 // Function to request permission for notifications
 const requestNotificationPermission = () => {
@@ -33,6 +34,7 @@ registerServiceWorker();
 // Render the React app after requesting notification permission and registering the service worker
 ReactDOM.render(
   <React.StrictMode>
+    <ToastContainer />
     <App />
   </React.StrictMode>,
   document.getElementById("root")

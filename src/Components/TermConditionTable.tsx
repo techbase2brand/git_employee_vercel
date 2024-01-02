@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,8 @@ interface Props {
 const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [propsData, setPropsData] = useState<Task[]>(data || []);
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
+  const [modalVisible, setModalVisible] = useState<boolean>(false); // State for modal visibility
+  const [modalContent, setModalContent] = useState<string>(""); // State for modal content
   const navigate = useNavigate();
   const dataString = localStorage.getItem("myData");
 
@@ -45,19 +47,28 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       })
       .catch(console.error);
   };
-  
+
 
   const employeeInfo = useMemo(() => (dataString ? JSON.parse(dataString) : []), [dataString]);
 
   useEffect(() => {
     setEmployeeFirstname(employeeInfo[0]?.firstName);
   }, [employeeInfo]);
+  const handleTermClick = (text: string) => {
+    setModalContent(text); // Set the content for the modal
+    setModalVisible(true); // Show the modal
+  };
 
   const columns = [
     {
       title: "term",
       dataIndex: "term",
       key: "term",
+      render: (text: string) => (
+        <div onClick={() => handleTermClick(text)}>
+          <button>View Term</button>
+        </div>
+      ),
     },
     {
       title: "currdate",
@@ -69,8 +80,6 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       dataIndex: "date",
       key: "date",
     },
-   
-
     {
       title: "Action",
       key: "action",
@@ -90,6 +99,14 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
         columns={columns}
         rowClassName={() => "header-row"}
       />
+      <Modal
+        title="Term Details"
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        footer={null}
+      >
+        <p dangerouslySetInnerHTML={{ __html: modalContent }} />
+      </Modal>
     </>
   );
 };

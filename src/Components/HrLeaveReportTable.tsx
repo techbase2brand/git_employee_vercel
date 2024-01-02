@@ -32,9 +32,6 @@ const HrLeaveReportTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const employeesPerPage = 5; // Modify this to change how many employees are shown per page
 
-console.log("recent--");
-
-
   const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;

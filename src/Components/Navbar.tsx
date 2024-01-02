@@ -7,16 +7,17 @@ import {
   Badge,
   Popover,
   List,
+  Button,
   // notification,
 } from "antd";
 import {
   SearchOutlined, BellOutlined, UserOutlined, MessageOutlined,
-  PhoneOutlined
+  PhoneOutlined, CloseOutlined, PoweroffOutlined
 } from "@ant-design/icons";
 import { AssignedTaskCountContext } from "../App";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-import { CloseOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 
 const { Header } = Layout;
@@ -61,29 +62,30 @@ interface ShiftChangeData {
   approvalOfTeamLead: string;
   approvalOfHR: string;
 }
-interface FormData {
-  id?: number;
-  portalType: string;
-  profileName: string;
-  url: string;
-  clientName: string;
-  handleBy: string;
-  status: string;
-  statusReason: string[];
-  communicationMode: string;
-  communicationReason: string;
-  othermode: string;
-  commModeSkype: string;
-  commModePhone: string;
-  commModeWhatsapp: string;
-  commModeEmail: string;
-  commModePortal: string;
-  dateData: string;
-  EmployeeID: string;
-  RegisterBy: string;
-  commModeOther: string;
-  inviteBid: string;
-}
+// interface FormData {
+//   id?: number;
+//   portalType: string;
+//   profileName: string;
+//   url: string;
+//   clientName: string;
+//   handleBy: string;
+//   status: string;
+//   statusReason: string[];
+//   communicationMode: string;
+//   communicationReason: string;
+//   othermode: string;
+//   commModeSkype: string;
+//   commModePhone: string;
+//   commModeWhatsapp: string;
+//   commModeEmail: string;
+//   commModePortal: string;
+//   dateData: string;
+//   EmployeeID: string;
+//   RegisterBy: string;
+//   commModeOther: string;
+//   inviteBid: string;
+// }
+
 interface BaseNotification {
   id: number; // Common identifier for all notificationss
   type: "task" | "leave" | "done" | "approving" | "deny" | "shiftChange" | "aprovedShift" | "deniedShift" | "sale";
@@ -99,16 +101,16 @@ type Notification = TaskNotification | LeaveNotification | shiftNotification;
 const Navbar: React.FunctionComponent = () => {
 
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] = useState(false);
-
+  const [notif, setNotif] = useState();
+const [state, setState]=useState(false);
   const [notificationss, setNotificationss] = useState<BacklogTask[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  console.log("notifications111",notifications);
-  
+
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
   );
 
-
+  const jsonData = JSON.stringify(notif)
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
 
@@ -119,7 +121,7 @@ const Navbar: React.FunctionComponent = () => {
     rolled = myData.email;
   }
 
-  const myDataStatus = localStorage.getItem('visitedNotificationObjects');
+  const myDataStatus = jsonData;
   if (myDataStatus) {
     try {
       const notificationObjects = JSON.parse(myDataStatus) as { notificationId: number; employeeID: string }[];
@@ -129,14 +131,7 @@ const Navbar: React.FunctionComponent = () => {
     }
   }
 
-  // const initialNotificationCount = Number(
-  //   localStorage.getItem("notificationCount") || 0
-  // );
-  // const [notificationCount, setNotificationCount] = useState(0);
-
   const navigate = useNavigate();
-
-
   const updateNotificationCount = () => {
     // setNotificationCount(notificationss.length);
   };
@@ -158,7 +153,6 @@ const Navbar: React.FunctionComponent = () => {
   const showDesktopNotification = (
     title: string,
     onClick?: () => void,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options?: Omit<NotificationOptions, "onclick">
   ) => {
     if (Notification.permission === "granted") {
@@ -283,7 +277,7 @@ const Navbar: React.FunctionComponent = () => {
     });
     socket.on("checked", (data) => {
       const taskNotificationsByEmail = data?.data
-        ?.filter((item: TaskNotification) => item.UserEmail === myData.email)
+        ?.filter((item: TaskNotification) => item?.UserEmail === myData?.email)
         .map((item: TaskNotification) => ({
           ...item,
           type: "done",
@@ -401,26 +395,27 @@ const Navbar: React.FunctionComponent = () => {
       });
     });
 
-    socket.on("saleInfoForm", (data) => {
-      const SaleNotifications = data?.data
-        ?.filter((item: FormData) => myData.EmployeeID === "B2B00100")
-        .map((item: FormData) => ({
-          ...item,
-          type: "sale",
-          id: item.id,
-        }))
-        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
-      setNotifications((prevNotifications) => {
-        const newNotifications = SaleNotifications?.filter(
-          (newItem: { id: number }) =>
-            !prevNotifications.some(
-              (existingItem) => existingItem.id === newItem.id
-            )
-        ) || [];
+    // socket.on("saleInfoForm", (data) => {
+    //   console.log("data?.data",data?.data);
+    //   const SaleNotifications = data?.data
+    //     ?.filter((item: FormData) => myData.EmployeeID === "B2B00100")
+    //     .map((item: FormData) => ({
+    //       ...item,
+    //       type: "sale",
+    //       id: item.id,
+    //     }))
+    //     .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+    //   setNotifications((prevNotifications) => {
+    //     const newNotifications = SaleNotifications?.filter(
+    //       (newItem: { id: number }) =>
+    //         !prevNotifications.some(
+    //           (existingItem) => existingItem.id === newItem.id
+    //         )
+    //     ) || [];
 
-        return [...newNotifications, ...prevNotifications];
-      });
-    });
+    //     return [...newNotifications, ...prevNotifications];
+    //   });
+    // });
 
     socket.on('notification', (data) => {
       const visitedNotificationIds = getVisitedNotificationIds();
@@ -444,26 +439,54 @@ const Navbar: React.FunctionComponent = () => {
       socket.disconnect();
     };
   }, [handleTaskAssigned, myData.EmployeeID]);
+  
   const getVisitedNotificationObjects = () => {
-    const visitedNotifications = localStorage.getItem("visitedNotificationObjects");
+    const visitedNotifications = jsonData;
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
+
+
+  // const markNotificationAsVisited = (notification: Notification) => {
+  //   const visitedNotificationObjects = getVisitedNotificationObjects();
+  //   const notificationObject = {
+  //     notificationId: notification.id,
+  //     employeeID: notification.employeeID,
+  //   };
+  //   if (!visitedNotificationObjects.some((obj: { notificationId: number; employeeID: string; }) =>
+  //     obj.notificationId === notificationObject.notificationId &&
+  //     obj.employeeID === notificationObject.employeeID)) {
+  //     visitedNotificationObjects.push(notificationObject);
+  //     localStorage.setItem(
+  //       "visitedNotificationObjects",
+  //       JSON.stringify(visitedNotificationObjects)
+  //     );
+  //   }
+  // };
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/get/notification`,)
+      .then((response) => {
+        setNotif(response.data)
+      })
+      .catch((error) => {
+        console.error('Error while marking notification as visited:', error);
+      });
+  }, [])
   const markNotificationAsVisited = (notification: Notification) => {
-    const visitedNotificationObjects = getVisitedNotificationObjects();
     const notificationObject = {
       notificationId: notification.id,
       employeeID: notification.employeeID,
     };
-    if (!visitedNotificationObjects.some((obj: { notificationId: number; employeeID: string; }) =>
-      obj.notificationId === notificationObject.notificationId &&
-      obj.employeeID === notificationObject.employeeID)) {
-      visitedNotificationObjects.push(notificationObject);
-      localStorage.setItem(
-        "visitedNotificationObjects",
-        JSON.stringify(visitedNotificationObjects)
-      );
-    }
+
+    axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/notification`, { notificationObject })
+      .then((response) => {
+        console.log("response");
+        setState(true)
+      })
+      .catch((error) => {
+        console.error('Error while marking notification as visited:', error);
+      });
   };
+
   const getVisitedNotificationIds = () => {
     const visitedNotifications = localStorage.getItem("visitedNotificationIds");
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
@@ -541,8 +564,8 @@ const Navbar: React.FunctionComponent = () => {
       itemLayout="horizontal"
       dataSource={notifications.filter(notification =>
         !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
-          obj.notificationId === notification.id &&
-          obj.employeeID === notification.employeeID))}
+          obj?.notificationId === notification?.id &&
+          obj?.employeeID === notification?.employeeID))}
       renderItem={(item) => {
         let title;
         let isLeaveNotification = false;
@@ -558,7 +581,6 @@ const Navbar: React.FunctionComponent = () => {
         if (isTaskNotification(item)) {
           title = `A new task assigned by ${item.AssignedBy}: ${getShortTaskDescription(item.taskName)}`;
         } else {
-          console.log("item", item);
           if (item?.type === "done") {
             if ('assigneeName' in item && 'comment' in item) {
               title = `Comment Updated by ${item.assigneeName} : ${item.comment}`;
@@ -592,6 +614,11 @@ const Navbar: React.FunctionComponent = () => {
 
         const handleItemClick = () => {
           markNotificationAsVisited(item);
+          setNotifications((prevNotifications) =>
+          prevNotifications.filter(
+            (notification) => notification.id !== item.id
+          )
+        );
           if (item?.type === "leave") {
             navigate("/LeavePage");
           } else {
@@ -602,7 +629,6 @@ const Navbar: React.FunctionComponent = () => {
             { item?.type === 'aprovedShift' && navigate("/ViewShiftChange") }
             { item?.type === 'deniedShift' && navigate("/ViewShiftChange") }
             { item?.type === 'sale' && navigate("/AdminSaleInfotechFormList") }
-
           }
         };
 
@@ -707,7 +733,7 @@ const Navbar: React.FunctionComponent = () => {
             minWidth: "4%",
           }}
         >
-          <Badge count="5" style={{ lineHeight: '18px', minWidth: '19px', minHeight: '19px', top: '-2px' }}>
+          <Badge count="5" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}>
             {" "}
             {/* unreadChatCount is the number of unread chat messages */}
             <Popover
@@ -725,7 +751,7 @@ const Navbar: React.FunctionComponent = () => {
           </Badge>
 
           {/* Call Icon with Notification Badge */}
-          <Badge count="3" style={{ lineHeight: '18px', minWidth: '19px', minHeight: '19px', top: '-2px' }}>
+          <Badge count="3" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}>
             {" "}
             {/* Replace "3" with the number of missed calls */}
             <Popover
@@ -758,19 +784,26 @@ const Navbar: React.FunctionComponent = () => {
               alignItems: "center",
             }}
           >
-            <Badge count={badgeContent} style={{ lineHeight: '18px', minWidth: '19px', minHeight: '19px', top: '-2px' }}>
+            <Badge count={badgeContent} style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', top: '-2px', marginRight: '33px', borderRadius: '1pc' }}>
               <Popover
                 style={{ width: "20vw" }}
                 content={notificationList}
                 placement="bottomRight"
               >
-                <BellOutlined className="notification-icon" />
+                <BellOutlined className="notification-icon" style={{ marginLeft: '-55px' }} />
               </Popover>
             </Badge>
 
             <Avatar className="avatar" icon={<UserOutlined />} />
             <span className="username">{myData?.firstName} {myData?.lastName}</span>
-            <button onClick={logout}>logout</button>
+            <Button
+              className="logout-button"
+              type="primary"
+              danger
+              icon={<PoweroffOutlined />}
+              onClick={logout}
+            >
+            </Button>
           </div>
         </div>
       </Header>

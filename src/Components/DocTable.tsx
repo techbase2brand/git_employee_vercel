@@ -3,6 +3,8 @@ import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import { Table, Button, Input, Modal } from "antd";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   EditOutlined,
   DeleteOutlined,
@@ -95,9 +97,15 @@ const DocTable = () => {
       )
       .then((response) => {
         console.log("res@", response.data);
+        toast.success('Deleted successfully!', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .catch((error) => {
         console.log(error);
+        toast.error('Deleting Failed.', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);

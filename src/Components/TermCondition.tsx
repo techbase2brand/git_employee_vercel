@@ -5,7 +5,8 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { format } from "date-fns";
-
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 interface Task {
   TermID: number;
   term: string;
@@ -75,7 +76,7 @@ const TermCondition: React.FC<unknown> = () => {
     })
       .then((response) => {
         if (response.data === "All fields are required.") {
-          alert("All compulsory fields are required.");
+          alert("All compulsory fields are requirerged.");
         } else {
           navigate("/ViewTermCondition");
         }
@@ -84,12 +85,14 @@ const TermCondition: React.FC<unknown> = () => {
         console.log(error?.response?.data);
       });
   };
-  const handleTermChange = (value: string) => {
+  const handleTermChange = (event: any, editor: any) => {
+    const data = editor.getData();
     setTermTask({
       ...termTask,
-      term: value,
+      term: data,
     });
   };
+
   return (
     <div className="emp-main-div">
       <div
@@ -114,22 +117,14 @@ const TermCondition: React.FC<unknown> = () => {
             <div className="add-div">
               <h1>Term & Conditions</h1>
 
-                <label className="add-label">
-                  Term:<span style={{ color: "red" }}>*</span>
-                </label>
-                  <textarea
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      height: "20vh",
-                      boxSizing: "content-box",
-                    }}
-                    name="task"
-                    className="textarea-control"
-                    value={termTask.term}
-                    onChange={(e) => handleTermChange(e.target.value)}
-                    required
-                  />
+              <label className="add-label">
+                Term:<span style={{ color: "red" }}>*</span>
+              </label>
+              <CKEditor
+                editor={ClassicEditor}
+                data={termTask?.term}
+                onChange={handleTermChange}
+              />
               <div className="SalecampusForm-col-os">
                 <label className="add-label">
                   Date:

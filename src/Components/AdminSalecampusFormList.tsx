@@ -73,18 +73,18 @@ const AdminSaleCampusFormList = () => {
   const [generalSearch, setGeneralSearch] = useState<string>("");
   const [dateRangeSearch, setDateRangeSearch] = useState<[string | null, string | null]>([null, null]);
   const [employees, setEmployees] = useState<Employee[]>([]);
-
-
-
+  const [selectedRegister, setSelectedRegister] = useState<string>("");
+  const [state, setState] = useState<boolean>(false);
+  const [registerNames, setRegisterNames] = useState<string[]>([]);
+  const [selectedDays, setSelectedDays] = useState<string>("");
+  const [filteredByDateRange, setFilteredByDateRange] = useState<SalecampusData[]>([]);
+  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+  const [statusNames, setStatusNames] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const uniqueStatusNames = Array.from(new Set(statusNames));
   const Navigate = useNavigate();
   const location = useLocation();
   const passedRecord = location.state?.record;
-
-  // const info = JSON.parse(localStorage.getItem("myData") || "{}");
-
-
-
-
 
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,7 +96,34 @@ const AdminSaleCampusFormList = () => {
     setRecordToDelete(null);
   };
 
-  // const autoCompleteOptions = ['not picked', 'not interested'];
+  const NotInterested = filteredData.filter(item => item.status === 'not interested');
+  const NotInterestedLength = NotInterested.length
+
+  const NotPicked = filteredData.filter(item => item.status === 'not picked');
+  const NotPickedLength = NotPicked.length
+
+  const Interested = filteredData.filter(item => item.status === 'interested');
+  const InterestedLength = Interested.length
+
+  const Hopefully = filteredData.filter(item => item.status === 'hopefully');
+  const HopefullyLength = Hopefully.length
+
+  const Enrolled = filteredData.filter(item => item.status === 'enrolled');
+  const EnrolledLength = Enrolled.length
+
+  const totalLength = filteredData.length;
+
+
+  const handleProjectStatus = (value: string) => {
+    setSelectedStatus(value);
+  };
+  const handleProjectChange = (value: string) => {
+    setSelectedRegister(value);
+  };
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedDays(selectedValue);
+  }
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -110,8 +137,8 @@ const AdminSaleCampusFormList = () => {
         //   }
       )
       .then((response) => {
+        setStatusNames(response.data.map((item: { status: string }) => item.status));
         const resData = response.data;
-        console.log("resData", resData);
         setData(resData);
         setFilteredData(resData);
       });
@@ -134,6 +161,13 @@ const AdminSaleCampusFormList = () => {
         }
       })
       .then((response) => {
+        const salesInfotechEmployees = response.data.filter(
+          (employee) => employee.role === 'Sales Campus'
+        );
+        const salesInfotechNames = salesInfotechEmployees.map(
+          (employee) => employee.firstName
+        );
+        setRegisterNames(salesInfotechNames)
         setEmployees(response.data);
       })
       .catch((error) => console.log(error));
@@ -144,16 +178,6 @@ const AdminSaleCampusFormList = () => {
     const employee = employees.find(emp => emp.EmployeeID === employeeId);
     return employee ? employee.firstName : '-';
   }
-
-
-
-
-
-
-
-
-
-
 
   // delete methods
   const handleDelete = (id: number) => {
@@ -195,6 +219,66 @@ const AdminSaleCampusFormList = () => {
     setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/SalecampusForm", { state: { record: recordToEdit } });
+  };
+
+  const handleGoButtonClick = () => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    let startDate: Date | null = null;
+    let endDate: Date | null = null;
+
+    switch (selectedDays) {
+      case "7":
+        startDate = new Date(today);
+        startDate.setDate(today.getDate() - 7);
+        break;
+      case "30":
+        startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 1);
+        break;
+      case "90":
+        startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 3);
+        break;
+      case "180":
+        startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 6);
+        break;
+      case "365":
+        startDate = new Date(today);
+        startDate.setFullYear(currentYear - 1);
+        break;
+      default:
+        break;
+    }
+    endDate = new Date(today);
+    endDate.setHours(23, 59, 59, 999);
+    const filteredResult = data.filter((item) => {
+      const statusMatch =
+        selectedStatus ?
+          item.status.toLowerCase() === selectedStatus.toLowerCase() :
+          true;
+      const employeeName = getEmployeeName(item.EmployeeID).toLowerCase();
+      const registerMatch = selectedRegister ?
+        employeeName.includes(selectedRegister.toLowerCase()) :
+        true;
+      const itemDate = new Date(item.created_at);
+
+      const itemDateTimestamp = itemDate.getTime();
+      const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
+        (!endDate || itemDateTimestamp <= endDate.getTime());
+      const dateRangeMatch =
+        dateRangeSearch[0] && dateRangeSearch[1]
+          ? itemDate >= new Date(dateRangeSearch[0]) && itemDate <= new Date(dateRangeSearch[1])
+          : true;
+      return statusMatch && registerMatch && matchDate && dateRangeMatch;
+    });
+    if (!startDate && !endDate && (dateRangeSearch[0] || dateRangeSearch[1])) {
+      setState(false);
+    } else {
+      setState(true);
+    }
+    setFilteredData(filteredResult);
   };
 
   const columns = [
@@ -340,7 +424,7 @@ const AdminSaleCampusFormList = () => {
     if (dates) {
       const [startDate, endDate] = dateStrings;
       setDateRangeSearch([startDate, endDate]);
-      filterData(startDate, endDate, generalSearch);
+      // filterData(startDate, endDate, generalSearch);
     } else {
       setDateRangeSearch([null, null]);
       filterData(null, null, generalSearch);
@@ -446,6 +530,7 @@ const AdminSaleCampusFormList = () => {
             </div>
             <section className="SalecampusForm-section-os">
               <div className="form-container">
+
                 <div className="AdminSaleCampusFormList-default-os">
                   <div
                     style={{
@@ -462,6 +547,14 @@ const AdminSaleCampusFormList = () => {
                     >
                       Sale Campus List
                     </p>
+                    <div className="total-lengthPortal" style={{ marginLeft: '0' }}>
+                      <div>Not Interested:<span className="portal">{NotInterestedLength}</span></div>
+                      <div>Not Picked:<span className="portal">{NotPickedLength}</span></div>
+                      <div>Interested:<span className="portal">{InterestedLength}</span></div>
+                      <div>Hopefully:<span className="portal">{HopefullyLength}</span></div>
+                      <div>Enrolled:<span className="portal">{EnrolledLength}</span></div> =
+                      <div>Total:<span className="portal">{totalLength}</span></div>
+                    </div>
                   </div>
                   <div
                     className="search"
@@ -481,11 +574,56 @@ const AdminSaleCampusFormList = () => {
                       onChange={handleSearch}
                       value={generalSearch}
                     />
+                    <div>
+                      <select
+                        // onChange={handleChange}
+                        className="adjust-inputs"
+                        id="project"
+                        value={selectedStatus}
+                        onChange={(e) => handleProjectStatus(e.target.value)}
+                      >
+                        <option value="">Select a Status</option>
+                        {uniqueStatusNames.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <select
+                        // onChange={handleChange}
+                        className="adjust-inputs"
+                        id="project"
+                        value={selectedRegister}
+                        onChange={(e) => handleProjectChange(e.target.value)}
+                      >
+                        <option value="">Select a CalledBy</option>
+                        {registerNames.map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <select
+                        className="adjust-inputs"
+                        value={selectedDays === "" ? "" : `${selectedDays}`}
+                        onChange={handleSelectChange}
+                      >
+                        <option value="">Select date range</option>
+                        <option value="7">Last 1 week</option>
+                        <option value="30">Last 1 month</option>
+                        <option value="90">Last 3 months</option>
+                        <option value="180">Last 6 months</option>
+                        <option value="365">Last 1 year</option>
+                      </select>
+                    </div>
+                    <div>
+                      <button className="go-button" onClick={handleGoButtonClick}>Go</button>
+                    </div>
                   </div>
-
-                  <p style={{ fontWeight: "bold", marginBottom: "20px" }}>
-                    Number of Records: {filteredData.length}
-                  </p>
                   <div className="saleCampus-form">
                     <Table
                       dataSource={filteredData.slice().reverse()}

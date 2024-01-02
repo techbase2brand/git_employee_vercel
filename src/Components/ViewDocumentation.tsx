@@ -6,6 +6,8 @@ import { Table, Input, Modal } from "antd";
 import {
     SearchOutlined,
 } from "@ant-design/icons";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface SalesInfoData {
     id: number;
@@ -86,9 +88,15 @@ const ViewDocumentation = () => {
             )
             .then((response) => {
                 console.log("res@", response.data);
+                toast.success('Deleted successfully!', {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
             })
             .catch((error) => {
                 console.log(error);
+                toast.error('Deleting Failed.', {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
             });
         const updatedData = data.filter((e: any) => e.id !== id);
         setData(updatedData);
@@ -143,9 +151,15 @@ const ViewDocumentation = () => {
             )
             .then((response) => {
                 console.log(response.data.message);
+                toast.success('updated successfully!', {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
             })
             .catch((error) => {
                 console.error("Error updating task completion status:", error);
+                toast.error('Error while Updating.', {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
             });
 
 

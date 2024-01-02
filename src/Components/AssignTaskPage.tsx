@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { GlobalInfo } from "../App";
 import { DatePicker } from "antd";
 import enUS from "antd/lib/date-picker/locale/en_US";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import dayjs, { Dayjs } from "dayjs";
 
 const { RangePicker } = DatePicker;
@@ -37,6 +38,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
   const [assignedBy, setAssignedBy] = useState<any | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [data1, setData1] = useState<Project[]>([]);
+  const [selectedClient, setSelectedClient] = useState<string>("");
   const [tasks, setTasks] = useState<any[]>([
     {
       createdDate: currentDate,
@@ -44,13 +46,30 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       deadlineEnd: null,
     },
   ]);
-
   const sortedData = [...data1];
   sortedData.sort((a, b) => a.clientName.localeCompare(b.clientName));
+  const uniqueClientNames = Array.from(new Set(sortedData.map((project) => project.clientName)));
+
   const sortedProject = [...data1];
   sortedProject.sort((a, b) => a.projectName.localeCompare(b.projectName));
+  const filteredProjects = sortedProject.filter(
+    (project) => project.clientName === selectedClient
+  )
+
+  const resetFormFields = () => {
+    setTasks([
+      {
+        createdDate: currentDate,
+        deadlineStart: null,
+        deadlineEnd: null,
+      },
+    ]);
+    setElementCount(1);
+    // Other form reset actions if needed
+  };
   const filteredData = data.filter((item: any) => item.status === 1);
   const sortedEmployees = [...filteredData];
+
   sortedEmployees.sort((a, b) => a.firstName.localeCompare(b.firstName));
   const adminInfo = localStorage.getItem("myData");
 
@@ -151,6 +170,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       createdDate: currentDate,
     };
     setTasks(newTasks);
+    setSelectedClient(value);
   };
 
   // ...
@@ -233,7 +253,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
     axios
       .post(
-       ` ${process.env.REACT_APP_API_BASE_URL}/create/addBacklogTasks`,
+        ` ${process.env.REACT_APP_API_BASE_URL}/create/addBacklogTasks`,
         { tasks: outputTasks },
         {
           headers: {
@@ -244,10 +264,19 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       .then((response) => {
         if (response.data === "Tasks inserted") {
           navigate("/ViewBacklogPage");
+          toast.success('Tasks inserted successfully!', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          resetFormFields();
         }
+
       })
       .catch((error) => {
         console.log(error);
+        toast.error('Error while inserting tasks.', {
+          position: toast.POSITION.TOP_RIGHT,
+          // Other configuration options as needed
+        });
       });
   };
 
@@ -344,12 +373,17 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
                     onChange={(e) => handleClientName(e.target.value, index)}
                   >
                     <option value="">Client Name</option>
-                    {sortedData.map((project) => (
+                    {/* {sortedData.map((project) => (
                       <option
                         value={project.clientName}
                         key={project.ProID}
                       >
                         {project.clientName}
+                      </option>
+                    ))} */}
+                    {uniqueClientNames.map((clientName, index) => (
+                      <option key={index} value={clientName}>
+                        {clientName}
                       </option>
                     ))}
                   </select>
@@ -361,7 +395,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
                     onChange={(e) => handleProjectName(e.target.value, index)}
                   >
                     <option value="">Project Name</option>
-                    {sortedProject.map((project) => (
+                    {filteredProjects.map((project) => (
                       <option
                         value={project.projectName}
                         key={project.ProID}

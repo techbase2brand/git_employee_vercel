@@ -275,7 +275,7 @@ const Login: React.FC = () => {
                 {termsAndConditions.map((item) => {
                   return (
                     <div key={item.TermID}>
-                      <p>{item.term}</p>
+                      <div dangerouslySetInnerHTML={{ __html: item.term }} />
                       <p>{item.date}</p>
                     </div>
                   );

@@ -7,6 +7,8 @@ import { GlobalInfo } from "../App";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Task {
   EvngTaskID: number;
@@ -302,12 +304,17 @@ const AddModule: React.FC<any> = () => {
           } else {
             navigate("/view-evening-task");
             setEvngEditID();
+            toast.success('Updated successfully!', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           }
 
           console.log(response.data);
         })
         .catch((error) => {
-          console.log(error.response.data);
+          toast.error('Error while Updating tasks.', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         });
     } else {
       axios
@@ -320,18 +327,35 @@ const AddModule: React.FC<any> = () => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");
           } else {
+            setSelectedProject("");
+            setSelectedPhase("");
+            setSelectedModule(""); 
+            setEveningTask({
+              EvngTaskID: 0,
+              projectName: "",
+              phaseName: "",
+              module: "",
+              task: "",
+              estTime: "",
+              actTime: "",
+              upWorkHrs: "0:00",
+              employeeID: "",
+              currDate: formattedDate,
+              selectDate: formattedDate,
+            });
             navigate("/view-evening-task");
+            toast.success('Evening Task added successfully!', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           }
-
-          console.log(response.data); // log the response message
-          // show a success message to the user
         })
         .catch((error) => {
-          console.log(error.response.data); // log the error message
-          // show an error message to the user
+          console.log(error.response.data); 
+          toast.error('Error while inserting tasks.', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         });
     }
-    // Submit module data to server
   };
 
 

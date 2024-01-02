@@ -91,6 +91,8 @@ function SaleInfoForm(): JSX.Element {
 
   // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
+  console.log("formData",formData);
+  
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [communicationMode, setCommunicationMode] =

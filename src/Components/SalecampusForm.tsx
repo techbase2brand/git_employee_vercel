@@ -20,7 +20,7 @@ interface FormData {
   // description:string;
 }
 const info = JSON.parse(localStorage.getItem("myData") || "{}");
-  console.log(info?.EmployeeID,"EmployeeID");
+console.log(info?.EmployeeID, "EmployeeID");
 
 
 function SalecampusForm(): JSX.Element {
@@ -224,7 +224,7 @@ function SalecampusForm(): JSX.Element {
 
     // Update formData with the updated values
     setFormData(updatedFormData);
- if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length === 0) {
       submitForm();
       Navigate("/salecampusformlist");
     }
@@ -574,7 +574,7 @@ function SalecampusForm(): JSX.Element {
                         )}
                       </div>
 
-           <div className="SalecampusForm-submit-os">
+                      <div className="SalecampusForm-submit-os">
                         <button onClick={handleSubmit} type="submit">
                           {formData.id ? "Update" : "Submit"}
                         </button>

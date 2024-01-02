@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
-
-
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -114,9 +113,14 @@ const ShiftChangeFormComp: React.FC<any> = () => {
         .then((response) => {
           console.log(response.data);
           navigate("/ViewShiftChange");
+          toast.success('successfully submitted!', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         })
         .catch((error) => {
-          console.error("Error submitting data:", error);
+          toast.error('Error while inserting.', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         });
     } else {
       console.log("Condition not met", { applyDate, inTime, outTime });

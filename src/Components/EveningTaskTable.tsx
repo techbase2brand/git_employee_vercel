@@ -4,6 +4,8 @@ import { Table, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Task {
   EvngTaskID: number;
@@ -63,8 +65,15 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
       .then((response) => {
         console.log(response.data);
         setPropsData(prev => prev.filter(task => task.EvngTaskID !== EvngTaskID));
+        toast.success('Deleted successfully!', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
-      .catch(console.error);
+      .catch((error) => {
+        toast.error('Deleting failed.', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
   };
 
   const dataString = localStorage.getItem("myData");
