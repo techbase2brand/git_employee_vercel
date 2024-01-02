@@ -8,6 +8,8 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { GlobalInfo } from "../App";
 import { format } from "date-fns";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Task {
   MrngTaskID: number;
@@ -59,7 +61,7 @@ const AddModule: React.FC<unknown> = () => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
-  console.log("modules",modules)
+  console.log("modules", modules)
   const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
     []
   );
@@ -101,7 +103,7 @@ const AddModule: React.FC<unknown> = () => {
           },
         })
         .then((response) => {
-          console.log("response++++",response)
+          console.log("response++++", response)
           const res = response.data.filter(
             (e: Task) => e.MrngTaskID === location?.state?.MrngTaskID
           );
@@ -129,7 +131,7 @@ const AddModule: React.FC<unknown> = () => {
             setSelectedProject(res[0]?.projectName);
             setSelectedPhase(res[0]?.phaseName);
             setSelectedModule(res[0]?.module);
-            
+
           }
         })
         .catch((error) => {
@@ -151,7 +153,7 @@ const AddModule: React.FC<unknown> = () => {
     // const token = localStorage.getItem("myToken");
     axios
       .get<AssignedEmployees[]>(
-       ` ${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
+        ` ${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -269,7 +271,7 @@ const AddModule: React.FC<unknown> = () => {
       task: value,
     });
   };
-  const handleDateChange =(value: string) => {
+  const handleDateChange = (value: string) => {
     setMorningTask({
       ...morningTask,
       selectDate: value,
@@ -315,16 +317,23 @@ const AddModule: React.FC<unknown> = () => {
           }
         )
         .then((response) => {
-          console.log("response",response)
+          console.log("response", response)
           if (response.data === "All fields are required.") {
             alert("All compulsory fields are required.");
           } else {
             navigate("/view-morning-task");
             setMrngEditID();
+            toast.success('Updated successfully!', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           }
         })
         .catch((error) => {
           console.log(error.response.data);
+          toast.error('Error while Updating task.', {
+            position: toast.POSITION.TOP_RIGHT,
+            // Other configuration options as needed
+          });
         });
     } else {
       // const token = localStorage.getItem("myToken");
@@ -343,18 +352,36 @@ const AddModule: React.FC<unknown> = () => {
           if (response.data === "All fields are required.") {
             alert("All fields are required.");
           } else {
+            setSelectedProject("");
+            setSelectedPhase("");
+            setSelectedModule(""); 
+            setMorningTask({
+              MrngTaskID: 0,
+              projectName: "",
+              phaseName: "",
+              module: "",
+              task: "",
+              estTime: "",
+              upWorkHrs: "0:00",
+              employeeID: "",
+              currDate: formattedDate,
+              selectDate: formattedDate,
+            });
             navigate("/view-morning-task");
+            toast.success('Morning Task added successfully!', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           }
-
-          console.log(response?.data); // log the response message
-          // show a success message to the user/*  */
+          console.log(response?.data);
         })
         .catch((error) => {
-          console.log(error?.response?.data); // log the error message
-          // show an error message to the user
+          console.log(error?.response?.data);
+          toast.error('Error while inserting tasks.', {
+            position: toast.POSITION.TOP_RIGHT,
+
+          });
         });
     }
-    // Submit module data to server
   };
 
   return (
@@ -536,12 +563,12 @@ const AddModule: React.FC<unknown> = () => {
                 </div>
               </div>
               <div className="SalecampusForm-col-os">
-              <label className="add-label">
+                <label className="add-label">
                   Date:
                 </label>
                 <div className="SalecampusForm-input-os">
                   <input
-                  style={{width: 'auto'}}
+                    style={{ width: 'auto' }}
                     type="date"
                     name="selectDate"
                     value={morningTask?.selectDate}

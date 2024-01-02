@@ -7,6 +7,7 @@ import {
   ScheduleOutlined,
 } from "@ant-design/icons";
 import { io } from "socket.io-client";
+import axios from "axios";
 interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
@@ -86,9 +87,11 @@ interface TaskNotification extends BacklogTask, BaseNotification { }
 const AppMenu = () => {
   const info = JSON.parse(localStorage.getItem("myData") || "{}");
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notif, setNotif] = useState();
+
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
-
+  const jsonData = JSON.stringify(notif)
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
     socket.on("notification", (taskData) => {
@@ -106,7 +109,7 @@ const AppMenu = () => {
             !prevNotifications.some(
               (existingItem) => existingItem.id === newItem.id
             )
-    ) || [];
+        ) || [];
         return [...newNotifications, ...prevNotifications];
       });
     });
@@ -272,17 +275,26 @@ const AppMenu = () => {
     });
     return () => {
       socket.disconnect();
-    }; 
+    };
   }, []);
-
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/get/notification`,)
+      .then((response) => {
+        console.log("response");
+        setNotif(response.data)
+      })
+      .catch((error) => {
+        console.error('Error while marking notification as visited:', error);
+      });
+  }, [])
 
   const getVisitedNotificationObjects = () => {
-    const visitedNotifications = localStorage.getItem("visitedNotificationObjects");
+    const visitedNotifications = jsonData;
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
   };
 
   const typedNotifications = notifications as CustomNotification[];
-  
+
   const countLeaveNotifications = typedNotifications.filter(notification =>
     notification.type === 'leave' &&
     !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
@@ -296,7 +308,7 @@ const AppMenu = () => {
       obj.notificationId === notification.id &&
       obj.employeeID === notification.employeeID)
   ).length;
- 
+
   const countShiftNotifications = typedNotifications.filter(notification =>
     notification.type === 'shiftChange' &&
     !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
@@ -311,12 +323,12 @@ const AppMenu = () => {
       obj.employeeID === notification.employeeID)
   ).length;
 
-  const SaleInfoNotifications = typedNotifications.filter(notification =>
-    notification.type === 'sale' &&
-    !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
-      obj.notificationId === notification.id &&
-      obj.employeeID === notification.employeeID)
-  ).length;
+  // const SaleInfoNotifications = typedNotifications.filter(notification =>
+  //   notification.type === 'sale' &&
+  //   !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
+  //     obj.notificationId === notification.id &&
+  //     obj.employeeID === notification.employeeID)
+  // ).length;
 
   const LeaveApprovedNotifications = typedNotifications.filter(notification =>
     notification.type === 'approving' &&
@@ -324,7 +336,7 @@ const AppMenu = () => {
       obj.notificationId === notification.id &&
       obj.employeeID === notification.employeeID)
   ).length;
-  
+
   const LeaveDeniedNotifications = typedNotifications.filter(notification =>
     notification.type === 'deny' &&
     !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
@@ -345,7 +357,7 @@ const AppMenu = () => {
       obj.notificationId === notification.id &&
       obj.employeeID === notification.employeeID)
   ).length;
-  
+
   return (
     <Menu mode="inline">
       {info.jobPosition == "Project Manager" && (
@@ -382,26 +394,28 @@ const AppMenu = () => {
           <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
-          <Menu.Item
-            key="AboutProject"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AboutProject">Projects Report</Link>
-          </Menu.Item>
-          <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
-            <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
+          <Menu.SubMenu key="Reports" icon={<TableOutlined rev={undefined} />} title="Reports">
+            <Menu.Item
+              key="AboutProject"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/AboutProject">Projects Report</Link>
+            </Menu.Item>
+            <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
+              <Link to="/LeaveForm">LeaveForm</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
+              <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
               </Badge></Link>
-          </Menu.Item>
-          <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
-            <Link to="/ShiftChangeForm">Shift change form</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
-            <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
+            </Menu.Item>
+            <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
+              <Link to="/ShiftChangeForm">Shift change form</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
+              <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
               </Badge></Link>
-          </Menu.Item>
+            </Menu.Item>
+          </Menu.SubMenu>
           <Menu.SubMenu key="manageProject" icon={<TableOutlined rev={undefined} />} title="Manage Projects">
             <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
               <Link to="/add-project">Add Project</Link>
@@ -439,7 +453,7 @@ const AppMenu = () => {
           </Menu.SubMenu>
           <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
             <Link to="/LeavePage">LeavePage for approval <Badge count={countLeaveNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item
             key="ShiftChangePage"
@@ -447,19 +461,17 @@ const AppMenu = () => {
           >
             <Link to="/ShiftChangePage">ShiftChangePage for approval </Link>
           </Menu.Item>
-          <Menu.Item
-            key="AssignTaskPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AssignTaskPage">Assign Task </Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewBacklogPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
-            </Badge></Link>
-          </Menu.Item>
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -570,8 +582,7 @@ const AppMenu = () => {
               <Link to="/AdminSaleCampusFormList">AdminSaleCampusFormList</Link>
             </Menu.Item>
             <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
-              <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList <Badge count={SaleInfoNotifications}>
-              </Badge></Link>
+              <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu key="terms" icon={<TableOutlined rev={undefined} />} title="Terms">
@@ -641,22 +652,32 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="salecampusform" icon={<TableOutlined />}>
             <Link to="/salecampusform">Sale Campus Form</Link>
           </Menu.Item>
-
           <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
             <Link to="/salecampusformlist">Sale Campus List</Link>
           </Menu.Item>
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -696,14 +717,14 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
 
           <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
@@ -713,6 +734,17 @@ const AppMenu = () => {
           <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
             <Link to="/saleinfoformlist">Sale Infotech List</Link>
           </Menu.Item>
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -752,14 +784,14 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
             <Menu.Item key="DocForm" icon={<TableOutlined />}>
@@ -811,14 +843,14 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
             <Link to="/SaleInfoForm">Sale Infotech Form</Link>
@@ -827,6 +859,17 @@ const AppMenu = () => {
           <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
             <Link to="/saleinfoformlist">Sale Infotech List</Link>
           </Menu.Item>
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -866,15 +909,26 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -920,14 +974,14 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="HRsection" icon={<TableOutlined />}>
             <Link to="/HRsection">Leave for approval </Link>
@@ -941,6 +995,17 @@ const AppMenu = () => {
           <Menu.Item key="HrLeaveReport" icon={<TableOutlined />}>
             <Link to="/HrLeaveReport">HrLeaveReport </Link>
           </Menu.Item>
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -1022,14 +1087,14 @@ const AppMenu = () => {
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
           <Menu.Item key="ShiftChangeForm" icon={<TableOutlined />}>
             <Link to="/ShiftChangeForm">Shift change form</Link>
           </Menu.Item>
           <Menu.Item key="ViewShiftChange" icon={<TableOutlined />}>
             <Link to="/ViewShiftChange">View Shift change <Badge count={AprovedShiftNotifications + DeniedShiftNotifications}>
-              </Badge></Link>
+            </Badge></Link>
           </Menu.Item>
 
           <Menu.Item key="SaleInfoForm" icon={<TableOutlined />}>
@@ -1039,7 +1104,17 @@ const AppMenu = () => {
           <Menu.Item key="saleinfoformlist" icon={<TableOutlined />}>
             <Link to="/saleinfoformlist">Sale Infotech List</Link>
           </Menu.Item>
-
+          <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
+            <Menu.Item key="DocForm" icon={<TableOutlined />}>
+              <Link to="/DocForm">DocumentForm</Link>
+            </Menu.Item>
+            <Menu.Item key="DocTable" icon={<TableOutlined />}>
+              <Link to="/DocTable">DocumentListing</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewDocumentation" icon={<TableOutlined />}>
+              <Link to="/ViewDocumentation">ViewDocumentation</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
     </Menu>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Table } from "antd";
 import axios from "axios";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import io from "socket.io-client";
 interface BacklogTask {
   backlogTaskID: number;
@@ -90,7 +91,7 @@ const AssignedTasksTable: React.FC = () => {
     );
     setData(updatedData);
     axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}update/task-completion/${backlogTaskID}`,
+      .put(`${process.env.REACT_APP_API_BASE_URL}/update/task-completion/${backlogTaskID}`,
         { isCompleted: isChecked },
         {
           headers: {
@@ -100,9 +101,15 @@ const AssignedTasksTable: React.FC = () => {
       )
       .then((response) => {
         console.log(response.data.message);
+        toast.success('status Updated!', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .catch((error) => {
         console.error("Error updating task completion status:", error);
+        toast.error('Failed!', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       });
 
 
@@ -132,7 +139,7 @@ const AssignedTasksTable: React.FC = () => {
       return;
     }
     axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}update/task-comment/${backlogTaskID}`, { comment: task.comment })
+      .put(`${process.env.REACT_APP_API_BASE_URL}/update/task-comment/${backlogTaskID}`, { comment: task.comment })
       .then((response) => {
         console.log(response.data.message);
         const updatedData = data.map((task) =>

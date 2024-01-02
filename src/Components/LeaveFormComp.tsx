@@ -9,6 +9,9 @@ import axios from "axios";
 // import { Radio } from "antd";
 import { useNavigate } from "react-router-dom";
 const { RangePicker } = DatePicker;
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // interface TeamLead {
 //   id: number;
 //   name: string;
@@ -158,10 +161,15 @@ const LeaveFormComp: React.FC = () => {
           console.log(response.data);
           // setMessage("Leave data submitted");
           navigate("/ViewLeavePage");
+          toast.success('successfull!', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         })
         .catch((error) => {
           console.error("Error submitting leave data:", error);
-          // setMessage("Error submitting leave data");
+          toast.error('failed.', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         });
     } else {
       // setMessage("Please fill in all required fields.");

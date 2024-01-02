@@ -30,7 +30,7 @@ const HRshiftChangeSection: React.FC = () => {
         <div style={{ height: "8%" }}>
           <Navbar />
         </div>
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" , width:'8%'}}>
+        <div style={{ display: "flex", flexDirection: "row", height: "90%", width: '8%' }}>
           <div className="menu-div">
             <Menu />
           </div>
@@ -57,7 +57,7 @@ const HRshiftChangeSection: React.FC = () => {
               </div>
 
               <HRshiftChangeTable
- />
+              />
             </div>
           </div>
         </div>

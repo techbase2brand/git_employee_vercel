@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from "react-router";
 interface FormData {
@@ -215,18 +217,6 @@ function DocForm(): JSX.Element {
             [name]: "",
         }));
     };
-    const submitForm = async () => {
-        if (formData.id) {
-            handleUpdate();
-        } else {
-            try {
-                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-document`, formData);
-                setSubmitted(true);
-            } catch (error) {
-                console.error("Error adding new entry:", error);
-            }
-        }
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -246,8 +236,14 @@ function DocForm(): JSX.Element {
                     const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-document`, formPayload);
                     setSubmitted(true);
                     Navigate("/DocTable");
+                    toast.success('Submit successfully!', {
+                        position: toast.POSITION.TOP_RIGHT,
+                      });
                 } catch (error) {
                     console.error("Error submitting form:", error);
+                    toast.error('Error while inserting.', {
+                        position: toast.POSITION.TOP_RIGHT,
+                      });
                 }
             }
         }
@@ -263,9 +259,15 @@ function DocForm(): JSX.Element {
             .then((response) => {
                 setSubmitted(true);
                 Navigate("/DocTable");
+                toast.success('Updated successfully!', {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
             })
             .catch((error) => {
                 console.error("Error updating form:", error);
+                toast.error('Error while Updating.', {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
             });
     };
 

@@ -135,23 +135,24 @@ const AdminSaleInfotechFormList = () => {
   //     setDateRange(dateStrings);
   //   }
   // };
-  const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+  const handleDateRangeChange = (dates: any, dateStrings: [string | null, string | null]) => {
     const [startDate, endDate] = dateStrings;
+
     if ((!startDate || startDate.trim() === '') && (!endDate || endDate.trim() === '')) {
-      setFilteredByDateRange([]); // Reset to empty array if date range is not selected
+      setFilteredByDateRange([]);
+      // setFilteredData(gettingData);
     } else {
       const filteredData = gettingData.filter((item) => {
         const taskDate = new Date(item.dateData).getTime();
         const startDateTime = startDate ? new Date(startDate).getTime() : 0;
         const endDateTime = endDate ? new Date(endDate).getTime() : Infinity;
-  
+
         return taskDate >= startDateTime && taskDate <= endDateTime;
       });
-  
-      setFilteredByDateRange(filteredData); // Update filtered data based on the date range
+      // setFilteredData(filteredData);
+      setFilteredByDateRange(filteredData);
     }
   };
-
   const handleProjectChange = (value: string) => {
     setSelectedRegister(value);
   };

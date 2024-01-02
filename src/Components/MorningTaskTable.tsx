@@ -3,6 +3,8 @@ import { Table, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Task {
   MrngTaskID: number;
@@ -92,9 +94,17 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
           alert("All fields are required.");
         } else {
           handleDelete(record.MrngTaskID);
+          toast.success('Moved successfully!', {
+            position: toast.POSITION.TOP_RIGHT,
+            // Other configuration options as needed
+          });
         }
       })
-      .catch(console.error);
+      .catch((error) => {
+        toast.error('Not Moved', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
   };
 
   const employeeInfo = useMemo(() => (dataString ? JSON.parse(dataString) : []), [dataString]);
