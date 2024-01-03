@@ -56,17 +56,17 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
     (project) => project.clientName === selectedClient
   )
 
-  const resetFormFields = () => {
-    setTasks([
-      {
-        createdDate: currentDate,
-        deadlineStart: null,
-        deadlineEnd: null,
-      },
-    ]);
-    setElementCount(1);
-    // Other form reset actions if needed
-  };
+  // const resetFormFields = () => {
+  //   setTasks([
+  //     {
+  //       createdDate: currentDate,
+  //       deadlineStart: null,
+  //       deadlineEnd: null,
+  //     },
+  //   ]);
+  //   setElementCount(1);
+  //   // Other form reset actions if needed
+  // };
   const filteredData = data.filter((item: any) => item.status === 1);
   const sortedEmployees = [...filteredData];
 
@@ -267,7 +267,7 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
           toast.success('Tasks inserted successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           });
-          resetFormFields();
+          // resetFormFields();
         }
 
       })
