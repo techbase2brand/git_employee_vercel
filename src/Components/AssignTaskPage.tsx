@@ -56,17 +56,17 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
     (project) => project.clientName === selectedClient
   )
 
-  // const resetFormFields = () => {
-  //   setTasks([
-  //     {
-  //       createdDate: currentDate,
-  //       deadlineStart: null,
-  //       deadlineEnd: null,
-  //     },
-  //   ]);
-  //   setElementCount(1);
-  //   // Other form reset actions if needed
-  // };
+  const resetFormFields = () => {
+    setTasks([
+      {
+        createdDate: currentDate,
+        deadlineStart: null,
+        deadlineEnd: null,
+      },
+    ]);
+    setElementCount(1);
+    // Other form reset actions if needed
+  };
   const filteredData = data.filter((item: any) => item.status === 1);
   const sortedEmployees = [...filteredData];
 
@@ -249,8 +249,6 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       };
     });
 
-    console.log("Output tasks:", outputTasks);
-
     axios
       .post(
         ` ${process.env.REACT_APP_API_BASE_URL}/create/addBacklogTasks`,
@@ -264,19 +262,19 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       .then((response) => {
         if (response.data === "Tasks inserted") {
           navigate("/ViewBacklogPage");
-          toast.success('Tasks inserted successfully!', {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-          // resetFormFields();
+          // toast.success('Tasks inserted successfully!', {
+          //   position: toast.POSITION.TOP_RIGHT,
+          // });
+          resetFormFields();
         }
 
       })
       .catch((error) => {
         console.log(error);
-        toast.error('Error while inserting tasks.', {
-          position: toast.POSITION.TOP_RIGHT,
-          // Other configuration options as needed
-        });
+        // toast.error('Error while inserting tasks.', {
+        //   position: toast.POSITION.TOP_RIGHT,
+        //   // Other configuration options as needed
+        // });
       });
   };
 
