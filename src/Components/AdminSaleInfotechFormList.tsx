@@ -201,7 +201,7 @@ const AdminSaleInfotechFormList = () => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-       ` ${process.env.REACT_APP_API_BASE_URL}/salesinfodata`
+        ` ${process.env.REACT_APP_API_BASE_URL}/salesinfodata`
         // , {
         //   headers: {
         //     Authorization: `Bearer ${token}`,
@@ -350,7 +350,7 @@ const AdminSaleInfotechFormList = () => {
   //     }
   //   };
   // ... (existing code)
-  const generateCommModeContent = (record:any) => {
+  const generateCommModeContent = (record: any) => {
     const {
       commModeSkype,
       commModePhone,
@@ -358,10 +358,10 @@ const AdminSaleInfotechFormList = () => {
       commModeEmail,
       commModePortal,
       commModeOther,
-      
-      
+
+
     } = record;
-  
+
     const modes = [
       `Email: ${commModeSkype}`,
       `Other: ${commModePhone}`,
@@ -370,10 +370,10 @@ const AdminSaleInfotechFormList = () => {
       `Whatsapp: ${commModePortal}`,
       `Skype: ${commModeOther}`,
     ];
-  
+
     return modes.join(', '); // Join modes into a single string
   };
-  
+
   const columns = [
     {
       title: "Lead Date",
@@ -465,10 +465,10 @@ const AdminSaleInfotechFormList = () => {
       key: "commModePortal",
       render: (text: string, record: SalesInfoData) => (
         <div>
-      <Button onClick={() => showModal(generateCommModeContent(record))}>
-        View Comm. Modes
-      </Button>
-    </div>
+          <Button onClick={() => showModal(generateCommModeContent(record))}>
+            View Comm. Modes
+          </Button>
+        </div>
       ),
     },
     {
@@ -534,11 +534,11 @@ const AdminSaleInfotechFormList = () => {
     }
   };
   const handleGoButtonClick = () => {
-    const today = new Date(); 
+    const today = new Date();
     const currentYear = today.getFullYear();
     let startDate: Date | null = null;
     let endDate: Date | null = null;
-  
+
     switch (selectedDays) {
       case "7":
         startDate = new Date(today);
@@ -578,9 +578,9 @@ const AdminSaleInfotechFormList = () => {
         selectedRegister ?
           item.RegisterBy.toLowerCase().includes(selectedRegister.toLowerCase()) :
           true;
-          const dateRangeMatch = filteredByDateRange.length > 0
-      ? filteredByDateRange.includes(item)
-      : true;
+      const dateRangeMatch = filteredByDateRange.length > 0
+        ? filteredByDateRange.includes(item)
+        : true;
       // const matchDate =
       //   selectedDays && item.dateData ?
       //     new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :

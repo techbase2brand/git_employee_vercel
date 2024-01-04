@@ -37,12 +37,6 @@ const data: Employee[][] = [
   ]
 ];
 
-
-
-
-
-
-
 const ViewProject: React.FC = () => {
   const [mode, setMode] = useState<TabPosition>('morning');
   const { phasejEditObj, setPhasejEditObj } = useContext(GlobalInfo);
@@ -55,7 +49,6 @@ const ViewProject: React.FC = () => {
   const handleModeChange = (e: RadioChangeEvent) => {
     setMode(e.target.value);
   };
-
 
 
   return (
@@ -108,7 +101,7 @@ const ViewProject: React.FC = () => {
                 </p>
               </div>
 
-              <     ViewPhaseTable phasejEditObj={phasejEditObj} setPhasejEditObj={setPhasejEditObj} />
+              <     ViewPhaseTable/>
 
             </div>
 

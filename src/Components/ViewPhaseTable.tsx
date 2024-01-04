@@ -10,12 +10,9 @@ interface Phases {
   phases: string | string[];  // Modified this line to accept both string and array of strings
 }
 
-interface Props {
-  phasejEditObj: Phases | undefined;
-  setPhasejEditObj: React.Dispatch<React.SetStateAction<Phases | undefined>>;
-}
 
-const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) => {
+
+const ViewPhaseTable: React.FC = () => {
   const [phaseArr, setphaseArr] = useState<Phases[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -32,11 +29,18 @@ const ViewPhaseTable: React.FC<Props> = ({ phasejEditObj, setPhasejEditObj }) =>
       });
   }, []);
 
-  const handleEdit = (phaseID: number) => {
-    const filteredObj = phaseArr.filter((obj) => obj.phaseID === phaseID);
-    setPhasejEditObj(filteredObj[0]);
-    navigate("/EditAddPhase", { state: { phaseEditObj: filteredObj[0] } });
+  const handleEdit = (phaseID: string | number) => {
+    const filteredObj = phaseArr.find(obj => obj.phaseID === phaseID);
+    if (filteredObj) {
+      navigate("/EditAddPhase", { state: { phaseEditObj: filteredObj } });
+    } else {
+      console.error("Phase not found for editing");
+      // Handle case where phaseID doesn't match any existing phase
+    }
   };
+  
+
+  
 
   const handleDelete = (phaseID: string) => {
     axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/delete-phase/${phaseID}`, {
