@@ -27,10 +27,12 @@ interface Employee {
 
 const HrLeaveReportTable: React.FC = () => {
   const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
+  const [selectedYear, setSelectedYear] = useState<string>('all');
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
+
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | 'all'>('all');
   const [currentPage, setCurrentPage] = useState(0);
-  const employeesPerPage = 5; // Modify this to change how many employees are shown per page
+  const employeesPerPage = 100;
 
   const timeToMinutes = (time: string) => {
     const [hours, minutes] = time.split(":").map(Number);
@@ -45,9 +47,22 @@ const HrLeaveReportTable: React.FC = () => {
     return { days, hours: remainingHours, minutes: remainingMinutes };
   };
 
+  const updatedAllLeave = allLeave.map((leave) => {
+    const startDateString = leave.startDate.toString();
+    const updatedStartDate = startDateString.split('-')[0];
+    return {
+      ...leave,
+      startDate: updatedStartDate,
+    };
+  });
+  const uniqueTimeParts = new Set(updatedAllLeave.map((leave) => leave.startDate));
+  const uniqueTimeArray = Array.from(uniqueTimeParts);
+  uniqueTimeArray.sort((a, b) => {
+    return parseInt(b, 10) - parseInt(a, 10);
+  });
+
   useEffect(() => {
     const token = localStorage.getItem("myToken");
-
     axios
       .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
         headers: {
@@ -60,7 +75,6 @@ const HrLeaveReportTable: React.FC = () => {
         );
         setAllLeave(sortedData);
       });
-
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
@@ -76,14 +90,12 @@ const HrLeaveReportTable: React.FC = () => {
     const employeeLeaves = allLeave.filter(
       (leave) => leave.employeeID === employee.EmployeeID
     );
-   // if there are no leaves, don't display the table
-
     if (employeeLeaves.length === 0 && selectedEmployee !== 'all') return (
-        <div key={employee.EmpID} style={{ textAlign: "center", margin: "20px 0", color: "#999", fontSize: "20px", fontWeight: "bold" }}>
-          {employee.firstName} has no leave data.
-        </div>
-      );
-      if (employeeLeaves.length === 0) return null;
+      <div key={employee.EmpID} style={{ textAlign: "center", margin: "20px 0", color: "#999", fontSize: "20px", fontWeight: "bold" }}>
+        {employee.firstName} has no leave data.
+      </div>
+    );
+    if (employeeLeaves.length === 0) return null;
 
     let totalDuration = 0;
     let uncertainDuration = 0;
@@ -102,7 +114,6 @@ const HrLeaveReportTable: React.FC = () => {
       const endDate = dayjs(leave.endDate).startOf("day");
       // const dayGap = endDate.diff(startDate, "day");
       const dayGap = endDate.diff(startDate, "day") + 1;
-
 
       let duration = 0;
       if (/^\d{1,2}:\d{2}$/.test(leave.leaveType)) {
@@ -141,7 +152,7 @@ const HrLeaveReportTable: React.FC = () => {
 
     return (
       <div key={employee.EmpID}>
-        <h2 style={{margin:'10px',marginBottom:'-20px' }}>{employee.firstName}</h2>
+        <h2 style={{ margin: '10px', marginBottom: '-20px' }}>{employee.firstName}</h2>
         <div className="containerStyle">
           <div className="totalLeaveStyle">Total Leave: {totalLeave}</div>
           <div className="uncertainLeaveStyle">Total Uncertain Leave: {uncertainLeaveDuration}</div>
@@ -158,19 +169,21 @@ const HrLeaveReportTable: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(monthlyData).map(([key, value]) => {
-                const total = minutesToDaysHours(value.total);
-                const uncertain = minutesToDaysHours(value.uncertain);
-                const regular = minutesToDaysHours(value.regular);
-                return (
-                  <tr key={key}>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
-                    <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
-                  </tr>
-                );
-              })}
+              {Object.entries(monthlyData)
+                .filter(([key]) => selectedYear === 'all' || key.includes(selectedYear))
+                .map(([key, value]) => {
+                  const total = minutesToDaysHours(value.total);
+                  const uncertain = minutesToDaysHours(value.uncertain);
+                  const regular = minutesToDaysHours(value.regular);
+                  return (
+                    <tr key={key}>
+                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
+                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
+                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
+                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -230,14 +243,27 @@ const HrLeaveReportTable: React.FC = () => {
 
   return (
     <div className="allEmployeesLeaveData">
-      <div style={{ display: "flex", justifyContent: "flex-end", margin: "10px 0" }}>
+      <div style={{ display: 'flex', gap: '27px' }}>
+        <select
+          value={selectedYear}
+          onChange={(e) => {
+            const year = e.target.value;
+            setSelectedYear(year);
+          }}
+          style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", outline: "none" }}
+        >
+          <option value='all'>Select Year</option>
+          {uniqueTimeArray.map(item => (
+            <option key={item} value={item}>{item}</option>
+          ))}
+        </select>
         <select
           value={selectedEmployee === 'all' ? 'all' : selectedEmployee.EmpID}
           onChange={(e) => {
             const selectedId = e.target.value;
             if (selectedId === 'all') {
               setSelectedEmployee('all');
-              setCurrentPage(0); // Reset the current page whenever the selected employee changes
+              setCurrentPage(0);
             } else {
               const selectedEmp = allEmployees.find(emp => emp.EmpID.toString() === selectedId);
               if (selectedEmp) setSelectedEmployee(selectedEmp);
@@ -246,16 +272,18 @@ const HrLeaveReportTable: React.FC = () => {
           style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", outline: "none" }}
         >
           <option value='all'>All Employees</option>
-          {allEmployees.map(emp => (
+          {allEmployees
+           .sort((a, b) => a.firstName.localeCompare(b.firstName)) // Sort by firstName
+          .map(emp => (
             <option key={emp.EmpID} value={emp.EmpID}>{emp.firstName}</option>
           ))}
         </select>
       </div>
       {selectedEmployee === 'all'
         ? allEmployees
-            .filter(emp => allLeave.some(leave => leave.employeeID === emp.EmployeeID)) // Filter out employees with no leave
-            .slice(currentPage * employeesPerPage, (currentPage + 1) * employeesPerPage)
-            .map((employee) => calculateTotalLeaveForEmployee(employee))
+          .filter(emp => allLeave.some(leave => leave.employeeID === emp.EmployeeID)) // Filter out employees with no leave
+          .slice(currentPage * employeesPerPage, (currentPage + 1) * employeesPerPage)
+          .map((employee) => calculateTotalLeaveForEmployee(employee))
         : calculateTotalLeaveForEmployee(selectedEmployee)
       }
       {selectedEmployee === 'all' &&

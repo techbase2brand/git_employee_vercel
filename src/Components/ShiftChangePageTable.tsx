@@ -189,6 +189,14 @@ interface ShiftChangeData {
 
 const ShiftChangePageTable : React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
+  const updatedAllLeave = data.map((item) => {
+    const startDateString = item.currDate.toString();
+    const updatedStartDate = startDateString.split('T')[0];
+    return {
+      ...item,
+      startDate: updatedStartDate,
+    };
+  });
 
   const employeeInfo = localStorage.getItem("myData");
 
@@ -271,6 +279,12 @@ const ShiftChangePageTable : React.FC = () => {
         render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
     },
     {
+      title: "Apply Date",
+      dataIndex: "startDate",
+      key: "startDate",
+      render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
+  },
+    {
         title: "In time",
         dataIndex: "inTime",
         key: "inTime",
@@ -323,7 +337,7 @@ const ShiftChangePageTable : React.FC = () => {
     <>
       <Table
         style={{ width: "80vw" }}
-        dataSource={data}
+        dataSource={updatedAllLeave}
         columns={columns}
         rowClassName={() => "header-row"}
       />
