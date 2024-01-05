@@ -157,9 +157,11 @@ const HRshiftChangeTable: React.FC = () => {
         </div>
       ),
     }
-
   ];
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
+  
   return (
     <>
       <Table
@@ -167,6 +169,7 @@ const HRshiftChangeTable: React.FC = () => {
         dataSource={data}
         columns={columns}
         rowClassName={() => "header-row"}
+        pagination={paginationSettings}
       />
     </>
   );
