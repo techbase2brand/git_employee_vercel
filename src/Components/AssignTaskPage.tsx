@@ -77,7 +77,6 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
   if (adminInfo) {
     const userInfo = JSON.parse(adminInfo);
     userEmail = userInfo?.email;
-    console.log("User email: ", userEmail);
   } else {
     console.log("No admin info found in local storage");
   }

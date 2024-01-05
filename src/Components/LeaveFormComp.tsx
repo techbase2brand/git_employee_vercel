@@ -121,16 +121,16 @@ const LeaveFormComp: React.FC = () => {
     if (startDate && endDate) {
       // Find the selected admin using the adminID
 
-      console.log(teamLead,"teamLeadteamLeadteamLeadteamLeadteamLead");
+      console.log(teamLead, "teamLeadteamLeadteamLeadteamLeadteamLead");
 
       const selectedAdmin = adminInfo.find(
         (admin) => admin.EmployeeID === teamLead
       );
-   console.log(selectedAdmin,"selectedAdminselectedAdmin");
+      console.log(selectedAdmin, "selectedAdminselectedAdmin");
 
       // Extract the adminName and adminID
       const adminName = selectedAdmin ? selectedAdmin.firstName : "";
-      console.log(adminName,"adminNameadminNameadminName");
+      console.log(adminName, "adminNameadminNameadminName");
 
       const adminID = selectedAdmin ? selectedAdmin.EmployeeID : "";
 
@@ -152,11 +152,11 @@ const LeaveFormComp: React.FC = () => {
         leaveCategory: leaveCategoryState,
       };
       axios
-      .post(`${process.env.REACT_APP_API_BASE_URL}/createLeave`, leaveData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      })
+        .post(`${process.env.REACT_APP_API_BASE_URL}/createLeave`, leaveData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           // setMessage("Leave data submitted");
@@ -212,23 +212,23 @@ const LeaveFormComp: React.FC = () => {
     const token = localStorage.getItem("myToken");
 
     axios
-    .get<IEmployee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
+      .get<IEmployee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
 
-      const arr = response?.data.filter((elem)=> elem?.jobPosition == "Project Manager" || elem?.jobPosition == "Managing Director")
+        const arr = response?.data.filter((elem) => elem?.jobPosition == "Project Manager" || elem?.jobPosition == "Managing Director")
 
 
-      setAdminInfo(arr);
-      console.log(response.data,"response.data of empployee");
+        setAdminInfo(arr);
+        console.log(response.data, "response.data of empployee");
 
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
 
 
     // axios
@@ -276,7 +276,7 @@ const LeaveFormComp: React.FC = () => {
               endDate ? dayjs(endDate) : null,
             ]}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange={(dates : any) => {
+            onChange={(dates: any) => {
               if (dates) {
                 setStartDate(dates[0]?.toDate() || null);
                 setEndDate(dates[1]?.toDate() || null);
@@ -307,13 +307,16 @@ const LeaveFormComp: React.FC = () => {
               required
             >
               <option value="">Hourly basis</option>
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                [15, 30, 45].map((minute) => (
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) => [
+                <option key={`${hour}:00`} value={`${hour}:00`}>
+                  {`${hour} hours`}
+                </option>,
+                ...[15, 30, 45].map((minute) => (
                   <option key={`${hour}:${minute}`} value={`${hour}:${minute}`}>
                     {`${hour} hours ${minute} mins`}
                   </option>
                 ))
-              )}
+              ])}
             </select>
 
             <p

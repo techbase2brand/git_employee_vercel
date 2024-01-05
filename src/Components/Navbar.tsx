@@ -102,7 +102,7 @@ const Navbar: React.FunctionComponent = () => {
 
   const [newTaskAssignedWhileHidden, setNewTaskAssignedWhileHidden] = useState(false);
   const [notif, setNotif] = useState();
-const [state, setState]=useState(false);
+  const [state, setState] = useState(false);
   const [notificationss, setNotificationss] = useState<BacklogTask[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -235,25 +235,25 @@ const [state, setState]=useState(false);
 
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
-    socket.on("notification", (taskData) => {
-      const taskNotifications = taskData?.data
-        ?.filter((item: TaskNotification) => item.employeeID === myData.EmployeeID)
-        .map((item: TaskNotification) => ({
-          ...item,
-          type: "task",
-          id: item.backlogTaskID,
-        }))
-        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
-      setNotifications((prevNotifications) => {
-        const newNotifications = taskNotifications?.filter(
-          (newItem: { id: number }) =>
-            !prevNotifications.some(
-              (existingItem) => existingItem.id === newItem.id
-            )
-        ) || [];
-        return [...newNotifications, ...prevNotifications];
-      });
-    });
+    // socket.on("notification", (taskData) => {
+    //   const taskNotifications = taskData?.data
+    //     ?.filter((item: TaskNotification) => item.employeeID === myData.EmployeeID)
+    //     .map((item: TaskNotification) => ({
+    //       ...item,
+    //       type: "task",
+    //       id: item.backlogTaskID,
+    //     }))
+    //     .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+    //   setNotifications((prevNotifications) => {
+    //     const newNotifications = taskNotifications?.filter(
+    //       (newItem: { id: number }) =>
+    //         !prevNotifications.some(
+    //           (existingItem) => existingItem.id === newItem.id
+    //         )
+    //     ) || [];
+    //     return [...newNotifications, ...prevNotifications];
+    //   });
+    // });
 
     socket.on("leaveinfo", (leaveData) => {
       const leaveNotifications = leaveData?.data
@@ -439,7 +439,7 @@ const [state, setState]=useState(false);
       socket.disconnect();
     };
   }, [handleTaskAssigned, myData.EmployeeID]);
-  
+
   const getVisitedNotificationObjects = () => {
     const visitedNotifications = jsonData;
     return visitedNotifications ? JSON.parse(visitedNotifications) : [];
@@ -615,10 +615,10 @@ const [state, setState]=useState(false);
         const handleItemClick = () => {
           markNotificationAsVisited(item);
           setNotifications((prevNotifications) =>
-          prevNotifications.filter(
-            (notification) => notification.id !== item.id
-          )
-        );
+            prevNotifications.filter(
+              (notification) => notification.id !== item.id
+            )
+          );
           if (item?.type === "leave") {
             navigate("/LeavePage");
           } else {

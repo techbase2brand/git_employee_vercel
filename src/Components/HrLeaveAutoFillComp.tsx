@@ -56,7 +56,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
 
 
   const getRowClassName = (record: LeaveData) => {
-    console.log(record,"recordrecord");
+    console.log(record, "recordrecord");
 
     if (record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved") {
       console.log("chlna to chahiye yrr ");
@@ -184,11 +184,11 @@ const HrLeaveAutoFillComp: React.FC = () => {
 
 
   useEffect(() => {
-    if(employeeID) {
-        const selectedEmployee = employees.find((employee) => employee.EmployeeID === employeeID);
-        if(selectedEmployee) {
-            setEmployeeName(`${selectedEmployee.firstName} ${selectedEmployee.lastName}`);
-        }
+    if (employeeID) {
+      const selectedEmployee = employees.find((employee) => employee.EmployeeID === employeeID);
+      if (selectedEmployee) {
+        setEmployeeName(`${selectedEmployee.firstName} ${selectedEmployee.lastName}`);
+      }
     }
   }, [employeeID, employees]);
 
@@ -238,7 +238,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
               startDate ? dayjs(startDate) : null,
               endDate ? dayjs(endDate) : null,
             ]}
-            onChange={(dates : any) => {
+            onChange={(dates: any) => {
               if (dates) {
                 setStartDate(dates[0]?.toDate() || null);
                 setEndDate(dates[1]?.toDate() || null);
@@ -256,30 +256,30 @@ const HrLeaveAutoFillComp: React.FC = () => {
           <div style={{ display: "flex", flexDirection: "row" }}>
             <label className="add-label"></label>
             <select
-  style={{
-    width: "100%",
-    display: "block",
-  }}
-  name="estTime"
-  className="form-control"
-  value={estTime}
-  onClick={handleDropdownClick}
-  onChange={handleDropdownChange}
-  disabled={leaveType === "full day"}
-  required
->
-  <option value="">Hourly basis</option>
-  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) => [
-    <option key={`${hour}:00`} value={`${hour}:00`}>
-      {`${hour} hours`}
-    </option>,
-    ...[15, 30, 45].map((minute) => (
-      <option key={`${hour}:${minute}`} value={`${hour}:${minute}`}>
-        {`${hour} hours ${minute} mins`}
-      </option>
-    ))
-  ])}
-</select>
+              style={{
+                width: "100%",
+                display: "block",
+              }}
+              name="estTime"
+              className="form-control"
+              value={estTime}
+              onClick={handleDropdownClick}
+              onChange={handleDropdownChange}
+              disabled={leaveType === "full day"}
+              required
+            >
+              <option value="">Hourly basis</option>
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) => [
+                <option key={`${hour}:00`} value={`${hour}:00`}>
+                  {`${hour} hours`}
+                </option>,
+                ...[15, 30, 45].map((minute) => (
+                  <option key={`${hour}:${minute}`} value={`${hour}:${minute}`}>
+                    {`${hour} hours ${minute} mins`}
+                  </option>
+                ))
+              ])}
+            </select>
 
 
             <p
