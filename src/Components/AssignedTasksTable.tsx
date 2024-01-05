@@ -21,6 +21,7 @@ interface BacklogTask {
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
+  console.log("data",data)
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
 
   const isWithinLastOneMonth = (dateString: any) => {
@@ -45,45 +46,37 @@ const AssignedTasksTable: React.FC = () => {
   );
 
 
-  // useEffect(() => {
-  //   axios
-  //     .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`
-  //     )
-  //     .then((response) => {
-  //       const sortedData = response.data.sort(
-  //         (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-  //       );
-  //       console.log(sortedData);
-  //      console.log(employeeInfo?.EmployeeID);
-
-
-
-
-  //       const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
-  //       );
-  //       setData(filteredData);
-  //       console.log(filteredData);
-
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //       console.log("Error details:", error.response);
-  //     });
-  // }, []);
   useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
-    socket.on("notification", (data: { data: any[] }) => {
-      const sortedData = data?.data?.sort(
-        (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-      );
-      const filteredData = sortedData?.filter(
-        (task) =>
-          isWithinLastOneMonth(task?.currdate) &&
-          task?.employeeID === employeeInfo?.EmployeeID
-      );
-      setData(filteredData);
-    });
+    axios
+      .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`
+      )
+      .then((response) => {
+        const sortedData = response.data.sort(
+          (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+        );
+        const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === employeeInfo?.EmployeeID
+        );
+        setData(filteredData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        console.log("Error details:", error.response);
+      });
   }, []);
+  // useEffect(() => {
+  //   const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
+  //   socket.on("notification", (data: { data: any[] }) => {
+  //     const sortedData = data?.data?.sort(
+  //       (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+  //     );
+  //     const filteredData = sortedData?.filter(
+  //       (task) =>
+  //         isWithinLastOneMonth(task?.currdate) &&
+  //         task?.employeeID === employeeInfo?.EmployeeID
+  //     );
+  //     setData(filteredData);
+  //   });
+  // }, []);
 
   const handleCheckboxChange = (isChecked: boolean, backlogTaskID: number) => {
     const updatedData = data.map((task) =>
@@ -100,7 +93,6 @@ const AssignedTasksTable: React.FC = () => {
         }
       )
       .then((response) => {
-        console.log(response.data.message);
         toast.success('status Updated!', {
           position: toast.POSITION.TOP_RIGHT,
         });

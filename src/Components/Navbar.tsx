@@ -235,25 +235,25 @@ const Navbar: React.FunctionComponent = () => {
 
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
-    // socket.on("notification", (taskData) => {
-    //   const taskNotifications = taskData?.data
-    //     ?.filter((item: TaskNotification) => item.employeeID === myData.EmployeeID)
-    //     .map((item: TaskNotification) => ({
-    //       ...item,
-    //       type: "task",
-    //       id: item.backlogTaskID,
-    //     }))
-    //     .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
-    //   setNotifications((prevNotifications) => {
-    //     const newNotifications = taskNotifications?.filter(
-    //       (newItem: { id: number }) =>
-    //         !prevNotifications.some(
-    //           (existingItem) => existingItem.id === newItem.id
-    //         )
-    //     ) || [];
-    //     return [...newNotifications, ...prevNotifications];
-    //   });
-    // });
+    socket.on("notification", (taskData) => {
+      const taskNotifications = taskData?.data
+        ?.filter((item: TaskNotification) => item.employeeID === myData.EmployeeID)
+        .map((item: TaskNotification) => ({
+          ...item,
+          type: "task",
+          id: item.backlogTaskID,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = taskNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
 
     socket.on("leaveinfo", (leaveData) => {
       const leaveNotifications = leaveData?.data

@@ -147,8 +147,6 @@ const ViewBacklogTable: React.FC = () => {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         });
-        console.log("response", response)
-
         setOriginalData(response.data)
         const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
         const filteredData = sortedData?.filter((e) => {
@@ -197,7 +195,6 @@ const ViewBacklogTable: React.FC = () => {
         console.log("Error details:", (error as AxiosError)?.response);
       }
     };
-
     fetchData();
   }, [adminID, dateRange, searchTerm]);
 

@@ -100,9 +100,6 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       .catch((error) => console.log(error));
   }, [setData]);
 
-  useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
 
   const navigate = useNavigate();
 
@@ -261,19 +258,19 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
       .then((response) => {
         if (response.data === "Tasks inserted") {
           navigate("/ViewBacklogPage");
-          // toast.success('Tasks inserted successfully!', {
-          //   position: toast.POSITION.TOP_RIGHT,
-          // });
+          toast.success('Tasks inserted successfully!', {
+            position: toast.POSITION.TOP_RIGHT,
+          });
           resetFormFields();
         }
 
       })
       .catch((error) => {
         console.log(error);
-        // toast.error('Error while inserting tasks.', {
-        //   position: toast.POSITION.TOP_RIGHT,
-        //   // Other configuration options as needed
-        // });
+        toast.error('Error while inserting tasks.', {
+          position: toast.POSITION.TOP_RIGHT,
+          // Other configuration options as needed
+        });
       });
   };
 
