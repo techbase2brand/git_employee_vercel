@@ -53,15 +53,17 @@ interface Props {
 
 
 const info = JSON.parse(localStorage.getItem("myData") || "{}");
-console.log(info?.EmployeeID);
-
 
 const SalecampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
+  console.log("data", data);
+
   const [recordToDelete, setRecordToDelete] = useState<SalecampusData | null>(
     null
   );
   const [filteredData, setFilteredData] = useState<SalecampusData[]>(data);
+  console.log("filteredData", filteredData);
+
   const [deleteId, setDeleteId] = useState<number>();
   const [editId, setEditId] = useState<number>();
   const [search, setSearch] = useState<string>("");
@@ -72,7 +74,6 @@ const SalecampusFormList = () => {
   const [statusNames, setStatusNames] = useState<string[]>([]);
   const uniqueStatusNames = Array.from(new Set(statusNames));
   const [selectedDays, setSelectedDays] = useState<string>("");
-  const [filteredByDateRange, setFilteredByDateRange] = useState<SalecampusData[]>([]);
   const [state, setState] = useState<boolean>(false);
 
   const Navigate = useNavigate();
@@ -152,7 +153,7 @@ const SalecampusFormList = () => {
         // }
       )
       .then((response) => {
-        console.log(response.data);
+        console.log("deleted");
       })
       .catch((error) => {
         console.log(error);
@@ -177,7 +178,6 @@ const SalecampusFormList = () => {
   };
   // edit methods
   const handleEdit = (id: number) => {
-    console.log(`update form with id ${id}`);
     setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/SalecampusForm", { state: { record: recordToEdit } });
@@ -227,18 +227,25 @@ const SalecampusFormList = () => {
       const itemDateTimestamp = itemDate.getTime();
       const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
         (!endDate || itemDateTimestamp <= endDate.getTime());
-        const dateRangeMatch =
+
+      const dateRangeMatch =
         dateRangeSearch[0] && dateRangeSearch[1]
-          ? itemDate >= new Date(dateRangeSearch[0]) && itemDate <= new Date(dateRangeSearch[1])
+          ? (
+            (item.created_at && new Date(item.created_at) >= new Date(dateRangeSearch[0]) && new Date(item.created_at) <= new Date(dateRangeSearch[1])) ||
+            (item.updated_at && new Date(item.updated_at) >= new Date(dateRangeSearch[0]) && new Date(item.updated_at) <= new Date(dateRangeSearch[1]))
+          )
           : true;
-      return statusMatch  && matchDate && dateRangeMatch;
+
+
+      return statusMatch && matchDate && dateRangeMatch;
+
     });
     if (!startDate && !endDate && (dateRangeSearch[0] || dateRangeSearch[1])) {
       setState(false);
     } else {
       setState(true);
     }
-    setFilteredData(filteredResult);
+    setFilteredData(filteredResult)
   };
 
   const columns = [
@@ -459,11 +466,6 @@ const SalecampusFormList = () => {
     date.setMinutes(date.getMinutes() + offsetIST);
     return date.toISOString().slice(0, 19).replace("T", " ");
   }
-
-  // Sample usage
-  const utcDateTime = "2023-09-21T14:09:55.000Z";
-  const localDateTime = convertUTCToLocal(utcDateTime);
-  console.log(localDateTime); // Outputs "2023-09-21 19:39:55"
 
   return (
     <>
