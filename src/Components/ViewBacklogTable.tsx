@@ -161,7 +161,7 @@ const ViewBacklogTable: React.FC = () => {
         setData(filteredData);
         const today = new Date();
         const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(today.getDate() - 10); // Here, change -2 to -10
+        tenDaysAgo.setDate(today.getDate() - 10); 
         if (
           employeeName === "Managing Director") {
           const filteredData = sortedData?.filter((e) => {

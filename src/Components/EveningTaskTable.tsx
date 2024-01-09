@@ -166,7 +166,7 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
   ];
 
   return (
-    <div style={{ overflow: 'auto' }}>
+    <div>
     <p>{employeeFirstname}</p>
       <div className="totals" style={{ marginBottom: '20px' }}>
         <p><strong>Estimated Time Total: </strong> {convertDecimalToTime(totalEstTime)} hrs</p>

@@ -98,7 +98,7 @@ const ViewEveningTask: React.FC = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column",width: 'auto'}}
             className="form-container"
           >
             <div
