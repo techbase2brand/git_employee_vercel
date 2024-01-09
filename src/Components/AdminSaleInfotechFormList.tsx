@@ -60,6 +60,7 @@ interface SalesInfoData {
   commModePortal: string;
   commModeWhatsapp: string;
   commModeSkype: string;
+  othermode: string;
 }
 interface Props {
   data: SalesInfoData[];
@@ -409,6 +410,12 @@ const AdminSaleInfotechFormList = () => {
       render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
     },
     {
+      title: "Other Portal Name",
+      dataIndex: "othermode",
+      key: "othermode",
+      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
+    },
+    {
       title: "Profile name",
       dataIndex: "profileName",
       key: "profileName",
@@ -522,7 +529,8 @@ const AdminSaleInfotechFormList = () => {
           e?.url?.toLowerCase().includes(lowercasedInput) ||
           e?.dateData?.toLowerCase().includes(lowercasedInput) ||
           e?.RegisterBy?.toLowerCase().includes(lowercasedInput) ||
-          e?.inviteBid?.toLowerCase().includes(lowercasedInput)
+          e?.inviteBid?.toLowerCase().includes(lowercasedInput)||
+          e?.othermode?.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
     } else {

@@ -267,9 +267,13 @@ const AdminSaleCampusFormList = () => {
       const itemDateTimestamp = itemDate.getTime();
       const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
         (!endDate || itemDateTimestamp <= endDate.getTime());
-      const dateRangeMatch =
+        
+        const dateRangeMatch =
         dateRangeSearch[0] && dateRangeSearch[1]
-          ? itemDate >= new Date(dateRangeSearch[0]) && itemDate <= new Date(dateRangeSearch[1])
+          ? (
+            (item.created_at && new Date(item.created_at) >= new Date(dateRangeSearch[0]) && new Date(item.created_at) <= new Date(dateRangeSearch[1])) ||
+            (item.updated_at && new Date(item.updated_at) >= new Date(dateRangeSearch[0]) && new Date(item.updated_at) <= new Date(dateRangeSearch[1]))
+          )
           : true;
       return statusMatch && registerMatch && matchDate && dateRangeMatch;
     });
@@ -358,14 +362,22 @@ const AdminSaleCampusFormList = () => {
       dataIndex: "created_at",
       key: "created_at",
       // render: (text: string) => <div>{text}</div>,
-      render: (utcDateTime: any) => convertUTCToLocal(utcDateTime),
+      render: (text: string) => {
+        const date = new Date(text);
+        const formattedDate = date.toISOString().split('T')[0];
+        return <div>{formattedDate}</div>;
+      },
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       // render: (text: string) => <div>{text}</div>,
-      render: (utcDateTime: any) => convertUTCToLocal(utcDateTime),
+      render: (text: string) => {
+        const date = new Date(text);
+        const formattedDate = date.toISOString().split('T')[0];
+        return <div>{formattedDate}</div>;
+      },
     },
     {
       title: "Action",
