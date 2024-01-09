@@ -21,7 +21,7 @@ interface BacklogTask {
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
-  console.log("data",data);
+  const [Tabledata, setTableData] = useState<BacklogTask[]>([]);
   
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
 
@@ -63,6 +63,7 @@ const AssignedTasksTable: React.FC = () => {
         const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === localEmpId
         );
         setData(filteredData);
+        setTableData(filteredData)
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -244,7 +245,7 @@ const AssignedTasksTable: React.FC = () => {
     <div className="assign-task">
       <Table
         style={{ width: "80vw" }}
-        dataSource={data}
+        dataSource={Tabledata}
         columns={columns}
         rowClassName={() => "header-row"}
       />
