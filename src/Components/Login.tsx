@@ -25,16 +25,12 @@ const Login: React.FC = () => {
   const [getIp, setGetIp] = useState("");
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
+  
   const onFinish = (values: { email: string; password: string }) => {
-    console.log("Received values of form: ", values);
-
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/user/login`, values)
       .then((res) => {
         setApiResponse(res.data);
-        console.log("res", res)
-        console.log("res?.data?.user?.EmpID", res?.data?.user?.EmpID)
-
         if (res?.data === "Invalid username or password") {
           alert("Invalid username or password");
         } else {
@@ -43,7 +39,7 @@ const Login: React.FC = () => {
             setShowTermsModal(true);
             axios.get('https://api.ipify.org?format=json')
               .then((response) => {
-                const ipAddress = response.data.ip;
+                const ipAddress = response?.data?.ip;
                 setGetIp(ipAddress);
                 axios
                   .put(

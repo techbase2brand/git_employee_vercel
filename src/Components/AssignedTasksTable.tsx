@@ -21,7 +21,6 @@ interface BacklogTask {
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
-  console.log("data",data)
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
 
   const isWithinLastOneMonth = (dateString: any) => {
@@ -133,7 +132,6 @@ const AssignedTasksTable: React.FC = () => {
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/update/task-comment/${backlogTaskID}`, { comment: task.comment })
       .then((response) => {
-        console.log(response.data.message);
         const updatedData = data.map((task) =>
           task.backlogTaskID === backlogTaskID ? { ...task, comment: '' } : task
         );

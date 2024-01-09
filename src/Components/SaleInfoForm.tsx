@@ -58,7 +58,7 @@ function SaleInfoForm(): JSX.Element {
     url: "",
     clientName: "",
     handleBy: "",
-    status: "Discussion",
+    status: "",
     statusReason: [],
     communicationMode:'',
     communicationReason: "",
@@ -199,6 +199,9 @@ function SaleInfoForm(): JSX.Element {
     }
     if (!formData.dateData) {
       newErrors.dateData = "Lead date is  required.";
+    }
+    if (!formData.status) {
+      newErrors.status = "Status is required.";
     }
     // else if (!emailRegex.test(formData.email)) {
     //   newErrors.email = "Invalid email format.";

@@ -127,18 +127,12 @@ const SalecampusFormList = () => {
       )
       .then((response) => {
         setStatusNames(response.data.map((item: { status: string }) => item.status));
-
         const resData = response.data;
-
-        // Filter data based on EmployeeID
         const filteredByEmployeeID = resData.filter((entry: { EmployeeID: any; }) => entry.EmployeeID === info?.EmployeeID);
-
-        console.log("Filtered Data", filteredByEmployeeID);
-
         setData(filteredByEmployeeID);
         setFilteredData(filteredByEmployeeID); // Assuming you also want to set this to another state
       });
-  }, []);
+  }, [setData]);
 
   useEffect(() => {
     filterData(dateSearch, dateSearch, search);
@@ -178,7 +172,9 @@ const SalecampusFormList = () => {
     setRecordToDelete(null);
   };
 
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
   // edit methods
   const handleEdit = (id: number) => {
     console.log(`update form with id ${id}`);
@@ -258,11 +254,6 @@ const SalecampusFormList = () => {
       key: "name",
     },
     {
-      title: "description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
       title: "Email",
       dataIndex: "email",
       key: "email",
@@ -317,14 +308,22 @@ const SalecampusFormList = () => {
       dataIndex: "created_at",
       key: "created_at",
       // render: (text: string) => <div>{text}</div>,
-      render: (utcDateTime: any) => convertUTCToLocal(utcDateTime),
+      render: (text: string) => {
+        const date = new Date(text);
+        const formattedDate = date.toISOString().split('T')[0];
+        return <div>{formattedDate}</div>;
+      },
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
       // render: (text: string) => <div>{text}</div>,
-      render: (utcDateTime: any) => convertUTCToLocal(utcDateTime),
+      render: (text: string) => {
+        const date = new Date(text);
+        const formattedDate = date.toISOString().split('T')[0];
+        return <div>{formattedDate}</div>;
+      },
     },
     {
       title: "Action",
@@ -575,6 +574,7 @@ const SalecampusFormList = () => {
                       rowClassName={(record) =>
                         record.status.replace(/\s+/g, "-")
                       } // Convert spaces to hyphens
+                      pagination={paginationSettings}
                     />
                   </div>
                   <Modal
