@@ -21,8 +21,10 @@ interface BacklogTask {
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
+  console.log("data", data)
   const [Tabledata, setTableData] = useState<BacklogTask[]>([]);
-  
+  console.log("Tabledata", Tabledata)
+
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
 
   const isWithinLastOneMonth = (dateString: any) => {
@@ -47,8 +49,8 @@ const AssignedTasksTable: React.FC = () => {
   );
   let localEmpId = "";
   if (dataString) {
-      const myData = JSON.parse(dataString);
-      localEmpId = myData.EmployeeID;
+    const myData = JSON.parse(dataString);
+    localEmpId = myData?.EmployeeID;
   }
 
   useEffect(() => {
@@ -56,14 +58,13 @@ const AssignedTasksTable: React.FC = () => {
       .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`
       )
       .then((response) => {
-        console.log("response",response)
         const sortedData = response.data.sort(
           (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
         );
-        const filteredData = sortedData?.filter((task) => isWithinLastOneMonth(task?.currdate) && task?.employeeID === localEmpId
+        const filteredData = sortedData?.filter((task) => task?.employeeID === localEmpId
         );
         setData(filteredData);
-        setTableData(filteredData)
+        setTableData(filteredData);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
