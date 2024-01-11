@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "antd";
+import { Spin, Table } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -20,6 +20,7 @@ interface LeaveData {
 
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
+  const [loading, setLoading] = useState(true);
   const dataString = localStorage.getItem("myData");
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
 
@@ -37,6 +38,7 @@ const ViewLeavepageTable: React.FC = () => {
         );
         const filteredData = sortedData.filter((item) => item?.employeeID === employeeInfo?.EmployeeID)
         setData(filteredData);
+        setLoading(false);
       });
   }, []);
 
@@ -93,12 +95,16 @@ const ViewLeavepageTable: React.FC = () => {
 
   return (
     <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" />
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={data}
+          columns={columns}
+          rowClassName={() => "header-row"}
+        />
+      }
     </>
   );
 };

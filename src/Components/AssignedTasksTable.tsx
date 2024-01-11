@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Table } from "antd";
+import { Spin, Table } from "antd";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,6 +23,7 @@ const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
   const [Tabledata, setTableData] = useState<BacklogTask[]>([]);
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
+  const [loading, setLoading] = useState(true);
 
   const isWithinLastOneMonth = (dateString: any) => {
     const taskDate = new Date(dateString);
@@ -62,9 +63,13 @@ const AssignedTasksTable: React.FC = () => {
         );
         setData(filteredData);
         setTableData(filteredData);
+        setLoading(false);
+
       })
       .catch((error) => {
         console.error("Error fetching data:");
+        setLoading(false);
+
       });
   }, []);
 
@@ -235,13 +240,18 @@ const AssignedTasksTable: React.FC = () => {
     ).padStart(2, "0")}`;
   };
   return (
-    <div className="assign-task">
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={Tabledata}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
+    <div className="assign-task" >
+      
+      {loading ?
+        <Spin size="large" className="spinner-antd"/>
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={Tabledata}
+          columns={columns}
+          rowClassName={() => "header-row"}
+        />
+      }
     </div>
   );
 };

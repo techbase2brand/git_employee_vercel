@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Input } from "antd";
+import { Table, Button, Input, Spin } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -22,6 +22,7 @@ const data: AssignedEmployees[] = [
 const ViewPhaseassignedTable: React.FC = () => {
   const [assignedArr, setAssignedArr] = useState<AssignedEmployees[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -35,6 +36,7 @@ const ViewPhaseassignedTable: React.FC = () => {
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
         setAssignedArr(sortedData);
+        setLoading(false);
       });
   }, []);
 
@@ -114,14 +116,20 @@ const ViewPhaseassignedTable: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{ width: 400, marginBottom: 16 }}
       />
-
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={filteredData.length > 0 ? filteredData : data}
-        columns={columns}
-        rowClassName={() => "header-row"}
-        pagination={paginationSettings}
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }}/>
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={filteredData.length > 0 ? filteredData : data}
+          columns={columns}
+          rowClassName={() => "header-row"}
+          pagination={paginationSettings}
+        />
+      }
     </>
   );
 };

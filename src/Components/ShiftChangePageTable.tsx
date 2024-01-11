@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import axios from "axios";
 
 interface ShiftChangeData {
@@ -19,6 +19,7 @@ interface ShiftChangeData {
 
 const ShiftChangePageTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
+  const [loading, setLoading] = useState(true);
   const updatedAllLeave = data.map((item) => {
     const startDateString = item.currDate.toString();
     const updatedStartDate = startDateString.split('T')[0];
@@ -85,6 +86,7 @@ const ShiftChangePageTable: React.FC = () => {
         const approverID = employeeInfo.EmployeeID;
         const filteredata = sortedData.filter((emp) => emp?.adminID == approverID)
         setData(filteredata);
+        setLoading(false);
       });
   };
 
@@ -154,14 +156,21 @@ const ShiftChangePageTable: React.FC = () => {
   };
   return (
     <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={updatedAllLeave}
-        columns={columns}
-        rowClassName={() => "header-row"}
-        pagination={paginationSettings}
+      {loading ?
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }}/>
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={updatedAllLeave}
+          columns={columns}
+          rowClassName={() => "header-row"}
+          pagination={paginationSettings}
 
-      />
+        />
+      }
     </>
   );
 };

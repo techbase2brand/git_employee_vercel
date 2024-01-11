@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ interface LeaveData {
 const LeavePageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(true);
   const employeeInfo = localStorage.getItem("myData");
 
   const approvedRowStyle = {
@@ -41,6 +41,7 @@ const LeavePageTable: React.FC = () => {
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
         );
         setData(sortedData);
+        setLoading(false);
       });
   }, []);
 
@@ -134,15 +135,15 @@ const LeavePageTable: React.FC = () => {
 
   // Custom row style function
   // Custom row style function
-const getRowClassName = (record: LeaveData) => {
-  if (record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved") {
+  const getRowClassName = (record: LeaveData) => {
+    if (record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved") {
 
-    return "approved-row"; // This class will be applied to rows with both approvals
+      return "approved-row"; // This class will be applied to rows with both approvals
 
-  }
+    }
 
-  return "";
-};
+    return "";
+  };
 
 
   const columns = [
@@ -210,14 +211,21 @@ const getRowClassName = (record: LeaveData) => {
   };
   return (
     <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowKey={(record) => record.LeaveInfoID.toString()} // Specify a unique row key
-        rowClassName={getRowClassName} // Apply custom row class name
-        pagination={paginationSettings}
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }} />
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={data}
+          columns={columns}
+          rowKey={(record) => record.LeaveInfoID.toString()} // Specify a unique row key
+          rowClassName={getRowClassName} // Apply custom row class name
+          pagination={paginationSettings}
+        />
+      }
     </>
   );
 };

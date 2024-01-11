@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Input } from "antd";
+import { Input, Spin } from "antd";
 
 import Menu from "./Menu";
 import Navbar from "./Navbar";
@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
   const [setTotalUpWorkHrs, setSetTotalUpWorkHrs] = useState<any>()
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
+  const [loading, setLoading] = useState(true);
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
@@ -58,9 +58,8 @@ const Dashboard: React.FC = () => {
           acc[obj.employeeID].push(obj);
           return acc;
         }, {});
-
-
         setData(result);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -152,10 +151,14 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div style={{}} className="dashboard-handle">
+              {loading ?
+                  <Spin size="large" className="spinner-antd"/>
+                  :
                 <TaskTable data={data} totalEstHrs={totalEstHrs} setTotalEstHrs={setTotalEstHrs}
                   setTotalUpWorkHrs={setTotalUpWorkHrs} setSetTotalUpWorkHrs={setSetTotalUpWorkHrs}
                   selectedRole={selectedRole} searchQuery={searchQuery}
                 />
+              }
               </div>
             </div>
           </div>

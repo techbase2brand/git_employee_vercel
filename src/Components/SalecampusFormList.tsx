@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table, Button, Input, Modal } from "antd";
+import { Table, Button, Input, Modal, Spin } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -55,7 +55,7 @@ const SalecampusFormList = () => {
   const uniqueStatusNames = Array.from(new Set(statusNames));
   const [selectedDays, setSelectedDays] = useState<string>("");
   const [state, setState] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState(true);
   const Navigate = useNavigate();
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,6 +108,7 @@ const SalecampusFormList = () => {
         const filteredByEmployeeID = resData.filter((entry: { EmployeeID: any; }) => entry.EmployeeID === info?.EmployeeID);
         setData(filteredByEmployeeID);
         setFilteredData(filteredByEmployeeID); // Assuming you also want to set this to another state
+        setLoading(false);
       });
   }, [setData]);
 
@@ -494,6 +495,9 @@ const SalecampusFormList = () => {
                     Number of Records: {filteredData.length}
                   </p>
                   <div className="saleCampus-form">
+                  {loading ?
+                  <Spin size="large" className="spinner-antd"/>
+                  :
                     <Table
                       dataSource={filteredData.slice().reverse()}
                       columns={columns}
@@ -502,6 +506,7 @@ const SalecampusFormList = () => {
                       }
                       pagination={paginationSettings}
                     />
+}
                   </div>
                   <Modal
                     title="Confirmation"

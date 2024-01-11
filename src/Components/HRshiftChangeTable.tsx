@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import axios from "axios";
 
 interface ShiftChangeData {
@@ -19,7 +19,7 @@ interface ShiftChangeData {
 
 const HRshiftChangeTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     axios
       .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
@@ -32,8 +32,8 @@ const HRshiftChangeTable: React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
-
         setData(sortedData);
+        setLoading(false);
       });
   }, []);
 
@@ -158,13 +158,20 @@ const HRshiftChangeTable: React.FC = () => {
 
   return (
     <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowClassName={() => "header-row"}
-        pagination={paginationSettings}
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }}/>
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={data}
+          columns={columns}
+          rowClassName={() => "header-row"}
+          pagination={paginationSettings}
+        />
+      }
     </>
   );
 };

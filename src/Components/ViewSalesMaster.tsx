@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import SalesTable from "./SalesTable";
 import axios from "axios";
 import { GlobalInfo } from "../App";
+import { Spin } from "antd";
 
 interface Task {
     saleId: number;
@@ -16,6 +17,7 @@ interface Task {
 const ViewSalesMaster: React.FC = () => {
     const [data, setData] = useState<any>();
     const [editID] = useState<any>();
+    const [loading, setLoading] = useState(true);
     const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
     if (editID) {
         setMrngEditID(editID);
@@ -30,6 +32,7 @@ const ViewSalesMaster: React.FC = () => {
             })
             .then((response) => {
                 setData(response.data);
+                setLoading(false);
             })
             .catch((error) => {
                 console.error(error);
@@ -85,11 +88,15 @@ const ViewSalesMaster: React.FC = () => {
                                     All Status..
                                 </p>
                             </div>
-                            <SalesTable
-                                data={data}
-                                mrngEditID={mrngEditID}
-                                setMrngEditID={setMrngEditID}
-                            />
+                            {loading ?
+                                <Spin size="large" className="spinner-antd" />
+                                :
+                                <SalesTable
+                                    data={data}
+                                    mrngEditID={mrngEditID}
+                                    setMrngEditID={setMrngEditID}
+                                />
+                            }
                         </div>
                     </div>
                 </div>

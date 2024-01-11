@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -26,15 +26,13 @@ interface Props {
 // Define the Table component
 const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   const [data, setData] = useState<Employee[]>([]);
-  const loggedEmployees = data.filter(employee => employee.logged===0);
-
   const [editID, setEditID] = useState<string | number | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   if (editID !== undefined) {
-
     const filteredObj = data.filter((obj) => {
       return obj.EmpID === editID;
     });
@@ -52,12 +50,12 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
         },
       })
       .then((response) => {
-        
+
         const sortedData = response?.data.sort(
           (a, b) => Number(b.EmpID) - Number(a.EmpID)
         );
-
         setData(sortedData);
+        setLoading(false);
       })
       .catch((error) => console.log(error));
   }, [setData]);
@@ -299,7 +297,10 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
           </div>
         </div>
       </div >
-      <Table dataSource={filteredData} columns={columns} pagination={paginationSettings}/>
+      {loading ? <Spin size="large" className="spinner-antd" />
+        :
+        <Table dataSource={filteredData} columns={columns} pagination={paginationSettings} />
+      }
     </>
   )
 };
