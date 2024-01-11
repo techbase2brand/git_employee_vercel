@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePicker, Input } from "antd";
+import { DatePicker, Input, Spin } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import DashboardEveningTasktable from "./DashboardEveningTasktable";
@@ -25,6 +25,7 @@ interface Task {
 
 const EveningDashboard: React.FC = () => {
   const [data, setData] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
   const [currentDate] = useState<Date>(new Date());
   const [totalUpwork, setTotalUpWork] = useState<any>();
   const [totalEstHrs, setTotalEstHrs] = useState<any>();
@@ -79,6 +80,7 @@ const EveningDashboard: React.FC = () => {
         }, {});
 
         setData(result);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -195,6 +197,9 @@ const EveningDashboard: React.FC = () => {
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
               <div style={{}} className="evening-handle">
+              {loading ?
+                  <Spin size="large" className="spinner-antd"/>
+                  :
                 <DashboardEveningTasktable
                   data={data}
                   totalUpwork={totalUpwork}
@@ -209,6 +214,7 @@ const EveningDashboard: React.FC = () => {
                   del={del}
                   setDel={setDel}
                 />
+              }
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ interface Props {
 const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj }) => {
   const [modulesArr, setModulesArr] = useState<Modules[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,10 +28,11 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
     })
-    .then((response) => {
-      const sortedData = response.data.sort((a, b) => Number(b.modID) - Number(a.modID));
-      setModulesArr(sortedData);
-    });
+      .then((response) => {
+        const sortedData = response.data.sort((a, b) => Number(b.modID) - Number(a.modID));
+        setModulesArr(sortedData);
+        setLoading(false);
+      });
   }, []);
 
   const handleEdit = (modID: number) => {
@@ -44,12 +46,12 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
     })
-    .then(response => {
-      setModulesArr(modulesArr.filter((module) => module.modID !== Number(modID)));
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then(response => {
+        setModulesArr(modulesArr.filter((module) => module.modID !== Number(modID)));
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   const filteredData = modulesArr.filter(module =>
@@ -93,8 +95,10 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
       <div className="search-section" style={{ marginBottom: 20 }}>
         <div>
           <input
-          style={{height:'30px',border: '1px solid #d9d9d9',
-          borderRadius: '6px'}}
+            style={{
+              height: '30px', border: '1px solid #d9d9d9',
+              borderRadius: '6px'
+            }}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search..."
@@ -102,13 +106,20 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
         </div>
         {/* <button onClick={() => { setSearchTerm(''); }}>Reset Search</button> */}
       </div>
-      <Table
-        style={{ width: '80vw' }}
-        dataSource={filteredData}
-        columns={columns}
-        rowClassName={() => "header-row"}
-        pagination={paginationSettings}
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }}/>
+        :
+        <Table
+          style={{ width: '80vw' }}
+          dataSource={filteredData}
+          columns={columns}
+          rowClassName={() => "header-row"}
+          pagination={paginationSettings}
+        />
+      }
     </>
   );
 };

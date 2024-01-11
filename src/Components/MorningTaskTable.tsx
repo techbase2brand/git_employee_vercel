@@ -72,6 +72,10 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       .catch(console.error);
   };
 
+  const paginationSettings = {
+    pageSize: 100,
+  };
+  
   const handleMove = (record: Task) => {
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/create/addTaskEvening`, record, {
@@ -160,6 +164,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
         dataSource={propsData}
         columns={columns}
         rowClassName={() => "header-row"}
+        pagination={paginationSettings}
         footer={() => (
           <div>
             <strong>Total Estimated Hours:</strong> {convertDecimalToTime(totalEstHours)} Hrs

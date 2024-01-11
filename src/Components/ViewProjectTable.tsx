@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,7 @@ interface Props {
 const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
   const [data, setData] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
         (a, b) => Number(b.ProID) - Number(a.ProID)
       );
       setData(sortedData);
+      setLoading(false);
     });
   }, []);
 
@@ -102,21 +104,30 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search.."
-            style={{ marginLeft: 10,
+            style={{
+              marginLeft: 10,
               border: '1px solid rgb(217, 217, 217)',
               borderRadius: '6px',
               height: '30px'
-          }}
+            }}
           />
         </div>
       </div>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={filteredData}
-        columns={columns}
-        rowClassName={() => "header-row"}
-        pagination={paginationSettings}
-      />
+     
+      {loading ?
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }}/>
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={filteredData}
+          columns={columns}
+          rowClassName={() => "header-row"}
+          pagination={paginationSettings}
+        />
+      }
     </>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "antd";
+import { Spin, Table } from "antd";
 import axios from "axios";
 
 interface ShiftChangeData {
@@ -19,6 +19,7 @@ interface ShiftChangeData {
 
 const ViewShiftChangeTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     axios
       .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
@@ -31,6 +32,7 @@ const ViewShiftChangeTable: React.FC = () => {
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
         setData(sortedData);
+        setLoading(false);
       });
   }, []);
 
@@ -100,12 +102,16 @@ const ViewShiftChangeTable: React.FC = () => {
 
   return (
     <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowClassName={() => "header-row"}
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" />
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={data}
+          columns={columns}
+          rowClassName={() => "header-row"}
+        />
+      }
     </>
   );
 };

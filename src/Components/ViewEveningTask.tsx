@@ -6,6 +6,7 @@ import EveningTaskTable from "./EveningTaskTable";
 import axios from "axios";
 import { format } from "date-fns";
 import { GlobalInfo } from "../App";
+import { Spin } from "antd";
 
 
 interface Task {
@@ -27,6 +28,7 @@ const ViewEveningTask: React.FC = () => {
   const [currentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -39,14 +41,16 @@ const ViewEveningTask: React.FC = () => {
         const arr = response?.data?.filter(
           (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
         ) || [];
-
         const sortedData = arr.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
         );
         setData(sortedData);
+        setLoading(false);
+
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
       });
   }, [employeeID, formattedDate]);
 
@@ -76,7 +80,7 @@ const ViewEveningTask: React.FC = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column", width: 'auto' }}
+            style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
           >
             <div
@@ -107,11 +111,15 @@ const ViewEveningTask: React.FC = () => {
                   Evening Status
                 </p>
               </div>
-              <EveningTaskTable
-                data={data}
-                evngEditID={evngEditID}
-                setEvngEditID={setEvngEditID}
-              />
+                {loading ?
+                  <Spin size="large" className="spinner-antd"/>
+                  :
+                  <EveningTaskTable
+                    data={data}
+                    evngEditID={evngEditID}
+                    setEvngEditID={setEvngEditID}
+                  />
+                }
             </div>
           </div>
         </div>

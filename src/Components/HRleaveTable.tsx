@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 
@@ -19,7 +19,7 @@ interface LeaveData {
 
 const HRleaveTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-
+  const [loading, setLoading] = useState(true);
   const handleApprove = (LeaveInfoID: number) => {
     const token = localStorage.getItem("myToken");
     axios
@@ -61,6 +61,7 @@ const HRleaveTable: React.FC = () => {
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
         );
         setData(sortedData);
+        setLoading(false);
       });
   };
 
@@ -138,16 +139,20 @@ const HRleaveTable: React.FC = () => {
 
   return (
     <>
-      <Table
-        style={{ width: "80vw" }}
-        dataSource={data}
-        columns={columns}
-        rowClassName={(record) =>
-          record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved"
-            ? "approved-row"
-            : ""
-        }
-      />
+      {loading ?
+        <Spin size="large" className="spinner-antd" />
+        :
+        <Table
+          style={{ width: "80vw" }}
+          dataSource={data}
+          columns={columns}
+          rowClassName={(record) =>
+            record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved"
+              ? "approved-row"
+              : ""
+          }
+        />
+      }
     </>
   );
 

@@ -83,7 +83,9 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
   }, [employeeInfo[0]?.firstName]);
 
 
-
+  const paginationSettings = {
+    pageSize: 100,
+  };
 
   const columns = [
     {
@@ -166,15 +168,15 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
 
   return (
     <div>
-    <p>{employeeFirstname}</p>
+      <p>{employeeFirstname}</p>
       <div className="totals" style={{ marginBottom: '20px' }}>
         <p><strong>Estimated Time Total: </strong> {convertDecimalToTime(totalEstTime)} hrs</p>
         <p><strong>Actual Time Total: </strong> {convertDecimalToTime(totalActTime)} hrs</p>
         <p><strong>UpWork Total: </strong> {convertDecimalToTime(totalUpWorkHrs)} hrs</p>
       </div>
-      <Table dataSource={propsData} columns={columns} rowClassName={() => "header-row"} />
+      <Table dataSource={propsData} columns={columns} rowClassName={() => "header-row"} pagination={paginationSettings} />
 
-  </div>
+    </div>
   )
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
+import { Spin } from "antd";
 
 interface LeaveData {
   LeaveInfoID: number;
@@ -29,7 +30,7 @@ const HrLeaveReportTable: React.FC = () => {
   const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>('all');
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
-
+  const [loading, setLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | 'all'>('all');
   const [currentPage, setCurrentPage] = useState(0);
   const employeesPerPage = 100;
@@ -74,6 +75,7 @@ const HrLeaveReportTable: React.FC = () => {
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
         );
         setAllLeave(sortedData);
+        setLoading(false);
       });
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
@@ -151,42 +153,48 @@ const HrLeaveReportTable: React.FC = () => {
     const regularLeaveDuration = `${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`;
 
     return (
-      <div key={employee.EmpID}>
-        <h2 style={{ margin: '10px', marginBottom: '-20px' }}>{employee.firstName}</h2>
-        <div className="containerStyle">
-          <div className="totalLeaveStyle">Total Leave: {totalLeave}</div>
-          <div className="uncertainLeaveStyle">Total Uncertain Leave: {uncertainLeaveDuration}</div>
-          <div className="regularLeaveStyle">Total Regular Leave: {regularLeaveDuration}</div>
-        </div>
-        <div style={{ marginTop: "20px" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Month</th>
-                <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Leave</th>
-                <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Uncertain Leave</th>
-                <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Regular Leave</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(monthlyData)
-                .filter(([key]) => selectedYear === 'all' || key.includes(selectedYear))
-                .map(([key, value]) => {
-                  const total = minutesToDaysHours(value.total);
-                  const uncertain = minutesToDaysHours(value.uncertain);
-                  const regular = minutesToDaysHours(value.regular);
-                  return (
-                    <tr key={key}>
-                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
-                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
-                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
-                      <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+      <div>
+        {loading ?
+          <Spin size="large" className="spinner-antd" />
+          :
+          <div key={employee.EmpID}>
+            <h2 style={{ margin: '10px', marginBottom: '-20px' }}>{employee.firstName}</h2>
+            <div className="containerStyle">
+              <div className="totalLeaveStyle">Total Leave: {totalLeave}</div>
+              <div className="uncertainLeaveStyle">Total Uncertain Leave: {uncertainLeaveDuration}</div>
+              <div className="regularLeaveStyle">Total Regular Leave: {regularLeaveDuration}</div>
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Month</th>
+                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Leave</th>
+                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Uncertain Leave</th>
+                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Regular Leave</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(monthlyData)
+                    .filter(([key]) => selectedYear === 'all' || key.includes(selectedYear))
+                    .map(([key, value]) => {
+                      const total = minutesToDaysHours(value.total);
+                      const uncertain = minutesToDaysHours(value.uncertain);
+                      const regular = minutesToDaysHours(value.regular);
+                      return (
+                        <tr key={key}>
+                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
+                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
+                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
+                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
       </div>
     );
   };
@@ -273,10 +281,10 @@ const HrLeaveReportTable: React.FC = () => {
         >
           <option value='all'>All Employees</option>
           {allEmployees
-           .sort((a, b) => a.firstName.localeCompare(b.firstName)) // Sort by firstName
-          .map(emp => (
-            <option key={emp.EmpID} value={emp.EmpID}>{emp.firstName}</option>
-          ))}
+            .sort((a, b) => a.firstName.localeCompare(b.firstName)) // Sort by firstName
+            .map(emp => (
+              <option key={emp.EmpID} value={emp.EmpID}>{emp.firstName}</option>
+            ))}
         </select>
       </div>
       {selectedEmployee === 'all'

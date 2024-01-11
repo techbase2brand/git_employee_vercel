@@ -6,6 +6,7 @@ import MorningTaskTable from "./MorningTaskTable";
 import axios from "axios";
 import { format } from "date-fns";
 import { GlobalInfo } from "../App";
+import { Spin } from "antd";
 
 interface Task {
   MrngTaskID: number;
@@ -26,6 +27,8 @@ const ViewMorningTask: React.FC = () => {
   const [currentDate] = useState<Date>(new Date());
   const [editID] = useState<any>();
   const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
+  const [loading, setLoading] = useState(true);
+  
   if (editID) {
     setMrngEditID(editID);
   }
@@ -44,9 +47,11 @@ const ViewMorningTask: React.FC = () => {
           (a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)
         );
         setData(sortedData);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
       });
   }, [employeeID, formattedDate]);
 
@@ -109,11 +114,15 @@ const ViewMorningTask: React.FC = () => {
                   Morning Tasks
                 </p>
               </div>
-              <MorningTaskTable
-                data={data}
-                mrngEditID={mrngEditID}
-                setMrngEditID={setMrngEditID}
-              />
+                {loading ? (
+                  <Spin size="large" className="spinner-antd"/>
+                ) : (
+                  <MorningTaskTable
+                    data={data}
+                    mrngEditID={mrngEditID}
+                    setMrngEditID={setMrngEditID}
+                  />
+                )}
             </div>
           </div>
         </div>

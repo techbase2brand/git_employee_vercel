@@ -370,7 +370,7 @@ const AddModule: React.FC<unknown> = () => {
                 onChange={(e) => handleProjectChange(e.target.value)}
               >
                 <option value="">Select a project</option>
-                {projectNames.map((project) => (
+                {projectNames?.map((project) => (
                   <option key={project} value={project}>
                     {project}
                   </option>

@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import TermConditionTable from "./TermConditionTable";
 import axios from "axios";
 import { GlobalInfo } from "../App";
+import { Spin } from "antd";
 
 interface Task {
   TermID: number;
@@ -16,6 +17,7 @@ interface Task {
 const ViewTermCondition: React.FC = () => {
   const [data, setData] = useState<any>();
   const [editID] = useState<any>();
+  const [loading, setLoading] = useState(true);
   const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
   if (editID) {
     setMrngEditID(editID);
@@ -30,6 +32,7 @@ const ViewTermCondition: React.FC = () => {
       })
       .then((response) => {
         setData(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -85,11 +88,15 @@ const ViewTermCondition: React.FC = () => {
                   Term && Conditions....
                 </p>
               </div>
-              <TermConditionTable
-                data={data}
-                mrngEditID={mrngEditID}
-                setMrngEditID={setMrngEditID}
-              />
+              {loading ?
+                <Spin size="large" className="spinner-antd" />
+                :
+                <TermConditionTable
+                  data={data}
+                  mrngEditID={mrngEditID}
+                  setMrngEditID={setMrngEditID}
+                />
+              }
             </div>
           </div>
         </div>

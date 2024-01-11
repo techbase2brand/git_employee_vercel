@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, DatePicker, Select } from "antd";
+import { Table, DatePicker, Select, Spin } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
@@ -37,6 +37,8 @@ const ViewBacklogTable: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedOption, setSelectedOption] = useState('');
   const myDataString = localStorage.getItem('myData');
+  const [loading, setLoading] = useState(true);
+
   let employeeName = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
@@ -51,6 +53,7 @@ const ViewBacklogTable: React.FC = () => {
     }
 
     setData(filteredData);
+    setLoading(false);
   }, [selectedAssignee, originalData])
 
   const handleAssigneeChange = (value: string) => {
@@ -371,7 +374,10 @@ const ViewBacklogTable: React.FC = () => {
           </div>
         }
       </div>
-      <div className="backlog-table">
+      <div className="backlog-table" >
+        {loading ?
+         <Spin size="large" className="spinner-antd"/>
+         :
         <Table
           style={{ width: "80vw" }}
           dataSource={data}
@@ -379,6 +385,7 @@ const ViewBacklogTable: React.FC = () => {
           rowClassName={() => "header-row"}
           pagination={paginationSettings}
         />
+}
       </div>
     </>
   );

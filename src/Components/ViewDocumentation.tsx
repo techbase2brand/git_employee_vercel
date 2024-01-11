@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table, Input, Modal } from "antd";
+import { Table, Input, Modal, Spin } from "antd";
 import {
     SearchOutlined,
 } from "@ant-design/icons";
@@ -25,6 +25,7 @@ interface SalesInfoData {
 
 const ViewDocumentation = () => {
     const [data, setData] = useState<SalesInfoData[]>([]);
+    const [loading, setLoading] = useState(true);
     const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
     const [search, setSearch] = useState<string>("");
     const myDataString = localStorage.getItem('myData');
@@ -112,6 +113,7 @@ const ViewDocumentation = () => {
                 const resData = response.data;
                 setData(resData);
                 setFilteredData(resData);
+                setLoading(false);
             });
     }, []);
 
@@ -356,11 +358,15 @@ const ViewDocumentation = () => {
                                         </div>
                                     </div>
                                     <div className="saleInfo-form">
-                                        <Table
-                                            dataSource={matchedData.slice().reverse()}
-                                            columns={columns}
-                                            pagination={paginationSettings}
-                                        />
+                                        {loading ?
+                                            <Spin size="large" className="spinner-antd" />
+                                            :
+                                            <Table
+                                                dataSource={matchedData.slice().reverse()}
+                                                columns={columns}
+                                                pagination={paginationSettings}
+                                            />
+                                        }
                                     </div>
                                 </div>
                                 <Modal

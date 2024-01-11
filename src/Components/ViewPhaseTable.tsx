@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Spin } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ interface Phases {
 const ViewPhaseTable: React.FC = () => {
   const [phaseArr, setphaseArr] = useState<Phases[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const ViewPhaseTable: React.FC = () => {
       .then((response) => {
         const sortedData = response.data.sort((a, b) => Number(b.phaseID) - Number(a.phaseID));
         setphaseArr(sortedData);
+        setLoading(false);
       });
   }, []);
 
@@ -112,13 +114,20 @@ const ViewPhaseTable: React.FC = () => {
         </div>
       </div>
       <div className="view-phase">
-        <Table
-          style={{ width: '80vw' }}
-          dataSource={filteredData}
-          columns={columns}
-          rowClassName={() => "header-row"}
-          pagination={paginationSettings}
-        />
+        {loading ?
+          <Spin size="large" className="spinner-antd" style={{
+            position: 'absolute',
+            width: '84%'
+          }} />
+          :
+          <Table
+            style={{ width: '80vw' }}
+            dataSource={filteredData}
+            columns={columns}
+            rowClassName={() => "header-row"}
+            pagination={paginationSettings}
+          />
+        }
       </div>
     </>
   );

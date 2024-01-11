@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table, Button, Input, Modal } from "antd";
+import { Table, Button, Input, Modal, Spin } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -57,6 +57,7 @@ const AdminSaleCampusFormList = () => {
   const [statusNames, setStatusNames] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const uniqueStatusNames = Array.from(new Set(statusNames));
+  const [loading, setLoading] = useState(true);
   const Navigate = useNavigate();
   const location = useLocation();
 
@@ -115,6 +116,7 @@ const AdminSaleCampusFormList = () => {
         const resData = response.data;
         setData(resData);
         setFilteredData(resData);
+        setLoading(false);
       });
   }, []);
 
@@ -552,14 +554,18 @@ const AdminSaleCampusFormList = () => {
                     </div>
                   </div>
                   <div className="saleCampus-form">
-                    <Table
-                      dataSource={filteredData.slice().reverse()}
-                      columns={columns}
-                      rowClassName={(record) =>
-                        record.status.replace(/\s+/g, "-")
-                      }
-                      pagination={paginationSettings}
-                    />
+                    {loading ?
+                      <Spin size="large" className="spinner-antd" />
+                      :
+                      <Table
+                        dataSource={filteredData.slice().reverse()}
+                        columns={columns}
+                        rowClassName={(record) =>
+                          record.status.replace(/\s+/g, "-")
+                        }
+                        pagination={paginationSettings}
+                      />
+                    }
                   </div>
                   <Modal
                     title="Confirmation"
