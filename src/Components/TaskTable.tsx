@@ -1,8 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState, useEffect } from "react";
 
-import { Table, Button } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Table} from "antd";
 import axios from "axios";
 
 interface Task {

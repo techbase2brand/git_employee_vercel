@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Select, Space } from "antd";
+import { Select } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import EmployeeTable from "./EmployeeTable";
 import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { GlobalInfo } from "../App";
 
 interface Module {
   projectName: string;
@@ -27,17 +25,11 @@ interface Phases {
   projectName: string;
   phases: string[];
 }
-type Phase = {
-  phaseID: number;
-  projectName: string;
-};
+
 
 const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
-  console.log("projectNames",projectNames)
-
   const [phases, setPhases] = useState<Phases[]>([]);
-  console.log("phases",phases)
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
   const [module, setModule] = useState<Module>({
@@ -49,9 +41,6 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
   const { Option } = Select;
 
   const navigate = useNavigate();
-
-  const { modulejEditObj, setModulejEditObj } = useContext(GlobalInfo);
-
 
   useEffect(() => {
     axios
@@ -142,7 +131,6 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
         }
       })
       .then((response) => {
-        console.log(response.data);
         navigate("/view-module");
       })
       .catch((error) => {
@@ -153,17 +141,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
         }
       });
   };
-  const handleFilterOption = (
-    input: string,
-    option: React.ReactElement<any, string> // Update the type here
-  ): boolean => {
-    if (option && typeof option.props.children === "string") {
-      return (
-        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      );
-    }
-    return false;
-  };
+
   return (
     <div className="emp-main-div">
       <div
@@ -190,22 +168,6 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
               <label className="add-label">
                 Project Name<span style={{ color: "red" }}>*</span>
               </label>
-
-              {/* <select
-                // onChange={handleChange}
-                className="add-input"
-                id="project"
-                name="project"
-                value={selectedProject}
-                onChange={(e) => handleProjectChange(e.target.value)}
-              >
-                <option value="">Select a project</option>
-                {projectNames.map((project) => (
-                  <option key={project} value={project}>
-                    {project}
-                  </option>
-                ))}
-              </select> */}
               <Select
                 showSearch
                 className="add-input"
@@ -230,11 +192,9 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
                 ))}
               </Select>
 
-              {/* <input className="add-input" name="projectName" value={module.projectName} onChange={handleModuleChange} /> */}
               <label className="add-label">
                 Phase<span style={{ color: "red" }}>*</span>
               </label>
-              {/* {selectedProject && ( */}
               <select
                 className="add-input"
                 id="phase"
@@ -253,15 +213,12 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
                     );
                   })}
               </select>
-              {/* )} */}
-
               <div>
                 <label className="add-label">
                   Modules <span style={{ color: "red" }}>*</span>
                 </label>
 
                 {
-                  // !modulejEditObj &&
                   module?.modules.map((moduleName, index) => (
                     <div style={{ display: "flex" }} key={index}>
                       <input
@@ -308,7 +265,6 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
               </button>
             </div>
             <div style={{ marginTop: "50px", height: "80%", width: "100%" }}>
-              {/* <EmployeeTable /> */}
             </div>
           </div>
         </div>

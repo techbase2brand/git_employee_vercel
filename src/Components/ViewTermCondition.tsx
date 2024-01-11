@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
@@ -15,8 +15,6 @@ interface Task {
 
 const ViewTermCondition: React.FC = () => {
   const [data, setData] = useState<any>();
-  const [employeeID] = useState<string>("");
-  const [currentDate] = useState<Date>(new Date());
   const [editID] = useState<any>();
   const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
   if (editID) {
@@ -37,7 +35,7 @@ const ViewTermCondition: React.FC = () => {
         console.error("Error fetching data:", error);
       });
   }, []);
-  
+
   return (
     <div className="emp-main-div">
       <div

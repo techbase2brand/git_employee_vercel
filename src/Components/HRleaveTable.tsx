@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
-// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 interface LeaveData {
@@ -19,57 +17,29 @@ interface LeaveData {
   approvalOfHR: string;
 }
 
-const HRleaveTable : React.FC = () => {
+const HRleaveTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-  // const navigate = useNavigate();
 
-//   console.log(data, "-------");
-
-// useEffect(() => {
-//   const token = localStorage.getItem("myToken");
-
-//   axios
-//     .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     })
-//     .then((response) => {
-//       const sortedData = response.data.sort(
-//         (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-//       );
-//       setData(sortedData);
-//     });
-// }, []);
-
-
-// ...
-const handleApprove = (LeaveInfoID: number) => {
-  const token = localStorage.getItem("myToken");
-
-  axios
-    .put(`${process.env.REACT_APP_API_BASE_URL}/approveLeaveHR/${LeaveInfoID}`, {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      console.log(response.data);
-      // Refresh the table data after approval
-      fetchData();
-    })
-    .catch((error) => {
-      console.error("Error approving leave data:", error);
-    });
-};
-
+  const handleApprove = (LeaveInfoID: number) => {
+    const token = localStorage.getItem("myToken");
+    axios
+      .put(`${process.env.REACT_APP_API_BASE_URL}/approveLeaveHR/${LeaveInfoID}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        fetchData();
+      })
+      .catch((error) => {
+        console.error("Error approving leave data:", error);
+      });
+  };
 
   const handleDeny = (LeaveInfoID: number) => {
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/denyLeaveHR/${LeaveInfoID}`)
       .then((response) => {
-        console.log(response.data);
-        // Refresh the table data after denial
         fetchData();
       })
       .catch((error) => {
@@ -90,22 +60,13 @@ const handleApprove = (LeaveInfoID: number) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
         );
-        console.log(sortedData,"sortedDatasortedDatasortedDatasortedData");
-
         setData(sortedData);
       });
   };
 
-
   useEffect(() => {
     fetchData();
   }, []);
-
-
-
-
-
-
   const columns = [
     {
       title: "Employee",

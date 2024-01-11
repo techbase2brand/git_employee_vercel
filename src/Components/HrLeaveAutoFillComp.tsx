@@ -54,21 +54,6 @@ const HrLeaveAutoFillComp: React.FC = () => {
 
   const navigate = useNavigate();
 
-
-  const getRowClassName = (record: LeaveData) => {
-    console.log(record, "recordrecord");
-
-    if (record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved") {
-      console.log("chlna to chahiye yrr ");
-
-      return "approved-row"; // This class will be applied to rows with both approvals
-
-    }
-    console.log("kase chlega ");
-
-    return "";
-  };
-
   const handleLeaveReasonChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -117,7 +102,6 @@ const HrLeaveAutoFillComp: React.FC = () => {
           },
         })
         .then((response) => {
-          console.log(response.data);
           navigate("/HRsection");
         })
         .catch((error) => {

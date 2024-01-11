@@ -1,29 +1,10 @@
-import React, { useState, useContext } from "react";
-// import DatePicker from "react-datepicker";
+import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
-// import { Select, Space } from 'antd';
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import EmployeeTable from "./EmployeeTable";
-import TableNavbar from "./TableNavbar";
 import LeavePageTable from "./LeavePageTable";
-import axios from "axios";
-import { GlobalInfo } from "../App";
 
 const LeavePage: React.FC = () => {
-  // const [mode, setMode] = useState<TabPosition>('morning');
-  // const [data, setData] = useState<Employee[]>([]);
-//   const { projEditObj, setProjEditObj } = useContext(GlobalInfo);
-
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
-  // const handleModeChange = (e: RadioChangeEvent) => {
-  //   setMode(e.target.value);
-  // };
 
   return (
     <div className="emp-main-div">
@@ -52,7 +33,6 @@ const LeavePage: React.FC = () => {
                   display: "flex",
                   width: "80%",
                   alignItems: "center",
-                  // justifyContent: "flex-start",
                 }}
               >
                 <p
@@ -63,15 +43,10 @@ const LeavePage: React.FC = () => {
                     fontWeight: "bold",
                   }}
                 >
-                 Leaves Page
+                  Leaves Page
                 </p>
               </div>
-              {/* <div className='proj-person'> vikash soni</div> */}
-
-              <LeavePageTable
-                // projEditObj={projEditObj}
-                // setProjEditObj={setProjEditObj}
-              />
+              <LeavePageTable />
             </div>
           </div>
         </div>

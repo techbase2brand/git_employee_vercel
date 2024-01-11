@@ -37,7 +37,6 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
   const handleEdit = (ProID: string | number) => {
     const filteredObj = data.find((obj) => obj.ProID === ProID);
     if (filteredObj) {
-      setProjEditObj(filteredObj);
       navigate("/add-project", { state: { projEditObj: filteredObj } });
     }
   };
@@ -48,7 +47,7 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
         'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
       }
     }).then((response) => {
-      console.log(response.data);
+      console.log('response');
     }).catch((error) => {
       console.log(error);
     });

@@ -11,7 +11,6 @@ interface Task {
     SalesData: string;
     currdate: string;
     dated: string;
-    
 }
 
 const ViewSalesMaster: React.FC = () => {
@@ -33,7 +32,7 @@ const ViewSalesMaster: React.FC = () => {
                 setData(response.data);
             })
             .catch((error) => {
-                console.error("Error fetching data:", error);
+                console.error(error);
             });
     }, []);
 
@@ -83,7 +82,7 @@ const ViewSalesMaster: React.FC = () => {
                                         fontWeight: "bold",
                                     }}
                                 >
-                                   All Status..
+                                    All Status..
                                 </p>
                             </div>
                             <SalesTable

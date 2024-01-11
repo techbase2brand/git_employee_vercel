@@ -36,7 +36,6 @@ const ViewDocumentation = () => {
 
     }
     const matchedData = filteredData.filter(item => item.sendTo === clientName);
-    const totalLength = matchedData.length;
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisiblee, setModalVisiblee] = useState(false);
     const [modalContent, setModalContent] = useState<string[]>([]);
@@ -66,9 +65,6 @@ const ViewDocumentation = () => {
         setModalVisible(false);
         setModalContent([]);
     };
-    const showModalDel = () => {
-        setIsModalOpen(true);
-    };
     const handleCancel = () => {
         setIsModalOpen(false);
         setRecordToDelete(null);
@@ -87,16 +83,14 @@ const ViewDocumentation = () => {
                 // }
             )
             .then((response) => {
-                console.log("res@", response.data);
                 toast.success('Deleted successfully!', {
                     position: toast.POSITION.TOP_RIGHT,
-                  });
+                });
             })
             .catch((error) => {
-                console.log(error);
                 toast.error('Deleting Failed.', {
                     position: toast.POSITION.TOP_RIGHT,
-                  });
+                });
             });
         const updatedData = data.filter((e: any) => e.id !== id);
         setData(updatedData);
@@ -116,8 +110,6 @@ const ViewDocumentation = () => {
             )
             .then((response) => {
                 const resData = response.data;
-                console.log("resData", resData)
-
                 setData(resData);
                 setFilteredData(resData);
             });
@@ -150,19 +142,15 @@ const ViewDocumentation = () => {
                 }
             )
             .then((response) => {
-                console.log(response.data.message);
                 toast.success('updated successfully!', {
                     position: toast.POSITION.TOP_RIGHT,
-                  });
+                });
             })
             .catch((error) => {
-                console.error("Error updating task completion status:", error);
                 toast.error('Error while Updating.', {
                     position: toast.POSITION.TOP_RIGHT,
-                  });
+                });
             });
-
-
         localStorage.setItem(`task-${id}`, JSON.stringify(isChecked));
     };
 
@@ -417,16 +405,6 @@ const ViewDocumentation = () => {
                                 >
                                     <img src={currentImage} alt="Preview" style={{ width: '100%' }} />
                                 </Modal>
-                                {/* <Modal
-                                    centered
-                                    width={800}
-                                    title={<span style={{ color: 'red' }}>PDF Preview</span>}
-                                    visible={modalVisiblePdf}
-                                    onCancel={() => setModalVisiblePdf(false)}
-                                    footer={null}
-                                >
-                                    <iframe src={currentPdf} style={{ width: '100%', height: '500px' }} />
-                                </Modal> */}
                                 <Modal
                                     centered
                                     width={800}

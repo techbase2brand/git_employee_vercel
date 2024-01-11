@@ -4,10 +4,9 @@ import "./index.css";
 import App from "./App";
 import { ToastContainer } from "react-toastify";
 
-// Function to request permission for notifications
 const requestNotificationPermission = () => {
   Notification.requestPermission().then(permission => {
-    console.log('Notification permission:', permission);
+    console.log('Notification permission:');
   });
 };
 
@@ -18,10 +17,10 @@ const registerServiceWorker = () => {
       navigator.serviceWorker
         .register("/service-worker.js")
         .then((registration) => {
-          console.log("Service Worker registered with scope:", registration.scope);
+          console.log("Service Worker registered with scope:");
         })
         .catch((error) => {
-          console.log("Service Worker registration failed:", error);
+          console.log(error);
         });
     });
   }

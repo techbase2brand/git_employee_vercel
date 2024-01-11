@@ -1,21 +1,13 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button, DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
+import { DatePicker } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import TableNavbar from "./TableNavbar";
-import ViewprojectTable from "./ViewProjectTable";
 import axios from "axios";
-import { GlobalInfo } from "../App";
-// import moment from "moment";
 import dayjs from "dayjs";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faSync } from "@fortawesome/free-solid-svg-icons";
 
 const { RangePicker } = DatePicker;
 
-// import { DatePicker } from "antd";
 
 interface Project {
   ProID: string | number;
@@ -35,14 +27,6 @@ interface Task {
   upWorkHrs: number;
   employeeID: string;
   currDate: string;
-}
-
-interface Employee {
-  EmpID: string | number;
-  firstName: string;
-  role: string;
-  dob: string | Date;
-  EmployeeID: string;
 }
 
 interface AssignedEmployees {
@@ -67,7 +51,6 @@ const AboutProject: React.FC = () => {
     assignedNames: "",
     EmployeeID: "",
   });
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDateRange, setSelectedDateRange] = useState<
     [Date | null, Date | null]
   >([null, null]);
@@ -75,14 +58,12 @@ const AboutProject: React.FC = () => {
   const [employees, setEmployees] = useState<any[]>([]);
   const [totalActTime, setTotalActTime] = useState<string>("");
   const [selectedDays, setSelectedDays] = useState<number | null>(null);
-  const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [performer, setPerformer] = useState<string>("");
   const [activeButton, setActiveButton] = useState<number | null>(null);
   const [individualActTime, setIndividualActTime] = useState<
     { employee: string; actTime: string }[]
   >([]);
 
-  const { projEditObj, setProjEditObj } = useContext(GlobalInfo);
 
   const handleTotal = (days: number | null = null) => {
     let filteredTaskObject = EveningTasks;
@@ -210,16 +191,11 @@ const AboutProject: React.FC = () => {
       const hours = Math.floor(total);
       const minutes = Math.round((total - hours) * 60);
 
-      console.log(`${hours} hours, ${minutes} minutes`);
-
       // Update the totalActTime state
       setTotalActTime(`${hours}:${minutes.toString().padStart(2, "0")}`);
     };
-
     // Call calculateTotalActTime function with filteredTaskObject array
     calculateTotalActTime(filteredTaskObject);
-
-    console.log(filteredTaskObject, "ggggg----");
   };
 
   const projectNames = projectsInfo.filter((e: Project) => {
@@ -235,10 +211,6 @@ const AboutProject: React.FC = () => {
     setSelectedDateRange([null, null]); // Clear selectedDateRange
   };
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
   const filteredTasks = EveningTasks.filter(
     (task: Task) => task.projectName === projectName
   );
@@ -252,7 +224,6 @@ const AboutProject: React.FC = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         const sortedData = response.data.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
@@ -285,13 +256,8 @@ const AboutProject: React.FC = () => {
 
         setEmployees(unique_arr);
 
-        // setEmployees(unique_arr);
-
-        //   setEmployees(arr);
       });
   }, [projectName]);
-
-  //   console.log(employees,"gggppp====");
 
   const tasksByDate: { [key: string]: Task[] } = filteredTasks.reduce(
     (acc: { [key: string]: Task[] }, task: Task) => {
@@ -307,24 +273,6 @@ const AboutProject: React.FC = () => {
 
   const dates = Object.keys(tasksByDate);
 
-  const getMonthName = (month: number): string => {
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    return monthNames[month - 1];
-  };
-
   const tasksByMonth: { [key: string]: number } = filteredTasks.reduce(
     (acc: { [key: string]: number }, task: Task) => {
       const [year, month] = task.currDate.split("-").slice(0, 2);
@@ -338,8 +286,6 @@ const AboutProject: React.FC = () => {
     {}
   );
 
-
-  const months = Object.keys(tasksByMonth);
 
   useEffect(() => {
     axios
@@ -422,18 +368,8 @@ const AboutProject: React.FC = () => {
                   flexDirection: "row",
                   width: "100%",
                 }}
-                // className="proj-person"
-              >
-                {/* <div
-                  style={{
-                    marginTop: "40px",
-                    height: "2vh",
-                    marginLeft: "5px",
-                  }}
-                >
-                  <h4>Filters</h4>
-                </div> */}
 
+              >
                 <div
                   style={{
                     display: "flex",
@@ -456,7 +392,6 @@ const AboutProject: React.FC = () => {
                       className="add-input"
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
-                      // placeholder="Select a project"
                     >
                       <option value="">Select a project</option>
                       {projectNames.map((project: any) => (
@@ -465,7 +400,6 @@ const AboutProject: React.FC = () => {
                         </option>
                       ))}
                     </select>
-                    {/* <button>daily</button> */}
                   </div>
                   <div
                     style={{
@@ -494,7 +428,6 @@ const AboutProject: React.FC = () => {
                           setSelectedEmployee(foundEmployee);
                         } else {
                           setSelectedEmployee(null);
-                          // setPerformer("");
                         }
                       }}
                     >
@@ -526,22 +459,10 @@ const AboutProject: React.FC = () => {
                             dates?.[0]?.toDate() || null,
                             dates?.[1]?.toDate() || null,
                           ]);
-                          setSelectedButton(null); // Clear selectedButton
                           setSelectedDays(null); // Clear selectedDays
                         }}
                       />
                     </div>
-
-                    {/* <div
-                    style={{
-                      marginTop: "16px ",
-                      marginBottom: "16px",
-                      marginLeft: "90%",
-                    }}
-                  >
-                    OR
-                  </div> */}
-
                     <div>
                       <select
                         value={activeButton === null ? "" : `${selectedDays}`}
@@ -601,7 +522,6 @@ const AboutProject: React.FC = () => {
                           setIndividualActTime([]);
                           setSelectedEmployee(null);
                           setSelectedDateRange([null, null]);
-                          setSelectedButton(null);
                           setSelectedDays(null);
                           setTotalActTime("");
                           setPerformer("");
@@ -609,7 +529,6 @@ const AboutProject: React.FC = () => {
                         }}
                       >
                         clear
-                        {/* <SyncIcon style={{ fontSize: "1.5rem" }} /> */}
                       </button>
                     </div>
                   </div>
@@ -620,14 +539,12 @@ const AboutProject: React.FC = () => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  // alignItems: "center",
                   height: "100px",
                   marginLeft: "15px",
                   marginTop: "70px",
                 }}
               >
                 {!selectedEmployee?.assignedNames && projectName && (
-                  // && !selectedDateRange && !selectedDays &&
 
                   <div style={{ display: "flex", flexDirection: "row" }}>
                     {individualActTime.map(({ employee, actTime }) => (
@@ -695,11 +612,6 @@ const AboutProject: React.FC = () => {
                   </div>
                 )}
               </div>
-
-              {/* <ViewprojectTable
-        projEditObj={projEditObj}
-        setProjEditObj={setProjEditObj}
-      /> */}
             </div>
           </div>
         </div>

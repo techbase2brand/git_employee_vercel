@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button } from "antd";
+import { Table } from "antd";
 import axios from "axios";
 import moment from "moment";
 
@@ -44,72 +44,49 @@ const ViewShiftChangeTable: React.FC = () => {
     fetchData();
   }, []);
 
-  const deleteShiftChange = (id: number) => {
-    axios
-      .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/changeShiftInfo/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      })
-      .then(() => {
-        fetchData();
-      })
-      .catch((error) => {
-        console.error(`There was an error deleting the shift change: ${error}`);
-      });
-  };
-
   const columns = [
-    /* Your other column configurations here */
     {
-        title: "Team Lead",
-        dataIndex: "teamLead",
-        key: "teamLead",
-        render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
-      },
-      {
-        title: "Apply Date",
-        dataIndex: "applyDate",
-        key: "applyDate",
-        render: (text: string) => <div style={{ width: 100 }}>{moment(text).format("YYYY-MM-DD")}</div>,
-      },
-      {
-        title: "In time",
-        dataIndex: "inTime",
-        key: "inTime",
-        render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
-      },
-      {
-        title: "Out time",
-        dataIndex: "outTime",
-        key: "outTime",
-        render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
-      },
-      {
-        title: "Reason",
-        dataIndex: "reason",
-        key: "reason",
-        render: (text: string) => <div style={{ width: 250 }}>{text}</div>,
-      },
-      {
-        title: "Status (TL)",
-        dataIndex: "approvalOfTeamLead",
-        key: "approvalOfTeamLead",
-        render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
-      },
-      {
-        title: "Status (HR)",
-        dataIndex: "approvalOfHR",
-        key: "approvalOfHR",
-        render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
-      },
-    // {
-    //   title: "Delete",
-    //   key: "delete",
-    //   render: (_: any, record: ShiftChangeData) => (
-    //     <Button onClick={() => deleteShiftChange(record.ShiftChangeTableID)}>Delete</Button>
-    //   ),
-    // },
+      title: "Team Lead",
+      dataIndex: "teamLead",
+      key: "teamLead",
+      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
+    },
+    {
+      title: "Apply Date",
+      dataIndex: "applyDate",
+      key: "applyDate",
+      render: (text: string) => <div style={{ width: 100 }}>{moment(text).format("YYYY-MM-DD")}</div>,
+    },
+    {
+      title: "In time",
+      dataIndex: "inTime",
+      key: "inTime",
+      render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
+    },
+    {
+      title: "Out time",
+      dataIndex: "outTime",
+      key: "outTime",
+      render: (text: string) => <div style={{ width: 100 }}>{text}</div>,
+    },
+    {
+      title: "Reason",
+      dataIndex: "reason",
+      key: "reason",
+      render: (text: string) => <div style={{ width: 250 }}>{text}</div>,
+    },
+    {
+      title: "Status (TL)",
+      dataIndex: "approvalOfTeamLead",
+      key: "approvalOfTeamLead",
+      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
+    },
+    {
+      title: "Status (HR)",
+      dataIndex: "approvalOfHR",
+      key: "approvalOfHR",
+      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
+    },
   ];
 
   return (

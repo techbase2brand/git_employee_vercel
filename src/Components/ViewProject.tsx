@@ -1,15 +1,8 @@
-import React, { useState, useContext } from "react";
-// import DatePicker from "react-datepicker";
+import React, { useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
-// import { Select, Space } from 'antd';
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import EmployeeTable from "./EmployeeTable";
-import TableNavbar from "./TableNavbar";
 import ViewprojectTable from "./ViewProjectTable";
-import axios from "axios";
 import { GlobalInfo } from "../App";
 
 const ViewProject: React.FC = () => {

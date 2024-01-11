@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import { GlobalInfo } from "../App";
 import { format } from "date-fns";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -39,44 +36,23 @@ interface Module {
   modules: string;
 }
 
-interface Project {
-  ProID: string | number;
-  clientName: string;
-  projectName: string;
-  projectDescription: string;
-}
-
 interface Phases {
   phaseID: number;
   projectName: string;
   phases: string[];
 }
-
-type Phase = {
-  phaseID: number;
-  projectName: string;
-};
-
 const AddModule: React.FC<unknown> = () => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
-  const [phaseAssignedArr, setPhaseAssignedArr] = useState<AssignedEmployees[]>(
-    []
-  );
 
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
-  const [projectName, setProjectName] = useState<string>("");
-  const [phaseName, setPhaseName] = useState<string>("");
-  const [moduleName, setModuleName] = useState<string>("");
+  const [currentDate] = useState<Date>(new Date());
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
-
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
     projectName: "",
@@ -93,7 +69,6 @@ const AddModule: React.FC<unknown> = () => {
 
   const location = useLocation();
   useEffect(() => {
-    // const token = localStorage.getItem("myToken");
     if (location?.state?.MrngTaskID) {
       axios
         .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning`, {
@@ -102,7 +77,6 @@ const AddModule: React.FC<unknown> = () => {
           },
         })
         .then((response) => {
-          console.log("response++++", response)
           const res = response.data.filter(
             (e: Task) => e.MrngTaskID === location?.state?.MrngTaskID
           );
@@ -121,16 +95,10 @@ const AddModule: React.FC<unknown> = () => {
               selectDate: res[0]?.selectDate,
             });
 
-            // Update the state variables
-            setProjectName(res[0]?.projectName);
-            setPhaseName(res[0]?.phaseName);
-            setModuleName(res[0]?.module);
-
             // Update the selectedProject, selectedPhase, and selectedModule
             setSelectedProject(res[0]?.projectName);
             setSelectedPhase(res[0]?.phaseName);
             setSelectedModule(res[0]?.module);
-
           }
         })
         .catch((error) => {
@@ -138,8 +106,6 @@ const AddModule: React.FC<unknown> = () => {
         });
     }
   }, [location?.state?.MrngTaskID]);
-
-  // const { getEmpInfo, empInfo, setEmpInfo } = useContext(GlobalInfo);
 
   const dataString = localStorage.getItem("myData");
   const empInfo = useMemo(
@@ -149,7 +115,6 @@ const AddModule: React.FC<unknown> = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    // const token = localStorage.getItem("myToken");
     axios
       .get<AssignedEmployees[]>(
         ` ${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
@@ -160,14 +125,9 @@ const AddModule: React.FC<unknown> = () => {
         }
       )
       .then((response) => {
-        console.log(response.data);
         const sortedData = response?.data?.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
-        console.log(sortedData);
-
-        setPhaseAssignedArr(sortedData);
-
         const arr = sortedData
           .map((e) => {
             if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
@@ -209,9 +169,6 @@ const AddModule: React.FC<unknown> = () => {
   }, [morningTask.projectName]);
 
   useEffect(() => {
-    // console.log(token);
-
-    // Fetch employees from the backend API
     axios
       .get<Module[]>(`${process.env.REACT_APP_API_BASE_URL}/get/modules`, {
         headers: {
@@ -224,8 +181,6 @@ const AddModule: React.FC<unknown> = () => {
         );
 
         setModules(sortedData);
-        console.log(sortedData);
-        console.log(response.data);
       });
   }, []);
 
@@ -316,27 +271,21 @@ const AddModule: React.FC<unknown> = () => {
           }
         )
         .then((response) => {
-          console.log("response", response)
           if (response.data === "All fields are required.") {
             alert("All compulsory fields are required.");
           } else {
             navigate("/view-morning-task");
-            setMrngEditID();
             toast.success('Updated successfully!', {
               position: toast.POSITION.TOP_RIGHT,
             });
           }
         })
         .catch((error) => {
-          console.log(error.response.data);
           toast.error('Error while Updating task.', {
             position: toast.POSITION.TOP_RIGHT,
-            // Other configuration options as needed
           });
         });
     } else {
-      // const token = localStorage.getItem("myToken");
-
       axios
         .post(
           `${process.env.REACT_APP_API_BASE_URL}/create/addTaskMorning`,
@@ -353,7 +302,7 @@ const AddModule: React.FC<unknown> = () => {
           } else {
             setSelectedProject("");
             setSelectedPhase("");
-            setSelectedModule(""); 
+            setSelectedModule("");
             setMorningTask({
               MrngTaskID: 0,
               projectName: "",
@@ -371,10 +320,8 @@ const AddModule: React.FC<unknown> = () => {
               position: toast.POSITION.TOP_RIGHT,
             });
           }
-          console.log(response?.data);
         })
         .catch((error) => {
-          console.log(error?.response?.data);
           toast.error('Error while inserting tasks.', {
             position: toast.POSITION.TOP_RIGHT,
 
@@ -415,7 +362,6 @@ const AddModule: React.FC<unknown> = () => {
               </label>
 
               <select
-                // onChange={handleChange}
                 style={{ width: "95%" }}
                 className="add-input"
                 id="project"
@@ -442,28 +388,6 @@ const AddModule: React.FC<unknown> = () => {
                   <label className="add-label">
                     Phase<span style={{ color: "red" }}>*</span>
                   </label>
-                  {/* {selectedProject &&  ( */}
-                  {/* <select
-                    className="add-input"
-                    id="phase"
-                    name="phase"
-                    value={selectedPhase}
-                    onChange={(e) => handlePhaseChange(e.target.value)}
-                  >
-                    <option value="">Select a phase</option>
-                    {phases
-                      .filter((phase) => phase.projectName === selectedProject)
-                      .map((phase) => {
-                        // console.log(phase, "77777777");
-
-                        return (
-                          <React.Fragment key={phase.phaseID}>
-                            <option value={phase.phases}>{phase.phases}</option>
-                          </React.Fragment>
-                        );
-                      })}
-                  </select> */}
-
                   <select
                     className="add-input"
                     id="phase"
@@ -482,35 +406,9 @@ const AddModule: React.FC<unknown> = () => {
                         ));
                       })}
                   </select>
-
-                  {/* )} */}
                 </div>
-                {/* <div style={{ display: "flex", flexDirection: "column" }}>
-                  <label className="add-label">
-                    Module<span style={{ color: "red" }}>*</span>
-                  </label>
 
-                  <select
-                    className="add-input"
-                    id="module"
-                    name="module"
-                    value={selectedModule}
-                    onChange={(e) => handleModuleChange(e.target.value)}
-                  >
-                    <option value="">Select a module</option>
-                    {modules
-                      .filter((module) => module.phaseName === selectedPhase)
-                      .map((module) => {
-                        return (
-                          <option key={module.modID} value={module.modules}>
-                            {module.modules}
-                          </option>
-                        );
-                      })}
-                  </select>
-                </div> */}
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {/* <label className="add-label">Module</label> */}
                   <label className="add-label">
                     Module<span style={{ color: "red" }}>*</span>
                   </label>
@@ -533,21 +431,17 @@ const AddModule: React.FC<unknown> = () => {
                       })}
                   </select>
                 </div>
-
-                {/* )} */}
               </div>
 
               <div>
                 <label className="add-label">
                   task:<span style={{ color: "red" }}>*</span>
                 </label>
-                {/* <div style={{ width: "89%" }} className="form-control"> */}
                 <div style={{ width: "89%" }} className="form-control">
                   <textarea
                     style={{
                       outline: "none",
                       border: "none",
-                      // maxWidth: "100%",
                       width: "100%",
                       height: "10vh",
                       resize: "none",  // Add this line
@@ -584,7 +478,6 @@ const AddModule: React.FC<unknown> = () => {
                 }}
               >
                 <div className="form-group">
-                  {/* <label className="add-label">Estimate Hrs</label> */}
                   <label className="add-label">
                     Estimate Hrs<span style={{ color: "red" }}>*</span>
                   </label>

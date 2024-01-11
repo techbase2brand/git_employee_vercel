@@ -7,10 +7,8 @@ import { useNavigate } from "react-router-dom";
 interface Phases {
   phaseID: number;
   projectName: string;
-  phases: string | string[];  // Modified this line to accept both string and array of strings
+  phases: string | string[];
 }
-
-
 
 const ViewPhaseTable: React.FC = () => {
   const [phaseArr, setphaseArr] = useState<Phases[]>([]);
@@ -35,12 +33,8 @@ const ViewPhaseTable: React.FC = () => {
       navigate("/EditAddPhase", { state: { phaseEditObj: filteredObj } });
     } else {
       console.error("Phase not found for editing");
-      // Handle case where phaseID doesn't match any existing phase
     }
   };
-  
-
-  
 
   const handleDelete = (phaseID: string) => {
     axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/delete-phase/${phaseID}`, {
@@ -49,7 +43,7 @@ const ViewPhaseTable: React.FC = () => {
       }
     })
       .then(response => {
-        console.log(response.data);
+        console.log("response");
       })
       .catch(error => {
         console.log(error);
@@ -78,7 +72,6 @@ const ViewPhaseTable: React.FC = () => {
         } else if (typeof phases === 'string') {
           return <div>{phases}</div>;
         } else {
-          console.error("phases is not a recognized type: ", phases);
           return <div>Error</div>;
         }
       }
@@ -107,15 +100,16 @@ const ViewPhaseTable: React.FC = () => {
       <div className="search-section" style={{ marginBottom: 20 }}>
         <div>
           <input
-          style={{height:'30px',border: '1px solid #d9d9d9',
-          borderRadius: '6px'}}
+            style={{
+              height: '30px', border: '1px solid #d9d9d9',
+              borderRadius: '6px'
+            }}
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Project or Phase"
 
           />
         </div>
-        {/* <button onClick={() => { setSearchTerm(''); }}>Reset Search</button> */}
       </div>
       <div className="view-phase">
         <Table

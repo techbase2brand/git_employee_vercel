@@ -23,7 +23,6 @@ const SalesTable: React.FC<Props> = ({ data, setMrngEditID }) => {
     const navigate = useNavigate();
     const dataString = localStorage.getItem("myData");
 
-
     useEffect(() => {
         setPropsData(data || []);
     }, [data]);

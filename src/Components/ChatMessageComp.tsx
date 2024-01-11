@@ -1,4 +1,4 @@
-import React, { useEffect ,useState} from "react";
+import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
@@ -26,30 +26,22 @@ const ChatMessageComp: React.FC<ChatmenuProps> = ({
   setSelectedEmployee,
   setChatMessage,
 }) => {
-    const [initialMessages, setInitialMessages] = useState([]); // State to store initial messages
-    useEffect(() => {
-        // This listener is for connecting to the socket server
-        socket.on("connect", () => {
-          console.log("Connected to socket.io server");
-        });
+  useEffect(() => {
+    // This listener is for connecting to the socket server
+    socket.on("connect", () => {
+      console.log("Connected to socket.io server");
+    });
+    socket.on("connect_error", (error) => {
+      console.error(error);
+    });
 
-        // Listener for initial chat messages
-        socket.on("initialChatMessages", (data) => {
-          console.log("Initial messages:", data);
-          setInitialMessages(data.chats); // Assuming data has a 'chats' property
-        });
-
-        socket.on("connect_error", (error) => {
-          console.error("Connection failed:", error);
-        });
-
-        // Cleanup listeners on unmount
-        return () => {
-          socket.off("connect");
-          socket.off("initialChatMessages");
-          socket.off("connect_error");
-        };
-      }, []);
+    // Cleanup listeners on unmount
+    return () => {
+      socket.off("connect");
+      socket.off("initialChatMessages");
+      socket.off("connect_error");
+    };
+  }, []);
 
 
 
@@ -71,36 +63,26 @@ const ChatMessageComp: React.FC<ChatmenuProps> = ({
           },
         })
         .then((response) => {
-          console.log(response.data, "Chat message response");
-
-                  setChatMessage("");
+          console.log("res");
+          setChatMessage("");
         })
         .catch((error) => {
-          console.error("Error sending chat message:", error);
+          console.error(error);
         });
     } else {
       console.error("Sender employee data is invalid");
     }
-    socket.on("connect", () => {
-        console.log("Connected to socket.io server");
-      });
 
-      // Listener for initial chat messages
-      socket.on("initialChatMessages", (data) => {
-        console.log("Initial messages:", data);
-        setInitialMessages(data.chats); // Assuming data has a 'chats' property
-      });
+    socket.on("connect_error", (error) => {
+      console.error(error);
+    });
 
-      socket.on("connect_error", (error) => {
-        console.error("Connection failed:", error);
-      });
-
-      // Cleanup listeners on unmount
-      return () => {
-        socket.off("connect");
-        socket.off("initialChatMessages");
-        socket.off("connect_error");
-      };
+    // Cleanup listeners on unmount
+    return () => {
+      socket.off("connect");
+      socket.off("initialChatMessages");
+      socket.off("connect_error");
+    };
   };
 
 

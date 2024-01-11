@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
@@ -14,7 +14,6 @@ interface Task {
 }
 const SalesMaster: React.FC<unknown> = () => {
   const [currentDate] = useState<Date>(new Date());
-  const [getIp, setGetIp] = useState("");
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [termTask, setTermTask] = useState<Task>({
     saleId: 0,
@@ -53,26 +52,16 @@ const SalesMaster: React.FC<unknown> = () => {
     }
   }, [location?.state?.saleId]);
 
-  useEffect(() => {
-    axios.get('https://api.ipify.org?format=json')
-      .then((response) => {
-        setGetIp(response.data.ip)
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []); 
   const handleSubmit = () => {
     const isEditMode = !!location?.state?.saleId;
     if (!termTask.SalesData) {
       alert("All fields are required.");
       return;
     }
-    console.log("location?.state", location)
     const dataToSend = isEditMode
-    ? termTask
-    : { SalesData: termTask.SalesData, dated: termTask.dated,currdate: termTask.currdate };
-    
+      ? termTask
+      : { SalesData: termTask.SalesData, dated: termTask.dated, currdate: termTask.currdate };
+
     const apiEndpoint = isEditMode
       ? `${process.env.REACT_APP_API_BASE_URL}/update/addSales/${location?.state?.saleId}`
       : `${process.env.REACT_APP_API_BASE_URL}/create/addSales`;
@@ -93,7 +82,7 @@ const SalesMaster: React.FC<unknown> = () => {
         }
       })
       .catch((error) => {
-        console.log(error?.response?.data);
+        console.log(error);
       });
   };
   const handleTermChange = (value: string) => {
@@ -129,7 +118,7 @@ const SalesMaster: React.FC<unknown> = () => {
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
           >
-            <div className="add-div" style={{gap: '15px'}}>
+            <div className="add-div" style={{ gap: '15px' }}>
               <h1>Add a Status</h1>
               <div>
                 <div className="SalecampusForm-col-os">

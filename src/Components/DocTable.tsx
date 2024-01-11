@@ -30,7 +30,6 @@ const DocTable = () => {
 
   const [data, setData] = useState<SalesInfoData[]>([]);
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
-  console.log("filteredData", filteredData)
   const [search, setSearch] = useState<string>("");
   const Navigate = useNavigate();
   const myDataString = localStorage.getItem('myData');
@@ -96,13 +95,11 @@ const DocTable = () => {
         // }
       )
       .then((response) => {
-        console.log("res@", response.data);
         toast.success('Deleted successfully!', {
           position: toast.POSITION.TOP_RIGHT,
         });
       })
       .catch((error) => {
-        console.log(error);
         toast.error('Deleting Failed.', {
           position: toast.POSITION.TOP_RIGHT,
         });

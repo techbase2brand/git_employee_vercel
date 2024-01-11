@@ -1,13 +1,9 @@
-import React, { useState, useContext, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
-import AppMenu  from "./Menu";
+import AppMenu from "./Menu";
 import Navbar from "./Navbar";
-import EmployeeTable from "./EmployeeTable";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { GlobalInfo } from "../App";
 import { useLocation } from "react-router-dom";
 
 interface Project {
@@ -33,8 +29,6 @@ const AddProject: React.FC = (navigation) => {
     }
   }, [location?.state?.projEditObj]);
 
-  const id = parseInt(localStorage.getItem("ProID") || "0");
-
   const handleProjectChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -57,40 +51,29 @@ const AddProject: React.FC = (navigation) => {
 
 
     if (location?.state?.projEditObj) {
-
-
       const data = {
         clientName: project?.clientName,
         projectName: project?.projectName,
         projectDescription: project?.projectDescription,
       };
-      console.log("edit ab hoga");
-
-
-
       axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}/updateProject/${location?.state?.projEditObj.ProID}`, data,{
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
-        }
-      })
-      .then((response: any) => {
-        console.log("edit kb hoga");
-
-        // Check if the response data is "Project updated successfully"
-        if (response.data === "Project updated successfully") {
-          navigate("/view-project");
-        }
-      })
-      .catch((error: any) => {
-        if (error.response && error.response.status === 409) {
-          alert(error.response.data);
-        } else {
-          console.log(error, "8888");
-        }
-      });
-
-
+        .put(`${process.env.REACT_APP_API_BASE_URL}/updateProject/${location?.state?.projEditObj.ProID}`, data, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+          }
+        })
+        .then((response: any) => {
+          if (response.data === "Project updated successfully") {
+            navigate("/view-project");
+          }
+        })
+        .catch((error: any) => {
+          if (error.response && error.response.status === 409) {
+            alert(error.response.data);
+          } else {
+            console.log(error);
+          }
+        });
     } else {
       const data = {
         clientName: project.clientName,
@@ -105,29 +88,18 @@ const AddProject: React.FC = (navigation) => {
           }
         })
         .then((response: any) => {
-          console.log(response.data, "999");
-
           if (response.data === "Project with same name already exists") {
             alert("Project with same name already exists");
           }
 
           if (response.data === "Project added successfully") {
             navigate("/view-project");
-
-            // navigation.navigate(/view-projects);
-
-            // alert("Project added successfully");
           }
         })
         .catch((error: any) => {
-          console.log(error, "8888");
+          console.log(error);
         });
     }
-  };
-
-  type DashboardScreenProps = {
-    navigation: any;
-    // classes: any;
   };
 
   return (
@@ -145,7 +117,7 @@ const AddProject: React.FC = (navigation) => {
         </div>
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
           <div className="menu-div">
-            <AppMenu  />
+            <AppMenu />
           </div>
           <div
             style={{ display: "flex", flexDirection: "column" }}
@@ -189,7 +161,6 @@ const AddProject: React.FC = (navigation) => {
               </button>
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div>{/* <EmployeeTable  /> */}</div>
             </div>
           </div>
         </div>

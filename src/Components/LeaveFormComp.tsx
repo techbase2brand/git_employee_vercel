@@ -1,21 +1,14 @@
-// LeaveForm.tsx
-
 import React, { useState, useEffect } from "react";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
-// import { Radio } from "antd";
 import { useNavigate } from "react-router-dom";
 const { RangePicker } = DatePicker;
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// interface TeamLead {
-//   id: number;
-//   name: string;
-// }
 interface LeaveData {
   employeeName: string;
   startDate: Date | string;
@@ -61,12 +54,9 @@ const LeaveFormComp: React.FC = () => {
   const [leaveType, setLeaveType] = useState<string>("");
   const [leaveReason, setLeaveReason] = useState<string>("");
   const [teamLead, setTeamLead] = useState<string>("");
-  // const [message, setMessage] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
   const [adminInfo, setAdminInfo] = useState<IEmployee[]>([]);
   const [estTime, setEstTime] = useState<string>("");
-  // const [isHourlyBasis, setIsHourlyBasis] = useState(false);
-  // const [isDropdownDisabled, setIsDropdownDisabled] = useState(false);
   const [characterCount, setCharacterCount] = useState<number>(0);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [leaveCategoryState, setLeaveCategoryState] = useState<string>("");
@@ -108,7 +98,6 @@ const LeaveFormComp: React.FC = () => {
     setEmployeeID(employeeInfo?.EmployeeID);
   }, []);
 
-  // Add this useEffect hook
   useEffect(() => {
     if (startDate) {
       const leaveCategory = getLeaveCategory(startDate);
@@ -119,23 +108,12 @@ const LeaveFormComp: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (startDate && endDate) {
-      // Find the selected admin using the adminID
-
-      console.log(teamLead, "teamLeadteamLeadteamLeadteamLeadteamLead");
-
       const selectedAdmin = adminInfo.find(
         (admin) => admin.EmployeeID === teamLead
       );
-      console.log(selectedAdmin, "selectedAdminselectedAdmin");
-
-      // Extract the adminName and adminID
       const adminName = selectedAdmin ? selectedAdmin.firstName : "";
-      console.log(adminName, "adminNameadminNameadminName");
-
       const adminID = selectedAdmin ? selectedAdmin.EmployeeID : "";
-
       const localLeaveType = estTime ? estTime : "full day";
-
       const formattedStartDate = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
       const formattedEndDate = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
       const leaveData: LeaveData = {
@@ -158,8 +136,6 @@ const LeaveFormComp: React.FC = () => {
           },
         })
         .then((response) => {
-          console.log(response.data);
-          // setMessage("Leave data submitted");
           navigate("/ViewLeavePage");
           toast.success('successfull!', {
             position: toast.POSITION.TOP_RIGHT,
@@ -171,16 +147,8 @@ const LeaveFormComp: React.FC = () => {
             position: toast.POSITION.TOP_RIGHT,
           });
         });
-    } else {
-      // setMessage("Please fill in all required fields.");
-    }
+    } 
   };
-
-  // const handleEstTimeChange = (value: string) => {
-  //   setEstTime(value);
-  // };
-
-  // const handleLeaveTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {};
 
   const handleLeaveTypeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -208,7 +176,6 @@ const LeaveFormComp: React.FC = () => {
   };
 
   useEffect(() => {
-    // Get the token from local storage
     const token = localStorage.getItem("myToken");
 
     axios
@@ -220,31 +187,11 @@ const LeaveFormComp: React.FC = () => {
       .then((response) => {
 
         const arr = response?.data.filter((elem) => elem?.jobPosition == "Project Manager" || elem?.jobPosition == "Managing Director")
-
-
         setAdminInfo(arr);
-        console.log(response.data, "response.data of empployee");
-
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error(error);
       });
-
-
-    // axios
-    //   .get<Admin[]>(`${process.env.REACT_APP_API_BASE_URL}/get/admin`, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     setAdminInfo(response.data);
-    //     console.log(response.data,"response.data");
-
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching data:", error);
-    //   });
   }, [employeeID]);
 
 
@@ -268,8 +215,6 @@ const LeaveFormComp: React.FC = () => {
             style={{
               display: "block",
               width: "100%",
-              // marginTop: "5px",
-              // marginBottom: "10px",
             }}
             value={[
               startDate ? dayjs(startDate) : null,
@@ -386,7 +331,6 @@ const LeaveFormComp: React.FC = () => {
               style={{
                 width: "100%",
                 display: "block",
-                // marginTop: "5px",
               }}
               value={teamLead}
               onChange={(e) => setTeamLead(e.target.value)}

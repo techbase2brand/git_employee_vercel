@@ -21,8 +21,6 @@ const EditAddPhase: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location?.state?.phaseEditObj,"gggg----");
-
   useEffect(() => {
     if (location?.state?.phaseEditObj) {
       setProjectName(location.state.phaseEditObj.projectName);
@@ -35,7 +33,7 @@ const EditAddPhase: React.FC = () => {
   });
 
   useEffect(() => {
-    axios.get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`,{
+    axios.get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
@@ -62,51 +60,51 @@ const EditAddPhase: React.FC = () => {
     };
 
     if (location.state.phaseEditObj) {
-      axios.put(`${process.env.REACT_APP_API_BASE_URL}/api/update-phase/${location.state.phaseEditObj.phaseID}`, data,{
+      axios.put(`${process.env.REACT_APP_API_BASE_URL}/api/update-phase/${location.state.phaseEditObj.phaseID}`, data, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       })
-      .then((response) => {
-        if (response.data === "OK") {
-          navigate("/view-phase");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          alert(error.response.data);
-        } else {
-          console.error(error);
-        }
-      });
+        .then((response) => {
+          if (response.data === "OK") {
+            navigate("/view-phase");
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 400) {
+            alert(error.response.data);
+          } else {
+            console.error(error);
+          }
+        });
     }
   };
 
   return (
     <div className="emp-main-div">
-      <div style={{display: "flex", flexDirection: "column", width: "100%", height: "100%"}}>
-        <div style={{height: "8%"}}>
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+        <div style={{ height: "8%" }}>
           <Navbar />
         </div>
-        <div style={{display: "flex", flexDirection: "row", height: "90%"}}>
+        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
           <div className="menu-div">
             <Menu />
           </div>
-          <div style={{display: "flex", flexDirection: "column"}} className="form-container">
+          <div style={{ display: "flex", flexDirection: "column" }} className="form-container">
             <div className="add-div">
               <p className="add-heading">Edit Phase</p>
-              <label className="add-label">Project<span style={{color: "red"}}>*</span></label>
+              <label className="add-label">Project<span style={{ color: "red" }}>*</span></label>
               <select className="add-input" value={projectName} disabled>
                 <option value="">Select a project</option>
                 {projectNames.map((name) => (
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
-              <label className="add-label">Phase Name<span style={{color: "red"}}>*</span></label>
+              <label className="add-label">Phase Name<span style={{ color: "red" }}>*</span></label>
               <input className="add-input" value={phaseName} onChange={handlePhaseNameChange} />
               <button className="add-button" onClick={handleSubmit}>Submit</button>
             </div>
-            <div style={{width: "90%", height: "80%", marginTop: "3%"}}>
+            <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
               {/* You can add other components or information display here. */}
             </div>
           </div>

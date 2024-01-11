@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent, Input } from "antd";
-// import { Select, Space } from 'antd';
+import { DatePicker, Input } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import EmployeeTable from "./EmployeeTable";
 import DashboardEveningTasktable from "./DashboardEveningTasktable";
 import EveningDashboardTable from "./EveningDashboardTable";
 import axios from "axios";
@@ -14,15 +10,6 @@ import { format } from "date-fns";
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
-
-type TabPosition = "morning" | "evening";
-
-interface Employee {
-  EmpID: number;
-  firstName: string;
-  role: string;
-  dob: Date;
-}
 
 interface Task {
   EvngTaskID: number;
@@ -37,9 +24,8 @@ interface Task {
 }
 
 const EveningDashboard: React.FC = () => {
-  const [mode, setMode] = useState<TabPosition>("morning");
   const [data, setData] = useState<any>([]);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate] = useState<Date>(new Date());
   const [totalUpwork, setTotalUpWork] = useState<any>();
   const [totalEstHrs, setTotalEstHrs] = useState<any>();
   const [totalUpworkhrs, setTotalUpworkhrs] = useState<any>();
@@ -52,21 +38,9 @@ const EveningDashboard: React.FC = () => {
   };
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
-
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
-  const handleModeChange = (e: RadioChangeEvent) => {
-    setMode(e.target.value);
-  };
-
-
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
   };
-
-
 
   useEffect(() => {
     const apiUrl = `${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`;
@@ -85,17 +59,13 @@ const EveningDashboard: React.FC = () => {
 
           filteredData = response.data.filter((obj) => {
             const taskDate = new Date(obj.currDate).getTime();
-
             return taskDate >= startDate && taskDate <= endDate;
-
           });
-
         } else {
           filteredData = response.data.filter(
             (obj) => obj.currDate === formattedDate
           );
         }
-
         const sortedData = filteredData.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
         );
@@ -111,9 +81,9 @@ const EveningDashboard: React.FC = () => {
         setData(result);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error(error);
       });
-  }, [dateRange, formattedDate,del]);
+  }, [dateRange, formattedDate, del]);
 
 
 
@@ -121,8 +91,6 @@ const EveningDashboard: React.FC = () => {
     const query = e.target.value;
     setSearchQuery(query.toLowerCase());
   };
-
-
 
   return (
     <div className="emp-main-div">
@@ -132,7 +100,6 @@ const EveningDashboard: React.FC = () => {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          // maxHeight:'90%'
         }}
       >
         <div style={{ height: "8%" }}>
@@ -166,7 +133,7 @@ const EveningDashboard: React.FC = () => {
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "space-between",
-              }}> {/* This ensures the dropdown takes up as much space as possible */}
+              }}>
                 <select
                   id="roleSelect"
                   style={{
@@ -192,11 +159,6 @@ const EveningDashboard: React.FC = () => {
                   <option value="Sales Infotech">Sales Infotech</option>
                 </select>
               </div>
-
-
-
-
-
               <div style={{
                 display: "flex",
                 width: "100%",
@@ -208,7 +170,6 @@ const EveningDashboard: React.FC = () => {
                   onChange={handleSearchChange}
                   style={{ width: 300 }}
                 />
-                {/* <RangePicker onChange={handleDateRangeChange} /> */}
               </div>
 
 

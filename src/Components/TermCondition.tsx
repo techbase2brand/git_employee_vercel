@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
@@ -14,8 +14,9 @@ interface Task {
   date: string;
 }
 const TermCondition: React.FC<unknown> = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
+
   const [termTask, setTermTask] = useState<Task>({
     TermID: 0,
     term: "",
@@ -48,7 +49,7 @@ const TermCondition: React.FC<unknown> = () => {
           }
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          console.error("Error fetching data:");
         });
     }
   }, [location?.state?.TermID]);
@@ -76,13 +77,13 @@ const TermCondition: React.FC<unknown> = () => {
     })
       .then((response) => {
         if (response.data === "All fields are required.") {
-          alert("All compulsory fields are requirerged.");
+          alert("Date is Complusary.");
         } else {
           navigate("/ViewTermCondition");
         }
       })
       .catch((error) => {
-        console.log(error?.response?.data);
+        console.log(error);
       });
   };
   const handleTermChange = (event: any, editor: any) => {
@@ -116,7 +117,6 @@ const TermCondition: React.FC<unknown> = () => {
           >
             <div className="add-div">
               <h1>Term & Conditions</h1>
-
               <label className="add-label">
                 Term:<span style={{ color: "red" }}>*</span>
               </label>
