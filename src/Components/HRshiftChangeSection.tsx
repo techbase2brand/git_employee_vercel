@@ -1,19 +1,10 @@
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-// import type { DatePickerProps } from "antd";
-// import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import TableNavbar from "./TableNavbar";
 import HRshiftChangeTable from "./HRshiftChangeTable";
-// import axios from "axios";
-// import { GlobalInfo } from "../App";
-
 
 const HRshiftChangeSection: React.FC = () => {
-  // const handleChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
 
   return (
     <div className="emp-main-div">
@@ -35,7 +26,6 @@ const HRshiftChangeSection: React.FC = () => {
             <Menu />
           </div>
           <div>
-
             <div style={{ width: "92%", marginTop: "5%" }}>
               <div
                 style={{

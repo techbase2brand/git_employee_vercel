@@ -20,8 +20,6 @@ interface FormData {
   // description:string;
 }
 const info = JSON.parse(localStorage.getItem("myData") || "{}");
-console.log(info?.EmployeeID, "EmployeeID");
-
 
 function SalecampusForm(): JSX.Element {
   const initialFormData: FormData = {
@@ -247,9 +245,7 @@ function SalecampusForm(): JSX.Element {
         const responseData = await response.json();
 
         if (response.status === 200) {
-          console.log("Form submitted successfully");
           setFormData(initialFormData);
-
           setSubmitted(true);
         } else if (response.status === 400) {
           alert(responseData.message);
@@ -268,7 +264,6 @@ function SalecampusForm(): JSX.Element {
   const handleUpdate = () => {
     axios.put(`${process.env.REACT_APP_API_BASE_URL}/updatecampus/${formData.id}`, formData)
       .then((response) => {
-        console.log(response.data);
         Navigate("/salecampusformlist");
       })
       .catch((error) => {

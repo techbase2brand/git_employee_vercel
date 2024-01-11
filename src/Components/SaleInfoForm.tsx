@@ -51,7 +51,6 @@ function SaleInfoForm(): JSX.Element {
     employeeName = `${myData.firstName} ${myData.lastName}`;
     rolled = myData.role;
   }
-  // const today = new Date().toISOString().split("T")[0];
   const initialFormData: FormData = {
     portalType: "upwork",
     profileName: "",
@@ -60,7 +59,7 @@ function SaleInfoForm(): JSX.Element {
     handleBy: "",
     status: "",
     statusReason: [],
-    communicationMode:'',
+    communicationMode: '',
     communicationReason: "",
     othermode: "",
     commModeSkype: "",
@@ -74,7 +73,7 @@ function SaleInfoForm(): JSX.Element {
     commModeOther: "",
     inviteBid: "",
   };
-  //
+
   const initialCommunicationModeInterface: communicationModeInterface = {
     skype: false,
     phone: false,
@@ -88,18 +87,14 @@ function SaleInfoForm(): JSX.Element {
   const location = useLocation();
   const Navigate = useNavigate();
   const record: FormData | undefined = location.state?.record;
-
-  // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
-  console.log("formData",formData);
-  
+
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [communicationMode, setCommunicationMode] =
     useState<communicationModeInterface>(initialCommunicationModeInterface);
   useEffect(() => {
     if (record) {
-      console.log("recorddddd",record)
       setFormData(record);
       if (typeof record.statusReason === 'string' && (record.statusReason as string).trim().length > 0) {
         const reasonsArray = (record.statusReason as string).split(',');
@@ -117,10 +112,10 @@ function SaleInfoForm(): JSX.Element {
     axios
       .get(`${process.env.REACT_APP_API_BASE_URL}/get/addSales`)
       .then((response) => {
-       setStatusNames(response.data)
+        setStatusNames(response.data)
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:");
       });
   }, []);
 
@@ -171,14 +166,11 @@ function SaleInfoForm(): JSX.Element {
   };
   const submitForm = async () => {
     if (formData.id) {
-      // Update API, To update data
       handleUpdate();
     } else {
-      console.log("submitForm-else-os");
       axios
         .post(`${process.env.REACT_APP_API_BASE_URL}/submit-salesform`, formData)
         .then((response) => {
-          console.log("response.data", response);
           setSubmitted(true);
         })
         .catch((error) => {
@@ -203,34 +195,10 @@ function SaleInfoForm(): JSX.Element {
     if (!formData.status) {
       newErrors.status = "Status is required.";
     }
-    // else if (!emailRegex.test(formData.email)) {
-    //   newErrors.email = "Invalid email format.";
-    // }
-    // if (!formData.url) {
-    //   newErrors.url = "Url is required.";
-    // }
-    // if (!formData.parentPhone) {
-    //   newErrors.parentPhone = "Parent's Phone Number is required.";
-    // }
-    // if (!formData.statusReason) {
-    //   newErrors.statusReason = "status reason is required.";
-    // }
-    // if (!formData.status) {
-    //   newErrors.status = "status is required.";
-    // }
-    // if (!formData.communicationMode) {
-    //   newErrors.communicationMode = "communicationMode is required.";
-    // }
-    // if (!formData.communicationReason) {
-    //   newErrors.communicationReason = "communicationReason is required.";
-    // }
-    // if (!formData.portalType) {
-    //   newErrors.portalType = "portalType is required.";
-    // }
     setFormErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
       submitForm();
-      Navigate("/saleinfoformlist"); // Navigate back to the list after update
+      Navigate("/saleinfoformlist");
     }
   };
 
@@ -248,8 +216,6 @@ function SaleInfoForm(): JSX.Element {
         } else {
           Navigate("/AdminSaleInfotechFormList");
         }
-        // Navigate back to the list after update
-        console.log("handleUpdate-working-os");
         setSubmitted(true);
       })
       .catch((error) => {
@@ -451,8 +417,6 @@ function SaleInfoForm(): JSX.Element {
                           />
                         </div>
                       </div>
-
-
                       <div className="SalecampusForm-col-os">
                         <div className="SalecampusForm-input-os">
                           <input
@@ -499,11 +463,9 @@ function SaleInfoForm(): JSX.Element {
                           <div className="SalecampusForm-input-os">
                             <textarea
                               className="additional-notes"
-                              // type="text"
                               placeholder={`Status Reason ${index + 1}`}
                               value={reason}
                               onChange={(e) => handleChangeReason(e.target.value, index)}
-                            // readOnly={formData.statusReason.includes(reason[index])}
                             />
                             {formData.id && index === statusReasons.length - 1 && reason === "" &&
                               <input
@@ -523,7 +485,7 @@ function SaleInfoForm(): JSX.Element {
                         </div>
                       ))}
                       <div className="SalecampusForm-col-os">
-                      <h4 style={{ paddingBottom: "1rem" }}>
+                        <h4 style={{ paddingBottom: "1rem" }}>
                           Lead Date
                         </h4>
                         <div className="SalecampusForm-input-os">
@@ -553,7 +515,6 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="checkbox"
                               name="skype"
-                              // value="skype"
                               checked={communicationMode.skype}
                               onChange={handleCommunicationMode}
                             />
@@ -576,7 +537,6 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="checkbox"
                               name="phone"
-                              // value="phone"
                               checked={communicationMode.phone}
                               onChange={handleCommunicationMode}
                             />
@@ -599,7 +559,6 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="checkbox"
                               name="whatsapp"
-                              // value="whatsapp"
                               checked={communicationMode.whatsapp}
                               onChange={handleCommunicationMode}
                             />
@@ -622,7 +581,6 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="checkbox"
                               name="email"
-                              // value="email"
                               checked={communicationMode.email}
                               onChange={handleCommunicationMode}
                             />
@@ -644,7 +602,6 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="checkbox"
                               name="portal"
-                              // value="portal"
                               checked={communicationMode.portal}
                               onChange={handleCommunicationMode}
                             />
@@ -666,7 +623,6 @@ function SaleInfoForm(): JSX.Element {
                             <input
                               type="checkbox"
                               name="other"
-                              // value="other"
                               checked={communicationMode.other}
                               onChange={handleCommunicationMode}
                             />
@@ -712,7 +668,6 @@ function SaleInfoForm(): JSX.Element {
                       </div>
                     </div>
                   </form>
-
                   {submitted && (
                     <p style={{ color: "green", paddingTop: "0.5rem" }}>
                       Thank you for connecting!

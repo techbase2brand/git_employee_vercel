@@ -35,7 +35,6 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
 
   const handleEdit = (modID: number) => {
     const filteredObj = modulesArr.filter((obj) => obj.modID === modID);
-    setModulejEditObj(filteredObj[0]);
     navigate("/EditAddModule", { state: { modulejEditObj: filteredObj[0] } });
   };
 

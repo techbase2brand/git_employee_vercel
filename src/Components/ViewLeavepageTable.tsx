@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Table} from "antd";
-// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Table } from "antd";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 interface LeaveData {
@@ -17,7 +15,7 @@ interface LeaveData {
   adminID: string;
   approvalOfTeamLead: string;
   approvalOfHR: string;
-  leaveCategory : string;
+  leaveCategory: string;
 }
 
 const ViewLeavepageTable: React.FC = () => {
@@ -25,48 +23,22 @@ const ViewLeavepageTable: React.FC = () => {
   const dataString = localStorage.getItem("myData");
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
 
-useEffect(() => {
-  const token = localStorage.getItem("myToken");
-
-  axios
-    .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      const sortedData = response.data.sort(
-        (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-      );
-
-      const filteredData = sortedData.filter((item)=> item?.employeeID === employeeInfo?.EmployeeID)
-
-      setData(filteredData);
-    });
-}, []);
-
-  // const fetchData = () => {
-  //   const token = localStorage.getItem("myToken");
-
-  //   axios
-  //     .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       const sortedData = response.data.sort(
-  //         (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
-  //       );
-  //       setData(sortedData);
-  //     });
-  // };
-
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
+  useEffect(() => {
+    const token = localStorage.getItem("myToken");
+    axios
+      .get<LeaveData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/leaveinfo`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const sortedData = response.data.sort(
+          (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
+        );
+        const filteredData = sortedData.filter((item) => item?.employeeID === employeeInfo?.EmployeeID)
+        setData(filteredData);
+      });
+  }, []);
 
   const columns = [
     {
@@ -118,7 +90,6 @@ useEffect(() => {
       render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
     },
   ];
-
 
   return (
     <>

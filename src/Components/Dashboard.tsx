@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import type { DatePickerProps } from "antd";
-import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent, Input } from "antd";
+import { Input } from "antd";
 
-// import { Select, Space } from 'antd';
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import TaskTable from "./TaskTable";
@@ -13,15 +10,7 @@ import axios from "axios";
 import { format } from "date-fns";
 
 
-// type TabPosition = "morning" | "evening";
 const { Search } = Input;
-
-interface Employee {
-  EmpID: number;
-  firstName: string;
-  role: string;
-  dob: Date;
-}
 
 interface Task {
   MrngTaskID: number;
@@ -37,14 +26,12 @@ interface Task {
 
 
 const Dashboard: React.FC = () => {
-  // const [mode, setMode] = useState<TabPosition>("morning");
   const [data, setData] = useState<any>([]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [totalEstHrs, setTotalEstHrs] = useState<any>()
   const [setTotalUpWorkHrs, setSetTotalUpWorkHrs] = useState<any>()
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -63,7 +50,6 @@ const Dashboard: React.FC = () => {
       })
       .then((response) => {
         const res = response.data.filter((obj) => obj.currDate === formattedDate)
-        // (response.data);
         const sortedData = res.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID));
         const result = sortedData.reduce((acc: Record<string, any>, obj) => {
           if (!acc[obj.employeeID]) {
@@ -75,9 +61,6 @@ const Dashboard: React.FC = () => {
 
 
         setData(result);
-        // sort the data array in reverse order based on ProID
-        // const sortedData = response.data.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID));
-        // setData(sortedData);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -96,7 +79,6 @@ const Dashboard: React.FC = () => {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          // maxHeight:'90%'
         }}
       >
         <div style={{ height: "8%" }}>
@@ -167,7 +149,6 @@ const Dashboard: React.FC = () => {
                     onChange={handleSearchChange}
                     style={{ width: 300 }}
                   />
-                  {/* <RangePicker onChange={handleDateRangeChange} /> */}
                 </div>
               </div>
               <div style={{}} className="dashboard-handle">

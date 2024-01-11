@@ -12,8 +12,6 @@ import { useLocation, useNavigate } from "react-router";
 import { DatePicker, AutoComplete } from "antd";
 // import './styles.css';
 
-// import dayjs from "dayjs";
-
 interface SalecampusData {
   id: number;
   gender: string;
@@ -33,17 +31,6 @@ interface SalecampusData {
   EmployeeID: string;
 }
 
-//
-// interface Task {
-//   EvngTaskID: number;
-//   projectName: string;
-//   phaseName: string;
-//   module: string;
-//   task: string;
-//   estTime: string;
-//   actTime: string;
-//   upWorkHrs: number;
-// }
 
 interface Props {
   data: SalecampusData[];
@@ -51,23 +38,16 @@ interface Props {
   setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
 }
 
-
 const info = JSON.parse(localStorage.getItem("myData") || "{}");
 
 const SalecampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
-  console.log("data", data);
-
   const [recordToDelete, setRecordToDelete] = useState<SalecampusData | null>(
     null
   );
   const [filteredData, setFilteredData] = useState<SalecampusData[]>(data);
-  console.log("filteredData", filteredData);
-
-  const [deleteId, setDeleteId] = useState<number>();
-  const [editId, setEditId] = useState<number>();
-  const [search, setSearch] = useState<string>("");
-  const [dateSearch, setDateSearch] = useState<string | null>(null);
+  const [search] = useState<string>("");
+  const [dateSearch] = useState<string | null>(null);
   const [generalSearch, setGeneralSearch] = useState<string>("");
   const [dateRangeSearch, setDateRangeSearch] = useState<[string | null, string | null]>([null, null]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
@@ -77,9 +57,6 @@ const SalecampusFormList = () => {
   const [state, setState] = useState<boolean>(false);
 
   const Navigate = useNavigate();
-  const location = useLocation();
-  const passedRecord = location.state?.record;
-
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -119,7 +96,6 @@ const SalecampusFormList = () => {
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_BASE_URL}/salecampusdata`
-        // Uncomment below if your server requires the token for authentication
         //   , {
         //     headers: {
         //       Authorization: `Bearer ${token}`,
@@ -139,10 +115,8 @@ const SalecampusFormList = () => {
     filterData(dateSearch, dateSearch, search);
   }, [data]);
 
-
   // delete methods
   const handleDelete = (id: number) => {
-    setDeleteId(id);
     axios
       .delete(
         `${process.env.REACT_APP_API_BASE_URL}/delete/${id}`
@@ -159,17 +133,10 @@ const SalecampusFormList = () => {
         console.log(error);
       });
 
-    // Update the main data state
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);
-    // Check if the data is currently filtered
-    // Check if the data is currently filtered
     filterData(dateSearch, dateSearch, search);
-    // Corrected this line
-
-    // close consfirmation modal
     setIsModalOpen(false);
-    // Null values of delete id
     setRecordToDelete(null);
   };
 
@@ -178,7 +145,6 @@ const SalecampusFormList = () => {
   };
   // edit methods
   const handleEdit = (id: number) => {
-    setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/SalecampusForm", { state: { record: recordToEdit } });
   };
@@ -219,10 +185,6 @@ const SalecampusFormList = () => {
         selectedStatus ?
           item.status.toLowerCase() === selectedStatus.toLowerCase() :
           true;
-      // const matchDate =
-      //   selectedDays && item.dateData ?
-      //     new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
-      //     true;
       const itemDate = new Date(item.created_at);
       const itemDateTimestamp = itemDate.getTime();
       const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
@@ -235,8 +197,6 @@ const SalecampusFormList = () => {
             (item.updated_at && new Date(item.updated_at) >= new Date(dateRangeSearch[0]) && new Date(item.updated_at) <= new Date(dateRangeSearch[1]))
           )
           : true;
-
-
       return statusMatch && matchDate && dateRangeMatch;
 
     });
@@ -314,7 +274,6 @@ const SalecampusFormList = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      // render: (text: string) => <div>{text}</div>,
       render: (text: string) => {
         const date = new Date(text);
         const formattedDate = date.toISOString().split('T')[0];
@@ -325,7 +284,6 @@ const SalecampusFormList = () => {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      // render: (text: string) => <div>{text}</div>,
       render: (text: string) => {
         const date = new Date(text);
         const formattedDate = date.toISOString().split('T')[0];
@@ -360,29 +318,6 @@ const SalecampusFormList = () => {
     },
   ];
 
-  // const filterData = (inputValue: string) => {
-  //   const lowercasedInput = inputValue.toLowerCase();
-
-  //   if (inputValue) {
-  //     const result = data.filter(e =>
-  //       // e.gender.toLowerCase() === (lowercasedInput) ||
-  //       e.gender.toLowerCase().includes(lowercasedInput) ||
-  //       e.email.toLowerCase().includes(lowercasedInput) ||
-  //       e.name.toLowerCase().includes(lowercasedInput) ||
-  //       String(e.phone).toLowerCase().includes(lowercasedInput) ||
-  //       String(e.parentPhone).toLowerCase().includes(lowercasedInput) ||
-  //       e.location.toLowerCase().includes(lowercasedInput) ||
-  //       e.highestQualification.toLowerCase().includes(lowercasedInput) ||
-  //       e.duration.toLowerCase().includes(lowercasedInput) ||
-  //       e.totalFee.toLowerCase().includes(lowercasedInput) ||
-  //       e.status.toLowerCase().includes(lowercasedInput)
-  //     );
-  //     setFilteredData(result);
-  //   } else {
-  //     setFilteredData(data);
-  //   }
-  // };
-
   const { RangePicker } = DatePicker;
 
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
@@ -414,8 +349,6 @@ const SalecampusFormList = () => {
   ) => {
     const lowercasedGeneralValue = generalValue.toLowerCase();
     let result = data;
-
-    // Filter by date range if both startDate and endDate exist
     if (startDate && endDate) {
       result = result.filter((e) => {
         const createdDate = convertUTCToLocal(e.created_at).split(" ")[0];
@@ -427,7 +360,6 @@ const SalecampusFormList = () => {
       });
     }
 
-    // Further filter by general search value
     if (generalValue) {
       result = result.filter((e) => {
         const criteria = [
@@ -453,13 +385,6 @@ const SalecampusFormList = () => {
     setFilteredData(result);
   };
 
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const inputValue = e.target.value;
-  //   setSearch(inputValue);
-  //   filterData(inputValue);
-  // };
-
-  //
   function convertUTCToLocal(utcString: string | number | Date) {
     const date = new Date(utcString);
     const offsetIST = 330; // offset in minutes for UTC+5:30
@@ -533,7 +458,6 @@ const SalecampusFormList = () => {
 
                     <div>
                       <select
-                        // onChange={handleChange}
                         className="adjust-inputs"
                         id="project"
                         value={selectedStatus}
@@ -575,7 +499,7 @@ const SalecampusFormList = () => {
                       columns={columns}
                       rowClassName={(record) =>
                         record.status.replace(/\s+/g, "-")
-                      } // Convert spaces to hyphens
+                      }
                       pagination={paginationSettings}
                     />
                   </div>

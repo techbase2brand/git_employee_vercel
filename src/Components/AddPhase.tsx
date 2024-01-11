@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { Space } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import EmployeeTable from "./EmployeeTable";
 import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GlobalInfo } from "../App";
 
 interface Phase {
-  // projectName: string;
   phaseName: string;
   // ProID: string | number;
   // clientName: string;
@@ -22,10 +19,6 @@ interface Project {
   clientName: string;
   projectName: string;
   projectDescription: string;
-  // costBefore: number;
-  // costAfter: number;
-  // estTime: number;
-  // actTime: number;
 }
 interface Phases {
   phaseID: number;
@@ -46,15 +39,7 @@ const AddPhase: React.FC = () => {
   const [phaseArr, setphaseArr] = useState<Phases[]>([]);
 
   const navigate = useNavigate();
-
-  console.log(projectName, "projectName");
-  console.log(phases, "phases");
-  console.log(data, "data");
-  console.log(phaseArr, "phaseArr");
-
-  const { phasejEditObj, setPhasejEditObj } = useContext(GlobalInfo);
-
-  console.log(phasejEditObj, "ggjjjjkkk---");
+  const { phasejEditObj } = useContext(GlobalInfo);
 
   useEffect(() => {
     if (phasejEditObj) {
@@ -65,8 +50,6 @@ const AddPhase: React.FC = () => {
   const projectNames = data.map((e) => {
     return e.projectName;
   });
-
-  console.log(projectNames, "00---");
 
   const handleClientNameChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -118,7 +101,6 @@ const AddPhase: React.FC = () => {
         }
       })
       .then((response) => {
-        console.log(response, "999");
         if (response.data === "OK") {
           navigate("/view-phase");
         }
@@ -127,14 +109,9 @@ const AddPhase: React.FC = () => {
         if (error.response && error.response.status === 400) {
           alert(error.response.data);
         } else {
-          console.log(error, "8888");
+          console.log(error);
         }
       });
-
-    console.log("Form submitted with data:", data);
-
-
-    console.log("Form submitted with data:", data);
   };
 
   const handleAddPhase = () => {
@@ -234,7 +211,6 @@ const AddPhase: React.FC = () => {
               </button>
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div>{/* <EmployeeTable  /> */}</div>
             </div>
           </div>
         </div>

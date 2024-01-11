@@ -1,19 +1,9 @@
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-// import type { DatePickerProps } from "antd";
-// import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import TableNavbar from "./TableNavbar";
 import HRleaveTable from "./HRleaveTable";
-// import axios from "axios";
-// import { GlobalInfo } from "../App";
 const HRsection: React.FC = () => {
-  //   const handleChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
-
-  console.log("gggggggggg----");
 
 
   return (
@@ -31,7 +21,7 @@ const HRsection: React.FC = () => {
         <div style={{ height: "8%" }}>
           <Navbar />
         </div>
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" , width:'8%'}}>
+        <div style={{ display: "flex", flexDirection: "row", height: "90%", width: '8%' }}>
           <div className="menu-div">
             <Menu />
           </div>
@@ -55,9 +45,7 @@ const HRsection: React.FC = () => {
                   Leave Page
                 </p>
               </div>
-
               <HRleaveTable
-
               />
             </div>
           </div>

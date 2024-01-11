@@ -45,20 +45,10 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
     return propsData.reduce((acc, curr) => acc + convertTimeToDecimal(curr.estTime), 0);
   }, [propsData]);
 
-  console.log(totalEstHours, "totalEstHours");
-
-
-  // const totalUpWorkHours = useMemo(() => {
-  //   return propsData.reduce((acc, curr) => acc + curr.upWorkHrs, 0);
-  // }, [propsData]);
 
   const totalUpWorkHours = useMemo(() => {
     return propsData.reduce((acc, curr) => acc + convertTimeToDecimal(String(curr.upWorkHrs)), 0);
   }, [propsData]);
-
-
-  console.log(totalUpWorkHours, "totalUpWorkHourstotalUpWorkHourstotalUpWorkHours");
-
 
   useEffect(() => {
     setPropsData(data || []);

@@ -59,7 +59,6 @@ const EditModule: React.FC<any> = () => {
       .then((response) => {
         if (response.data === "OK") {
           navigate("/view-module");
-          alert(" module edited successfully");
         }
       })
       .catch((error) => {

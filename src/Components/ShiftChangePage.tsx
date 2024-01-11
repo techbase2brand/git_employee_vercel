@@ -1,19 +1,10 @@
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-// import type { DatePickerProps } from "antd";
-// import { DatePicker, Space, Select, Radio, Tabs, RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-// import TableNavbar from "./TableNavbar";
 import ShiftChangePageTable from "./ShiftChangePageTable";
-// import axios from "axios";
-// import { GlobalInfo } from "../App";
-
 
 const ShiftChangePage: React.FC = () => {
-  // const handleChange = (value: string) => {
-  //   console.log(`selected ${value}`);
-  // };
 
   return (
     <div className="emp-main-div">
@@ -30,7 +21,7 @@ const ShiftChangePage: React.FC = () => {
         <div style={{ height: "8%" }}>
           <Navbar />
         </div>
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" , width:'8%'}}>
+        <div style={{ display: "flex", flexDirection: "row", height: "90%", width: '8%' }}>
           <div className="menu-div">
             <Menu />
           </div>
@@ -55,9 +46,8 @@ const ShiftChangePage: React.FC = () => {
                   Shift Change List
                 </p>
               </div>
-
               <ShiftChangePageTable
- />
+              />
             </div>
           </div>
         </div>

@@ -1,23 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-// import type { DatePickerProps } from "antd";
-// import {RadioChangeEvent } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import EveningTaskTable from "./EveningTaskTable";
-// import DashboardTable from "./DashboardTable";
 import axios from "axios";
 import { format } from "date-fns";
 import { GlobalInfo } from "../App";
 
-// type TabPosition = "morning" | "evening";
-
-// interface Employee {
-//   EmpID: number;
-//   firstName: string;
-//   role: string;
-//   dob: Date;
-// }
 
 interface Task {
   EvngTaskID: number;
@@ -29,28 +18,19 @@ interface Task {
   upWorkHrs: string;
   employeeID: string;
   currDate: string;
-  actTime : string;
+  actTime: string;
   selectDate: string;
 }
 const ViewEveningTask: React.FC = () => {
-  // const [mode, setMode] = useState<TabPosition>("morning");
   const [data, setData] = useState<Task[]>([]);
   const [employeeID, setEmployeeID] = useState<string>("");
-  // const [selectedDateRange, setSelectedDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [currentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
-  //  const handleChange = (value: string) => {
-  //     console.log(`selected ${value}`);
-  //   };
-
-  // const handleModeChange = (e: RadioChangeEvent) => {
-  //   setMode(e.target.value);
-  // };
 
   useEffect(() => {
     axios
-      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`,{
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
@@ -60,20 +40,18 @@ const ViewEveningTask: React.FC = () => {
           (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
         ) || [];
 
-        // sort the data array in reverse order based on ProID
         const sortedData = arr.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
         );
         setData(sortedData);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error(error);
       });
   }, [employeeID, formattedDate]);
 
   const dataString = localStorage.getItem("myData");
 
-  // Parse the JSON string back into an array
   useEffect(() => {
     const employeeInfo = dataString ? JSON.parse(dataString) : [];
     const firstEmployeeID = employeeInfo?.EmployeeID;
@@ -98,7 +76,7 @@ const ViewEveningTask: React.FC = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column",width: 'auto'}}
+            style={{ display: "flex", flexDirection: "column", width: 'auto' }}
             className="form-container"
           >
             <div

@@ -17,13 +17,6 @@ interface LeaveData {
   leaveCategory: string;
 }
 
-interface Employee {
-  EmpID: string | number;
-  firstName: string;
-  role: string;
-  dob: string | Date;
-  EmployeeID: string;
-}
 
 const LeaveReportsTable: React.FC = () => {
   const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
@@ -41,8 +34,6 @@ const LeaveReportsTable: React.FC = () => {
 
   const dataString = localStorage.getItem("myData");
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
-  console.log(employeeInfo,"employeeInfoemployeeInfo");
-
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -57,9 +48,6 @@ const LeaveReportsTable: React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.LeaveInfoID) - Number(a.LeaveInfoID)
         );
-        console.log(sortedData,"sortedDatasortedData");
-
-
         setAllLeave(sortedData);
       });
   }, []);
@@ -78,16 +66,12 @@ const LeaveReportsTable: React.FC = () => {
   };
 
   const calculateTotalLeave = () => {
-    console.log(allLeave);
-
     const employeeLeaves = allLeave.filter(
       (leave) =>
         leave.employeeID === employeeInfo.EmployeeID &&
         leave.approvalOfTeamLead === "approved" &&
         leave.approvalOfHR === "approved"
     );
-    console.log(employeeLeaves,"employeeLeavesemployeeLeaves");
-
 
     const monthlyData: {
       [key: string]: {
@@ -166,7 +150,6 @@ const LeaveReportsTable: React.FC = () => {
           uncertain: `${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`,
           regular: `${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`,
         };
-        console.log(formattedMonthlyData,"formattedMonthlyDataformattedMonthlyDataformattedMonthlyData");
         setMonthlyLeaveData(formattedMonthlyData);
       } catch (error) {
         console.error('Error in loop:', error);
@@ -202,7 +185,7 @@ const LeaveReportsTable: React.FC = () => {
                 Month
               </th>
               <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>
-                 Leave
+                Leave
               </th>
               <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>
                 Uncertain Leave
@@ -215,16 +198,16 @@ const LeaveReportsTable: React.FC = () => {
           <tbody>
             {Object.entries(monthlyLeaveData).map(([key, value]) => (
               <tr key={key}>
-                <td style={{ padding: "12px", borderBottom: "1px solid #ccc" , paddingLeft:'4px' }}>
+                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>
                   {key}
                 </td>
-                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft:'14px' }}>
+                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>
                   {value.total}
                 </td>
-                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft:'14px' }}>
+                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>
                   {value.uncertain}
                 </td>
-                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft:'14px' }}>
+                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>
                   {value.regular}
                 </td>
               </tr>

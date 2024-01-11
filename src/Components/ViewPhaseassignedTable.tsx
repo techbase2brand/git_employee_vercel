@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Input } from "antd";
-
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 interface AssignedEmployees {
   PhaseAssigneeID: number;
@@ -25,8 +23,6 @@ const ViewPhaseassignedTable: React.FC = () => {
   const [assignedArr, setAssignedArr] = useState<AssignedEmployees[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     axios
       .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`, {
@@ -38,20 +34,9 @@ const ViewPhaseassignedTable: React.FC = () => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
-        console.log(sortedData, "sortedDatasortedData");
-
         setAssignedArr(sortedData);
       });
   }, []);
-
-  const handleEdit = (PhaseAssigneeID: number) => {
-    const filteredObj = assignedArr.filter(
-      (obj) => obj?.PhaseAssigneeID === PhaseAssigneeID
-    );
-    navigate("/EditAssigneePath", {
-      state: { assigneeEditObj: filteredObj[0] },
-    });
-  };
 
   const filteredData = assignedArr.filter((item) => {
     const namesArray = Array.isArray(item.assignedNames)
@@ -108,11 +93,6 @@ const ViewPhaseassignedTable: React.FC = () => {
       key: "action",
       render: (_: any, record: AssignedEmployees) => (
         <span>
-          {/* <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record.PhaseAssigneeID)}
-          /> */}
           <Button
             type="link"
             danger

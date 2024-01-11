@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "antd";
-// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-// import dayjs from "dayjs";
 
 interface ShiftChangeData {
   ShiftChangeTableID: 0,
@@ -22,7 +19,7 @@ interface ShiftChangeData {
 
 const HRshiftChangeTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
-  // const navigate = useNavigate();
+
   useEffect(() => {
     axios
       .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
@@ -50,7 +47,6 @@ const HRshiftChangeTable: React.FC = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         fetchData();
       })
       .catch((error) => {
@@ -58,7 +54,6 @@ const HRshiftChangeTable: React.FC = () => {
       });
   };
   const handleDeny = (ShiftChangeTableID: number) => {
-    // Get the token from local storage
     const token = localStorage.getItem("myToken");
 
     axios
@@ -68,7 +63,6 @@ const HRshiftChangeTable: React.FC = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         fetchData();
       })
       .catch((error) => {
@@ -161,7 +155,7 @@ const HRshiftChangeTable: React.FC = () => {
   const paginationSettings = {
     pageSize: 100,
   };
-  
+
   return (
     <>
       <Table

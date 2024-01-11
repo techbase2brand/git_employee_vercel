@@ -9,10 +9,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router";
-import { DatePicker, AutoComplete } from "antd";
-// import './styles.css';
-
-// import dayjs from "dayjs";
+import { DatePicker } from "antd";
 
 interface SalecampusData {
   id: number;
@@ -42,34 +39,14 @@ interface Employee {
   EmployeeID: string;
 }
 
-//
-// interface Task {
-//   EvngTaskID: number;
-//   projectName: string;
-//   phaseName: string;
-//   module: string;
-//   task: string;
-//   estTime: string;
-//   actTime: string;
-//   upWorkHrs: number;
-// }
-
-interface Props {
-  data: SalecampusData[];
-  evngEditID: number;
-  setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
-}
-
 const AdminSaleCampusFormList = () => {
   const [data, setData] = useState<SalecampusData[]>([]);
   const [recordToDelete, setRecordToDelete] = useState<SalecampusData | null>(
     null
   );
   const [filteredData, setFilteredData] = useState<SalecampusData[]>(data);
-  const [deleteId, setDeleteId] = useState<number>();
-  const [editId, setEditId] = useState<number>();
-  const [search, setSearch] = useState<string>("");
-  const [dateSearch, setDateSearch] = useState<string | null>(null);
+  const [search] = useState<string>("");
+  const [dateSearch] = useState<string | null>(null);
   const [generalSearch, setGeneralSearch] = useState<string>("");
   const [dateRangeSearch, setDateRangeSearch] = useState<[string | null, string | null]>([null, null]);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -77,14 +54,11 @@ const AdminSaleCampusFormList = () => {
   const [state, setState] = useState<boolean>(false);
   const [registerNames, setRegisterNames] = useState<string[]>([]);
   const [selectedDays, setSelectedDays] = useState<string>("");
-  const [filteredByDateRange, setFilteredByDateRange] = useState<SalecampusData[]>([]);
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
   const [statusNames, setStatusNames] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const uniqueStatusNames = Array.from(new Set(statusNames));
   const Navigate = useNavigate();
   const location = useLocation();
-  const passedRecord = location.state?.record;
 
   // Modal for delete confirmation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -126,7 +100,7 @@ const AdminSaleCampusFormList = () => {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("myToken");
+    // const token = localStorage.getItem("myToken");
     axios
       .get(
         `${process.env.REACT_APP_API_BASE_URL}/salecampusdata`
@@ -151,7 +125,6 @@ const AdminSaleCampusFormList = () => {
   const paginationSettings = {
     pageSize: 100,
   };
-
 
   useEffect(() => {
     axios
@@ -181,7 +154,6 @@ const AdminSaleCampusFormList = () => {
 
   // delete methods
   const handleDelete = (id: number) => {
-    setDeleteId(id);
     axios
       .delete(
         `${process.env.REACT_APP_API_BASE_URL}/delete/${id}`
@@ -192,7 +164,7 @@ const AdminSaleCampusFormList = () => {
         // }
       )
       .then((response) => {
-        console.log(response.data);
+        console.log("res")
       })
       .catch((error) => {
         console.log(error);
@@ -201,22 +173,13 @@ const AdminSaleCampusFormList = () => {
     // Update the main data state
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);
-    // Check if the data is currently filtered
-    // Check if the data is currently filtered
     filterData(dateSearch, dateSearch, search);
-    // Corrected this line
-
-    // close consfirmation modal
     setIsModalOpen(false);
-    // Null values of delete id
     setRecordToDelete(null);
   };
 
-
   // edit methods
   const handleEdit = (id: number) => {
-    console.log(`update form with id ${id}`);
-    setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/SalecampusForm", { state: { record: recordToEdit } });
   };
@@ -267,8 +230,8 @@ const AdminSaleCampusFormList = () => {
       const itemDateTimestamp = itemDate.getTime();
       const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
         (!endDate || itemDateTimestamp <= endDate.getTime());
-        
-        const dateRangeMatch =
+
+      const dateRangeMatch =
         dateRangeSearch[0] && dateRangeSearch[1]
           ? (
             (item.created_at && new Date(item.created_at) >= new Date(dateRangeSearch[0]) && new Date(item.created_at) <= new Date(dateRangeSearch[1])) ||
@@ -297,11 +260,6 @@ const AdminSaleCampusFormList = () => {
       dataIndex: "name",
       key: "name",
     },
-    // {
-    //   title: "description",
-    //   dataIndex: "description",
-    //   key: "description",
-    // },
     {
       title: "Email",
       dataIndex: "email",
@@ -361,7 +319,6 @@ const AdminSaleCampusFormList = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      // render: (text: string) => <div>{text}</div>,
       render: (text: string) => {
         const date = new Date(text);
         const formattedDate = date.toISOString().split('T')[0];
@@ -372,7 +329,6 @@ const AdminSaleCampusFormList = () => {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      // render: (text: string) => <div>{text}</div>,
       render: (text: string) => {
         const date = new Date(text);
         const formattedDate = date.toISOString().split('T')[0];
@@ -407,29 +363,6 @@ const AdminSaleCampusFormList = () => {
     },
   ];
 
-  // const filterData = (inputValue: string) => {
-  //   const lowercasedInput = inputValue.toLowerCase();
-
-  //   if (inputValue) {
-  //     const result = data.filter(e =>
-  //       // e.gender.toLowerCase() === (lowercasedInput) ||
-  //       e.gender.toLowerCase().includes(lowercasedInput) ||
-  //       e.email.toLowerCase().includes(lowercasedInput) ||
-  //       e.name.toLowerCase().includes(lowercasedInput) ||
-  //       String(e.phone).toLowerCase().includes(lowercasedInput) ||
-  //       String(e.parentPhone).toLowerCase().includes(lowercasedInput) ||
-  //       e.location.toLowerCase().includes(lowercasedInput) ||
-  //       e.highestQualification.toLowerCase().includes(lowercasedInput) ||
-  //       e.duration.toLowerCase().includes(lowercasedInput) ||
-  //       e.totalFee.toLowerCase().includes(lowercasedInput) ||
-  //       e.status.toLowerCase().includes(lowercasedInput)
-  //     );
-  //     setFilteredData(result);
-  //   } else {
-  //     setFilteredData(data);
-  //   }
-  // };
-
   const { RangePicker } = DatePicker;
 
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
@@ -442,7 +375,6 @@ const AdminSaleCampusFormList = () => {
       filterData(null, null, generalSearch);
     }
   };
-
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -462,7 +394,6 @@ const AdminSaleCampusFormList = () => {
     const lowercasedGeneralValue = generalValue.toLowerCase();
     let result = data;
 
-    // Filter by date range if both startDate and endDate exist
     if (startDate && endDate) {
       result = result.filter((e) => {
         const createdDate = convertUTCToLocal(e.created_at).split(" ")[0];
@@ -473,8 +404,6 @@ const AdminSaleCampusFormList = () => {
         );
       });
     }
-
-    // Further filter by general search value
     if (generalValue) {
       result = result.filter((e) => {
         const employeeName = getEmployeeName(e.EmployeeID);  // Fetch the employee's name
@@ -502,25 +431,12 @@ const AdminSaleCampusFormList = () => {
     setFilteredData(result);
   };
 
-
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const inputValue = e.target.value;
-  //   setSearch(inputValue);
-  //   filterData(inputValue);
-  // };
-
-  //
   function convertUTCToLocal(utcString: string | number | Date) {
     const date = new Date(utcString);
     const offsetIST = 330; // offset in minutes for UTC+5:30
     date.setMinutes(date.getMinutes() + offsetIST);
     return date.toISOString().slice(0, 19).replace("T", " ");
   }
-
-  // Sample usage
-  const utcDateTime = "2023-09-21T14:09:55.000Z";
-  const localDateTime = convertUTCToLocal(utcDateTime);
-  console.log(localDateTime); // Outputs "2023-09-21 19:39:55"
 
   return (
     <>
@@ -588,7 +504,6 @@ const AdminSaleCampusFormList = () => {
                     />
                     <div>
                       <select
-                        // onChange={handleChange}
                         className="adjust-inputs"
                         id="project"
                         value={selectedStatus}
@@ -604,7 +519,6 @@ const AdminSaleCampusFormList = () => {
                     </div>
                     <div>
                       <select
-                        // onChange={handleChange}
                         className="adjust-inputs"
                         id="project"
                         value={selectedRegister}
@@ -642,7 +556,7 @@ const AdminSaleCampusFormList = () => {
                       columns={columns}
                       rowClassName={(record) =>
                         record.status.replace(/\s+/g, "-")
-                      } // Convert spaces to hyphens
+                      }
                       pagination={paginationSettings}
                     />
                   </div>

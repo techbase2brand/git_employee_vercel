@@ -10,7 +10,7 @@ import {
   DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router";
+import {useNavigate } from "react-router";
 interface Employee {
   EmpID: string | number;
   firstName: string;
@@ -20,21 +20,7 @@ interface Employee {
   EmployeeID: string;
   status: number;
 }
-// import dayjs from "dayjs";
 
-// interface SalesInfoData {
-//   id: number;
-//   gender: string;
-//   name: string;
-//   email: string;
-//   phone: string;
-//   parentPhone: string;
-//   location: string;
-//   course: string;
-//   duration: string;
-//   totalFee: string;
-//   highestQualification: string;
-// }
 const { RangePicker } = DatePicker;
 
 interface SalesInfoData {
@@ -62,11 +48,6 @@ interface SalesInfoData {
   commModeSkype: string;
   othermode: string;
 }
-interface Props {
-  data: SalesInfoData[];
-  evngEditID: number;
-  setEvngEditID: React.Dispatch<React.SetStateAction<number>>;
-}
 
 const AdminSaleInfotechFormList = () => {
   const [data, setData] = useState<SalesInfoData[]>([]);
@@ -74,19 +55,16 @@ const AdminSaleInfotechFormList = () => {
     null
   );
   const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
-  const [deleteId, setDeleteId] = useState<number>();
-  const [editId, setEditId] = useState<number>();
   const [search, setSearch] = useState<string>("");
   const [employeeData, setEmployeeData] = useState<any>([]);
   const Navigate = useNavigate();
-  const location = useLocation();
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [currentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [state, setState] = useState<boolean>(false);
   const [registerNames, setRegisterNames] = useState<string[]>([]);
   const [statusNames, setStatusNames] = useState<string[]>([]);
   const [selectedPortal, setSelectedPortal] = useState<string>("");
-  const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+  const [dateRange] = useState<[string | null, string | null]>([null, null]);
   const [selectedDays, setSelectedDays] = useState<string>("");
   const [selectedRegister, setSelectedRegister] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
@@ -124,18 +102,6 @@ const AdminSaleInfotechFormList = () => {
     setRecordToDelete(null);
   };
 
-  // const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
-  //   setDateRange(dateStrings);
-  //   setState(true);
-  // };
-  // const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
-  //   const [startDate, endDate] = dateStrings;
-  //   if ((!startDate || startDate.trim() === '') && (!endDate || endDate.trim() === '')) {
-  //     setState(false);
-  //   } else {
-  //     setDateRange(dateStrings);
-  //   }
-  // };
   const handleDateRangeChange = (dates: any, dateStrings: [string | null, string | null]) => {
     const [startDate, endDate] = dateStrings;
 
@@ -193,10 +159,6 @@ const AdminSaleInfotechFormList = () => {
   const closedStatus = filteredData.filter(item => item.status === "Closed");
   const totalClosedLength = closedStatus?.length;
 
-  const sortedData = data.sort((a, b) => {
-    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-  });
-  const createdDates = sortedData.map(item => item.created_at);
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -273,7 +235,6 @@ const AdminSaleInfotechFormList = () => {
 
   // delete methods
   const handleDelete = (id: number) => {
-    setDeleteId(id);
     axios
       .delete(
         `${process.env.REACT_APP_API_BASE_URL}/deletesalesinfo/${id}`
@@ -284,41 +245,21 @@ const AdminSaleInfotechFormList = () => {
         // }
       )
       .then((response) => {
-        console.log("res@", response.data);
+        console.log("res");
       })
       .catch((error) => {
         console.log(error);
       });
-    // Update the main data state
     const updatedData = data.filter((e: any) => e.id !== id);
     setData(updatedData);
-    // Check if the data is currently filtered
     filterData(search);
-    // close consfirmation modal
     setIsModalOpen(false);
-    // Null values of delete id
     setRecordToDelete(null);
   };
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedDays(selectedValue);
   };
-  // const filterByDateRange = (range: string) => {
-  //   const currentDate = new Date();
-  //   const startDate = new Date(currentDate);
-  //   startDate.setDate(currentDate.getDate() - parseInt(range));
-  //   const filteredData = data.filter((item: any) => {
-  //     const itemDate = new Date(item.created_at);
-  //     return itemDate >= startDate && itemDate <= currentDate;
-  //   });
-  //   setData(filteredData);
-  // };
-
-  // useEffect(() => {
-  //   if (selectedDays !== "") {
-  //     filterByDateRange(selectedDays);
-  //   }
-  // }, [selectedDays]);
 
   const filterByPortalType = (portalType: string) => {
     if (portalType === "") {
@@ -333,24 +274,12 @@ const AdminSaleInfotechFormList = () => {
     }
   }, [selectedPortal]);
 
-
   // edit methods
   const handleEdit = (id: number) => {
-    setEditId(id);
     const recordToEdit = data.find((e: any) => e.id === id);
     Navigate("/saleinfoform", { state: { record: recordToEdit } });
   };
 
-  //   const handleEdit = (id: number) => {
-  //     console.log(`update form with id ${id}`);
-  //     const recordToEdit = data.find((e: any) => e.id === id);
-  //     if (recordToEdit) {
-  //       Navigate("/edit-saleinfoform", { state: { record: recordToEdit } });
-  //     } else {
-  //       console.error(`No record found with id ${id}`);
-  //     }
-  //   };
-  // ... (existing code)
   const generateCommModeContent = (record: any) => {
     const {
       commModeSkype,
@@ -359,8 +288,6 @@ const AdminSaleInfotechFormList = () => {
       commModeEmail,
       commModePortal,
       commModeOther,
-
-
     } = record;
 
     const modes = [
@@ -371,7 +298,6 @@ const AdminSaleInfotechFormList = () => {
       `Whatsapp: ${commModePortal}`,
       `Skype: ${commModeOther}`,
     ];
-
     return modes.join(', '); // Join modes into a single string
   };
 
@@ -529,7 +455,7 @@ const AdminSaleInfotechFormList = () => {
           e?.url?.toLowerCase().includes(lowercasedInput) ||
           e?.dateData?.toLowerCase().includes(lowercasedInput) ||
           e?.RegisterBy?.toLowerCase().includes(lowercasedInput) ||
-          e?.inviteBid?.toLowerCase().includes(lowercasedInput)||
+          e?.inviteBid?.toLowerCase().includes(lowercasedInput) ||
           e?.othermode?.toLowerCase().includes(lowercasedInput)
       );
       setFilteredData(result);
@@ -589,10 +515,6 @@ const AdminSaleInfotechFormList = () => {
       const dateRangeMatch = filteredByDateRange.length > 0
         ? filteredByDateRange.includes(item)
         : true;
-      // const matchDate =
-      //   selectedDays && item.dateData ?
-      //     new Date(item.dateData) >= new Date(new Date().getTime() - parseInt(selectedDays) * 24 * 60 * 60 * 1000) :
-      //     true;
       const itemDate = new Date(item.dateData);
       const itemDateTimestamp = itemDate.getTime();
       const matchDate = (!startDate || itemDateTimestamp >= startDate.getTime()) &&
@@ -690,7 +612,6 @@ const AdminSaleInfotechFormList = () => {
                   <div><RangePicker onChange={handleDateRangeChange} /></div>
                   <div>
                     <select
-                      // onChange={handleChange}
                       className="adjust-inputs"
                       id="project"
                       value={selectedStatus}
@@ -706,7 +627,6 @@ const AdminSaleInfotechFormList = () => {
                   </div>
                   <div>
                     <select
-                      // onChange={handleChange}
                       className="adjust-inputs"
                       id="project"
                       value={selectedRegister}

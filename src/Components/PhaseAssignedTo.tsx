@@ -83,8 +83,6 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
         const sortedData = response?.data.sort(
           (a, b) => Number(b.EmpID) - Number(a.EmpID)
         );
-        console.log(sortedData, "///////-----");
-
         setData(sortedData);
       })
       .catch((error) => console.log(error));
@@ -144,8 +142,6 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
 
   const handleCheckboxChange = (employee: Employee) => {
     if (assignee.some((e) => e.EmployeeID === employee.EmployeeID)) {
-      console.log(employee.EmployeeID, "jjjjj---kkk");
-
       setAssignee((prev) =>
         prev.filter((e) => e.EmployeeID !== employee.EmployeeID)
       );
@@ -170,7 +166,6 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
         }
       })
       .then((response) => {
-        console.log(response.data);
         navigate("/ViewPhaseAssign");
       })
       .catch((error) => {

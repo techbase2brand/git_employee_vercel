@@ -54,7 +54,6 @@ function DocForm(): JSX.Element {
     const Navigate = useNavigate();
     const record: FormData | undefined = location.state?.record;
     const [statusUrl, setStatusUrl] = useState(['']);
-    const [state, setState] = useState<boolean>(false);
     const [formData, setFormData] = useState<FormData>(record || initialFormData);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [submitted, setSubmitted] = useState(false);
@@ -80,7 +79,7 @@ function DocForm(): JSX.Element {
                     pdfData: pdfUrl,
                 }));
             } catch (error) {
-                console.error("Error uploading PDF:", error);
+                console.error(error);
             }
         }
     };
@@ -120,7 +119,7 @@ function DocForm(): JSX.Element {
                     image_url: [...prevData.image_url, ...newImageUrls],
                 }));
             } catch (error) {
-                console.error("Error uploading images:", error);
+                console.error(error);
             }
         }
     };
@@ -134,7 +133,6 @@ function DocForm(): JSX.Element {
         setImagePreviews(newImagePreviews);
 
         setFormData((prevData) => {
-            console.log("prevData", prevData)
             let updatedImageUrls = prevData.image_url;
             if (Array.isArray(prevData.image_url)) {
                 updatedImageUrls = prevData.image_url.filter((_, i) => i !== index);
@@ -171,7 +169,6 @@ function DocForm(): JSX.Element {
 
     const handleAddUrl = () => {
         setStatusUrl([...statusUrl, '']);
-        setState(true)
     };
     const handleRemoveUrl = (index: number) => {
         setStatusUrl((prevState) => {
@@ -238,12 +235,11 @@ function DocForm(): JSX.Element {
                     Navigate("/DocTable");
                     toast.success('Submit successfully!', {
                         position: toast.POSITION.TOP_RIGHT,
-                      });
+                    });
                 } catch (error) {
-                    console.error("Error submitting form:", error);
                     toast.error('Error while inserting.', {
                         position: toast.POSITION.TOP_RIGHT,
-                      });
+                    });
                 }
             }
         }
@@ -261,13 +257,13 @@ function DocForm(): JSX.Element {
                 Navigate("/DocTable");
                 toast.success('Updated successfully!', {
                     position: toast.POSITION.TOP_RIGHT,
-                  });
+                });
             })
             .catch((error) => {
-                console.error("Error updating form:", error);
+                console.error(error);
                 toast.error('Error while Updating.', {
                     position: toast.POSITION.TOP_RIGHT,
-                  });
+                });
             });
     };
 

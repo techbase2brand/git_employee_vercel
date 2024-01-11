@@ -1,21 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { GlobalInfo } from "../App";
 import { DatePicker } from "antd";
 import enUS from "antd/lib/date-picker/locale/en_US";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 
-type Phase = {
-  phaseID: number;
-  projectName: string;
-};
 
 interface Employee {
   EmpID: string | number;
@@ -32,7 +27,7 @@ interface Project {
 }
 const currentDate = new Date().toISOString().split("T")[0];
 
-const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
+const AssignTaskPage: React.FC<any> = () => {
   const [elementCount, setElementCount] = useState(1);
   const [data, setData] = useState<Employee[]>([]);
   const [assignedBy, setAssignedBy] = useState<any | null>(null);
@@ -102,8 +97,6 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
 
   const navigate = useNavigate();
-
-  const { modulejEditObj, setModulejEditObj } = useContext(GlobalInfo);
 
   const handleIncrement = () => {
     const currentDate = new Date().toISOString().split("T")[0];
@@ -266,7 +259,6 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
 
       })
       .catch((error) => {
-        console.log(error);
         toast.error('Error while inserting tasks.', {
           position: toast.POSITION.TOP_RIGHT,
           // Other configuration options as needed
@@ -367,14 +359,6 @@ const AssignTaskPage: React.FC<any> = ({ navigation, classes }) => {
                     onChange={(e) => handleClientName(e.target.value, index)}
                   >
                     <option value="">Client Name</option>
-                    {/* {sortedData.map((project) => (
-                      <option
-                        value={project.clientName}
-                        key={project.ProID}
-                      >
-                        {project.clientName}
-                      </option>
-                    ))} */}
                     {uniqueClientNames.map((clientName, index) => (
                       <option key={index} value={clientName}>
                         {clientName}

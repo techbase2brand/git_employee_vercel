@@ -55,7 +55,6 @@ const LeaveReports: React.FC = () => {
   //     //   // );
   //     //   // setAllLeave(sortedData);
   //     // });
-  //   // console.log(allEmployee, "ggggg---");
   // }, []);
 
   // useEffect(() => {

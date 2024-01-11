@@ -9,9 +9,6 @@ import { GlobalInfo } from "../App";
 const EmployeeList: React.FC = () => {
   const { empObj, setEmpObj } = useContext(GlobalInfo);
 
-  // if (empObj) {
-  //   console.log(empObj, "kkkkk----gggg");
-  // }
 
   return (
     <div className="emp-main-div">

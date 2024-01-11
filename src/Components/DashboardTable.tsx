@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Menu, Dropdown, Button, DatePicker, Tooltip } from "antd";
+import {DatePicker, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const { RangePicker } = DatePicker;
 
 interface Employee {
   EmpID: number;

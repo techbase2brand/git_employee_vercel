@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, DatePicker, Select, Modal } from "antd";
+import { Table, DatePicker, Select } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
@@ -161,7 +161,7 @@ const ViewBacklogTable: React.FC = () => {
         setData(filteredData);
         const today = new Date();
         const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(today.getDate() - 10); 
+        tenDaysAgo.setDate(today.getDate() - 10);
         if (
           employeeName === "Managing Director") {
           const filteredData = sortedData?.filter((e) => {
@@ -191,8 +191,7 @@ const ViewBacklogTable: React.FC = () => {
         }
 
       } catch (error: any) {
-        console.error("Error fetching data:", error);
-        console.log("Error details:", (error as AxiosError)?.response);
+        console.error(error);
       }
     };
     fetchData();

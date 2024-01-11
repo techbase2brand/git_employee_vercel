@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table } from "antd";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 
 interface ShiftChangeData {
   ShiftChangeTableID: 0;
@@ -20,8 +19,6 @@ interface ShiftChangeData {
 
 const ViewShiftChangeTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
-  // const [] = useState<ShiftChangeData[]>([]);
-  // const navigate = useNavigate();
   useEffect(() => {
     axios
       .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
@@ -30,7 +27,6 @@ const ViewShiftChangeTable: React.FC = () => {
         },
       })
       .then((response) => {
-        // sort the data array in reverse order based on ProID
         const sortedData = response.data.sort(
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
@@ -50,14 +46,11 @@ const ViewShiftChangeTable: React.FC = () => {
           (a, b) => Number(b.ShiftChangeTableID) - Number(a.ShiftChangeTableID)
         );
         const employeeInfo = JSON.parse(localStorage.getItem("myData") || "{}");
-        console.log(employeeInfo);
-
         const employeeID = employeeInfo.EmployeeID;
-
         const filteredata = sortedData.filter(
           (emp) => emp?.employeeID == employeeID
         );
-            setData(filteredata);
+        setData(filteredata);
       });
   };
 

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { Table, Button, DatePicker, Modal } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Table, Button, Modal } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-
-const { RangePicker } = DatePicker;
 
 interface Task {
   EvngTaskID: number;
@@ -31,8 +29,8 @@ interface Props {
   searchQuery: any;
   setSelectedRole: React.Dispatch<React.SetStateAction<any>>;
   selectedRole: any;
-  del:any;
-  setDel:any;
+  del: any;
+  setDel: any;
 }
 
 interface EmployeeTime {
@@ -50,9 +48,6 @@ interface Employee {
   status: number;
 }
 
-const handleEdit = (EmpID: string | number) => {
-  console.log(`Edit employee with id ${EmpID}`);
-};
 
 const DashboardEveningTasktable: React.FC<Props> = ({
   data,
@@ -70,16 +65,11 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
 }) => {
   const [employeeArr, setEmployeeArr] = useState<any>([]);
-  const [filteredEmployee, setFilteredEmployee] = useState<any>([]);
-  const [dateRange, setDateRange] = useState<any>([null, null]); // Start and end date
   const [recordToDelete, setRecordToDelete] = useState<Task | null>(
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleDateChange = (dates: any, dateStrings: [string, string]) => {
-    setDateRange(dateStrings);
-  };
   const showModalDel = () => {
     setIsModalOpen(true);
   };
@@ -88,7 +78,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     setRecordToDelete(null);
   };
   const handleDelete = (EvngTaskID: number) => {
-    // console.log(`Delete task with id ${MrngTaskID}`);
     axios
       .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/eveningDashboard/${EvngTaskID}`, {
         headers: {
@@ -96,7 +85,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         },
       })
       .then((response) => {
-        console.log(response.data, "response.data");
         setDel(true)
       })
       .catch((error) => {
@@ -260,8 +248,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
   setTotalUpworkhrs(formattedTimeUpworkhrs);
 
-  console.log(formattedTimeUpworkhrs, "formattedTimeUpworkhrs");
-
   const estTimeByEmployee = arrayOfArray.reduce((acc: any, curr: any) => {
     curr.forEach((obj: any) => {
       if (obj?.estTime) {
@@ -299,9 +285,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
           [hours, minutes] = obj.upWorkHrs.split(":").map(Number);
         }
         const timeInMinutes = hours * 60 + minutes;
-        console.log(
-          `Processed hours: ${hours}, minutes: ${minutes}, timeInMinutes: ${timeInMinutes}`
-        );
         acc += timeInMinutes;
       }
     });
@@ -352,16 +335,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
   const tables = filteredEmployees
     .filter((emp: Employee) => {
-
-      // if (emp.role == selectedRole  )  {
-      //   console.log(selectedRole,"selectedRole");
-      //   console.log(emp,"emp.role.toLowerCase()");
-
-      //   return true;
-      // }
       if (!searchQuery) return true; // Show all if there's no search query
-      // console.log(emp,"emp.role.toLowerCase()");
-
 
       // Check if the employee's name matches the searchQuery
       if (emp.firstName.toLowerCase().includes(searchQuery) || emp.lastName.toLowerCase().includes(searchQuery)) {

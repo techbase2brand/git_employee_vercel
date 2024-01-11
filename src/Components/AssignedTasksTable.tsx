@@ -21,19 +21,16 @@ interface BacklogTask {
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
-  console.log("data", data)
   const [Tabledata, setTableData] = useState<BacklogTask[]>([]);
-  console.log("Tabledata", Tabledata)
-
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
 
   const isWithinLastOneMonth = (dateString: any) => {
     const taskDate = new Date(dateString);
     const currentDate = new Date();
     const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
-
     return taskDate >= fiveDaysAgo;
   };
+
   useEffect(() => {
     const disabledFieldsString = localStorage.getItem("disabledFields");
     if (disabledFieldsString) {
@@ -67,10 +64,10 @@ const AssignedTasksTable: React.FC = () => {
         setTableData(filteredData);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
-        console.log("Error details:", error.response);
+        console.error("Error fetching data:");
       });
   }, []);
+
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
     socket.on("notification", (data: { data: any[] }) => {
@@ -106,13 +103,10 @@ const AssignedTasksTable: React.FC = () => {
         });
       })
       .catch((error) => {
-        console.error("Error updating task completion status:", error);
         toast.error('Failed!', {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
-
-
     localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(isChecked));
   };
 
@@ -152,8 +146,6 @@ const AssignedTasksTable: React.FC = () => {
           return updatedDisabledFields;
         });
         localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(true));
-
-        // Update checkbox state in UI
         handleCheckboxChange(true, backlogTaskID);
       })
       .catch((error) => {

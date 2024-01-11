@@ -45,7 +45,7 @@ const Login: React.FC = () => {
                   .put(
                     `${process.env.REACT_APP_API_BASE_URL}/employeeipAddress/${res?.data?.user?.EmpID}`,
                     {
-                      IpAddress: ipAddress,
+                      IpAddress: getIp,
                     },
                     {
                       headers: {

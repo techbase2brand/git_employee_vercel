@@ -1,55 +1,10 @@
-import React, {  } from "react";
+import React, { } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePicker } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import ViewBacklogTable from "./ViewBacklogTable";
-const { RangePicker } = DatePicker;
-interface Project {
-  ProID: string | number;
-  clientName: string;
-  projectName: string;
-  projectDescription: string;
-}
-
-interface Task {
-  EvngTaskID: number;
-  projectName: string;
-  phaseName: string;
-  module: string;
-  task: string;
-  actTime: string;
-  estTime: string;
-  upWorkHrs: number;
-  employeeID: string;
-  currDate: string;
-}
-
-interface Employee {
-  EmpID: string | number;
-  firstName: string;
-  role: string;
-  dob: string | Date;
-  EmployeeID: string;
-}
-
-interface AssignedEmployees {
-  PhaseAssigneeID: number;
-  projectName: string;
-  phaseName: string;
-  assignedNames: string[];
-  EmployeeID: string[];
-}
-
-interface AssignedEmployee {
-  assignedNames: string[];
-  EmployeeID: string[];
-}
 
 const ViewBacklogPage: React.FC = () => {
-
-
-    console.log("kkkkk-----");
 
   return (
     <div className="emp-main-div">

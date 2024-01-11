@@ -257,8 +257,6 @@ const EmployeeForm: React.FC = () => {
         confirmPassword: employee.confirmPassword,
       };
 
-      // console.log(localStorage.getItem('myToken'),'myToken');
-
       axios
         .post(`${process.env.REACT_APP_API_BASE_URL}/create`, data, {
           headers: {
@@ -269,7 +267,7 @@ const EmployeeForm: React.FC = () => {
           navigate("/employee-list");
         })
         .catch((error) => {
-          console.log("Error during request:", error); // Add this line
+          console.log( error); // Add this line
           if (error.response && error.response.status === 400) {
             alert(error.response.data);
           } else {

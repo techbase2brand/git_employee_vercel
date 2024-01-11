@@ -36,12 +36,7 @@ interface Module {
   phaseName: string;
   modules: string;
 }
-// interface Project {
-//   ProID: string | number;
-//   clientName: string;
-//   projectName: string;
-//   projectDescription: string;
-// }
+
 interface Phases {
   phaseID: number;
   projectName: string;
@@ -49,14 +44,12 @@ interface Phases {
 }
 
 const AddModule: React.FC<any> = () => {
-  // const navigate = useNavigate();
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
   const [selectedModule, setSelectedModule] = useState<string>("");
-  const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate] = useState<Date>(new Date());
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
@@ -77,9 +70,7 @@ const AddModule: React.FC<any> = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
-
   const dataString = localStorage.getItem("myData");
   const employeeInfo = useMemo(
     () => (dataString ? JSON.parse(dataString) : []),
@@ -135,11 +126,9 @@ const AddModule: React.FC<any> = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         const sortedData = response.data.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
         );
-        //  setPhaseAssignedArr(sortedData);
         const arr = sortedData
           .map((e) => {
             if (e.EmployeeID === employeeInfo.EmployeeID) {
@@ -158,7 +147,6 @@ const AddModule: React.FC<any> = () => {
           }, []);
 
         setProjectNames(arr);
-        console.log(arr, "kkkk-----------");
 
         if (eveningTask?.projectName) {
           const arr = sortedData
@@ -188,7 +176,6 @@ const AddModule: React.FC<any> = () => {
       },
     })
       .then((response) => {
-        // console.log(response.data);
         const sortedData = response.data.sort(
           (a, b) => Number(b.modID) - Number(a.modID)
         );
@@ -204,8 +191,6 @@ const AddModule: React.FC<any> = () => {
       module: value,
     });
   };
-
-
 
   const handleProjectChange = (value: string) => {
     setSelectedProject(value);
@@ -247,7 +232,7 @@ const AddModule: React.FC<any> = () => {
       phaseName: value,
     }));
   };
-  const handleDateChange =(value: string) => {
+  const handleDateChange = (value: string) => {
     setEveningTask({
       ...eveningTask,
       selectDate: value,
@@ -270,8 +255,6 @@ const AddModule: React.FC<any> = () => {
 
 
   const handleActTimeChange = (value: string) => {
-    console.log(value, "valuevaluevalue");
-
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
       actTime: value,
@@ -279,8 +262,6 @@ const AddModule: React.FC<any> = () => {
   };
 
   const handleUpWorkHrsChange = (value: string) => {
-    console.log(value, "valuevaluevammmlue");
-
     setEveningTask((prevEveningTask) => ({
       ...prevEveningTask,
       upWorkHrs: value,
@@ -308,8 +289,6 @@ const AddModule: React.FC<any> = () => {
               position: toast.POSITION.TOP_RIGHT,
             });
           }
-
-          console.log(response.data);
         })
         .catch((error) => {
           toast.error('Error while Updating tasks.', {
@@ -329,7 +308,7 @@ const AddModule: React.FC<any> = () => {
           } else {
             setSelectedProject("");
             setSelectedPhase("");
-            setSelectedModule(""); 
+            setSelectedModule("");
             setEveningTask({
               EvngTaskID: 0,
               projectName: "",
@@ -350,7 +329,6 @@ const AddModule: React.FC<any> = () => {
           }
         })
         .catch((error) => {
-          console.log(error.response.data); 
           toast.error('Error while inserting tasks.', {
             position: toast.POSITION.TOP_RIGHT,
           });
@@ -362,7 +340,6 @@ const AddModule: React.FC<any> = () => {
 
   useEffect(() => {
     if (employeeInfo) {
-      setEmployeeID(employeeInfo?.EmployeeID);
       setEveningTask((prevState) => ({
         ...prevState,
         employeeID: employeeInfo?.EmployeeID
@@ -443,8 +420,6 @@ const AddModule: React.FC<any> = () => {
                     {phases
                       .filter((phase) => phase.projectName === selectedProject)
                       .map((phase) => {
-                        console.log(phase, "77777777");
-
                         return (
                           <React.Fragment key={phase.phaseID}>
                             <option value={phase.phases}>{phase.phases}</option>
@@ -458,8 +433,6 @@ const AddModule: React.FC<any> = () => {
                   <label className="add-label">
                     Module<span style={{ color: "red" }}>*</span>
                   </label>
-
-                  {/* {selectedProject && selectedPhase && ( */}
                   <select
                     className="add-input"
                     id="module"
@@ -479,8 +452,6 @@ const AddModule: React.FC<any> = () => {
                       })}
                   </select>
                 </div>
-
-                {/* )} */}
               </div>
 
               <div>

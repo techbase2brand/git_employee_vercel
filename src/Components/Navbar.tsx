@@ -479,7 +479,6 @@ const Navbar: React.FunctionComponent = () => {
 
     axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/notification`, { notificationObject })
       .then((response) => {
-        console.log("response");
         setState(true)
       })
       .catch((error) => {

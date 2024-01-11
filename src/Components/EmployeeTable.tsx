@@ -72,8 +72,6 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
   };
 
   const handleDelete = (EmpID: string | number) => {
-    console.log(`Delete employee with id ${EmpID}`);
-
     axios
       .delete(`${process.env.REACT_APP_API_BASE_URL}/users/${EmpID}`, {
         headers: {
@@ -81,12 +79,10 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
-        // do something with the response data
+        console.log('response');
       })
       .catch((error) => {
         console.log(error);
-        // handle the error
       });
 
     setData(data.filter((employee) => employee.EmpID !== EmpID));
