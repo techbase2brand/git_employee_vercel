@@ -17,10 +17,15 @@ interface LeaveData {
   approvalOfHR: string;
   leaveCategory: string;
 }
-
+interface Employee {
+  EmpID: string | number;
+  firstName: string;
+  role: string;
+  dob: string | Date;
+  EmployeeID: string;
+}
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
-  console.log("data", data);
   const [loading, setLoading] = useState(true);
   const dataString = localStorage.getItem("myData");
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
@@ -30,6 +35,55 @@ const ViewLeavepageTable: React.FC = () => {
   const Regular = data.filter((item) => item.leaveCategory === "Regular Leave")
   const RegularLeave = Regular.length;
 
+  const minutesToDaysHours = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    const days = Math.floor(hours / 9);
+    const remainingHours = hours % 9;
+    return { days, hours: remainingHours, minutes: remainingMinutes };
+  };
+  const timeToMinutes = (time: string) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+
+  // const calculateTotalLeaveForEmployee = (employee: Employee) => {
+  //   const employeeLeaves = data?.filter(
+  //     (leave) => leave?.employeeID === employee?.EmployeeID
+  //   );
+  //   if (employeeLeaves.length === 0 ) return (
+  //     <div key={employee?.EmpID} style={{ textAlign: "center", margin: "20px 0", color: "#999", fontSize: "20px", fontWeight: "bold" }}>
+  //       {employee?.firstName} has no leave data.
+  //     </div>
+  //   );
+  //   if (employeeLeaves?.length === 0) return null;
+
+  //   let totalDuration = 0;
+
+  //   employeeLeaves.forEach((leave) => {
+  //     const startDate = dayjs(leave?.startDate).startOf("day");
+  //     const endDate = dayjs(leave?.endDate).startOf("day");
+  //     const dayGap = endDate.diff(startDate, "day") + 1;
+
+  //     let duration = 0;
+  //     if (/^\d{1,2}:\d{2}$/.test(leave?.leaveType)) {
+  //       duration = timeToMinutes(leave?.leaveType) * dayGap;
+  //     } else if (leave?.leaveType.toLowerCase() === "full day") {
+  //       duration = 9 * 60 * dayGap;
+  //     } else {
+  //       duration = dayGap * 9 * 60;
+  //     }
+
+  //     totalDuration += duration;
+  //   });
+
+  //   const total = minutesToDaysHours(totalDuration);
+
+  //   const totalLeave = `${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`;
+  //   console.log("totalLeave",totalLeave);
+
+  // };
   useEffect(() => {
     const token = localStorage.getItem("myToken");
     axios
@@ -45,8 +99,11 @@ const ViewLeavepageTable: React.FC = () => {
         const filteredData = sortedData.filter((item) => item?.employeeID === employeeInfo?.EmployeeID)
         setData(filteredData);
         setLoading(false);
+        // calculateTotalLeaveForEmployee(employeeInfo);
       });
+
   }, []);
+
 
   const columns = [
     {
@@ -101,12 +158,12 @@ const ViewLeavepageTable: React.FC = () => {
 
   return (
     <>
-    <div className="total-lengthPortal">
-                  <div>Uncertain Leave:<span className="portal">{UncertainLeave}</span></div>
-                  <div>Regular Leave:<span className="portal">{RegularLeave}</span></div>
-                 =
-                  <div>Total:<span className="portal">{UncertainLeave + RegularLeave}</span></div>
-                </div>
+      <div className="total-lengthPortal">
+        <div>Uncertain Leave:<span className="portal">{UncertainLeave}</span></div>
+        <div>Regular Leave:<span className="portal">{RegularLeave}</span></div>
+        =
+        <div>Total:<span className="portal">{UncertainLeave + RegularLeave}</span></div>
+      </div>
       {loading ?
         <Spin size="large" className="spinner-antd" />
         :

@@ -34,6 +34,8 @@ const AssignTaskPage: React.FC<any> = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [data1, setData1] = useState<Project[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
+  const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
+
   const [tasks, setTasks] = useState<any[]>([
     {
       createdDate: currentDate,
@@ -51,17 +53,6 @@ const AssignTaskPage: React.FC<any> = () => {
     (project) => project.clientName === selectedClient
   )
 
-  const resetFormFields = () => {
-    setTasks([
-      {
-        createdDate: currentDate,
-        deadlineStart: null,
-        deadlineEnd: null,
-      },
-    ]);
-    setElementCount(1);
-    // Other form reset actions if needed
-  };
   const filteredData = data.filter((item: any) => item.status === 1);
   const sortedEmployees = [...filteredData];
 
@@ -237,7 +228,7 @@ const AssignTaskPage: React.FC<any> = () => {
         comment: task.comment,
       };
     });
-
+    setSubmitButtonDisabled(true);
     axios
       .post(
         ` ${process.env.REACT_APP_API_BASE_URL}/create/addBacklogTasks`,
@@ -250,12 +241,18 @@ const AssignTaskPage: React.FC<any> = () => {
       )
       .then((response) => {
         if (response.data === "Tasks inserted") {
-          resetFormFields();
           navigate("/ViewBacklogPage");
+          setTasks([
+            {
+              createdDate: currentDate,
+              deadlineStart: null,
+              deadlineEnd: null,
+            },
+          ]);
           toast.success('Tasks inserted successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           });
-        
+
         }
       })
       .catch((error) => {
@@ -263,6 +260,10 @@ const AssignTaskPage: React.FC<any> = () => {
           position: toast.POSITION.TOP_RIGHT,
           // Other configuration options as needed
         });
+      })
+      .finally(() => {
+        // Re-enable the button after the API call is complete
+        setSubmitButtonDisabled(false);
       });
   };
 
