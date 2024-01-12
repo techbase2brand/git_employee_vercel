@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Badge, Menu } from "antd";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Badge, Button, Menu, Modal } from "antd";
 import {
   DashboardOutlined,
   TableOutlined,
@@ -84,14 +84,50 @@ interface CustomNotification extends Notification {
 }
 interface TaskNotification extends BacklogTask, BaseNotification { }
 
+interface Task {
+  TermID: number;
+  term: string;
+  currdate: string;
+  date: string;
+}
 const AppMenu = () => {
   const info = JSON.parse(localStorage.getItem("myData") || "{}");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notif, setNotif] = useState();
-
+  const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
   const jsonData = JSON.stringify(notif)
+  const Navigate = useNavigate();
+  const handleLeaveFormClick = (e: any) => {
+    e.preventDefault();
+    setShowTermsModal(true)
+
+  };
+
+  useEffect(() => {
+    axios
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTermCondition`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+
+        setTermsAndConditions(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  const handleAcceptTerms = () => {
+    setShowTermsModal(false);
+    Navigate("/LeaveForm")
+  };
+
+
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
     socket.on("notification", (taskData) => {
@@ -277,6 +313,7 @@ const AppMenu = () => {
       socket.disconnect();
     };
   }, []);
+
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_BASE_URL}/get/notification`,)
       .then((response) => {
@@ -357,9 +394,32 @@ const AppMenu = () => {
       obj.notificationId === notification.id &&
       obj.employeeID === notification.employeeID)
   ).length;
-
+  const desiredIndex = 0;
   return (
     <Menu mode="inline">
+      <Modal
+        title="Terms and Conditions"
+        centered
+        width={1200}
+        visible={showTermsModal}
+        footer={[
+          <Button key="back" onClick={() => setShowTermsModal(false)}>
+            Decline
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleAcceptTerms}>
+            Accept
+          </Button>
+        ]}
+      >
+        {termsAndConditions
+          .filter((item, index) => index === desiredIndex)
+          .map((item) => (
+            <div key={item.TermID}>
+              <div dangerouslySetInnerHTML={{ __html: item.term }} />
+              <p>{item.date}</p>
+            </div>
+          ))}
+      </Modal>
       {info.jobPosition == "Project Manager" && (
         <>
           <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
@@ -402,7 +462,7 @@ const AppMenu = () => {
               <Link to="/AboutProject">Projects Report</Link>
             </Menu.Item>
             <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-              <Link to="/LeaveForm">LeaveForm</Link>
+              <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
             </Menu.Item>
             <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
               <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -648,7 +708,7 @@ const AppMenu = () => {
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -713,7 +773,7 @@ const AppMenu = () => {
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -780,7 +840,7 @@ const AppMenu = () => {
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -839,7 +899,7 @@ const AppMenu = () => {
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -905,7 +965,7 @@ const AppMenu = () => {
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -970,7 +1030,7 @@ const AppMenu = () => {
             <Link to="/view-evening-task">ViewEveningTask</Link>
           </Menu.Item>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>
@@ -1083,7 +1143,7 @@ const AppMenu = () => {
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
-            <Link to="/LeaveForm">LeaveForm</Link>
+            <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
           <Menu.Item key="ViewLeavePage" icon={<TableOutlined />}>
             <Link to="/ViewLeavePage">ViewLeavePage <Badge count={LeaveApprovedNotifications + LeaveDeniedNotifications}>

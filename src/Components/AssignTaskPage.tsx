@@ -250,13 +250,13 @@ const AssignTaskPage: React.FC<any> = () => {
       )
       .then((response) => {
         if (response.data === "Tasks inserted") {
+          resetFormFields();
           navigate("/ViewBacklogPage");
           toast.success('Tasks inserted successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           });
-          resetFormFields();
+        
         }
-
       })
       .catch((error) => {
         toast.error('Error while inserting tasks.', {

@@ -114,7 +114,6 @@ const HrLeaveReport: React.FC = () => {
                   Leave Report
                 </p>
               </div>
-
               <HrLeaveReportTable />
             </div>
           </div>

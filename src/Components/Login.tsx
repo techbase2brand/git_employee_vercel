@@ -25,7 +25,7 @@ const Login: React.FC = () => {
   const [getIp, setGetIp] = useState("");
   const [apiResponse, setApiResponse] = useState<any>(null);
   const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
-  
+
   const onFinish = (values: { email: string; password: string }) => {
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/user/login`, values)
@@ -268,14 +268,14 @@ const Login: React.FC = () => {
                   </Button>,
                 ]}
               >
-                {termsAndConditions.map((item) => {
-                  return (
+                {termsAndConditions.map((item, index) =>
+                  index !== 0 && (
                     <div key={item.TermID}>
                       <div dangerouslySetInnerHTML={{ __html: item.term }} />
                       <p>{item.date}</p>
                     </div>
-                  );
-                })}
+                  )
+                )}
               </Modal>
             </Form>
           </div>

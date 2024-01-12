@@ -68,6 +68,22 @@ const HRleaveTable: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDelete = (LeaveInfoID: string | number) => {
+    axios
+      .delete(`${process.env.REACT_APP_API_BASE_URL}/leaveinfo/${LeaveInfoID}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        console.log('response');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setData(data.filter((employee) => employee.LeaveInfoID !== LeaveInfoID));
+  };
   const columns = [
     {
       title: "Employee",
@@ -120,16 +136,22 @@ const HRleaveTable: React.FC = () => {
     {
       title: "Action",
       render: (text: number, record: LeaveData) => (
-        <div style={{ width: 200 }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <Button
             type="primary"
             onClick={() => handleApprove(record.LeaveInfoID)}
-            style={{ marginRight: 10 }}
           >
             Approve
           </Button>
-          <Button type="default" danger onClick={() => handleDeny(record.LeaveInfoID)}>
+          <Button type="default" danger onClick={() => handleDeny(record.LeaveInfoID)} >
             Deny
+          </Button>
+          <Button
+            type="default"
+            danger
+            onClick={() => handleDelete(record.LeaveInfoID)}
+          >
+            Delete
           </Button>
         </div>
       ),
@@ -140,18 +162,23 @@ const HRleaveTable: React.FC = () => {
   return (
     <>
       {loading ?
-        <Spin size="large" className="spinner-antd" />
+        <Spin size="large" className="spinner-antd" style={{
+          position: 'absolute',
+          width: '84%'
+        }} />
         :
-        <Table
-          style={{ width: "80vw" }}
-          dataSource={data}
-          columns={columns}
-          rowClassName={(record) =>
-            record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved"
-              ? "approved-row"
-              : ""
-          }
-        />
+        <div className="leave-table">
+          <Table
+            style={{ width: "80vw" }}
+            dataSource={data}
+            columns={columns}
+            rowClassName={(record) =>
+              record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved"
+                ? "approved-row"
+                : ""
+            }
+          />
+        </div>
       }
     </>
   );
