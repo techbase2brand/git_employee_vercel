@@ -193,10 +193,12 @@ const AssignTaskPage: React.FC<any> = () => {
   };
 
   const handleSubmit = () => {
+    setSubmitButtonDisabled(true);
     const atLeastOneChecked = tasks.some((task) => task.checked);
 
     if (!atLeastOneChecked) {
       alert("Please check at least one task before clicking Send.");
+      setSubmitButtonDisabled(false);
       return;
     }
 
@@ -228,7 +230,6 @@ const AssignTaskPage: React.FC<any> = () => {
         comment: task.comment,
       };
     });
-    setSubmitButtonDisabled(true);
     axios
       .post(
         ` ${process.env.REACT_APP_API_BASE_URL}/create/addBacklogTasks`,
@@ -249,6 +250,8 @@ const AssignTaskPage: React.FC<any> = () => {
               deadlineEnd: null,
             },
           ]);
+          setSelectedClient("");
+          setSubmitButtonDisabled(false);
           toast.success('Tasks inserted successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           });
