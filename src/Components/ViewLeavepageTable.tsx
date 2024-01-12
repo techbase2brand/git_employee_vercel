@@ -20,9 +20,15 @@ interface LeaveData {
 
 const ViewLeavepageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
+  console.log("data", data);
   const [loading, setLoading] = useState(true);
   const dataString = localStorage.getItem("myData");
   const employeeInfo = dataString ? JSON.parse(dataString) : [];
+
+  const uncertain = data.filter((item) => item.leaveCategory === "Uncertain Leave")
+  const UncertainLeave = uncertain.length;
+  const Regular = data.filter((item) => item.leaveCategory === "Regular Leave")
+  const RegularLeave = Regular.length;
 
   useEffect(() => {
     const token = localStorage.getItem("myToken");
@@ -95,6 +101,12 @@ const ViewLeavepageTable: React.FC = () => {
 
   return (
     <>
+    <div className="total-lengthPortal">
+                  <div>Uncertain Leave:<span className="portal">{UncertainLeave}</span></div>
+                  <div>Regular Leave:<span className="portal">{RegularLeave}</span></div>
+                 =
+                  <div>Total:<span className="portal">{UncertainLeave + RegularLeave}</span></div>
+                </div>
       {loading ?
         <Spin size="large" className="spinner-antd" />
         :

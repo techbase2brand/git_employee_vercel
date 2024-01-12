@@ -188,7 +188,7 @@ tbody > tr > td:nth-child(14) {
   margin-bottom: 2%;
 }
 
-.btn-btn-primary {}
+
 
 .upwork {
   font-family: Poppins;
@@ -515,6 +515,19 @@ css .campus_form {
 .saleInfo-form thead.ant-table-thead tr th:nth-child(13){
   min-width: 100px;
 }
+
+.leave-table thead.ant-table-thead tr th:nth-child(1),
+.leave-table thead.ant-table-thead tr th:nth-child(2),
+.leave-table thead.ant-table-thead tr th:nth-child(3),
+.leave-table thead.ant-table-thead tr th:nth-child(4),
+.leave-table thead.ant-table-thead tr th:nth-child(5),
+.leave-table thead.ant-table-thead tr th:nth-child(6),
+.leave-table thead.ant-table-thead tr th:nth-child(7),
+.leave-table thead.ant-table-thead tr th:nth-child(8),
+.leave-table thead.ant-table-thead tr th:nth-child(9){
+  min-width: 100px;
+}
+
 .infotech-form thead.ant-table-thead tr th:nth-child(1),
 .infotech-form thead.ant-table-thead tr th:nth-child(2),
 .infotech-form thead.ant-table-thead tr th:nth-child(3),

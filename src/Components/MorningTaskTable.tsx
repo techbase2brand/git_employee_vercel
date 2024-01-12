@@ -88,10 +88,6 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
           alert("All fields are required.");
         } else {
           handleDelete(record.MrngTaskID);
-          toast.success('Moved successfully!', {
-            position: toast.POSITION.TOP_RIGHT,
-            // Other configuration options as needed
-          });
         }
       })
       .catch((error) => {

@@ -19,6 +19,8 @@ interface Props {
 
 const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [propsData, setPropsData] = useState<Task[]>(data || []);
+  console.log("propsData",propsData);
+  
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false); // State for modal visibility
   const [modalContent, setModalContent] = useState<string>(""); // State for modal content
@@ -83,10 +85,12 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: Task) => (
+      render: (_: any, record: Task,index: number) => (
         <span>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.TermID)}>Edit</Button>
-          <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.TermID)}>Delete</Button>
+          {index !== 0 &&
+            <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.TermID)}>Delete</Button>
+          }
         </span>
       ),
     },

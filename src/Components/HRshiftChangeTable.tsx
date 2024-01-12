@@ -89,6 +89,22 @@ const HRshiftChangeTable: React.FC = () => {
     fetchData();
   }, []);
 
+  const handleDelete = (ShiftChangeTableID: string | number) => {
+    axios
+      .delete(`${process.env.REACT_APP_API_BASE_URL}/leaveinfo/${ShiftChangeTableID}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        console.log('response');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setData(data.filter((employee) => employee.ShiftChangeTableID !== ShiftChangeTableID));
+  };
+
   const columns = [
     {
       title: "Team Lead",
@@ -137,16 +153,22 @@ const HRshiftChangeTable: React.FC = () => {
     {
       title: "Action",
       render: (text: number, record: ShiftChangeData) => (
-        <div style={{ width: 200 }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <Button
             type="primary"
             onClick={() => handleApprove(record.ShiftChangeTableID)}
-            style={{ marginRight: 10 }}
           >
             Approve
           </Button>
           <Button type="default" danger onClick={() => handleDeny(record.ShiftChangeTableID)}>
             Deny
+          </Button>
+          <Button
+            type="default"
+            danger
+            onClick={() => handleDelete(record.ShiftChangeTableID)}
+          >
+            Delete
           </Button>
         </div>
       ),
@@ -162,15 +184,17 @@ const HRshiftChangeTable: React.FC = () => {
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
           width: '84%'
-        }}/>
+        }} />
         :
-        <Table
-          style={{ width: "80vw" }}
-          dataSource={data}
-          columns={columns}
-          rowClassName={() => "header-row"}
-          pagination={paginationSettings}
-        />
+        <div className="leave-table">
+          <Table
+            style={{ width: "80vw" }}
+            dataSource={data}
+            columns={columns}
+            rowClassName={() => "header-row"}
+            pagination={paginationSettings}
+          />
+        </div>
       }
     </>
   );

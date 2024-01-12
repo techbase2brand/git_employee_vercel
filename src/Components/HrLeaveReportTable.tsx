@@ -31,6 +31,8 @@ const HrLeaveReportTable: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>('all');
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [years, setyears] = useState(true);
+
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | 'all'>('all');
   const [currentPage, setCurrentPage] = useState(0);
   const employeesPerPage = 100;
@@ -39,7 +41,10 @@ const HrLeaveReportTable: React.FC = () => {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
   };
-
+  const handleChange = (e: any) => {
+    setSelectedYear(e)
+    setyears(false)
+  }
   const minutesToDaysHours = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
@@ -56,6 +61,7 @@ const HrLeaveReportTable: React.FC = () => {
       startDate: updatedStartDate,
     };
   });
+
   const uniqueTimeParts = new Set(updatedAllLeave.map((leave) => leave.startDate));
   const uniqueTimeArray = Array.from(uniqueTimeParts);
   uniqueTimeArray.sort((a, b) => {
@@ -127,7 +133,6 @@ const HrLeaveReportTable: React.FC = () => {
       }
 
       totalDuration += duration;
-
       const monthYear = dayjs(leave.startDate).format("MMM YYYY");
       if (!monthlyData[monthYear]) {
         monthlyData[monthYear] = { total: 0, uncertain: 0, regular: 0 };
@@ -144,55 +149,102 @@ const HrLeaveReportTable: React.FC = () => {
       }
     });
 
-    const total = minutesToDaysHours(totalDuration);
-    const uncertain = minutesToDaysHours(uncertainDuration);
-    const regular = minutesToDaysHours(regularDuration);
+    // const total = minutesToDaysHours(totalDuration);
+    // const uncertain = minutesToDaysHours(uncertainDuration);
+    // const regular = minutesToDaysHours(regularDuration);
 
-    const totalLeave = `${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`;
-    const uncertainLeaveDuration = `${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`;
-    const regularLeaveDuration = `${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`;
+    // const totalLeave = `${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`;
+    // const uncertainLeaveDuration = `${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`;
+    // const regularLeaveDuration = `${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`;
+
+    const totalAll = Object.entries(monthlyData)
+      .filter(([key]) => (
+        (!years && (selectedYear === 'all' || key.includes(selectedYear))) ||
+        (years && key.includes(uniqueTimeArray[0]))
+      ))
+      .reduce(
+        (acc, [, value]) => {
+          acc.total += value.total;
+          acc.uncertain += value.uncertain;
+          acc.regular += value.regular;
+          return acc;
+        },
+        { total: 0, uncertain: 0, regular: 0 }
+      );
+
+    const totalAllDaysHours = minutesToDaysHours(totalAll.total);
+    const totalAllUncertainDaysHours = minutesToDaysHours(totalAll.uncertain);
+    const totalAllRegularDaysHours = minutesToDaysHours(totalAll.regular);
+
+    const Leave = totalAllDaysHours.days === 0 && totalAllDaysHours.hours === 0 && totalAllDaysHours.minutes === 0
+    const Uncertain = totalAllUncertainDaysHours.days === 0 && totalAllUncertainDaysHours.hours === 0 && totalAllUncertainDaysHours.minutes === 0;
+    const Regular = totalAllRegularDaysHours.days === 0 && totalAllRegularDaysHours.hours === 0 && totalAllRegularDaysHours.minutes === 0;
 
     return (
       <div>
         {loading ?
           <Spin size="large" className="spinner-antd" />
           :
-          <div key={employee.EmpID}>
-            <h2 style={{ margin: '10px', marginBottom: '-20px' }}>{employee.firstName}</h2>
-            <div className="containerStyle">
-              <div className="totalLeaveStyle">Total Leave: {totalLeave}</div>
-              <div className="uncertainLeaveStyle">Total Uncertain Leave: {uncertainLeaveDuration}</div>
-              <div className="regularLeaveStyle">Total Regular Leave: {regularLeaveDuration}</div>
-            </div>
-            <div style={{ marginTop: "20px" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Month</th>
-                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Leave</th>
-                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Uncertain Leave</th>
-                    <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Regular Leave</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(monthlyData)
-                    .filter(([key]) => selectedYear === 'all' || key.includes(selectedYear))
-                    .map(([key, value]) => {
-                      const total = minutesToDaysHours(value.total);
-                      const uncertain = minutesToDaysHours(value.uncertain);
-                      const regular = minutesToDaysHours(value.regular);
-                      return (
-                        <tr key={key}>
-                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
-                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
-                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
-                          <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
+          <div>
+            {Leave === false || Uncertain === false || Regular === false ?
+              <div key={employee.EmpID}>
+                <h2 style={{ margin: '10px', marginBottom: '-20px' }}>{employee.firstName}</h2>
+                <div className="containerStyle">
+                  <div className="totalLeaveStyle">Total Leave: {`${totalAllDaysHours.days} days, ${totalAllDaysHours.hours} hours, and ${totalAllDaysHours.minutes} minutes`}</div>
+                  <div className="uncertainLeaveStyle">Total Uncertain Leave: {`${totalAllUncertainDaysHours.days} days, ${totalAllUncertainDaysHours.hours} hours, and ${totalAllUncertainDaysHours.minutes} minutes`}</div>
+                  <div className="regularLeaveStyle">Total Regular Leave: {`${totalAllRegularDaysHours.days} days, ${totalAllRegularDaysHours.hours} hours, and ${totalAllRegularDaysHours.minutes} minutes`}</div>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Month</th>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Leave</th>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Uncertain Leave</th>
+                        <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Regular Leave</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {years === false ? Object.entries(monthlyData)
+                        .filter(([key]) => selectedYear === 'all' || key.includes(selectedYear))
+                        .sort(([a], [b]) => +new Date(a) - +new Date(b))
+                        .map(([key, value]) => {
+                          const total = minutesToDaysHours(value.total);
+                          const uncertain = minutesToDaysHours(value.uncertain);
+                          const regular = minutesToDaysHours(value.regular);
+                          return (
+                            <tr key={key}>
+                              <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
+                              <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
+                              <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
+                              <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
+                            </tr>
+                          );
+                        })
+                        :
+                        Object.entries(monthlyData)
+                          .filter(([key]) => key.includes(uniqueTimeArray[0]))
+                          .sort(([a], [b]) => +new Date(a) - +new Date(b))
+                          .map(([key, value]) => {
+                            const total = minutesToDaysHours(value.total);
+                            const uncertain = minutesToDaysHours(value.uncertain);
+                            const regular = minutesToDaysHours(value.regular);
+                            return (
+                              <tr key={key}>
+                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
+                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
+                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
+                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
+                              </tr>
+                            );
+                          })
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              : null
+            }
           </div>
         }
       </div>
@@ -252,12 +304,24 @@ const HrLeaveReportTable: React.FC = () => {
   return (
     <div className="allEmployeesLeaveData">
       <div style={{ display: 'flex', gap: '27px' }}>
-        <select
+        {/* <select
           value={selectedYear}
-          onChange={(e) => {
-            const year = e.target.value;
-            setSelectedYear(year);
-          }}
+          // onChange={(e) => {
+          //   const year = e.target.value;
+          //   setSelectedYear(year);
+          // }}
+          onChange={(e) => handleChange(e.target.value)}
+
+          style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", outline: "none" }}
+        >
+          <option value='all'>Select Year</option>
+          {uniqueTimeArray.map(item => (
+            <option key={item} value={item}>{item}</option>
+          ))}
+        </select> */}
+        <select
+          value={years ? uniqueTimeArray[0] : selectedYear}
+          onChange={(e) => handleChange(e.target.value)}
           style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", outline: "none" }}
         >
           <option value='all'>Select Year</option>
@@ -265,6 +329,7 @@ const HrLeaveReportTable: React.FC = () => {
             <option key={item} value={item}>{item}</option>
           ))}
         </select>
+
         <select
           value={selectedEmployee === 'all' ? 'all' : selectedEmployee.EmpID}
           onChange={(e) => {

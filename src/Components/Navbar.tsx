@@ -723,7 +723,7 @@ const Navbar: React.FunctionComponent = () => {
             />
           </div>
         </div>
-        <div
+        {/* <div
           style={{
             marginLeft: "15px",
             display: "flex",
@@ -733,35 +733,35 @@ const Navbar: React.FunctionComponent = () => {
           }}
         >
           <Badge count="5" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}>
-            {" "}
+            {" "} */}
             {/* unreadChatCount is the number of unread chat messages */}
-            <Popover
+            {/* <Popover
               style={{ width: "20vw" }}
               content="" // chatList can be a component showing recent chats or messages
               placement="bottomRight"
-            >
-              <MessageOutlined
+            > */}
+              {/* <MessageOutlined
                 className="chat-icon"
                 onClick={() => {
                   navigate("/chatMessagePage");
                 }}
-              />
-            </Popover>
-          </Badge>
+              /> */}
+            {/* </Popover> */}
+          {/* </Badge> */}
 
           {/* Call Icon with Notification Badge */}
-          <Badge count="3" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}>
+          {/* <Badge count="3" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}> */}
             {" "}
             {/* Replace "3" with the number of missed calls */}
-            <Popover
+            {/* <Popover
               style={{ width: "20vw" }}
               content="" // Replace with your callList component
               placement="bottomRight"
-            >
-              <PhoneOutlined className="call-icon" />
+            > */}
+              {/* <PhoneOutlined className="call-icon" />
             </Popover>
           </Badge>
-        </div>
+        </div> */}
 
         <div
           style={{
