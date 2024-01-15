@@ -36,7 +36,7 @@ const ViewDocumentation = () => {
         clientName = myData.firstName;
 
     }
-    const matchedData = filteredData.filter(item => item.sendTo === clientName);
+    const matchedData = filteredData.filter((item: any) => item.sendTo === clientName || item?.isCompleted === true || item?.isCompleted === 1);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisiblee, setModalVisiblee] = useState(false);
     const [modalContent, setModalContent] = useState<string[]>([]);
@@ -275,12 +275,28 @@ const ViewDocumentation = () => {
             key: "category",
             render: (text: string) => <div>{text}</div>,
         },
+        // {
+        //     title: "Approved",
+        //     dataIndex: "isCompleted",
+        //     key: "isCompleted",
+        //     render: (isCompleted: boolean, record: SalesInfoData) => (
+        //         <input
+        //             type="checkbox"
+        //             checked={getCheckboxState(record.id)}
+        //             onChange={(event) =>
+        //                 handleCheckboxChange(event.target.checked, record.id)
+        //             }
+        //         />
+        //     ),
+        // },
         {
             title: "Approved",
             dataIndex: "isCompleted",
-            key: "isCompleted",
-            render: (isCompleted: boolean, record: SalesInfoData) => (
-                <input
+            key: "status",
+            render: (isCompleted: number, record: SalesInfoData) => (
+                isCompleted ? (
+                    <span style={{ color: "green" }}>&#10003;</span>
+                ) : <input
                     type="checkbox"
                     checked={getCheckboxState(record.id)}
                     onChange={(event) =>

@@ -247,7 +247,7 @@ const AssignedTasksTable: React.FC = () => {
         :
         <Table
           style={{ width: "80vw" }}
-          dataSource={Tabledata}
+          dataSource={data}
           columns={columns}
           rowClassName={() => "header-row"}
         />
