@@ -30,10 +30,12 @@ import ShiftChangeReport from "./Components/ShiftChangeReport";
 import SalecampusForm from "./Components/SalecampusForm";
 import SalecampusFormList from "./Components/SalecampusFormList";
 import SaleInfoForm from "./Components/SaleInfoForm";
+import DragAssign from "./Components/DragAssign";
 import DocForm from "./Components/DocForm";
 import DocTable from "./Components/DocTable";
 import ViewDocumentation from "./Components/ViewDocumentation";
 import SaleInfoFormList from "./Components/SaleInfoFormList";
+import DragAssignTable from "./Components/DragAssignTable";
 import EveningDashboard from "./Components/EveningDashboard";
 import AddProject from "./Components/AddProject";
 import AddPhase from "./Components/AddPhase";
@@ -407,10 +409,18 @@ const App: React.FC = () => {
             }
           />
           <Route
-            path="/saleinfoformlist"
+            path="/dragAssign"
             element={
               <ProtectedRoute>
-                <SaleInfoFormList />
+                <DragAssign />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dragAssignTable"
+            element={
+              <ProtectedRoute>
+                <DragAssignTable />
               </ProtectedRoute>
             }
           />

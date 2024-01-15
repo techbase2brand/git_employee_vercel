@@ -673,6 +673,12 @@ const AppMenu = () => {
               <Link to="/ViewDocumentation">ViewDocumentation</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.Item key="dragAssign" icon={<TableOutlined />}>
+              <Link to="/dragAssign">DragAssign</Link>
+            </Menu.Item>
+            <Menu.Item key="dragAssignTable" icon={<TableOutlined />}>
+              <Link to="/dragAssignTable">DragAssignTable</Link>
+            </Menu.Item>
         </>
       )}
 

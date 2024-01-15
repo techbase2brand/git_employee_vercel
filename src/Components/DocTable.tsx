@@ -41,9 +41,7 @@ const DocTable = () => {
     jobPosition = myData.jobPosition;
 
   }
-  const completedData = filteredData.filter(item => item.isCompleted === 1);
-
-  const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch || item.isCompleted === 1);
+  const matchedData = filteredData.filter(item => item.EmployeeID === empIdMatch);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisiblee, setModalVisiblee] = useState(false);

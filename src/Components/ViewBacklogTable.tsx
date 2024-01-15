@@ -229,7 +229,7 @@ const ViewBacklogTable: React.FC = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
-      title: "Client Name",
+      title: "Client Names",
       dataIndex: "clientName",
       key: "clientName",
       render: (text: string) => <div>{text || "N/A"}</div>,
