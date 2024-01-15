@@ -45,6 +45,7 @@ const AddModule: React.FC<unknown> = () => {
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
@@ -259,6 +260,7 @@ const AddModule: React.FC<unknown> = () => {
     }
   }, [empInfo]);
   const handleSubmit = () => {
+    setSubmitting(true)
     if (location?.state?.MrngTaskID) {
       axios
         .put(
@@ -534,7 +536,7 @@ const AddModule: React.FC<unknown> = () => {
                   </select>
                 </div>
               </div>
-              <button className="add-button" onClick={handleSubmit}>
+              <button className="add-button" onClick={handleSubmit} disabled={submitting === true}>
                 Submit
               </button>
             </div>
