@@ -71,6 +71,7 @@ const AddModule: React.FC<any> = () => {
   const location = useLocation();
 
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
+  const [submitting, setSubmitting] = useState(false);
   const dataString = localStorage.getItem("myData");
   const employeeInfo = useMemo(
     () => (dataString ? JSON.parse(dataString) : []),
@@ -269,6 +270,7 @@ const AddModule: React.FC<any> = () => {
   };
 
   const handleSubmit = () => {
+    setSubmitting(true)
     if (evngEditID) {
       axios
         .put(
@@ -584,7 +586,7 @@ const AddModule: React.FC<any> = () => {
                   </select>
                 </div>
               </div>
-              <button className="add-button" onClick={handleSubmit}>
+              <button className="add-button" onClick={handleSubmit} disabled={submitting === true}>
                 Submit
               </button>
             </div>

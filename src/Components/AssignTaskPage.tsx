@@ -35,7 +35,6 @@ const AssignTaskPage: React.FC<any> = () => {
   const [data1, setData1] = useState<Project[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-console.log(submitting);
 
   const [tasks, setTasks] = useState<any[]>([
     {
