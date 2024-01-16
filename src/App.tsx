@@ -409,6 +409,14 @@ const App: React.FC = () => {
             }
           />
           <Route
+            path="/saleInfoFormList"
+            element={
+              <ProtectedRoute>
+                <SaleInfoFormList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dragAssign"
             element={
               <ProtectedRoute>
