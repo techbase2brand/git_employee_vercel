@@ -19,13 +19,11 @@ interface Props {
 
 const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [propsData, setPropsData] = useState<Task[]>(data || []);
-  
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false); // State for modal visibility
   const [modalContent, setModalContent] = useState<string>(""); // State for modal content
   const navigate = useNavigate();
   const dataString = localStorage.getItem("myData");
-
 
   useEffect(() => {
     setPropsData(data || []);

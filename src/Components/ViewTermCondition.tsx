@@ -22,7 +22,6 @@ const ViewTermCondition: React.FC = () => {
   if (editID) {
     setMrngEditID(editID);
   }
-
   useEffect(() => {
     axios
       .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTermCondition`, {

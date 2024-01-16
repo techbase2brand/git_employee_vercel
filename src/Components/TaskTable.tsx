@@ -42,9 +42,6 @@ interface Employee {
   status: number;
 }
 
-const handleEdit = (EmpID: string | number) => {
-  console.log(`Edit employee with id ${EmpID}`);
-};
 
 const TaskTable: React.FC<Props> = ({
   data,
@@ -67,7 +64,7 @@ const TaskTable: React.FC<Props> = ({
         },
       })
       .then((response) => {
-        console.log(response.data);
+        console.log("res");
       })
       .catch((error) => {
         console.log(error);

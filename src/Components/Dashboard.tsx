@@ -32,6 +32,7 @@ const Dashboard: React.FC = () => {
   const [setTotalUpWorkHrs, setSetTotalUpWorkHrs] = useState<any>()
   const [selectedRole, setSelectedRole] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // const [loading, setLoading] = useState(true);
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
