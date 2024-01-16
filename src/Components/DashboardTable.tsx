@@ -42,8 +42,7 @@ const DashboardTable: React.FC<MorningDashboardTableProps> = ({
   setTotalUpWorkHrs,
   setSetTotalUpWorkHrs,
 }) => {
-  const [manager, setManager] = useState("");
-  const [teamLead, setTeamLead] = useState("");
+
   const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
   const [isEvening, setIsEvening] = useState(false);
   const navigate = useNavigate();

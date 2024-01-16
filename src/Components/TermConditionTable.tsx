@@ -19,7 +19,6 @@ interface Props {
 
 const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [propsData, setPropsData] = useState<Task[]>(data || []);
-  console.log("propsData",propsData);
   
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const [modalVisible, setModalVisible] = useState<boolean>(false); // State for modal visibility
