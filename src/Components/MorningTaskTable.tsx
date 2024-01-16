@@ -26,7 +26,6 @@ interface Props {
 const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [propsData, setPropsData] = useState<Task[]>(data || []);
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
-  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const dataString = localStorage.getItem("myData");
 
@@ -78,7 +77,6 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   };
   
   const handleMove = (record: Task) => {
-    setSubmitting(true)
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/create/addTaskEvening`, record, {
         headers: {
@@ -149,7 +147,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
         <span>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.MrngTaskID)}>Edit</Button>
           <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.MrngTaskID)}>Delete</Button>
-          <Button onClick={() => handleMove(record)} disabled={submitting === true}>Move</Button>
+          <Button onClick={() => handleMove(record)}>Move</Button>
         </span>
       ),
     },
