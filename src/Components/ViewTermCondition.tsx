@@ -88,7 +88,7 @@ const ViewTermCondition: React.FC = () => {
                   Term && Conditions....
                 </p>
               </div>
-              {loading ?
+              {loading===true ?
                 <Spin size="large" className="spinner-antd" />
                 :
                 <TermConditionTable

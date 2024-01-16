@@ -113,7 +113,6 @@ tbody > tr > td:nth-child(14) {
   color: #2723cd;
 }
 .logout-button:hover::before {
-  content: 'Logout';
   position: absolute;
   top: 50%;
   left: 50%;

@@ -581,8 +581,8 @@ const Navbar: React.FunctionComponent = () => {
           title = `A new task assigned by ${item.AssignedBy}: project Name ${getShortTaskDescription(item.taskName)}`;
         } else {
           if (item?.type === "done") {
-            if ('assigneeName' in item && 'comment' in item) {
-              title = `Comment Updated by ${item.assigneeName} : ${item.comment}`;
+            if ('assigneeName' in item && 'comment' in item && 'clientName' in item) {
+              title = `Comment Updated by ${item.assigneeName} : ${item.comment} clientName ${item.clientName}`;
             }
           }
           else if (item?.type === "sale") {
