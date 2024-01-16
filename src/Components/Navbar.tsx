@@ -578,7 +578,7 @@ const Navbar: React.FunctionComponent = () => {
         //   isLeaveNotification = true;
         // }
         if (isTaskNotification(item)) {
-          title = `A new task assigned by ${item.AssignedBy}: ${getShortTaskDescription(item.taskName)}`;
+          title = `A new task assigned by ${item.AssignedBy}: project Name ${getShortTaskDescription(item.taskName)}`;
         } else {
           if (item?.type === "done") {
             if ('assigneeName' in item && 'comment' in item) {
