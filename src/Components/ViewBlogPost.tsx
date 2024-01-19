@@ -107,35 +107,31 @@ const ViewBlogPost = () => {
       });
   }, []);
 
-  const handleStatusChange = (EmployeeID: string | number, currentStatus: number) => {
-    const newStatus = currentStatus === 1 ? 0 : 1;
-  
-    axios.put(
-      `${process.env.REACT_APP_API_BASE_URL}/approved-blogpost/${EmployeeID}`,
-      { approved: newStatus },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      }
-    )
+  const handleStatusChange = (id: string | number, currentStatus: number) => {
+    const newLogged = currentStatus === 1 ? 0 : 1;
+
+    // Call the API to update the status
+    axios.put(`${process.env.REACT_APP_API_BASE_URL}/approved-blogpost/${id}`, {
+      approved: newLogged
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+      },
+    })
       .then((response) => {
-        // Assuming your data contains an 'id' field, find the index of the blog post in the state
-        const updatedIndex = data.findIndex((post) => post.id === EmployeeID);
-  
-        // Update the specific blog post's 'approved' status in the state
-        if (updatedIndex !== -1) {
-          const updatedData = [...data];
-          updatedData[updatedIndex].approved = newStatus;
-          setData(updatedData);
-        }
+        setData(prevData =>
+          prevData.map(employee =>
+            employee.id === id
+              ? { ...employee, approved: newLogged }
+              : employee
+          )
+        );
       })
       .catch((error) => {
         console.log(error);
       });
   };
   
-
   useEffect(() => {
     filterData(search);
   }, [data]);
