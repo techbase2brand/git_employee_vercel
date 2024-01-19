@@ -32,7 +32,9 @@ import SalecampusFormList from "./Components/SalecampusFormList";
 import SaleInfoForm from "./Components/SaleInfoForm";
 import DragAssign from "./Components/DragAssign";
 import DocForm from "./Components/DocForm";
+import BlogPost from "./Components/BlogPost";
 import DocTable from "./Components/DocTable";
+import ViewBlogPost from "./Components/ViewBlogPost";
 import ViewDocumentation from "./Components/ViewDocumentation";
 import SaleInfoFormList from "./Components/SaleInfoFormList";
 import DragAssignTable from "./Components/DragAssignTable";
@@ -440,11 +442,27 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/BlogPost"
+            element={
+              <ProtectedRoute>
+                <BlogPost />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/DocTable"
             element={
               <ProtectedRoute>
                 <DocTable />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ViewBlogPost"
+            element={
+              <ProtectedRoute>
+                <ViewBlogPost />
               </ProtectedRoute>
             }
           />

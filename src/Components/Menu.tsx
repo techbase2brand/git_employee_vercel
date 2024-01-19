@@ -870,6 +870,12 @@ const AppMenu = () => {
               <Link to="/ViewDocumentation">ViewDocumentation</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.Item key="BlogPost" icon={<TableOutlined />}>
+              <Link to="/BlogPost">BlogPost</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewBlogPost" icon={<TableOutlined />}>
+              <Link to="/ViewBlogPost">ViewBlogPost</Link>
+            </Menu.Item>
         </>
       )}
 

@@ -107,6 +107,9 @@ tbody > tr > td:nth-child(14) {
   /* overflow: auto; */
   min-width: auto;
 }
+.ck-editor__editable_inline {
+  min-height: 300px;
+}
 .total-size{
   font-size:2rem;
   margin-left: 45px;

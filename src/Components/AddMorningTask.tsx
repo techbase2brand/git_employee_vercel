@@ -260,7 +260,9 @@ const AddModule: React.FC<unknown> = () => {
     }
   }, [empInfo]);
   const handleSubmit = () => {
-    setSubmitting(true)
+    if (morningTask.module && morningTask.task && morningTask.estTime) {
+      setSubmitting(true)
+    }
     if (location?.state?.MrngTaskID) {
       axios
         .put(
