@@ -100,7 +100,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       });
       setTimeout(() => {
         setSubmitting(false);
-      }, 80);
+      }, 1000);
   };
 
   const employeeInfo = useMemo(() => (dataString ? JSON.parse(dataString) : []), [dataString]);
