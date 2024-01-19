@@ -33,8 +33,14 @@ import SaleInfoForm from "./Components/SaleInfoForm";
 import DragAssign from "./Components/DragAssign";
 import DocForm from "./Components/DocForm";
 import BlogPost from "./Components/BlogPost";
+import CampusBlogs from "./Components/CampusBlogs";
+import CampusBlogList from "./Components/CampusBlogList";
+import InfotechBlog from "./Components/InfotechBlog";
 import DocTable from "./Components/DocTable";
+import CategoryForm from "./Components/CategoryForm";
+import CategoryList from "./Components/CategoryList";
 import ViewBlogPost from "./Components/ViewBlogPost";
+import InfotechTable from "./Components/InfotechTable";
 import ViewDocumentation from "./Components/ViewDocumentation";
 import SaleInfoFormList from "./Components/SaleInfoFormList";
 import DragAssignTable from "./Components/DragAssignTable";
@@ -451,6 +457,22 @@ const App: React.FC = () => {
             }
           />
           <Route
+            path="/CampusBlogs"
+            element={
+              <ProtectedRoute>
+                <CampusBlogs />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/InfotechBlog"
+            element={
+              <ProtectedRoute>
+                <InfotechBlog />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/DocTable"
             element={
               <ProtectedRoute>
@@ -459,10 +481,42 @@ const App: React.FC = () => {
             }
           />
           <Route
+            path="/CategoryForm"
+            element={
+              <ProtectedRoute>
+                <CategoryForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/CategoryList"
+            element={
+              <ProtectedRoute>
+                <CategoryList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/ViewBlogPost"
             element={
               <ProtectedRoute>
                 <ViewBlogPost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/CampusBlogList"
+            element={
+              <ProtectedRoute>
+                <CampusBlogList />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/InfotechTable"
+            element={
+              <ProtectedRoute>
+                <InfotechTable />
               </ProtectedRoute>
             }
           />

@@ -225,7 +225,7 @@ const ViewBlogPost = () => {
       ),
     },
     {
-      title: "Approved",
+      title: "Home Page Approved",
       dataIndex: "approved",
       key: "approved",
       render: (_: any, record: BlogPostTable) => (

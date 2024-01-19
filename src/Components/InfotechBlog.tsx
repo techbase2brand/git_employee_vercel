@@ -19,7 +19,7 @@ interface FormData {
     pageKeyword: string;
     status: number;
 }
-function BlogPost(): JSX.Element {
+function InfotechBlog(): JSX.Element {
     const myDataString = localStorage.getItem('myData');
     let employeeID = "";
     if (myDataString) {
@@ -154,9 +154,9 @@ function BlogPost(): JSX.Element {
                 };
 
                 try {
-                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-blogpost`, formPayload);
+                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/infotech-blogpost`, formPayload);
                     setSubmitted(true);
-                    Navigate("/ViewBlogPost");
+                    Navigate("/InfotechTable");
                     toast.success('Submit successfully!', {
                         position: toast.POSITION.TOP_RIGHT,
                     });
@@ -181,10 +181,10 @@ function BlogPost(): JSX.Element {
         };
 
         axios
-            .put(`${process.env.REACT_APP_API_BASE_URL}/update-blogpost/${updatedFormData.id}`, updatedFormData)
+            .put(`${process.env.REACT_APP_API_BASE_URL}/update-infotech-blog/${updatedFormData.id}`, updatedFormData)
             .then((response) => {
                 setSubmitted(true);
-                Navigate("/ViewBlogPost");
+                Navigate("/InfotechTable");
                 toast.success('Updated successfully!', {
                     position: toast.POSITION.TOP_RIGHT,
                 });
@@ -225,7 +225,7 @@ function BlogPost(): JSX.Element {
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusForm-data-os">
-                                    <h2>BlogPost Form</h2>
+                                    <h2>Infotech Blog Form</h2>
                                     <form action="/upload" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>
                                         <div className="SalecampusForm-row-os">
                                             <div className="SalecampusForm-col-os">
@@ -365,4 +365,4 @@ function BlogPost(): JSX.Element {
     );
 }
 
-export default BlogPost;
+export default InfotechBlog;
