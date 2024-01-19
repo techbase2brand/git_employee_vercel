@@ -270,7 +270,10 @@ const AddModule: React.FC<any> = () => {
   };
 
   const handleSubmit = () => {
-    setSubmitting(true)
+    if (eveningTask.module && eveningTask.task && eveningTask.estTime && eveningTask.actTime) {
+      setSubmitting(true)
+      console.log("hyy7y");
+    }
     if (evngEditID) {
       axios
         .put(

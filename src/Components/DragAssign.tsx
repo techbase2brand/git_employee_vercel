@@ -41,13 +41,13 @@ const DragAssign: React.FC<any> = () => {
             deadlineEnd: null,
         },
     ]);
+    const submition = tasks.filter(((item) => item.task && item.assigneeName && item.deadlineEnd && item.checked))
     const sortedData = [...data1];
     sortedData.sort((a, b) => a.clientName.localeCompare(b.clientName));
     const uniqueClientNames = Array.from(new Set(sortedData.map((project) => project.clientName)));
 
     const sortedProject = [...data1];
     sortedProject.sort((a, b) => a.projectName.localeCompare(b.projectName));
-    console.log("sortedProject", sortedProject);
     const filteredProjects = sortedProject.filter((project) => {
         return Array.isArray(selectedClient) ? selectedClient.includes(project?.clientName) : false;
     });
@@ -284,7 +284,9 @@ const DragAssign: React.FC<any> = () => {
     };
 
     const handleSubmit = () => {
-        setSubmitting(true)
+        if (submition.length !== 0) {
+            setSubmitting(true)
+        }
         const atLeastOneChecked = tasks.some((task) => task.checked);
 
         if (!atLeastOneChecked) {
