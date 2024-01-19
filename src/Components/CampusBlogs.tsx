@@ -18,8 +18,9 @@ interface FormData {
     pagetitle: string;
     pageKeyword: string;
     status: number;
+    category:string;
 }
-function BlogPost(): JSX.Element {
+function CampusBlogs(): JSX.Element {
     const myDataString = localStorage.getItem('myData');
     let employeeID = "";
     if (myDataString) {
@@ -36,17 +37,19 @@ function BlogPost(): JSX.Element {
         pagetitle: "",
         pageKeyword: "",
         status: 0,
+        category:""
     };
     const location = useLocation();
     const Navigate = useNavigate();
     const record: FormData | undefined = location.state?.record;
     const [formData, setFormData] = useState<FormData>(record || initialFormData);
+    console.log(formData,"formData");
+    
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [submitted, setSubmitted] = useState(false);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-
-
+    const [categoryNames, setCategoryNames] = useState<Array<{ id: number; CategoryData: string }>>([]);
 
     useEffect(() => {
         if (record) {
@@ -65,6 +68,17 @@ function BlogPost(): JSX.Element {
             }
         }
     }, [record]);
+
+    useEffect(() => {
+        axios
+            .get(`${process.env.REACT_APP_API_BASE_URL}/get/category`)
+            .then((response) => {
+                setCategoryNames(response.data)
+            })
+            .catch((error) => {
+                console.error("Error fetching data:");
+            });
+    }, []);
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files: FileList | null = e.target.files;
@@ -154,9 +168,9 @@ function BlogPost(): JSX.Element {
                 };
 
                 try {
-                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-blogpost`, formPayload);
+                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/campus-blogpost`, formPayload);
                     setSubmitted(true);
-                    Navigate("/ViewBlogPost");
+                    Navigate("/CampusBlogList");
                     toast.success('Submit successfully!', {
                         position: toast.POSITION.TOP_RIGHT,
                     });
@@ -181,10 +195,10 @@ function BlogPost(): JSX.Element {
         };
 
         axios
-            .put(`${process.env.REACT_APP_API_BASE_URL}/update-blogpost/${updatedFormData.id}`, updatedFormData)
+            .put(`${process.env.REACT_APP_API_BASE_URL}/update-campus-blog/${updatedFormData.id}`, updatedFormData)
             .then((response) => {
                 setSubmitted(true);
-                Navigate("/ViewBlogPost");
+                Navigate("/CampusBlogList");
                 toast.success('Updated successfully!', {
                     position: toast.POSITION.TOP_RIGHT,
                 });
@@ -225,9 +239,33 @@ function BlogPost(): JSX.Element {
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusForm-data-os">
-                                    <h2>BlogPost Form</h2>
+                                    <h2>Campus Blog Form</h2>
                                     <form action="/upload" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>
                                         <div className="SalecampusForm-row-os">
+                                            <div className="SalecampusForm-col-os">
+                                                <div className="SalecampusForm-input-os">
+                                                    <select
+                                                        name="category"
+                                                        value={formData.category}
+                                                        onChange={handleChange}
+                                                    >
+                                                        <option value="">Choose a status</option>
+
+                                                        {categoryNames?.map((item) => {
+                                                            return (
+                                                                <option key={item.id} value={item.CategoryData}>
+                                                                    {item.CategoryData}
+                                                                </option>
+                                                            );
+                                                        })}
+                                                    </select>
+                                                </div>
+                                                {formErrors.status && (
+                                                    <div className="error-message-os">
+                                                        {formErrors.status}
+                                                    </div>
+                                                )}
+                                            </div>
                                             <div className="SalecampusForm-col-os">
                                                 <label>Title</label>
 
@@ -365,4 +403,4 @@ function BlogPost(): JSX.Element {
     );
 }
 
-export default BlogPost;
+export default CampusBlogs;
