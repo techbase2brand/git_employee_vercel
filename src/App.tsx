@@ -39,6 +39,8 @@ import InfotechBlog from "./Components/InfotechBlog";
 import DocTable from "./Components/DocTable";
 import CategoryForm from "./Components/CategoryForm";
 import CategoryList from "./Components/CategoryList";
+import KnowledgeCenter from "./Components/KnowledgeCenter";
+import KnowledgeCenterList from "./Components/KnowledgeCenterList";
 import ViewBlogPost from "./Components/ViewBlogPost";
 import InfotechTable from "./Components/InfotechTable";
 import ViewDocumentation from "./Components/ViewDocumentation";
@@ -493,6 +495,22 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <CategoryList />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/KnowledgeCenter"
+            element={
+              <ProtectedRoute>
+                <KnowledgeCenter />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/KnowledgeCenterList"
+            element={
+              <ProtectedRoute>
+                <KnowledgeCenterList />
               </ProtectedRoute>
             }
           />

@@ -24,9 +24,10 @@ interface BlogPostTable {
     status: string;
     created_at: string;
     approved: number;
+    category: string;
 }
 
-const CampusBlogList = () => {
+const KnowledgeCenterList = () => {
 
     const [data, setData] = useState<BlogPostTable[]>([]);
     const [filteredData, setFilteredData] = useState<BlogPostTable[]>(data);
@@ -65,7 +66,7 @@ const CampusBlogList = () => {
     const handleDelete = (id: number) => {
         axios
             .delete(
-                `${process.env.REACT_APP_API_BASE_URL}/delete-campus-blog/${id}`
+                `${process.env.REACT_APP_API_BASE_URL}/delete-knowledge-blog/${id}`
                 // {
                 //   headers: {
                 //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
@@ -92,7 +93,7 @@ const CampusBlogList = () => {
         const token = localStorage.getItem("myToken");
         axios
             .get(
-                `${process.env.REACT_APP_API_BASE_URL}/campus-blog-data`
+                `${process.env.REACT_APP_API_BASE_URL}/knowledge-blog-data`
                 , {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -110,7 +111,7 @@ const CampusBlogList = () => {
         const newLogged = currentStatus === 1 ? 0 : 1;
 
         // Call the API to update the status
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/approved-campus-blog/${id}`, {
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/approved-knowledge-blog/${id}`, {
             approved: newLogged
         }, {
             headers: {
@@ -137,7 +138,7 @@ const CampusBlogList = () => {
 
     const handleEdit = (id: number) => {
         const recordToEdit = data.find((e: any) => e.id === id);
-        Navigate("/CampusBlogs", { state: { record: recordToEdit } });
+        Navigate("/KnowledgeCenter", { state: { record: recordToEdit } });
     };
     const handleTermClick = (text: string) => {
         setModalContent(text); // Set the content for the modal
@@ -159,6 +160,12 @@ const CampusBlogList = () => {
                     <button>View para</button>
                 </div>
             ),
+        },
+        {
+            title: "Category",
+            dataIndex: "category",
+            key: "category",
+            render: (text: string) => <div>{text}</div>,
         },
         {
             title: 'Images',
@@ -326,7 +333,7 @@ const CampusBlogList = () => {
                                                 fontWeight: "bold",
                                             }}
                                         >
-                                            Campus Blog list
+                                            Knowledge Center list
                                         </p>
                                     </div>
                                     <br />
@@ -406,4 +413,4 @@ const CampusBlogList = () => {
     );
 };
 
-export default CampusBlogList;
+export default KnowledgeCenterList;

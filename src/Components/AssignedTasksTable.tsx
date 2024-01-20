@@ -21,7 +21,8 @@ interface BacklogTask {
 
 const AssignedTasksTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
-  const [Tabledata, setTableData] = useState<BacklogTask[]>([]);
+  const filteredData = data.filter(item => item.comment === null || item.comment === "");
+  const [editableTaskID, setEditableTaskID] = useState<number | null>(null);
   const [disabledFields, setDisabledFields] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
 
@@ -31,15 +32,9 @@ const AssignedTasksTable: React.FC = () => {
     const fiveDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 30));
     return taskDate >= fiveDaysAgo;
   };
-
-  useEffect(() => {
-    const disabledFieldsString = localStorage.getItem("disabledFields");
-    if (disabledFieldsString) {
-      const disabledFieldsData = JSON.parse(disabledFieldsString);
-      setDisabledFields(new Set(disabledFieldsData));
-    }
-  }, []);
-
+  const handleEditClick = (backlogTaskID: number) => {
+    setEditableTaskID(backlogTaskID);
+  };
   const dataString = localStorage.getItem("myData");
   const employeeInfo = useMemo(
     () => (dataString ? JSON.parse(dataString) : []),
@@ -62,7 +57,6 @@ const AssignedTasksTable: React.FC = () => {
         const filteredData = sortedData?.filter((task) => task?.employeeID === localEmpId
         );
         setData(filteredData);
-        setTableData(filteredData);
         setLoading(false);
 
       })
@@ -112,18 +106,12 @@ const AssignedTasksTable: React.FC = () => {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
-    localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(isChecked));
   };
-
-
   const getCheckboxState = (backlogTaskID: number) => {
-    const item = localStorage.getItem(`task-${backlogTaskID}`);
-    if (item !== null) {
-      return JSON.parse(item);
-    } else {
-      return false;
-    }
+    const task = data.find((task) => task.backlogTaskID === backlogTaskID);
+    return !!task?.isCompleted;
   };
+
   const handleCommentChange = (comment: string, backlogTaskID: number) => {
     const updatedData = data.map((task) =>
       task.backlogTaskID === backlogTaskID ? { ...task, comment } : task
@@ -143,23 +131,54 @@ const AssignedTasksTable: React.FC = () => {
         const updatedData = data.map((task) =>
           task.backlogTaskID === backlogTaskID ? { ...task, comment: '' } : task
         );
+
         setData(updatedData);
         setDisabledFields((prev) => {
-          const updatedDisabledFields = new Set(prev.add(backlogTaskID));
+          const updatedDisabledFields = new Set<number>(prev);
+          updatedDisabledFields.add(backlogTaskID);
           const updatedDisabledFieldsArray = Array.from(updatedDisabledFields);
-          localStorage.setItem("disabledFields", JSON.stringify(updatedDisabledFieldsArray));
           return updatedDisabledFields;
         });
-        localStorage.setItem(`task-${backlogTaskID}`, JSON.stringify(true));
+
         handleCheckboxChange(true, backlogTaskID);
       })
       .catch((error) => {
         console.error("Error updating task comment:", error);
       });
   };
+  const renderComment = (text: string, record: BacklogTask) => {
+    const isEditing = editableTaskID === record.backlogTaskID;
+
+    return (
+      <div>
+        {filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && <textarea
+          value={text}
+          onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
+        />}
+        {isEditing && record.isCompleted === 1 && <textarea
+          value={text}
+          onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
+        />}
+        {filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) &&
+          <button onClick={() => handleCommentSave(record.backlogTaskID)}
+          >
+            Save
+          </button>}
+        {isEditing && record.isCompleted === 1 && <button onClick={() => handleCommentSave(record.backlogTaskID)}
+        >
+          Update
+        </button>}
+        {!isEditing && !filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && (
+          <button onClick={() => handleEditClick(record.backlogTaskID)} style={{ float: 'right', width: '50px' }}>
+            Edit
+          </button>
+        )}
+        {!filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && <div>{text || "N/A"}</div>}
+      </div>
+    );
+  };
 
   const columns = [
-
     {
       title: "Client Name",
       dataIndex: "clientName",
@@ -211,25 +230,30 @@ const AssignedTasksTable: React.FC = () => {
         />
       ),
     },
+    //  {
+    //   title: "Comment",
+    //   dataIndex: "comment",
+    //   key: "comment",
+    //   render: (text: string, record: BacklogTask) => (
+    //     <div>
+    //       {filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && <textarea
+    //         value={text}
+    //         onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
+    //       />}
+    //       {filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) &&
+    //         <button onClick={() => handleCommentSave(record.backlogTaskID)}
+    //         >
+    //           Save
+    //         </button>}
+    //       {!filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && <div>{text || "N/A"}</div>}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Comment",
       dataIndex: "comment",
       key: "comment",
-      render: (text: string, record: BacklogTask) => (
-        <div>
-          {!disabledFields.has(record.backlogTaskID) && <textarea
-            value={text}
-            onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
-            disabled={disabledFields.has(record.backlogTaskID)}
-          />}
-          {!disabledFields.has(record.backlogTaskID) &&
-            <button onClick={() => handleCommentSave(record.backlogTaskID)}
-              disabled={disabledFields.has(record.backlogTaskID)}>
-              Save
-            </button>}
-          {disabledFields.has(record.backlogTaskID) && <div>{text || "N/A"}</div>}
-        </div>
-      ),
+      render: renderComment,
     },
   ];
 
@@ -241,9 +265,9 @@ const AssignedTasksTable: React.FC = () => {
   };
   return (
     <div className="assign-task" >
-      
+
       {loading ?
-        <Spin size="large" className="spinner-antd"/>
+        <Spin size="large" className="spinner-antd" />
         :
         <Table
           style={{ width: "80vw" }}
