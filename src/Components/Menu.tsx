@@ -713,6 +713,14 @@ const AppMenu = () => {
               <Link to="/CategoryList">CategoryList</Link>
             </Menu.Item>
             </Menu.SubMenu>
+            <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
+            <Menu.Item key="KnowledgeCenter" icon={<TableOutlined />}>
+              <Link to="/KnowledgeCenter">KnowledgeCenter</Link>
+            </Menu.Item>
+            <Menu.Item key="KnowledgeCenterList" icon={<TableOutlined />}>
+              <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
+            </Menu.Item>
+            </Menu.SubMenu>
         </>
       )}
 
@@ -934,6 +942,14 @@ const AppMenu = () => {
             </Menu.Item>
             <Menu.Item key="CategoryList" icon={<TableOutlined />}>
               <Link to="/CategoryList">CategoryList</Link>
+            </Menu.Item>
+            </Menu.SubMenu>
+            <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
+            <Menu.Item key="KnowledgeCenter" icon={<TableOutlined />}>
+              <Link to="/KnowledgeCenter">KnowledgeCenter</Link>
+            </Menu.Item>
+            <Menu.Item key="KnowledgeCenterList" icon={<TableOutlined />}>
+              <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
             </Menu.SubMenu>
         </>
