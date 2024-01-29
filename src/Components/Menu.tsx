@@ -103,7 +103,6 @@ const AppMenu = () => {
   const handleLeaveFormClick = (e: any) => {
     e.preventDefault();
     setShowTermsModal(true)
-
   };
 
   useEffect(() => {
@@ -532,6 +531,14 @@ const AppMenu = () => {
               <Link to="/ViewDocumentation">ViewDocumentation</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.SubMenu key="TL" icon={<TableOutlined rev={undefined} />} title="TL Tasks">
+            <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+              <Link to="/ClientSheet">Assign TL Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
+              <Link to="/ViewClientSheet">View TL Task</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -679,7 +686,7 @@ const AppMenu = () => {
           <Menu.Item key="dragAssignTable" icon={<TableOutlined />}>
             <Link to="/dragAssignTable">DragAssignTable</Link>
           </Menu.Item>
-          
+
           <Menu.SubMenu key="Blogs" icon={<TableOutlined rev={undefined} />} title="Blogs">
             <Menu.Item key="BlogPost" icon={<TableOutlined />}>
               <Link to="/BlogPost">BlogPost</Link>
@@ -695,32 +702,40 @@ const AppMenu = () => {
             <Menu.Item key="InfotechTable" icon={<TableOutlined />}>
               <Link to="/InfotechTable">InfotechTable</Link>
             </Menu.Item>
-            </Menu.SubMenu>
+          </Menu.SubMenu>
 
-            <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus-Blogs">
+          <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus-Blogs">
             <Menu.Item key="CampusBlogs" icon={<TableOutlined />}>
               <Link to="/CampusBlogs">CampusBlogs</Link>
             </Menu.Item>
             <Menu.Item key="CampusBlogList" icon={<TableOutlined />}>
               <Link to="/CampusBlogList">CampusBlogList</Link>
             </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu key="Category" icon={<TableOutlined rev={undefined} />} title="Category-Added">
+          </Menu.SubMenu>
+          <Menu.SubMenu key="Category" icon={<TableOutlined rev={undefined} />} title="Category-Added">
             <Menu.Item key="CategoryForm" icon={<TableOutlined />}>
               <Link to="/CategoryForm">CategoryForm</Link>
             </Menu.Item>
             <Menu.Item key="CategoryList" icon={<TableOutlined />}>
               <Link to="/CategoryList">CategoryList</Link>
             </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
+          </Menu.SubMenu>
+          <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
             <Menu.Item key="KnowledgeCenter" icon={<TableOutlined />}>
               <Link to="/KnowledgeCenter">KnowledgeCenter</Link>
             </Menu.Item>
             <Menu.Item key="KnowledgeCenterList" icon={<TableOutlined />}>
               <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
-            </Menu.SubMenu>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="TL" icon={<TableOutlined rev={undefined} />} title="TL Tasks">
+            <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+              <Link to="/ClientSheet">Assign TL Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
+              <Link to="/ViewClientSheet">View TL Task</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
@@ -927,31 +942,31 @@ const AppMenu = () => {
             <Menu.Item key="InfotechTable" icon={<TableOutlined />}>
               <Link to="/InfotechTable">InfotechTable</Link>
             </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus-Blogs">
+          </Menu.SubMenu>
+          <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus-Blogs">
             <Menu.Item key="CampusBlogs" icon={<TableOutlined />}>
               <Link to="/CampusBlogs">CampusBlogs</Link>
             </Menu.Item>
             <Menu.Item key="CampusBlogList" icon={<TableOutlined />}>
               <Link to="/CampusBlogList">CampusBlogList</Link>
             </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu key="Category" icon={<TableOutlined rev={undefined} />} title="Category-Added">
+          </Menu.SubMenu>
+          <Menu.SubMenu key="Category" icon={<TableOutlined rev={undefined} />} title="Category-Added">
             <Menu.Item key="CategoryForm" icon={<TableOutlined />}>
               <Link to="/CategoryForm">CategoryForm</Link>
             </Menu.Item>
             <Menu.Item key="CategoryList" icon={<TableOutlined />}>
               <Link to="/CategoryList">CategoryList</Link>
             </Menu.Item>
-            </Menu.SubMenu>
-            <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
+          </Menu.SubMenu>
+          <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
             <Menu.Item key="KnowledgeCenter" icon={<TableOutlined />}>
               <Link to="/KnowledgeCenter">KnowledgeCenter</Link>
             </Menu.Item>
             <Menu.Item key="KnowledgeCenterList" icon={<TableOutlined />}>
               <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
-            </Menu.SubMenu>
+          </Menu.SubMenu>
         </>
       )}
 
