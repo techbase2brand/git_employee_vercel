@@ -59,7 +59,9 @@ import PhaseAssignedTo from "./Components/PhaseAssignedTo";
 import ViewPhaseAssign from "./Components/ViewPhaseAssign";
 import AboutProject from "./Components/AboutProject";
 import LeavePage from "./Components/LeavePage";
+import ViewClientSheet from "./Components/ViewClientSheet";
 import ShiftChangePage from "./Components/ShiftChangePage";
+import ClientSheet from "./Components/ClientSheet";
 import AdminSaleCampusFormList from "./Components/AdminSalecampusFormList";
 import AdminSaleInfotechFormList from "./Components/AdminSaleInfotechFormList";
 import ViewTermCondition from "./Components/ViewTermCondition";
@@ -190,7 +192,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/ViewTermCondition"
             element={
               <ProtectedRoute>
@@ -206,7 +208,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/TermCondition"
             element={
               <ProtectedRoute>
@@ -251,6 +253,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <LeavePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ViewClientSheet"
+            element={
+              <ProtectedRoute>
+                <ViewClientSheet />
               </ProtectedRoute>
             }
           />
@@ -312,7 +322,14 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/ClientSheet"
+            element={
+              <ProtectedRoute>
+                <ClientSheet />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/table-navbar"
             element={
@@ -450,7 +467,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/BlogPost"
             element={
               <ProtectedRoute>
@@ -466,7 +483,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/InfotechBlog"
             element={
               <ProtectedRoute>
@@ -498,7 +515,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/KnowledgeCenter"
             element={
               <ProtectedRoute>
@@ -530,7 +547,7 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/InfotechTable"
             element={
               <ProtectedRoute>
