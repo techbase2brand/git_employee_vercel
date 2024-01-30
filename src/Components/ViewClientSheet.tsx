@@ -47,7 +47,7 @@ const ViewClientSheet: React.FC<any> = () => {
     const filteredData = data.filter((project) =>
         employeeID === "B2B00100"
             ? project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-            : project.AssigneeName === employeeName && project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+            : project.AssigneeName === employeeName && project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) || project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
     );
     const paginationSettings = {
         pageSize: 100,
@@ -133,6 +133,12 @@ const ViewClientSheet: React.FC<any> = () => {
             render: (text: string) => <div>{text}</div>,
         },
         {
+            title: "Assigned By",
+            dataIndex: "assignedBy",
+            key: "assignedBy",
+            render: (text: string) => <div>{text}</div>,
+        },
+        {
             title: "Assign To",
             dataIndex: "AssigneeName",
             key: "AssigneeName",
@@ -144,6 +150,7 @@ const ViewClientSheet: React.FC<any> = () => {
             key: "morningCheck",
             render: (text: string, record: ClientSheetData) => (
                 <Checkbox
+                    style={{ border: '2px solid black', borderRadius: '6px' }}
                     checked={record.morningCheck === 1}
                     onChange={() => handleMorningCheckChange(record)}
                     disabled={record.morningCheck === 1}
@@ -181,6 +188,7 @@ const ViewClientSheet: React.FC<any> = () => {
             key: "eveningCheck",
             render: (text: string, record: ClientSheetData) => (
                 <Checkbox
+                    style={{ border: '2px solid black', borderRadius: '6px' }}
                     checked={record.eveningCheck === 1}
                     onChange={() => handleEveningCheckChange(record)}
                 />
