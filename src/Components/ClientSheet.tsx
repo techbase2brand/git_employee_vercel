@@ -46,7 +46,9 @@ const ClientSheet: React.FC<any> = () => {
     const [eveningComments, setEveningComments] = useState<Record<string, string>>({});
     const [filterOption, setFilterOption] = useState<string>("ALL");
     const [filterOptions, setFilterOptions] = useState<FilterOptions>({ message: "", data: {} });
+
     const [filterOpt, setFilterOpt] = useState<FilterOptions>();
+    console.log("filterOpt", filterOpt);
 
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
@@ -61,6 +63,11 @@ const ClientSheet: React.FC<any> = () => {
     const filteredDataByEmployee = Array.isArray(filterOpt?.data)
         ? filterOpt?.data.filter((item: FilterOption) => item.AssigneeName === filterOption)
         : [];
+
+    const filteredChecked = Array.isArray(filterOpt?.data)
+        ? filterOpt?.data.filter((item: FilterOption) => item.favorite === 1)
+        : [];
+    console.log("filteredChecked", filteredChecked);
 
     useEffect(() => {
         axios
@@ -164,12 +171,12 @@ const ClientSheet: React.FC<any> = () => {
             dataIndex: "select",
             key: "select",
             render: (_: any, record: Project) => {
-                // const isFavoriteForEmployee = filteredDataByEmployee && filteredDataByEmployee.some((item) => item.projectName === record.projectName);
+                const isFavoriteForEmployee = filteredChecked && filteredChecked.some((item) => item.projectName === record.projectName && item.favorite === 1);
 
                 return (
                     <Checkbox
                         style={{ border: '2px solid black', borderRadius: '6px' }}
-                        checked={filterOptions.data[record.projectName] || favirotes[record.projectName]}
+                        checked={isFavoriteForEmployee || favirotes[record.projectName]}
                         onChange={() => handleCheckboxChangeFav(record.projectName, true)}
                     />
                 );
@@ -250,27 +257,28 @@ const ClientSheet: React.FC<any> = () => {
                 ...prevChecks,
                 [projectName]: !prevChecks[projectName] ? 1 : 0,
             };
-            if (!updatedChecks[projectName]) {
-                axios.put(
-                    `${process.env.REACT_APP_API_BASE_URL}/update-favorite-status`,
-                    {
-                        projectName,
-                        favorite: updatedChecks[projectName],
+            console.log("updatedChecks", updatedChecks);
+            // if (!updatedChecks[projectName]) {
+            axios.put(
+                `${process.env.REACT_APP_API_BASE_URL}/update-favorite-status`,
+                {
+                    projectName,
+                    favorite: updatedChecks[projectName],
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('myToken')}`,
                     },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem('myToken')}`,
-                        },
-                    }
-                )
-                    .then((response) => {
-                        console.log("res");
+                }
+            )
+                .then((response) => {
+                    console.log("res");
 
-                    })
-                    .catch((error) => {
-                        console.error('Error while updating favorite status:', error);
-                    });
-            }
+                })
+                .catch((error) => {
+                    console.error('Error while updating favorite status:', error);
+                });
+            // }
             return updatedChecks;
         });
     };
@@ -383,11 +391,13 @@ const ClientSheet: React.FC<any> = () => {
                                     onChange={(value) => setSelectedEmployee(value)}
                                     value={selectedEmployee || undefined}
                                 >
-                                    {employeeFirstNames.map((name, index) => (
-                                        <Select.Option key={index} value={name}>
-                                            {name}
-                                        </Select.Option>
-                                    ))}
+                                    {employeeFirstNames
+                                        .filter(name => ["Arshpreet", "Manpreet", "Aashu", "Yugal"].includes(name))
+                                        .map((name, index) => (
+                                            <Select.Option key={index} value={name}>
+                                                {name}
+                                            </Select.Option>
+                                        ))}
                                 </Select>
                                 {EmployeeId === "B2B00100" &&
                                     <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
