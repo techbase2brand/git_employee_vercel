@@ -31,6 +31,7 @@ interface FilterOption {
     projectName: string;
     favorite: number;
     assignedBy: string;
+    EmployeeID: string;
 }
 const ClientSheet: React.FC<any> = () => {
     const [data1, setData1] = useState<Project[]>([]);
@@ -44,13 +45,18 @@ const ClientSheet: React.FC<any> = () => {
     const [eveningComments, setEveningComments] = useState<Record<string, string>>({});
     const [filterOption, setFilterOption] = useState<string>("ALL");
     const [filterOptions, setFilterOptions] = useState<FilterOptions>({ message: "", data: {} });
+    console.log("filterOptions", filterOptions)
+
     const [filterOpt, setFilterOpt] = useState<FilterOptions>();
+    console.log("filterOpt", filterOpt)
 
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
+    let EmployeeId = "";
     if (myDataString) {
         const myData = JSON.parse(myDataString);
         assignedBy = myData.firstName;
+        EmployeeId = myData.EmployeeID
     }
 
     useEffect(() => {
@@ -109,13 +115,14 @@ const ClientSheet: React.FC<any> = () => {
 
     const handleFilterChange = (value: string) => {
         setFilterOption(value);
+        setMorningChecks({});
     };
     const filteredData: Project[] = data1
         .filter((project) => {
             if (filterOption === "ALL") {
                 return project.projectName.toLowerCase().includes(searchTerm.toLowerCase());
             } else if (filterOption === "FAVORITE" && filterOpt?.data && Array.isArray(filterOpt.data)) {
-                const assignedProjects = filterOpt.data.filter((opt: FilterOption | boolean): opt is FilterOption => typeof opt !== 'boolean' && opt.assignedBy === assignedBy);
+                const assignedProjects = filterOpt.data.filter((opt: FilterOption | boolean): opt is FilterOption => typeof opt !== 'boolean' && opt.assignedBy === assignedBy && opt.EmployeeID === EmployeeId);
                 return assignedProjects.some((opt) => opt.projectName === project.projectName);
             }
             return true;
@@ -152,10 +159,11 @@ const ClientSheet: React.FC<any> = () => {
             dataIndex: "select",
             key: "select",
             render: (_: any, record: Project) => {
+                console.log("record",record)
                 return (
                     <Checkbox
                         style={{ border: '2px solid black', borderRadius: '6px' }}
-                        checked={favirotes[record.projectName]}
+                        checked={filterOptions.data[record.projectName] || favirotes[record.projectName]}
                         onChange={() => handleCheckboxChangeFav(record.projectName, true)}
                     />
                 )
@@ -230,14 +238,39 @@ const ClientSheet: React.FC<any> = () => {
         }
     };
 
+
     const handleCheckboxChangeFav = (projectName: string, isMorning: boolean) => {
-        if (isMorning) {
-            setFavirotesChecks((prevChecks) => ({
+        setFavirotesChecks((prevChecks: any) => {
+            const updatedChecks = {
                 ...prevChecks,
-                [projectName]: !prevChecks[projectName],
-            }));
-        }
+                [projectName]: !prevChecks[projectName] ? 1 : 0,
+            };
+            if (!updatedChecks[projectName]) {
+                axios.put(
+                    `${process.env.REACT_APP_API_BASE_URL}/update-favorite-status`,
+                    {
+                        projectName,
+                        favorite: updatedChecks[projectName],
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('myToken')}`,
+                        },
+                    }
+                )
+                    .then((response) => {
+                        console.log("res");
+
+                    })
+                    .catch((error) => {
+                        console.error('Error while updating favorite status:', error);
+                    });
+            }
+            return updatedChecks;
+        });
     };
+
+
 
     const handleSend = () => {
         if (!selectedEmployee && filterOption === "FAVORITE") {
@@ -256,6 +289,7 @@ const ClientSheet: React.FC<any> = () => {
             eveningComments: eveningComments,
             assignedBy: assignedBy,
             favirotes: favirotes,
+            EmployeeID: EmployeeId,
         };
 
         axios
