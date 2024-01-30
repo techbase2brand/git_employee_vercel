@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import axios from "axios";
-import { Button, Checkbox, Table } from "antd";
+import { Button, Checkbox, Select, Table } from "antd";
 import 'react-toastify/dist/ReactToastify.css';
+import { Option } from "antd/es/mentions";
 
 interface ClientSheetData {
     id: number;
@@ -23,6 +24,8 @@ const ViewClientSheet: React.FC<any> = () => {
     const [editEveningCommentMode, setEditEveningCommentMode] = useState<number | null>(null);
     const [editedMorningComments, setEditedMorningComments] = useState<Record<string, string>>({});
     const [editedEveningComments, setEditedEveningComments] = useState<Record<string, string>>({});
+    const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null);
+    const [assigneeOptions, setAssigneeOptions] = useState<string[]>([]);
 
     const myDataString = localStorage.getItem('myData');
     let employeeName = "";
@@ -37,6 +40,9 @@ const ViewClientSheet: React.FC<any> = () => {
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/get-data`)
             .then(response => {
                 console.log('Data received successfully:', response.data);
+                const uniqueAssignees: string[] = Array.from(new Set((response.data.data as ClientSheetData[]).map(item => item.AssigneeName)))
+                    .filter(assignee => assignee !== "");
+                setAssigneeOptions(uniqueAssignees);
                 setData(response.data.data || []);
             })
             .catch(error => {
@@ -46,7 +52,7 @@ const ViewClientSheet: React.FC<any> = () => {
 
     const filteredData = data.filter((project) => {
         if (employeeID === "B2B00100") {
-            return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "";
+            return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "" && project.AssigneeName === selectedAssignee;
         } else {
             const isAssignedByEmployee = project.assignedBy === employeeName;
             const isAssignedToEmployee = project.AssigneeName === employeeName;
@@ -54,7 +60,8 @@ const ViewClientSheet: React.FC<any> = () => {
                 (isAssignedByEmployee || isAssignedToEmployee) &&
                 project.assignedBy !== "" &&
                 project.AssigneeName !== "" &&
-                project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                project.AssigneeName === selectedAssignee
             );
         }
     });
@@ -275,6 +282,19 @@ const ViewClientSheet: React.FC<any> = () => {
                                         height: '43px',
                                     }}
                                 />
+                                {employeeID === "B2B00100" &&
+                                    <Select
+                                        style={{ width: 200 }}
+                                        placeholder="Select Assignee"
+                                        onChange={(value) => setSelectedAssignee(value)}
+                                    >
+                                        {assigneeOptions.map((assignee) => (
+                                            <Option key={assignee} value={assignee}>
+                                                {assignee}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                }
                             </div>
                             <div
                                 style={{
