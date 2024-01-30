@@ -52,7 +52,7 @@ const ViewClientSheet: React.FC<any> = () => {
 
     const filteredData = data.filter((project) => {
         if (employeeID === "B2B00100") {
-            return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "" && project.AssigneeName === selectedAssignee;
+            return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "" || project.AssigneeName === selectedAssignee;
         } else {
             const isAssignedByEmployee = project.assignedBy === employeeName;
             const isAssignedToEmployee = project.AssigneeName === employeeName;
@@ -60,7 +60,7 @@ const ViewClientSheet: React.FC<any> = () => {
                 (isAssignedByEmployee || isAssignedToEmployee) &&
                 project.assignedBy !== "" &&
                 project.AssigneeName !== "" &&
-                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 project.AssigneeName === selectedAssignee
             );
         }
