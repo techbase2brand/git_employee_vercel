@@ -5,6 +5,7 @@ import axios from "axios";
 import { Table, Checkbox, Select } from "antd";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Option } from "antd/es/mentions";
 
 interface Employee {
     EmpID: string | number;
@@ -21,17 +22,29 @@ interface Project {
     projectDescription: string;
 }
 
+interface FilterOptions {
+    message: string;
+    data: Record<string, boolean>; // Assuming data is an object with keys as strings and values as booleans
+}
 
-
+interface FilterOption {
+    projectName: string;
+    favorite: number;
+    assignedBy: string;
+}
 const ClientSheet: React.FC<any> = () => {
     const [data1, setData1] = useState<Project[]>([]);
     const [selectedEmployee, setSelectedEmployee] = useState<string>("");
     const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
     const [morningComments, setMorningComments] = useState<Record<string, string>>({});
     const [morningChecks, setMorningChecks] = useState<Record<string, boolean>>({});
+    const [favirotes, setFavirotesChecks] = useState<Record<string, boolean>>({});
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [eveningChecks, setEveningChecks] = useState<Record<string, boolean>>({});
     const [eveningComments, setEveningComments] = useState<Record<string, string>>({});
+    const [filterOption, setFilterOption] = useState<string>("ALL");
+    const [filterOptions, setFilterOptions] = useState<FilterOptions>({ message: "", data: {} });
+    const [filterOpt, setFilterOpt] = useState<FilterOptions>();
 
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
@@ -39,7 +52,6 @@ const ClientSheet: React.FC<any> = () => {
         const myData = JSON.parse(myDataString);
         assignedBy = myData.firstName;
     }
-console.log("assignedBy",assignedBy);
 
     useEffect(() => {
         axios
@@ -72,13 +84,49 @@ console.log("assignedBy",assignedBy);
         });
     }, []);
 
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/get/filter-options`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            }
+        }).then((response) => {
+            setFilterOpt(response.data);
+            const filterOptionsData: Record<string, boolean> = response.data.data.reduce((acc: any, project: any) => {
+                acc[project.projectName] = project.favorite === 1;
+                return acc;
+            }, {});
+            const updatedFilterOptions: FilterOptions = {
+                message: response.data.message,
+                data: filterOptionsData,
+            };
+
+            setFilterOptions(updatedFilterOptions);
+        });
+    }, [data1, filterOption, favirotes, searchTerm]);
+
+
+
+
+    const handleFilterChange = (value: string) => {
+        setFilterOption(value);
+    };
     const filteredData: Project[] = data1
-        .filter((project) => project.projectName.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter((project) => {
+            if (filterOption === "ALL") {
+                return project.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+            } else if (filterOption === "FAVORITE" && filterOpt?.data && Array.isArray(filterOpt.data)) {
+                const assignedProjects = filterOpt.data.filter((opt: FilterOption | boolean): opt is FilterOption => typeof opt !== 'boolean' && opt.assignedBy === assignedBy);
+                return assignedProjects.some((opt) => opt.projectName === project.projectName);
+            }
+            return true;
+        })
         .map((project) => ({
             ...project,
             key: project.ProID,
             eveningComment: "",
         }));
+
+
 
     const columns = [
         {
@@ -93,10 +141,25 @@ console.log("assignedBy",assignedBy);
             key: "select",
             render: (_: any, record: Project) => (
                 <Checkbox
+                    style={{ border: '2px solid black', borderRadius: '6px' }}
                     checked={morningChecks[record.projectName]}
                     onChange={() => handleCheckboxChange(record.projectName, true)}
                 />
             ),
+        },
+        {
+            title: "favorite",
+            dataIndex: "select",
+            key: "select",
+            render: (_: any, record: Project) => {
+                return (
+                    <Checkbox
+                        style={{ border: '2px solid black', borderRadius: '6px' }}
+                        checked={favirotes[record.projectName]}
+                        onChange={() => handleCheckboxChangeFav(record.projectName, true)}
+                    />
+                )
+            },
         },
         {
             title: "Morning Comment",
@@ -122,6 +185,7 @@ console.log("assignedBy",assignedBy);
             key: "eveningCheck",
             render: (_: any, record: Project) => (
                 <Checkbox
+                    style={{ border: '2px solid black', borderRadius: '6px' }}
                     checked={eveningChecks[record.projectName]}
                     onChange={() => handleCheckboxChange(record.projectName, false)}
                     disabled={!morningChecks[record.projectName]}
@@ -166,8 +230,17 @@ console.log("assignedBy",assignedBy);
         }
     };
 
+    const handleCheckboxChangeFav = (projectName: string, isMorning: boolean) => {
+        if (isMorning) {
+            setFavirotesChecks((prevChecks) => ({
+                ...prevChecks,
+                [projectName]: !prevChecks[projectName],
+            }));
+        }
+    };
+
     const handleSend = () => {
-        if (!selectedEmployee) {
+        if (!selectedEmployee && filterOption === "FAVORITE") {
             toast.error('Please select an employee', {
                 position: toast.POSITION.TOP_RIGHT,
             });
@@ -181,7 +254,8 @@ console.log("assignedBy",assignedBy);
             morningChecks: morningChecks,
             eveningChecks: eveningChecks,
             eveningComments: eveningComments,
-            assignedBy:assignedBy
+            assignedBy: assignedBy,
+            favirotes: favirotes,
         };
 
         axios
@@ -195,7 +269,6 @@ console.log("assignedBy",assignedBy);
                 }
             )
             .then((response) => {
-                console.log('Data sent successfully:', response.data);
                 toast.success('Data sent successfully!', {
                     position: toast.POSITION.TOP_RIGHT,
                 });
@@ -279,6 +352,10 @@ console.log("assignedBy",assignedBy);
                                             {name}
                                         </Select.Option>
                                     ))}
+                                </Select>
+                                <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                    <Option value="ALL">ALL</Option>
+                                    <Option value="FAVORITE">FAVORITE</Option>
                                 </Select>
 
                                 <div
