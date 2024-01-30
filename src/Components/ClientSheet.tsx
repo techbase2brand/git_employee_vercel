@@ -58,6 +58,9 @@ const ClientSheet: React.FC<any> = () => {
         assignedBy = myData.firstName;
         EmployeeId = myData.EmployeeID
     }
+    const filteredDataByEmployee = Array.isArray(filterOpt?.data)
+    ? filterOpt?.data.filter((item: FilterOption) => item.EmployeeID === EmployeeId)
+    : [];
 
     useEffect(() => {
         axios
@@ -111,8 +114,6 @@ const ClientSheet: React.FC<any> = () => {
     }, [data1, filterOption, favirotes, searchTerm]);
 
 
-
-
     const handleFilterChange = (value: string) => {
         setFilterOption(value);
         setMorningChecks({});
@@ -159,16 +160,19 @@ const ClientSheet: React.FC<any> = () => {
             dataIndex: "select",
             key: "select",
             render: (_: any, record: Project) => {
-                console.log("record",record)
+                const isFavoriteForEmployee = filteredDataByEmployee && filteredDataByEmployee.some((item) => item.projectName === record.projectName);
+        
                 return (
                     <Checkbox
                         style={{ border: '2px solid black', borderRadius: '6px' }}
-                        checked={filterOptions.data[record.projectName] || favirotes[record.projectName]}
+                        checked={isFavoriteForEmployee || favirotes[record.projectName]}
                         onChange={() => handleCheckboxChangeFav(record.projectName, true)}
                     />
-                )
+                );
             },
         },
+        
+        
         {
             title: "Morning Comment",
             dataIndex: "projectName",
