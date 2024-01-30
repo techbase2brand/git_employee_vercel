@@ -13,6 +13,7 @@ interface ClientSheetData {
     morningCheck: number;
     eveningCheck: number;
     eveningComment: string | null;
+    assignedBy: string;
 }
 
 const ViewClientSheet: React.FC<any> = () => {
@@ -43,12 +44,22 @@ const ViewClientSheet: React.FC<any> = () => {
             });
     }, []);
 
+    const filteredData = data.filter((project) => {
+        if (employeeID === "B2B00100") {
+            return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "";
+        } else {
+            const isAssignedByEmployee = project.assignedBy === employeeName;
+            const isAssignedToEmployee = project.AssigneeName === employeeName;
+            return (
+                (isAssignedByEmployee || isAssignedToEmployee) &&
+                project.assignedBy !== "" &&
+                project.AssigneeName !== "" &&
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+    });
 
-    const filteredData = data.filter((project) =>
-        employeeID === "B2B00100"
-            ? project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-            : project.AssigneeName === employeeName && project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) || project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
     const paginationSettings = {
         pageSize: 100,
     };
