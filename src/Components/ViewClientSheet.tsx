@@ -25,6 +25,7 @@ const ViewClientSheet: React.FC<any> = () => {
     const [editedMorningComments, setEditedMorningComments] = useState<Record<string, string>>({});
     const [editedEveningComments, setEditedEveningComments] = useState<Record<string, string>>({});
     const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null);
+    
     const [assigneeOptions, setAssigneeOptions] = useState<string[]>([]);
 
     const myDataString = localStorage.getItem('myData');
@@ -50,9 +51,28 @@ const ViewClientSheet: React.FC<any> = () => {
             });
     }, []);
 
+    // const filteredData = data.filter((project) => {
+    //     if (employeeID === "B2B00100") {
+    //         return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "" && project.AssigneeName === selectedAssignee;
+    //     } else {
+    //         const isAssignedByEmployee = project.assignedBy === employeeName;
+    //         const isAssignedToEmployee = project.AssigneeName === employeeName;
+    //         return (
+    //             (isAssignedByEmployee || isAssignedToEmployee) &&
+    //             project.assignedBy !== "" &&
+    //             project.AssigneeName !== "" &&
+    //             project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    //             project.AssigneeName === selectedAssignee
+    //         );
+    //     }
+    // });
     const filteredData = data.filter((project) => {
         if (employeeID === "B2B00100") {
-            return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) && project.AssigneeName !== "" || project.AssigneeName === selectedAssignee;
+            return (
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                project.AssigneeName !== "" &&
+                (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
+            );
         } else {
             const isAssignedByEmployee = project.assignedBy === employeeName;
             const isAssignedToEmployee = project.AssigneeName === employeeName;
@@ -60,12 +80,12 @@ const ViewClientSheet: React.FC<any> = () => {
                 (isAssignedByEmployee || isAssignedToEmployee) &&
                 project.assignedBy !== "" &&
                 project.AssigneeName !== "" &&
-                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                project.AssigneeName === selectedAssignee
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
             );
         }
     });
-
+    
 
     const paginationSettings = {
         pageSize: 100,
@@ -287,6 +307,7 @@ const ViewClientSheet: React.FC<any> = () => {
                                         style={{ width: 200 }}
                                         placeholder="Select Assignee"
                                         onChange={(value) => setSelectedAssignee(value)}
+                                        value={selectedAssignee}
                                     >
                                         {assigneeOptions.map((assignee) => (
                                             <Option key={assignee} value={assignee}>
