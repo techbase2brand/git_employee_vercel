@@ -430,6 +430,24 @@ css .campus_form {
   border-style: none !important;
   margin-top: 9px !important;
 }
+
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(1),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(2),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(3),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(4),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(5),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(6),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(7),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(8),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(9),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(10),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(11),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(12),
+.clientSheetTlTask thead.ant-table-thead tr th:nth-child(13){
+  min-width: 100px;
+}
+
+
 .saleCampus-form  thead.ant-table-thead tr th:nth-child(1),
 .saleCampus-form  thead.ant-table-thead tr th:nth-child(2),
 .saleCampus-form  thead.ant-table-thead tr th:nth-child(3),

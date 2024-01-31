@@ -21,6 +21,7 @@ interface Task {
   upWorkHrs: string;
   employeeID: string;
   currDate: string;
+  selectDate:string;
 }
 
 const EveningDashboard: React.FC = () => {
@@ -59,12 +60,12 @@ const EveningDashboard: React.FC = () => {
           const endDate = new Date(dateRange[1]!).getTime();    // using the non-null assertion '!'
 
           filteredData = response.data.filter((obj) => {
-            const taskDate = new Date(obj.currDate).getTime();
+            const taskDate = new Date(obj.selectDate).getTime();
             return taskDate >= startDate && taskDate <= endDate;
           });
         } else {
           filteredData = response.data.filter(
-            (obj) => obj.currDate === formattedDate
+            (obj) => obj.selectDate === formattedDate
           );
         }
         const sortedData = filteredData.sort(

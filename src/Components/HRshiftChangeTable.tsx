@@ -119,6 +119,16 @@ const HRshiftChangeTable: React.FC = () => {
       render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
     },
     {
+      title: "Apply Date",
+      dataIndex: "applyDate",
+      key: "applyDate",
+      render: (text: string) => {
+        const formattedDate = new Date(text).toLocaleDateString();
+        return <div style={{ width: 80 }}>{formattedDate}</div>;
+      },
+    },
+
+    {
       title: "In time",
       dataIndex: "inTime",
       key: "inTime",
