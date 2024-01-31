@@ -284,7 +284,7 @@ const ClientSheet: React.FC<any> = () => {
     };
 
     const handleSend = () => {
-        if (!selectedEmployee && filterOption === "FAVORITE") {
+        if (!selectedEmployee) {
             toast.error('Please select an employee', {
                 position: toast.POSITION.TOP_RIGHT,
             });
@@ -459,6 +459,7 @@ const ClientSheet: React.FC<any> = () => {
                                     justifyContent: "space-around",
                                     marginTop: "35px",
                                 }}
+                                className="clientSheetTlTask"
                             >
                                 <Table columns={columns} dataSource={filteredData} pagination={paginationSettings} />
                             </div>

@@ -16,6 +16,7 @@ interface Task {
   employeeID: string;
   actTime: string;
   currDate: string;
+  selectDate:string
 }
 
 interface Props {
@@ -158,8 +159,8 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     },
     {
       title: "Date",
-      dataIndex: "currDate",
-      key: "currDate",
+      dataIndex: "selectDate",
+      key: "selectDate",
     },
     {
       title: "Action",

@@ -324,6 +324,7 @@ const ViewClientSheet: React.FC<any> = () => {
                                     justifyContent: "space-around",
                                     marginTop: "35px",
                                 }}
+                                className="clientSheetTlTask"
                             >
                                 <Table columns={columns} dataSource={filteredData} pagination={paginationSettings} />
                             </div>
