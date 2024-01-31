@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import axios from "axios";
-import { Button, Checkbox, Select, Table } from "antd";
+import { Button, Checkbox, Select, Table, DatePicker } from "antd";
 import 'react-toastify/dist/ReactToastify.css';
 import { Option } from "antd/es/mentions";
-
+import { format } from "date-fns";
+const { RangePicker } = DatePicker;
 interface ClientSheetData {
     id: number;
     projectName: string;
@@ -15,6 +16,8 @@ interface ClientSheetData {
     eveningCheck: number;
     eveningComment: string | null;
     assignedBy: string;
+    estTime: string;
+    actTime: string;
 }
 
 const ViewClientSheet: React.FC<any> = () => {
@@ -25,8 +28,10 @@ const ViewClientSheet: React.FC<any> = () => {
     const [editedMorningComments, setEditedMorningComments] = useState<Record<string, string>>({});
     const [editedEveningComments, setEditedEveningComments] = useState<Record<string, string>>({});
     const [selectedAssignee, setSelectedAssignee] = useState<string | null>(null);
-    
     const [assigneeOptions, setAssigneeOptions] = useState<string[]>([]);
+    const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
+    const [currentDate] = useState<Date>(new Date());
+    const formattedDate = format(currentDate, "yyyy-MM-dd");
 
     const myDataString = localStorage.getItem('myData');
     let employeeName = "";
@@ -37,19 +42,37 @@ const ViewClientSheet: React.FC<any> = () => {
         employeeID = myData.EmployeeID;
     }
 
+    const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+        setDateRange(dateStrings);
+    };
+
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/get-data`)
             .then(response => {
-                console.log('Data received successfully:', response.data);
+                let filteredData;
                 const uniqueAssignees: string[] = Array.from(new Set((response.data.data as ClientSheetData[]).map(item => item.AssigneeName)))
                     .filter(assignee => assignee !== "");
                 setAssigneeOptions(uniqueAssignees);
-                setData(response.data.data || []);
+
+                if (dateRange[0] && dateRange[1]) {
+                    const startDate = new Date(dateRange[0]!).getTime();
+                    const endDate = new Date(dateRange[1]!).getTime();
+                    filteredData = response.data.data.filter((obj: any) => {
+                        const taskDate = new Date(obj.created_at.split('T')[0]).getTime();
+                        return taskDate >= startDate && taskDate <= endDate;
+                    });
+                } else {
+                    filteredData = response.data.data.filter((item: any) => item.created_at.split('T')[0] === formattedDate)
+                }
+                const sortedData = filteredData.sort(
+                    (a: any, b: any) => Number(b.id) - Number(a.id)
+                );
+                setData(sortedData);
             })
             .catch(error => {
                 console.error('Error while fetching data:', error);
             });
-    }, []);
+    }, [dateRange]);
 
     // const filteredData = data.filter((project) => {
     //     if (employeeID === "B2B00100") {
@@ -85,7 +108,22 @@ const ViewClientSheet: React.FC<any> = () => {
             );
         }
     });
-    
+    //act time
+    const entriesWithActTime = filteredData.filter(entry => entry.actTime !== null);
+    const actTimeStrings = entriesWithActTime.map(entry => entry.actTime);
+    const actTimeArrays = actTimeStrings.map(timeString => timeString.split(':').map(Number));
+    const totalMinutes = actTimeArrays.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
+    const totalHoursFormatted = Math.floor(totalMinutes / 60);
+    const totalMinutesFormatted = totalMinutes % 60;
+
+    //est time
+    const entriesWithEstTime = data.filter(entry => entry.estTime !== null && entry.estTime !== "");
+    const estTimeStrings = entriesWithEstTime.map(entry => entry.estTime);
+    const estTimeArrays = estTimeStrings.map(timeString => timeString.split(':').map(Number));
+    const totalEstMinutes = estTimeArrays.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
+    const totalEstHoursFormatted = Math.floor(totalEstMinutes / 60);
+    const totalEstMinutesFormatted = totalEstMinutes % 60;
+
 
     const paginationSettings = {
         pageSize: 100,
@@ -97,7 +135,6 @@ const ViewClientSheet: React.FC<any> = () => {
         );
 
         setData(updatedData);
-
         axios.put(`${process.env.REACT_APP_API_BASE_URL}/update-checks/${record.id}`, {
             morningCheck: record.morningCheck === 1 ? 0 : 1,
         })
@@ -163,6 +200,40 @@ const ViewClientSheet: React.FC<any> = () => {
             });
     };
 
+    const handleEstTimeChange = (id: number, value: string) => {
+        const updatedData = data.map((item) =>
+            item.id === id ? { ...item, estTime: value } : item
+        );
+        setData(updatedData);
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/update-est-time/${id}`, {
+            estTime: value,
+        })
+            .then(response => {
+                console.log('Est. time updated successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error while updating est. time:', error);
+            });
+    };
+
+    const handleActTimeChange = (id: number, value: string) => {
+        const updatedData = data.map((item) =>
+            item.id === id ? { ...item, actTime: value || "" } : item
+        );
+        setData(updatedData);
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/update-act-time/${id}`, {
+            actTime: value || "",
+        })
+            .then(response => {
+                console.log('Act. time updated successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error while updating act. time:', error);
+            });
+    };
+
+
+
     const columns = [
         {
             title: "Project Name",
@@ -177,10 +248,14 @@ const ViewClientSheet: React.FC<any> = () => {
             render: (text: string) => <div>{text}</div>,
         },
         {
-            title: "Assign To",
-            dataIndex: "AssigneeName",
-            key: "AssigneeName",
-            render: (text: string) => <div>{text}</div>,
+            title: "Date",
+            dataIndex: "created_at",
+            key: "created_at",
+            render: (text: string) => {
+                const date = new Date(text);
+                const formattedDate = date.toISOString().split('T')[0];
+                return <div>{formattedDate}</div>;
+            },
         },
         {
             title: "Morning task",
@@ -195,6 +270,30 @@ const ViewClientSheet: React.FC<any> = () => {
                 />
             ),
         },
+        {
+            title: "Est.Hour",
+            dataIndex: "estTime",
+            key: "estTime",
+            render: (text: string, record: ClientSheetData) => (
+                <Select
+                    value={record.estTime || ""}
+                    onChange={(value) => handleEstTimeChange(record.id, value)}
+                >
+                    <Option value="">--Select Time--</Option>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                        [0, 10, 20, 30, 40, 50].map((minute) => (
+                            <Option
+                                key={`${hour}:${minute}`}
+                                value={`${hour}:${minute}`}
+                            >
+                                {`${hour} hours ${minute} mins`}
+                            </Option>
+                        ))
+                    )}
+                </Select>
+            ),
+        },
+
         {
             title: "Morning Comment",
             dataIndex: "morningComment",
@@ -218,8 +317,6 @@ const ViewClientSheet: React.FC<any> = () => {
                 </div>
             ),
         },
-
-
         {
             title: "Evening task",
             dataIndex: "eveningCheck",
@@ -232,6 +329,30 @@ const ViewClientSheet: React.FC<any> = () => {
                 />
             ),
         },
+        {
+            title: "Act.Hour",
+            dataIndex: "actTime",
+            key: "actTime",
+            render: (text: string, record: ClientSheetData) => (
+                <Select
+                    value={record.actTime || ""}
+                    onChange={(value) => handleActTimeChange(record.id, value)}
+                >
+                    <Option value="">--Select Time--</Option>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                        [0, 10, 20, 30, 40, 50].map((minute) => (
+                            <Option
+                                key={`${hour}:${minute}`}
+                                value={`${hour}:${minute}`}
+                            >
+                                {`${hour} hours ${minute} mins`}
+                            </Option>
+                        ))
+                    )}
+                </Select>
+            ),
+        },
+
         {
             title: "Evening Comment",
             dataIndex: "eveningComment",
@@ -290,21 +411,24 @@ const ViewClientSheet: React.FC<any> = () => {
                             }}
                             className="add-div"
                         >
-                            <div style={{ display: 'flex', gap: '20px' }}>
+                            <div style={{ display: 'flex', gap: '20px' }} className="placeholder-color">
                                 <input
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search"
                                     style={{
                                         marginLeft: 10,
-                                        border: '1px solid #d9d9d9',
                                         borderRadius: '6px',
                                         height: '43px',
+                                        border: '2px solid black'
                                     }}
                                 />
                                 {employeeID === "B2B00100" &&
                                     <Select
-                                        style={{ width: 200 }}
+                                        style={{
+                                            width: 200, border: '2px solid black',
+                                            borderRadius: '10px'
+                                        }}
                                         placeholder="Select Assignee"
                                         onChange={(value) => setSelectedAssignee(value)}
                                         value={selectedAssignee}
@@ -316,13 +440,30 @@ const ViewClientSheet: React.FC<any> = () => {
                                         ))}
                                     </Select>
                                 }
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        width: "100%",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
+                                    <RangePicker onChange={handleDateRangeChange} style={{ border: '2px solid black', height: '43px' }} />
+                                </div>
+                            </div>
+                            <div style={{
+                                display: 'flex', gap: '61px',
+                                marginLeft: '9px'
+                            }}>
+                                <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
+                                <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
                             </div>
                             <div
                                 style={{
                                     display: "flex",
                                     flexDirection: "row",
                                     justifyContent: "space-around",
-                                    marginTop: "35px",
+                                    marginTop: "20px",
                                 }}
                                 className="clientSheetTlTask"
                             >

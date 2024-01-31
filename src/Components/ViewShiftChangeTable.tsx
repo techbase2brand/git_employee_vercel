@@ -68,6 +68,12 @@ const ViewShiftChangeTable: React.FC = () => {
       render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
     },
     {
+      title: "Apply Date",
+      dataIndex: "applyDate",
+      key: "applyDate",
+      render: (text: string) => <div style={{ width: 80 }}>{text}</div>,
+    },
+    {
       title: "In time",
       dataIndex: "inTime",
       key: "inTime",

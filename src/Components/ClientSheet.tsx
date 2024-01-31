@@ -24,7 +24,7 @@ interface Project {
 
 interface FilterOptions {
     message: string;
-    data: Record<string, boolean>; // Assuming data is an object with keys as strings and values as booleans
+    data: Record<string, boolean>;
 }
 
 interface FilterOption {
@@ -34,6 +34,7 @@ interface FilterOption {
     EmployeeID: string;
     AssigneeName: string;
 }
+
 const ClientSheet: React.FC<any> = () => {
     const [data1, setData1] = useState<Project[]>([]);
     const [selectedEmployee, setSelectedEmployee] = useState<string>("");
@@ -44,11 +45,9 @@ const ClientSheet: React.FC<any> = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [eveningChecks, setEveningChecks] = useState<Record<string, boolean>>({});
     const [eveningComments, setEveningComments] = useState<Record<string, string>>({});
-    const [filterOption, setFilterOption] = useState<string>("ALL");
+    const [filterOption, setFilterOption] = useState<string>("FAVORITE");
     const [filterOptions, setFilterOptions] = useState<FilterOptions>({ message: "", data: {} });
-
     const [filterOpt, setFilterOpt] = useState<FilterOptions>();
-    console.log("filterOpt", filterOpt);
 
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
@@ -58,7 +57,6 @@ const ClientSheet: React.FC<any> = () => {
         assignedBy = myData.firstName;
         EmployeeId = myData.EmployeeID
     }
-    console.log("EmployeeId", EmployeeId);
 
     const filteredDataByEmployee = Array.isArray(filterOpt?.data)
         ? filterOpt?.data.filter((item: FilterOption) => item.AssigneeName === filterOption)
@@ -67,7 +65,6 @@ const ClientSheet: React.FC<any> = () => {
     const filteredChecked = Array.isArray(filterOpt?.data)
         ? filterOpt?.data.filter((item: FilterOption) => item.favorite === 1)
         : [];
-    console.log("filteredChecked", filteredChecked);
 
     useEffect(() => {
         axios
@@ -107,10 +104,12 @@ const ClientSheet: React.FC<any> = () => {
             }
         }).then((response) => {
             setFilterOpt(response.data);
+
             const filterOptionsData: Record<string, boolean> = response.data.data.reduce((acc: any, project: any) => {
                 acc[project.projectName] = project.favorite === 1;
                 return acc;
             }, {});
+
             const updatedFilterOptions: FilterOptions = {
                 message: response.data.message,
                 data: filterOptionsData,
@@ -118,13 +117,13 @@ const ClientSheet: React.FC<any> = () => {
 
             setFilterOptions(updatedFilterOptions);
         });
-    }, [data1, filterOption, favirotes, searchTerm]);
-
+    }, [data1, filterOption, searchTerm]);
 
     const handleFilterChange = (value: string) => {
         setFilterOption(value);
         setMorningChecks({});
     };
+
     const filteredData: Project[] = data1
         .filter((project) => {
             if (filterOption === "ALL") {
@@ -132,7 +131,7 @@ const ClientSheet: React.FC<any> = () => {
             } else if (filterOption === "FAVORITE" && filterOpt?.data && Array.isArray(filterOpt.data)) {
                 const assignedProjects = filterOpt.data.filter((opt: FilterOption | boolean): opt is FilterOption => typeof opt !== 'boolean');
                 return assignedProjects.some((opt) => opt.projectName === project.projectName);
-            } else if (filterOption !== "ALL" && filteredDataByEmployee && filteredDataByEmployee.length > 0) { // Check if AssigneeName matches the selected value
+            } else if (filterOption !== "ALL" && filteredDataByEmployee && filteredDataByEmployee.length > 0) {
                 return filteredDataByEmployee.some((opt) => opt.projectName === project.projectName);
             }
             return false;
@@ -143,11 +142,13 @@ const ClientSheet: React.FC<any> = () => {
             eveningComment: "",
         }));
 
-
-
-
-
     const columns = [
+        {
+            title: "Client Name",
+            dataIndex: "clientName",
+            key: "clientName",
+            render: (text: string) => <div>{text}</div>,
+        },
         {
             title: "Project Name",
             dataIndex: "projectName",
@@ -171,19 +172,25 @@ const ClientSheet: React.FC<any> = () => {
             dataIndex: "select",
             key: "select",
             render: (_: any, record: Project) => {
-                const isFavoriteForEmployee = filteredChecked && filteredChecked.some((item) => item.projectName === record.projectName && item.favorite === 1);
+                const isFavoriteForEmployee =
+                    filteredChecked &&
+                    filteredChecked.some(
+                        (item) =>
+                            item.projectName === record.projectName && item.favorite === 1
+                    );
 
                 return (
                     <Checkbox
-                        style={{ border: '2px solid black', borderRadius: '6px' }}
-                        checked={isFavoriteForEmployee || favirotes[record.projectName]}
+                        style={{
+                            border: '2px solid black',
+                            borderRadius: '6px',
+                        }}
+                        checked={favirotes[record.projectName]}
                         onChange={() => handleCheckboxChangeFav(record.projectName, true)}
                     />
                 );
             },
         },
-
-
         {
             title: "Morning Comment",
             dataIndex: "projectName",
@@ -235,7 +242,6 @@ const ClientSheet: React.FC<any> = () => {
         },
     ];
 
-
     const handleCheckboxChange = (projectName: string, isMorning: boolean) => {
         if (isMorning) {
             setMorningChecks((prevChecks) => ({
@@ -250,38 +256,62 @@ const ClientSheet: React.FC<any> = () => {
         }
     };
 
+    useEffect(() => {
+        let initialFavirotes: Record<string, boolean> = {};
+
+        if (filterOptions.data) {
+            const filterOptionArray: FilterOption[] = Object.entries(filterOptions.data).map(([projectName, favorite]) => ({
+                projectName,
+                favorite: favorite ? 1 : 0,
+                assignedBy: '',
+                EmployeeID: '',
+                AssigneeName: '',
+            }));
+            initialFavirotes = filterOptionArray.reduce(
+                (acc: Record<string, boolean>, project: FilterOption) => {
+                    acc[project.projectName] = project.favorite === 1;
+                    return acc;
+                },
+                {}
+            );
+        }
+
+        setFavirotesChecks(initialFavirotes);
+    }, [filterOptions.data]);
+
 
     const handleCheckboxChangeFav = (projectName: string, isMorning: boolean) => {
         setFavirotesChecks((prevChecks: any) => {
             const updatedChecks = {
                 ...prevChecks,
-                [projectName]: !prevChecks[projectName] ? 1 : 0,
+                [projectName]: !prevChecks[projectName],
             };
-            console.log("updatedChecks", updatedChecks);
-            // if (!updatedChecks[projectName]) {
-            axios.put(
-                `${process.env.REACT_APP_API_BASE_URL}/update-favorite-status`,
-                {
-                    projectName,
-                    favorite: updatedChecks[projectName],
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('myToken')}`,
-                    },
-                }
-            )
-                .then((response) => {
-                    console.log("res");
 
+            axios
+                .put(
+                    `${process.env.REACT_APP_API_BASE_URL}/update-favorite-status`,
+                    {
+                        projectName,
+                        favorite: updatedChecks[projectName] ? 1 : 0,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('myToken')}`,
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log("Favorite status updated successfully");
                 })
                 .catch((error) => {
                     console.error('Error while updating favorite status:', error);
                 });
-            // }
+
             return updatedChecks;
         });
     };
+
+
 
     const handleSend = () => {
         if (!selectedEmployee) {
@@ -364,14 +394,14 @@ const ClientSheet: React.FC<any> = () => {
                             }}
                             className="add-div"
                         >
-                            <div style={{ display: 'flex', gap: '20px' }}>
+                            <div style={{ display: 'flex', gap: '20px' }} className="placeholder-color">
                                 <input
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search"
                                     style={{
                                         marginLeft: 10,
-                                        border: '1px solid #d9d9d9',
+                                        border: '2px solid black',
                                         borderRadius: '6px',
                                         height: '43px',
                                     }}
@@ -385,8 +415,8 @@ const ClientSheet: React.FC<any> = () => {
                                         (option?.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                     style={{
-                                        width: '30%', height: 'fit-Content', border: '1px solid #d8d6d6',
-                                        borderRadius: '6px'
+                                        width: '30%', height: 'fit-Content',
+                                        borderRadius: '6px', border: '2px solid black'
                                     }}
                                     onChange={(value) => setSelectedEmployee(value)}
                                     value={selectedEmployee || undefined}
@@ -400,7 +430,7 @@ const ClientSheet: React.FC<any> = () => {
                                         ))}
                                 </Select>
                                 {EmployeeId === "B2B00100" &&
-                                    <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: '15%', border: '2px solid black', borderRadius: '5px' }}>
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Yugal">Yugal</Select.Option>
@@ -411,7 +441,7 @@ const ClientSheet: React.FC<any> = () => {
                                 }
 
                                 {EmployeeId === "B2B00022" &&
-                                    <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Yugal">Yugal</Select.Option>
@@ -419,7 +449,7 @@ const ClientSheet: React.FC<any> = () => {
                                 }
 
                                 {EmployeeId === "B2B00026" &&
-                                    <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Manpreet">Manpreet</Select.Option>
@@ -427,7 +457,7 @@ const ClientSheet: React.FC<any> = () => {
                                 }
 
                                 {EmployeeId === "B2B00027" &&
-                                    <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Arshpreet">Arshpreet</Select.Option>
@@ -435,7 +465,7 @@ const ClientSheet: React.FC<any> = () => {
                                 }
 
                                 {EmployeeId === "B2B00023" &&
-                                    <Select defaultValue="ALL" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Aashu">Aashu</Select.Option>

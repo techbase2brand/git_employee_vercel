@@ -21,11 +21,12 @@ interface Task {
   upWorkHrs: string;
   employeeID: string;
   currDate: string;
-  selectDate:string;
+  selectDate: string;
 }
 
 const EveningDashboard: React.FC = () => {
   const [data, setData] = useState<any>([]);
+
   // const [loading, setLoading] = useState(true);
   const [currentDate] = useState<Date>(new Date());
   const [totalUpwork, setTotalUpWork] = useState<any>();
@@ -40,6 +41,7 @@ const EveningDashboard: React.FC = () => {
   };
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
+
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
   };
@@ -79,7 +81,6 @@ const EveningDashboard: React.FC = () => {
           acc[obj.employeeID].push(obj);
           return acc;
         }, {});
-
         setData(result);
         // setLoading(false);
       })
@@ -198,7 +199,7 @@ const EveningDashboard: React.FC = () => {
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
               <div style={{}} className="evening-handle">
-              {/* {loading ?
+                {/* {loading ?
                   <Spin size="large" className="spinner-antd"/>
                   : */}
                 <DashboardEveningTasktable
@@ -215,7 +216,7 @@ const EveningDashboard: React.FC = () => {
                   del={del}
                   setDel={setDel}
                 />
-              {/* } */}
+                {/* } */}
               </div>
             </div>
           </div>

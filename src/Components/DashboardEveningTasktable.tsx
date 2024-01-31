@@ -92,7 +92,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         console.log(error);
       });
     setIsModalOpen(false);
-
   };
 
 
