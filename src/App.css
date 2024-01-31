@@ -430,6 +430,9 @@ css .campus_form {
   border-style: none !important;
   margin-top: 9px !important;
 }
+.placeholder-color .ant-select-selection-placeholder{
+  color:black
+}
 
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(1),
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(2),

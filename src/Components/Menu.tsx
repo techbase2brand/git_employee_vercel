@@ -550,36 +550,73 @@ const AppMenu = () => {
           >
             <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
+          <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
+            <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+              <Link to="/ClientSheet">Assign TL Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
+              <Link to="/ViewClientSheet">View TL Task</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="AssignTaskPage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/AssignTaskPage">Assign Task </Link>
+            </Menu.Item>
+            <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
+              <Link to="/AssignedTasks">AssignedTasks <Badge count={countTaskNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item
+              key="ViewBacklogPage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item key="dragAssign" icon={<TableOutlined />}>
+              <Link to="/dragAssign">DragAssign</Link>
+            </Menu.Item>
 
-          <Menu.Item
-            key="employee-form"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/employee-form">Employee Form</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="employee-list"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/employee-list">Employee List</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="AssignTaskPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AssignTaskPage">Assign Task </Link>
-          </Menu.Item>
-          <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
-            <Link to="/AssignedTasks">AssignedTasks <Badge count={countTaskNotifications}>
-            </Badge></Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewBacklogPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
-            </Badge></Link>
-          </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="hr" icon={<TableOutlined rev={undefined} />} title="HR">
+            <Menu.Item
+              key="employee-form"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/employee-form">Employee Form</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="employee-list"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/employee-list">Employee List</Link>
+            </Menu.Item>
+            <Menu.Item key="HrLeaveReport" icon={<TableOutlined />}>
+              <Link to="/HrLeaveReport">HrLeaveReport </Link>
+            </Menu.Item>
+            <Menu.Item key="TermCondition" icon={<TableOutlined />}>
+              <Link to="/TermCondition">TermCondition</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewTermCondition" icon={<TableOutlined />}>
+              <Link to="/ViewTermCondition">ViewTermCondition</Link>
+            </Menu.Item>
+            <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
+              <Link to="/LeavePage">LeavePage for approval <Badge count={countLeaveNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
+              <Link to="/HRshiftChangeSection">ShiftChange for approval</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="manageReport" icon={<TableOutlined rev={undefined} />} title="Manage Report">
+            <Menu.Item key="SalesMaster" icon={<TableOutlined />}>
+              <Link to="/SalesMaster">SalesForm</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewSalesMaster" icon={<TableOutlined />}>
+              <Link to="/ViewSalesMaster">ViewSalesData</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
           <Menu.SubMenu key="manageProject" icon={<TableOutlined rev={undefined} />} title="Manage Projects">
             <Menu.Item key="add-project" icon={<TableOutlined rev={undefined} />}>
               <Link to="/add-project">Add Project</Link>
@@ -616,18 +653,17 @@ const AppMenu = () => {
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu key="projectReport" icon={<TableOutlined rev={undefined} />} title="Reports">
+            <Menu.Item key="AdminSaleCampusFormList" icon={<TableOutlined />}>
+              <Link to="/AdminSaleCampusFormList">AdminSaleCampusFormList</Link>
+            </Menu.Item>
+            <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
+              <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
+            </Menu.Item>
             <Menu.Item
               key="AboutProject"
               icon={<TableOutlined rev={undefined} />}
             >
               <Link to="/AboutProject">Projects Report</Link>
-            </Menu.Item>
-            <Menu.Item key="HrLeaveReport" icon={<TableOutlined />}>
-              <Link to="/HrLeaveReport">HrLeaveReport </Link>
-            </Menu.Item>
-            <Menu.Item key="LeavePage" icon={<TableOutlined rev={undefined} />}>
-              <Link to="/LeavePage">LeavePage for approval <Badge count={countLeaveNotifications}>
-              </Badge></Link>
             </Menu.Item>
             <Menu.Item
               key="ShiftChangePage"
@@ -639,35 +675,6 @@ const AppMenu = () => {
             {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
          <Link to="/salecampusformlist">Sale Campus List</Link>
        </Menu.Item> */}
-
-            <Menu.Item key="HRshiftChangeSection" icon={<TableOutlined />}>
-              <Link to="/HRshiftChangeSection">ShiftChange for approval</Link>
-            </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.SubMenu key="admin" icon={<TableOutlined rev={undefined} />} title="Admin">
-            <Menu.Item key="AdminSaleCampusFormList" icon={<TableOutlined />}>
-              <Link to="/AdminSaleCampusFormList">AdminSaleCampusFormList</Link>
-            </Menu.Item>
-            <Menu.Item key="AdminSaleInfotechFormList" icon={<TableOutlined />}>
-              <Link to="/AdminSaleInfotechFormList">AdminSaleInfotechFormList</Link>
-            </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.SubMenu key="terms" icon={<TableOutlined rev={undefined} />} title="Terms">
-            <Menu.Item key="TermCondition" icon={<TableOutlined />}>
-              <Link to="/TermCondition">TermCondition</Link>
-            </Menu.Item>
-            <Menu.Item key="ViewTermCondition" icon={<TableOutlined />}>
-              <Link to="/ViewTermCondition">ViewTermCondition</Link>
-            </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.SubMenu key="masterProject" icon={<TableOutlined rev={undefined} />} title="Masters">
-
-            <Menu.Item key="SalesMaster" icon={<TableOutlined />}>
-              <Link to="/SalesMaster">SalesForm</Link>
-            </Menu.Item>
-            <Menu.Item key="ViewSalesMaster" icon={<TableOutlined />}>
-              <Link to="/ViewSalesMaster">ViewSalesData</Link>
-            </Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu key="manageDocument" icon={<TableOutlined rev={undefined} />} title="Documentation">
             <Menu.Item key="DocForm" icon={<TableOutlined />}>
@@ -680,47 +687,28 @@ const AppMenu = () => {
               <Link to="/ViewDocumentation">ViewDocumentation</Link>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.Item key="dragAssign" icon={<TableOutlined />}>
-            <Link to="/dragAssign">DragAssign</Link>
-          </Menu.Item>
-          <Menu.Item key="dragAssignTable" icon={<TableOutlined />}>
+          {/* <Menu.Item key="dragAssignTable" icon={<TableOutlined />}>
             <Link to="/dragAssignTable">DragAssignTable</Link>
-          </Menu.Item>
-
-          <Menu.SubMenu key="Blogs" icon={<TableOutlined rev={undefined} />} title="Blogs">
-            <Menu.Item key="BlogPost" icon={<TableOutlined />}>
-              <Link to="/BlogPost">BlogPost</Link>
-            </Menu.Item>
-            <Menu.Item key="ViewBlogPost" icon={<TableOutlined />}>
-              <Link to="/ViewBlogPost">ViewBlogPost</Link>
-            </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.SubMenu key="InfotechBlogs" icon={<TableOutlined rev={undefined} />} title="Infotech-Blogs">
+          </Menu.Item> */}
+          <Menu.SubMenu key="infotech" icon={<TableOutlined rev={undefined} />} title="Infotech Website">
             <Menu.Item key="InfotechBlog" icon={<TableOutlined />}>
               <Link to="/InfotechBlog">InfotechBlog</Link>
             </Menu.Item>
             <Menu.Item key="InfotechTable" icon={<TableOutlined />}>
               <Link to="/InfotechTable">InfotechTable</Link>
             </Menu.Item>
-          </Menu.SubMenu>
-
-          <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus-Blogs">
-            <Menu.Item key="CampusBlogs" icon={<TableOutlined />}>
-              <Link to="/CampusBlogs">CampusBlogs</Link>
+            <Menu.Item key="BlogPost" icon={<TableOutlined />}>
+              <Link to="/BlogPost">BlogPost</Link>
             </Menu.Item>
-            <Menu.Item key="CampusBlogList" icon={<TableOutlined />}>
-              <Link to="/CampusBlogList">CampusBlogList</Link>
+            <Menu.Item key="ViewBlogPost" icon={<TableOutlined />}>
+              <Link to="/ViewBlogPost">ViewBlogPost</Link>
             </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.SubMenu key="Category" icon={<TableOutlined rev={undefined} />} title="Category-Added">
             <Menu.Item key="CategoryForm" icon={<TableOutlined />}>
               <Link to="/CategoryForm">CategoryForm</Link>
             </Menu.Item>
             <Menu.Item key="CategoryList" icon={<TableOutlined />}>
               <Link to="/CategoryList">CategoryList</Link>
             </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.SubMenu key="Knowledge" icon={<TableOutlined rev={undefined} />} title="Knowledge-Center">
             <Menu.Item key="KnowledgeCenter" icon={<TableOutlined />}>
               <Link to="/KnowledgeCenter">KnowledgeCenter</Link>
             </Menu.Item>
@@ -728,14 +716,17 @@ const AppMenu = () => {
               <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.SubMenu key="TL" icon={<TableOutlined rev={undefined} />} title="TL Tasks">
-            <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
-              <Link to="/ClientSheet">Assign TL Task</Link>
+          <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus Website">
+            <Menu.Item key="CampusBlogs" icon={<TableOutlined />}>
+              <Link to="/CampusBlogs">CampusBlogs</Link>
             </Menu.Item>
-            <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
-              <Link to="/ViewClientSheet">View TL Task</Link>
+            <Menu.Item key="CampusBlogList" icon={<TableOutlined />}>
+              <Link to="/CampusBlogList">CampusBlogList</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
+         <Link to="/salecampusformlist">Sale Campus List</Link>
+       </Menu.Item> */}
         </>
       )}
 
