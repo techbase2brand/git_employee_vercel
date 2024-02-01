@@ -117,7 +117,7 @@ const ClientSheet: React.FC<any> = () => {
 
             setFilterOptions(updatedFilterOptions);
         });
-    }, [data1, filterOption, searchTerm]);
+    }, [data1, filterOption]);
 
     const handleFilterChange = (value: string) => {
         setFilterOption(value);
@@ -127,12 +127,21 @@ const ClientSheet: React.FC<any> = () => {
     const filteredData: Project[] = data1
         .filter((project) => {
             if (filterOption === "ALL") {
-                return project.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+                return project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) || project.clientName.toLowerCase().includes(searchTerm.toLowerCase());
             } else if (filterOption === "FAVORITE" && filterOpt?.data && Array.isArray(filterOpt.data)) {
                 const assignedProjects = filterOpt.data.filter((opt: FilterOption | boolean): opt is FilterOption => typeof opt !== 'boolean');
-                return assignedProjects.some((opt) => opt.projectName === project.projectName);
+                return (
+                    (assignedProjects.some((opt) => opt.projectName === project.projectName) ||
+                        favirotes[project.projectName]) &&
+                    (project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        project.clientName.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
             } else if (filterOption !== "ALL" && filteredDataByEmployee && filteredDataByEmployee.length > 0) {
-                return filteredDataByEmployee.some((opt) => opt.projectName === project.projectName);
+                return (
+                    filteredDataByEmployee.some((opt) => opt.projectName === project.projectName) &&
+                    (project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        project.clientName.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
             }
             return false;
         })

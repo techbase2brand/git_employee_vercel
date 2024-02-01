@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { Table, Button, Modal } from "antd";
+import { Table, Button, Modal, Checkbox } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -16,7 +16,8 @@ interface Task {
   employeeID: string;
   actTime: string;
   currDate: string;
-  selectDate:string
+  selectDate: string;
+  approvedBy: string;
 }
 
 interface Props {
@@ -71,6 +72,15 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const myDataString = localStorage.getItem('myData');
+  let employeeName = "";
+  let jobPosition = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    employeeName = myData.firstName;
+    jobPosition = myData.jobPosition;
+  }
+
   const showModalDel = () => {
     setIsModalOpen(true);
   };
@@ -119,6 +129,36 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
   const arrayOfArray = Object.values(data);
 
+  const handleApproval = (EvngTaskID: number) => {
+    const updatedData = arrayOfArray.map((task) =>
+      task.map((item) =>
+        item.EvngTaskID === EvngTaskID
+          ? { ...item, approvedBy: employeeName }
+          : item
+      )
+    );
+    setTotalUpWork(updatedData);
+    axios
+      .put(
+        `${process.env.REACT_APP_API_BASE_URL}/update/approvedBy/${EvngTaskID}`,
+        {
+          approvedBy: employeeName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("API call success:");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
   const columns = [
     {
       title: "Project Name",
@@ -160,6 +200,20 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       title: "Date",
       dataIndex: "selectDate",
       key: "selectDate",
+    },
+    {
+      title: "TL Approved",
+      dataIndex: "approvedBy",
+      key: "approvedBy",
+      render: (text: string, record: Task) => (
+        <div>
+          {jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" && <Checkbox
+            checked={!!text}
+            onChange={() => handleApproval(record.EvngTaskID)}
+          />}
+          <div>{text}</div>
+        </div>
+      ),
     },
     {
       title: "Action",
@@ -395,14 +449,16 @@ const DashboardEveningTasktable: React.FC<Props> = ({
               <p style={{ marginLeft: "5vw" }}>{filteredUpworkTime?.formattedTime}</p>
             </div>
           </div>
-          <Table
-            dataSource={tasksForEmployee || []}
-            columns={columns}
-            rowClassName={() => "header-row"}
-            locale={{
-              emptyText: renderEmptyText
-            }}
-          />
+          <div className="evening-dashboard">
+            <Table
+              dataSource={tasksForEmployee || []}
+              columns={columns}
+              rowClassName={() => "header-row"}
+              locale={{
+                emptyText: renderEmptyText
+              }}
+            />
+          </div>
           <Modal
             title="Confirmation"
             open={isModalOpen}

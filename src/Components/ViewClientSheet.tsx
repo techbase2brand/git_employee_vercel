@@ -293,7 +293,6 @@ const ViewClientSheet: React.FC<any> = () => {
                 </Select>
             ),
         },
-
         {
             title: "Morning Comment",
             dataIndex: "morningComment",

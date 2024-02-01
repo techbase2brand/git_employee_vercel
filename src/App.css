@@ -538,7 +538,9 @@ css .campus_form {
 .saleInfo-form thead.ant-table-thead tr th:nth-child(13){
   min-width: 100px;
 }
-
+.evening-dashboard thead.ant-table-thead tr th:nth-child(9){
+  min-width: 0px;
+}
 .leave-table thead.ant-table-thead tr th:nth-child(1),
 .leave-table thead.ant-table-thead tr th:nth-child(2),
 .leave-table thead.ant-table-thead tr th:nth-child(3),
