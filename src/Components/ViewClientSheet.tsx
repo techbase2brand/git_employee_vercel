@@ -109,7 +109,7 @@ const ViewClientSheet: React.FC<any> = () => {
         }
     });
     //act time
-    const entriesWithActTime = filteredData.filter(entry => entry.actTime !== null);
+    const entriesWithActTime = filteredData.filter(entry => entry.actTime !== null && entry.actTime !== "");
     const actTimeStrings = entriesWithActTime.map(entry => entry.actTime);
     const actTimeArrays = actTimeStrings.map(timeString => timeString.split(':').map(Number));
     const totalMinutes = actTimeArrays.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
@@ -117,7 +117,7 @@ const ViewClientSheet: React.FC<any> = () => {
     const totalMinutesFormatted = totalMinutes % 60;
 
     //est time
-    const entriesWithEstTime = data.filter(entry => entry.estTime !== null && entry.estTime !== "");
+    const entriesWithEstTime = filteredData.filter(entry => entry.estTime !== null && entry.estTime !== "");
     const estTimeStrings = entriesWithEstTime.map(entry => entry.estTime);
     const estTimeArrays = estTimeStrings.map(timeString => timeString.split(':').map(Number));
     const totalEstMinutes = estTimeArrays.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
