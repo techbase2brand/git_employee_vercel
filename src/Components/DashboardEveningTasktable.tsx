@@ -80,6 +80,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     employeeName = myData.firstName;
     jobPosition = myData.jobPosition;
   }
+  console.log("jobPosition", jobPosition);
 
   const showModalDel = () => {
     setIsModalOpen(true);
@@ -206,13 +207,16 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       dataIndex: "approvedBy",
       key: "approvedBy",
       render: (text: string, record: Task) => (
-        <div>
-          {jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" && <Checkbox
+        <>
+          {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard") && <Checkbox
             checked={!!text}
             onChange={() => handleApproval(record.EvngTaskID)}
           />}
-          <div>{text}</div>
-        </div>
+          {
+            jobPosition === "Managing Director" &&
+            <div>{text}</div>
+          }
+        </>
       ),
     },
     {
