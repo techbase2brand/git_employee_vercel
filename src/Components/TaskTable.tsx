@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState, useEffect } from "react";
 
-import { Table} from "antd";
+import { Checkbox, Table } from "antd";
 import axios from "axios";
 
 interface Task {
@@ -14,6 +14,7 @@ interface Task {
   upWorkHrs: number;
   employeeID: string;
   currDate: string;
+  approvedBy: string;
 }
 
 interface EmployeeTime {
@@ -55,21 +56,30 @@ const TaskTable: React.FC<Props> = ({
 }) => {
   const [employeeArr, setEmployeeArr] = useState<any>([]);
   const [arrayOfArray, setArrayOfArray] = useState<any>([]);
+  const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
+  const myDataString = localStorage.getItem('myData');
+  let employeeName = "";
+  let jobPosition = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    employeeName = myData.firstName;
+    jobPosition = myData.jobPosition;
+  }
 
-  const handleDelete = (MrngTaskID: number) => {
-    axios
-      .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/morningDashboard/${MrngTaskID}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
-      })
-      .then((response) => {
-        console.log("res");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // const handleDelete = (MrngTaskID: number) => {
+  //   axios
+  //     .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/morningDashboard/${MrngTaskID}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log("res");
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   useEffect(() => {
     axios
@@ -94,9 +104,44 @@ const TaskTable: React.FC<Props> = ({
 
   useEffect(() => {
     const arrays = Object.values(data);
-
     setArrayOfArray(arrays);
   }, [data]);
+
+  const handleApproval = (MrngTaskID: number) => {
+    const updatedData = arrayOfArray.map((task: any) =>
+      task.map((item: any) =>
+        item.MrngTaskID === MrngTaskID
+          ? { ...item, approvedBy: employeeName }
+          : item
+      )
+    );
+    setTotalEstHrs(updatedData)
+    setCheckedTasks((prevCheckedTasks) => ({
+      ...prevCheckedTasks,
+      [MrngTaskID]: true,
+    }));
+    axios
+      .put(
+        `${process.env.REACT_APP_API_BASE_URL}/update/approvedByMrng/${MrngTaskID}`,
+        {
+          approvedBy: employeeName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setCheckedTasks((prevCheckedTasks) => ({
+          ...prevCheckedTasks,
+          [MrngTaskID]: true,
+        }));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const columns = [
     {
@@ -124,6 +169,26 @@ const TaskTable: React.FC<Props> = ({
       title: "Est time (hrs)",
       dataIndex: "estTime",
       key: "estTime",
+    },
+    {
+      title: "TL Approved",
+      dataIndex: "approvedBy",
+      key: "approvedBy",
+      render: (text: string, record: Task) => {
+        return (
+          <>
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard") &&
+              <Checkbox
+                checked={!!text || checkedTasks[record.MrngTaskID]}
+                onChange={() => handleApproval(record.MrngTaskID)}
+              />}
+            {
+              jobPosition === "Managing Director" &&
+              <div>{text}</div>
+            }
+          </>
+        )
+      },
     },
     {
       title: "Date",
