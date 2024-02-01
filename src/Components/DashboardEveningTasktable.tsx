@@ -71,6 +71,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
 
   const myDataString = localStorage.getItem('myData');
   let employeeName = "";
@@ -80,7 +81,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     employeeName = myData.firstName;
     jobPosition = myData.jobPosition;
   }
-  console.log("jobPosition", jobPosition);
 
   const showModalDel = () => {
     setIsModalOpen(true);
@@ -139,6 +139,10 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       )
     );
     setTotalUpWork(updatedData);
+    setCheckedTasks((prevCheckedTasks) => ({
+      ...prevCheckedTasks,
+      [EvngTaskID]: true,
+    }));
     axios
       .put(
         `${process.env.REACT_APP_API_BASE_URL}/update/approvedBy/${EvngTaskID}`,
@@ -152,7 +156,10 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         }
       )
       .then((response) => {
-        console.log("API call success:");
+        setCheckedTasks((prevCheckedTasks) => ({
+          ...prevCheckedTasks,
+          [EvngTaskID]: true,
+        }));
       })
       .catch((error) => {
         console.log(error);
@@ -206,18 +213,21 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       title: "TL Approved",
       dataIndex: "approvedBy",
       key: "approvedBy",
-      render: (text: string, record: Task) => (
-        <>
-          {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard") && <Checkbox
-            checked={!!text}
-            onChange={() => handleApproval(record.EvngTaskID)}
-          />}
-          {
-            jobPosition === "Managing Director" &&
-            <div>{text}</div>
-          }
-        </>
-      ),
+      render: (text: string, record: Task) => {
+        return (
+          <>
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard") &&
+              <Checkbox
+                checked={!!text || checkedTasks[record.EvngTaskID]}
+                onChange={() => handleApproval(record.EvngTaskID)}
+              />}
+            {
+              jobPosition === "Managing Director" &&
+              <div>{text}</div>
+            }
+          </>
+        )
+      },
     },
     {
       title: "Action",

@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import { Button, Checkbox, Select, Table, DatePicker } from "antd";
 import 'react-toastify/dist/ReactToastify.css';
+import {DeleteOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
 import { format } from "date-fns";
 const { RangePicker } = DatePicker;
@@ -231,7 +232,18 @@ const ViewClientSheet: React.FC<any> = () => {
                 console.error('Error while updating act. time:', error);
             });
     };
-
+    const handleDelete = (id: number) => {
+        axios
+          .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/viewClient/${id}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          })
+          .then((response) => {
+            setData(prev => prev.filter(task => task.id !== id));
+          })
+          .catch(console.error);
+      };
 
 
     const columns = [
@@ -375,6 +387,15 @@ const ViewClientSheet: React.FC<any> = () => {
                 </div>
             ),
         },
+        {
+            title: "Action",
+            key: "action",
+            render: (_: any, record: ClientSheetData) => (
+              <span>
+                <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}>Delete</Button>
+              </span>
+            ),
+          },
 
     ];
 

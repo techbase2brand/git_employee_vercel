@@ -20,6 +20,8 @@ interface Project {
     clientName: string;
     projectName: string;
     projectDescription: string;
+    estTimes: string;
+    actTimes: string;
 }
 
 interface FilterOptions {
@@ -48,6 +50,8 @@ const ClientSheet: React.FC<any> = () => {
     const [filterOption, setFilterOption] = useState<string>("FAVORITE");
     const [filterOptions, setFilterOptions] = useState<FilterOptions>({ message: "", data: {} });
     const [filterOpt, setFilterOpt] = useState<FilterOptions>();
+    const [estTimes, setEstTimes] = useState<Record<string, string>>({});
+    const [actTimes, setActTimes] = useState<Record<string, string>>({});
 
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
@@ -151,6 +155,19 @@ const ClientSheet: React.FC<any> = () => {
             eveningComment: "",
         }));
 
+    const handleEstTimeChange = (projectName: string, value: string) => {
+        setEstTimes((prevEstTimes) => ({
+            ...prevEstTimes,
+            [projectName]: value,
+        }));
+    };
+    const handleActTimeChange = (projectName: string, value: string) => {
+        setActTimes((prevEstTimes) => ({
+            ...prevEstTimes,
+            [projectName]: value,
+        }));
+    };
+
     const columns = [
         {
             title: "Client Name",
@@ -168,13 +185,15 @@ const ClientSheet: React.FC<any> = () => {
             title: "Morning task",
             dataIndex: "select",
             key: "select",
-            render: (_: any, record: Project) => (
-                <Checkbox
-                    style={{ border: '2px solid black', borderRadius: '6px' }}
-                    checked={morningChecks[record.projectName]}
-                    onChange={() => handleCheckboxChange(record.projectName, true)}
-                />
-            ),
+            render: (_: any, record: Project) => {
+                return (
+                    <Checkbox
+                        style={{ border: '2px solid black', borderRadius: '6px' }}
+                        checked={morningChecks[record.projectName]}
+                        onChange={() => handleCheckboxChange(record.projectName, true)}
+                    />
+                )
+            },
         },
         {
             title: "favorite",
@@ -200,6 +219,32 @@ const ClientSheet: React.FC<any> = () => {
                 );
             },
         },
+        {
+            title: "Est.Hour",
+            dataIndex: "estTime",
+            key: "estTime",
+            render: (text: string, record: Project) => {
+                return (
+                    <Select
+                        value={estTimes[record.projectName] || ""}
+                        onChange={(value) => handleEstTimeChange(record.projectName, value)}
+                    >
+                        <Option value="">--Select Time--</Option>
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                            [0, 10, 20, 30, 40, 50].map((minute) => (
+                                <Option
+                                    key={`${hour}:${minute}`}
+                                    value={`${hour}:${minute}`}
+                                >
+                                    {`${hour} hours ${minute} mins`}
+                                </Option>
+                            ))
+                        )}
+                    </Select>
+                )
+            },
+        },
+        
         {
             title: "Morning Comment",
             dataIndex: "projectName",
@@ -232,22 +277,49 @@ const ClientSheet: React.FC<any> = () => {
             ),
         },
         {
+            title: "Act.Hour",
+            dataIndex: "estTime",
+            key: "estTime",
+            render: (text: string, record: Project) => {
+                return (
+                    <Select
+                        value={actTimes[record.projectName] || ""}
+                        onChange={(value) => handleActTimeChange(record.projectName, value)}
+                    >
+                        <Option value="">--Select Time--</Option>
+                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                            [0, 10, 20, 30, 40, 50].map((minute) => (
+                                <Option
+                                    key={`${hour}:${minute}`}
+                                    value={`${hour}:${minute}`}
+                                >
+                                    {`${hour} hours ${minute} mins`}
+                                </Option>
+                            ))
+                        )}
+                    </Select>
+                )
+            },
+        },
+        {
             title: "Evening Comment",
             dataIndex: "projectName",
             key: "eveningComment",
-            render: (text: string, record: Project) => (
-                <div>
-                    {eveningChecks[record.projectName] &&
-                        <textarea
-                            value={eveningComments[record.projectName] || ""}
-                            onChange={(e) => {
-                                const updatedComments = { ...eveningComments, [record.projectName]: e.target.value };
-                                setEveningComments(updatedComments);
-                            }}
-                        />
-                    }
-                </div>
-            ),
+            render: (text: string, record: Project) => {
+                return (
+                    <div>
+                        {eveningChecks[record.projectName] &&
+                            <textarea
+                                value={eveningComments[record.projectName] || ""}
+                                onChange={(e) => {
+                                    const updatedComments = { ...eveningComments, [record.projectName]: e.target.value };
+                                    setEveningComments(updatedComments);
+                                }}
+                            />
+                        }
+                    </div>
+                )
+            },
         },
     ];
 
@@ -295,7 +367,6 @@ const ClientSheet: React.FC<any> = () => {
                 ...prevChecks,
                 [projectName]: !prevChecks[projectName],
             };
-
             axios
                 .put(
                     `${process.env.REACT_APP_API_BASE_URL}/update-favorite-status`,
@@ -339,6 +410,8 @@ const ClientSheet: React.FC<any> = () => {
             assignedBy: assignedBy,
             favirotes: favirotes,
             EmployeeID: EmployeeId,
+            estTimes: estTimes,
+            actTimes: actTimes,
         };
 
         axios
