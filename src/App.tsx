@@ -72,6 +72,7 @@ import AssignTaskPage from "./Components/AssignTaskPage";
 import ViewBacklogPage from "./Components/ViewBacklogPage";
 import AssignedTasks from "./Components/AssignedTasks";
 import ChatMessagePage from "./Components/ChatMessagePage";
+import ViewLead from "./Components/ViewLead";
 export const GlobalInfo = createContext<any>({});
 
 export const AssignedTaskCountContext = createContext<{
@@ -496,6 +497,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <DocTable />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/ViewLead"
+            element={
+              <ProtectedRoute>
+                <ViewLead />
               </ProtectedRoute>
             }
           />

@@ -6,7 +6,7 @@ import { Table, Checkbox, Select } from "antd";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Option } from "antd/es/mentions";
-
+import { format } from "date-fns";
 interface Employee {
     EmpID: string | number;
     firstName: string;
@@ -37,12 +37,28 @@ interface FilterOption {
     AssigneeName: string;
 }
 
+interface ClientSheetData {
+    id: number;
+    projectName: string;
+    AssigneeName: string;
+    morningComment: string | null;
+    morningCheck: number;
+    eveningCheck: number;
+    eveningComment: string | null;
+    assignedBy: string;
+    estTime: string;
+    actTime: string;
+    created_at:string;
+}
+
 const ClientSheet: React.FC<any> = () => {
     const [data1, setData1] = useState<Project[]>([]);
     const [selectedEmployee, setSelectedEmployee] = useState<string>("");
     const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
     const [morningComments, setMorningComments] = useState<Record<string, string>>({});
     const [morningChecks, setMorningChecks] = useState<Record<string, boolean>>({});
+    console.log("morning", morningChecks);
+    const [data, setData] = useState<ClientSheetData[]>([]);
     const [favirotes, setFavirotesChecks] = useState<Record<string, boolean>>({});
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [eveningChecks, setEveningChecks] = useState<Record<string, boolean>>({});
@@ -52,7 +68,10 @@ const ClientSheet: React.FC<any> = () => {
     const [filterOpt, setFilterOpt] = useState<FilterOptions>();
     const [estTimes, setEstTimes] = useState<Record<string, string>>({});
     const [actTimes, setActTimes] = useState<Record<string, string>>({});
-
+    const [selectAllMorningTasks, setSelectAllMorningTasks] = useState<boolean>(false);
+    const [currentDate] = useState<Date>(new Date());
+    const formattedDate = format(currentDate, "yyyy-MM-dd");
+    
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
     let EmployeeId = "";
@@ -64,10 +83,6 @@ const ClientSheet: React.FC<any> = () => {
 
     const filteredDataByEmployee = Array.isArray(filterOpt?.data)
         ? filterOpt?.data.filter((item: FilterOption) => item.AssigneeName === filterOption)
-        : [];
-
-    const filteredChecked = Array.isArray(filterOpt?.data)
-        ? filterOpt?.data.filter((item: FilterOption) => item.favorite === 1)
         : [];
 
     useEffect(() => {
@@ -86,7 +101,7 @@ const ClientSheet: React.FC<any> = () => {
                 setEmployeeFirstNames(employeeNames);
             })
             .catch((error) => console.log(error));
-    }, []);
+    }, [data]);
 
     useEffect(() => {
         axios.get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
@@ -200,13 +215,6 @@ const ClientSheet: React.FC<any> = () => {
             dataIndex: "select",
             key: "select",
             render: (_: any, record: Project) => {
-                const isFavoriteForEmployee =
-                    filteredChecked &&
-                    filteredChecked.some(
-                        (item) =>
-                            item.projectName === record.projectName && item.favorite === 1
-                    );
-
                 return (
                     <Checkbox
                         style={{
@@ -244,7 +252,7 @@ const ClientSheet: React.FC<any> = () => {
                 )
             },
         },
-        
+
         {
             title: "Morning Comment",
             dataIndex: "projectName",
@@ -391,7 +399,19 @@ const ClientSheet: React.FC<any> = () => {
         });
     };
 
-
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/get-data`)
+            .then(response => {
+                const filteredData = response.data.data.filter((item: any) => item.created_at.split('T')[0] === formattedDate)
+                const sortedData = filteredData.sort(
+                    (a: any, b: any) => Number(b.id) - Number(a.id)
+                );
+                setData(sortedData);
+            })
+            .catch(error => {
+                console.error('Error while fetching data:', error);
+            });
+    }, []);
 
     const handleSend = () => {
         if (!selectedEmployee) {
@@ -400,11 +420,31 @@ const ClientSheet: React.FC<any> = () => {
             });
             return;
         }
+        const newMorningChecks: Record<string, boolean> = Object.keys(morningChecks)
+        .filter((projectName) => !data.some((item) =>
+            item.AssigneeName === selectedEmployee &&
+            item.created_at.split('T')[0] === formattedDate &&
+            item.morningCheck &&
+            item.projectName === projectName
+        ))
+        .reduce((acc, projectName) => {
+            acc[projectName] = true;
+            return acc;
+        }, {} as Record<string, boolean>);
+        
+
+        // const selectedMorningChecks: Record<string, boolean> = Object.keys(morningChecks)
+        //     .filter((projectName) => morningChecks[projectName])
+        //     .reduce((acc, projectName) => {
+        //         acc[projectName] = true;
+        //         return acc;
+        //     }, {} as Record<string, boolean>);
+
         const requestData = {
             employee: selectedEmployee,
-            clients: Object.keys(morningChecks),
+            clients: Object.keys(newMorningChecks),
             morningComments: morningComments,
-            morningChecks: morningChecks,
+            morningChecks: newMorningChecks,
             eveningChecks: eveningChecks,
             eveningComments: eveningComments,
             assignedBy: assignedBy,
@@ -433,6 +473,9 @@ const ClientSheet: React.FC<any> = () => {
                 setMorningComments({});
                 setEveningComments({});
                 setSelectedEmployee("");
+                setSelectAllMorningTasks(false);
+                setActTimes({});
+                setEstTimes({});
             })
             .catch((error) => {
                 console.error('Error while sending data:', error);
@@ -564,6 +607,28 @@ const ClientSheet: React.FC<any> = () => {
                                     </button>
                                 </div>
                             </div>
+                            {(filterOption === "FAVORITE" || filterOption === "Arshpreet" || filterOption === "Manpreet" || filterOption === "Yugal" || filterOption === "Aashu") &&
+                                <Checkbox
+                                    style={{
+                                        marginLeft: '14%',
+                                        position: 'absolute',
+                                        marginTop: '51px'
+                                    }}
+                                    checked={selectAllMorningTasks}
+                                    onChange={(e) => {
+                                        setSelectAllMorningTasks(e.target.checked);
+                                        if (e.target.checked) {
+                                            const checkedMorningTasks: Record<string, boolean> = {};
+                                            filteredData.forEach((project) => {
+                                                checkedMorningTasks[project.projectName] = true;
+                                            });
+                                            setMorningChecks(checkedMorningTasks);
+                                        } else {
+                                            setMorningChecks({});
+                                        }
+                                    }}
+                                >Select All Morning Check</Checkbox>
+                            }
                             <div
                                 style={{
                                     display: "flex",
