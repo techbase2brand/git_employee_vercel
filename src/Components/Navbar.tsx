@@ -62,6 +62,20 @@ interface ShiftChangeData {
   approvalOfTeamLead: string;
   approvalOfHR: string;
 }
+
+interface ClientSheetData {
+  id: number;
+  projectName: string;
+  AssigneeName: string;
+  morningComment: string | null;
+  morningCheck: number;
+  eveningCheck: number;
+  eveningComment: string | null;
+  assignedBy: string;
+  estTime: string;
+  actTime: string;
+  created_at: string;
+}
 // interface FormData {
 //   id?: number;
 //   portalType: string;
@@ -88,13 +102,14 @@ interface ShiftChangeData {
 
 interface BaseNotification {
   id: number; // Common identifier for all notificationss
-  type: "task" | "leave" | "done" | "approving" | "deny" | "shiftChange" | "aprovedShift" | "deniedShift" | "sale";
+  type: "task" | "leave" | "done" | "approving" | "deny" | "shiftChange" | "aprovedShift" | "deniedShift" | "sale" | "tlTask";
 }
 
 // Extending the specific notification types to include common properties
 interface TaskNotification extends BacklogTask, BaseNotification { }
 interface LeaveNotification extends LeaveData, BaseNotification { }
 interface shiftNotification extends ShiftChangeData, BaseNotification { }
+
 
 type Notification = TaskNotification | LeaveNotification | shiftNotification;
 
@@ -249,6 +264,26 @@ const Navbar: React.FunctionComponent = () => {
           (newItem: { id: number }) =>
             !prevNotifications.some(
               (existingItem) => existingItem.id === newItem.id
+            )
+        ) || [];
+        return [...newNotifications, ...prevNotifications];
+      });
+    });
+
+    socket.on("tlAssignTask", (data) => {
+      const tlTaskNotifications = data?.data
+        ?.filter((item: ClientSheetData) => item?.AssigneeName === myData.firstName)
+        .map((item: ClientSheetData) => ({
+          ...item,
+          type: "tlTask",
+          id: item.id,
+        }))
+        .sort((a: { id: number; }, b: { id: number; }) => b.id - a.id);
+      setNotifications((prevNotifications) => {
+        const newNotifications = tlTaskNotifications?.filter(
+          (newItem: { id: number }) =>
+            !prevNotifications.some(
+              (existingItem) => existingItem?.id === newItem?.id
             )
         ) || [];
         return [...newNotifications, ...prevNotifications];
@@ -602,6 +637,10 @@ const Navbar: React.FunctionComponent = () => {
             title = `Approved Shift by ${item.teamLead}`;
           } else if (item?.type === 'deniedShift') {
             title = `Denied Shift by ${item.teamLead}`;
+          } else if (item?.type === "tlTask") {
+            if ('assignedBy' in item && 'projectName' in item) {
+              title = `Tl AssignBy ${item.assignedBy} : ${item.projectName}`;
+            }
           } else {
             if (`employeeName` in item && `leaveReason` in item) {
               title = `Leave request from ${item.employeeName}: ${item.leaveReason}`;
@@ -628,6 +667,7 @@ const Navbar: React.FunctionComponent = () => {
             { item?.type === 'aprovedShift' && navigate("/ViewShiftChange") }
             { item?.type === 'deniedShift' && navigate("/ViewShiftChange") }
             { item?.type === 'sale' && navigate("/AdminSaleInfotechFormList") }
+            { item?.type === 'tlTask' && navigate("/ViewClientSheet") }
           }
         };
 
@@ -734,31 +774,31 @@ const Navbar: React.FunctionComponent = () => {
         >
           <Badge count="5" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}>
             {" "} */}
-            {/* unreadChatCount is the number of unread chat messages */}
-            {/* <Popover
+        {/* unreadChatCount is the number of unread chat messages */}
+        {/* <Popover
               style={{ width: "20vw" }}
               content="" // chatList can be a component showing recent chats or messages
               placement="bottomRight"
             > */}
-              {/* <MessageOutlined
+        {/* <MessageOutlined
                 className="chat-icon"
                 onClick={() => {
                   navigate("/chatMessagePage");
                 }}
               /> */}
-            {/* </Popover> */}
-          {/* </Badge> */}
+        {/* </Popover> */}
+        {/* </Badge> */}
 
-          {/* Call Icon with Notification Badge */}
-          {/* <Badge count="3" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}> */}
-            {" "}
-            {/* Replace "3" with the number of missed calls */}
-            {/* <Popover
+        {/* Call Icon with Notification Badge */}
+        {/* <Badge count="3" style={{ lineHeight: '24px', minWidth: '26px', minHeight: '26px', marginRight: '-8px', top: '-2px', borderRadius: '1pc' }}> */}
+        {" "}
+        {/* Replace "3" with the number of missed calls */}
+        {/* <Popover
               style={{ width: "20vw" }}
               content="" // Replace with your callList component
               placement="bottomRight"
             > */}
-              {/* <PhoneOutlined className="call-icon" />
+        {/* <PhoneOutlined className="call-icon" />
             </Popover>
           </Badge>
         </div> */}
@@ -789,7 +829,7 @@ const Navbar: React.FunctionComponent = () => {
                 content={notificationList}
                 placement="bottomRight"
               >
-                <BellOutlined className="notification-icon" style={{ marginLeft: '-55px' }} />
+                <BellOutlined className="notification-icon" style={{ marginLeft: '-55px', fontSize: 'x-large' }} />
               </Popover>
             </Badge>
 
