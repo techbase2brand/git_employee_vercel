@@ -48,7 +48,7 @@ interface ClientSheetData {
     assignedBy: string;
     estTime: string;
     actTime: string;
-    created_at:string;
+    created_at: string;
 }
 
 const ClientSheet: React.FC<any> = () => {
@@ -57,7 +57,6 @@ const ClientSheet: React.FC<any> = () => {
     const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
     const [morningComments, setMorningComments] = useState<Record<string, string>>({});
     const [morningChecks, setMorningChecks] = useState<Record<string, boolean>>({});
-    console.log("morning", morningChecks);
     const [data, setData] = useState<ClientSheetData[]>([]);
     const [favirotes, setFavirotesChecks] = useState<Record<string, boolean>>({});
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -71,7 +70,7 @@ const ClientSheet: React.FC<any> = () => {
     const [selectAllMorningTasks, setSelectAllMorningTasks] = useState<boolean>(false);
     const [currentDate] = useState<Date>(new Date());
     const formattedDate = format(currentDate, "yyyy-MM-dd");
-    
+
     const myDataString = localStorage.getItem('myData');
     let assignedBy = "";
     let EmployeeId = "";
@@ -421,17 +420,17 @@ const ClientSheet: React.FC<any> = () => {
             return;
         }
         const newMorningChecks: Record<string, boolean> = Object.keys(morningChecks)
-        .filter((projectName) => !data.some((item) =>
-            item.AssigneeName === selectedEmployee &&
-            item.created_at.split('T')[0] === formattedDate &&
-            item.morningCheck &&
-            item.projectName === projectName
-        ))
-        .reduce((acc, projectName) => {
-            acc[projectName] = true;
-            return acc;
-        }, {} as Record<string, boolean>);
-        
+            .filter((projectName) => !data.some((item) =>
+                item.AssigneeName === selectedEmployee &&
+                item.created_at.split('T')[0] === formattedDate &&
+                item.morningCheck &&
+                item.projectName === projectName
+            ))
+            .reduce((acc, projectName) => {
+                acc[projectName] = true;
+                return acc;
+            }, {} as Record<string, boolean>);
+
 
         // const selectedMorningChecks: Record<string, boolean> = Object.keys(morningChecks)
         //     .filter((projectName) => morningChecks[projectName])
@@ -547,7 +546,8 @@ const ClientSheet: React.FC<any> = () => {
                                     value={selectedEmployee || undefined}
                                 >
                                     {employeeFirstNames
-                                        .filter(name => ["Arshpreet", "Manpreet", "Aashu", "Yugal"].includes(name))
+                                        .filter(name => ["Arshpreet", "Manpreet", "Aashu", "Yugal", "Sahil", "Sandeep", "Zaid"].includes(name))
+                                        .sort()
                                         .map((name, index) => (
                                             <Select.Option key={index} value={name}>
                                                 {name}
@@ -562,6 +562,9 @@ const ClientSheet: React.FC<any> = () => {
                                         <Select.Option value="Manpreet">Manpreet</Select.Option>
                                         <Select.Option value="Aashu">Aashu</Select.Option>
                                         <Select.Option value="Arshpreet">Arshpreet</Select.Option>
+                                        <Select.Option value="Zaid">Zaid</Select.Option>
+                                        <Select.Option value="Sandeep">Sandeep</Select.Option>
+                                        <Select.Option value="Sahil">Sahil</Select.Option>
                                     </Select>
                                 }
 
@@ -594,6 +597,28 @@ const ClientSheet: React.FC<any> = () => {
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Aashu">Aashu</Select.Option>
+                                    </Select>
+                                }
+
+                                {EmployeeId === "B2B00033" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Sahil">Sahil</Select.Option>
+                                    </Select>
+                                }
+                                {EmployeeId === "B2B00010" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Sandeep">Sandeep</Select.Option>
+                                    </Select>
+                                }
+                                {EmployeeId === "B2B00008" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Zaid">Zaid</Select.Option>
                                     </Select>
                                 }
                                 <div

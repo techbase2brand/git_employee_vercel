@@ -870,35 +870,47 @@ const AppMenu = () => {
 
       {info.jobPosition == "Employee" && (
         <>
-          <Menu.Item
-            key="AssignTaskPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AssignTaskPage">Assign Task </Link>
-          </Menu.Item>
-          <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
-            <Link to="/AssignedTasks">AssignedTasks <Badge count={countTaskNotifications}>
-            </Badge></Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewBacklogPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
-            </Badge></Link>
-          </Menu.Item>
-          <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
-            <Link to="/add-morning-task">Add Morning Task</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewMorningTask" icon={<TableOutlined />}>
-            <Link to="/view-morning-task">ViewMorningTask</Link>
-          </Menu.Item>
-          <Menu.Item key="add-evening-task" icon={<ScheduleOutlined />}>
-            <Link to="/add-evening-task">Add Evening Task</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
-            <Link to="/view-evening-task">ViewEveningTask</Link>
-          </Menu.Item>
+          <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
+            {myData.EmployeeID === "B2B00033" &&
+              <>
+                <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+                  <Link to="/ClientSheet">Assign TL Task</Link>
+                </Menu.Item>
+                <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
+                  <Link to="/ViewClientSheet">View TL Task</Link>
+                </Menu.Item>
+              </>
+            }
+            <Menu.Item
+              key="AssignTaskPage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/AssignTaskPage">Assign Task </Link>
+            </Menu.Item>
+            <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
+              <Link to="/AssignedTasks">AssignedTasks <Badge count={countTaskNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item
+              key="ViewBacklogPage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
+              <Link to="/add-morning-task">Add Morning Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewMorningTask" icon={<TableOutlined />}>
+              <Link to="/view-morning-task">ViewMorningTask</Link>
+            </Menu.Item>
+            <Menu.Item key="add-evening-task" icon={<ScheduleOutlined />}>
+              <Link to="/add-evening-task">Add Evening Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
+              <Link to="/view-evening-task">ViewEveningTask</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
             <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
@@ -969,35 +981,43 @@ const AppMenu = () => {
 
       {info.jobPosition == "Team Lead" && (
         <>
-          <Menu.Item
-            key="AssignTaskPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/AssignTaskPage">Assign Task </Link>
-          </Menu.Item>
-          <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
-            <Link to="/AssignedTasks">AssignedTasks <Badge count={countTaskNotifications}>
-            </Badge></Link>
-          </Menu.Item>
-          <Menu.Item
-            key="ViewBacklogPage"
-            icon={<TableOutlined rev={undefined} />}
-          >
-            <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
-            </Badge></Link>
-          </Menu.Item>
-          <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
-            <Link to="/add-morning-task">Add Morning Task</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewMorningTask" icon={<TableOutlined />}>
-            <Link to="/view-morning-task">ViewMorningTask</Link>
-          </Menu.Item>
-          <Menu.Item key="add-evening-task" icon={<ScheduleOutlined />}>
-            <Link to="/add-evening-task">Add Evening Task</Link>
-          </Menu.Item>
-          <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
-            <Link to="/view-evening-task">ViewEveningTask</Link>
-          </Menu.Item>
+          <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
+            <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+              <Link to="/ClientSheet">Assign TL Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
+              <Link to="/ViewClientSheet">View TL Task</Link>
+            </Menu.Item>
+            <Menu.Item
+              key="AssignTaskPage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/AssignTaskPage">Assign Task </Link>
+            </Menu.Item>
+            <Menu.Item key="AssignedTasks" icon={<ScheduleOutlined />}>
+              <Link to="/AssignedTasks">AssignedTasks <Badge count={countTaskNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item
+              key="ViewBacklogPage"
+              icon={<TableOutlined rev={undefined} />}
+            >
+              <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
+              </Badge></Link>
+            </Menu.Item>
+            <Menu.Item key="add-morning-task" icon={<ScheduleOutlined />}>
+              <Link to="/add-morning-task">Add Morning Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewMorningTask" icon={<TableOutlined />}>
+              <Link to="/view-morning-task">ViewMorningTask</Link>
+            </Menu.Item>
+            <Menu.Item key="add-evening-task" icon={<ScheduleOutlined />}>
+              <Link to="/add-evening-task">Add Evening Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewEveningTask" icon={<TableOutlined />}>
+              <Link to="/view-evening-task">ViewEveningTask</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item key="LeaveForm" icon={<ScheduleOutlined />}>
             <Link to="/LeaveForm" onClick={handleLeaveFormClick}>LeaveForm</Link>
           </Menu.Item>
