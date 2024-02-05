@@ -75,6 +75,8 @@ interface ClientSheetData {
   estTime: string;
   actTime: string;
   created_at: string;
+  EmployeeID: string;
+  type: 'tlTask';
 }
 // interface FormData {
 //   id?: number;
@@ -103,6 +105,7 @@ interface ClientSheetData {
 interface BaseNotification {
   id: number; // Common identifier for all notificationss
   type: "task" | "leave" | "done" | "approving" | "deny" | "shiftChange" | "aprovedShift" | "deniedShift" | "sale" | "tlTask";
+  AssigneeName?: string;
 }
 
 // Extending the specific notification types to include common properties
@@ -120,7 +123,6 @@ const Navbar: React.FunctionComponent = () => {
   const [state, setState] = useState(false);
   const [notificationss, setNotificationss] = useState<BacklogTask[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
   const { assignedTaskCount, setAssignedTaskCount } = useContext(
     AssignedTaskCountContext
   );
@@ -139,7 +141,7 @@ const Navbar: React.FunctionComponent = () => {
   const myDataStatus = jsonData;
   if (myDataStatus) {
     try {
-      const notificationObjects = JSON.parse(myDataStatus) as { notificationId: number; employeeID: string }[];
+      const notificationObjects = JSON.parse(myDataStatus) as { notificationId: number; employeeID: string; }[];
       const notificationIds = notificationObjects.map(obj => obj.notificationId);
     } catch (error) {
       console.error("Error parsing JSON:", error);
@@ -510,10 +512,12 @@ const Navbar: React.FunctionComponent = () => {
     const notificationObject = {
       notificationId: notification.id,
       employeeID: notification.employeeID,
+      AssigneeName: notification.AssigneeName,
     };
 
     axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/notification`, { notificationObject })
       .then((response) => {
+
         setState(true)
       })
       .catch((error) => {
@@ -597,9 +601,10 @@ const Navbar: React.FunctionComponent = () => {
     <List
       itemLayout="horizontal"
       dataSource={notifications.filter(notification =>
-        !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
+        !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; AssigneeName: string; }) =>
           obj?.notificationId === notification?.id &&
-          obj?.employeeID === notification?.employeeID))}
+          (obj?.employeeID === notification?.employeeID ||
+          obj?.AssigneeName === notification?.AssigneeName)))}
       renderItem={(item) => {
         let title;
         let isLeaveNotification = false;
@@ -639,7 +644,7 @@ const Navbar: React.FunctionComponent = () => {
             title = `Denied Shift by ${item.teamLead}`;
           } else if (item?.type === "tlTask") {
             if ('assignedBy' in item && 'projectName' in item) {
-              title = `Tl AssignBy ${item.assignedBy} : ${item.projectName}`;
+              title = `Tl Task AssignBy ${item.assignedBy} : ${item.projectName}`;
             }
           } else {
             if (`employeeName` in item && `leaveReason` in item) {
@@ -697,9 +702,10 @@ const Navbar: React.FunctionComponent = () => {
 
   );
   const unvisitedNotificationCount = notifications.filter(notification =>
-    !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; }) =>
+    !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; AssigneeName: string; }) =>
       obj.notificationId === notification.id &&
-      obj.employeeID === notification.employeeID)).length;
+      (obj.employeeID === notification.employeeID ||
+        obj?.AssigneeName === notification?.AssigneeName))).length;
 
   const badgeContent = unvisitedNotificationCount > 9 ? '9+' : unvisitedNotificationCount;
 
@@ -712,7 +718,6 @@ const Navbar: React.FunctionComponent = () => {
   useEffect(() => {
     const hideMenuButton = document.getElementById("hideMenuButton");
     const menuDivs = document.querySelectorAll(".menu-div");
-
     if (hideMenuButton) {
       hideMenuButton.addEventListener("click", function () {
         menuDivs.forEach(function (menuDiv) {
