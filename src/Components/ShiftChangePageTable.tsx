@@ -156,6 +156,7 @@ const ShiftChangePageTable: React.FC = () => {
   };
   return (
     <>
+    <div  className="shifting-change">
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -163,7 +164,6 @@ const ShiftChangePageTable: React.FC = () => {
         }}/>
         :
         <Table
-          style={{ width: "80vw" }}
           dataSource={updatedAllLeave}
           columns={columns}
           rowClassName={() => "header-row"}
@@ -171,6 +171,7 @@ const ShiftChangePageTable: React.FC = () => {
 
         />
       }
+      </div>
     </>
   );
 };

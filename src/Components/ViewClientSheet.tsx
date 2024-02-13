@@ -8,6 +8,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
 import { format } from "date-fns";
 const { RangePicker } = DatePicker;
+
 interface ClientSheetData {
     id: number;
     projectName: string;
@@ -19,6 +20,7 @@ interface ClientSheetData {
     assignedBy: string;
     estTime: string;
     actTime: string;
+    taskRemainder: number;
 }
 
 const ViewClientSheet: React.FC<any> = () => {
@@ -91,15 +93,35 @@ const ViewClientSheet: React.FC<any> = () => {
     //     }
     // });
     const filteredData = data.filter((project) => {
-        if (employeeID === "B2B00100") {
+        if (employeeID === "B2B00100" && project.taskRemainder === 1) {
             return (
                 project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 project.AssigneeName !== "" &&
                 (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
             );
         } else {
-            const isAssignedByEmployee = project.assignedBy === employeeName;
-            const isAssignedToEmployee = project.AssigneeName === employeeName;
+            const isAssignedByEmployee = project.assignedBy === employeeName && project.taskRemainder === 1;
+            const isAssignedToEmployee = project.AssigneeName === employeeName && project.taskRemainder === 1;
+            return (
+                (isAssignedByEmployee || isAssignedToEmployee) &&
+                project.assignedBy !== "" &&
+                project.AssigneeName !== "" &&
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
+            );
+        }
+    });
+
+    const filteredRemainder = data.filter((project) => {
+        if (employeeID === "B2B00100" && project.taskRemainder === 0) {
+            return (
+                project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                project.AssigneeName !== "" &&
+                (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
+            );
+        } else {
+            const isAssignedByEmployee = project.assignedBy === employeeName && project.taskRemainder === 0;
+            const isAssignedToEmployee = project.AssigneeName === employeeName && project.taskRemainder === 0;
             return (
                 (isAssignedByEmployee || isAssignedToEmployee) &&
                 project.assignedBy !== "" &&
@@ -124,10 +146,23 @@ const ViewClientSheet: React.FC<any> = () => {
     const totalEstMinutes = estTimeArrays.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
     const totalEstHoursFormatted = Math.floor(totalEstMinutes / 60);
     const totalEstMinutesFormatted = totalEstMinutes % 60;
+    // act time
+    const entriesWithAct = filteredRemainder.filter(entry => entry.actTime !== null && entry.actTime !== "");
+    const actTimeString = entriesWithAct.map(entry => entry.actTime);
+    const actTimeArray = actTimeString.map(timeString => timeString.split(':').map(Number));
+    const totalMinute = actTimeArray.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
+    const totalHoursFormat = Math.floor(totalMinute / 60);
+    const totalMinutesFormat = totalMinute % 60;
 
-
+    //est time
+    const entriesWithEstTimes = filteredRemainder.filter(entry => entry.estTime !== null && entry.estTime !== "");
+    const estTimeString = entriesWithEstTimes.map(entry => entry.estTime);
+    const estTimeArray = estTimeString.map(timeString => timeString.split(':').map(Number));
+    const totalEstMinute = estTimeArray.reduce((sum, [hours, minutes]) => sum + hours * 60 + minutes, 0);
+    const totalEstHoursFormat = Math.floor(totalEstMinute / 60);
+    const totalEstMinutesFormat = totalEstMinute % 60;
     const paginationSettings = {
-        pageSize: 100,
+        pageSize: 10,
     };
 
     const handleMorningCheckChange = (record: ClientSheetData) => {
@@ -292,7 +327,7 @@ const ViewClientSheet: React.FC<any> = () => {
                     onChange={(value) => handleEstTimeChange(record.id, value)}
                 >
                     <Option value="">--Select Time--</Option>
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map((hour) =>
                         [0, 10, 20, 30, 40, 50].map((minute) => (
                             <Option
                                 key={`${hour}:${minute}`}
@@ -350,7 +385,7 @@ const ViewClientSheet: React.FC<any> = () => {
                     onChange={(value) => handleActTimeChange(record.id, value)}
                 >
                     <Option value="">--Select Time--</Option>
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map((hour) =>
                         [0, 10, 20, 30, 40, 50].map((minute) => (
                             <Option
                                 key={`${hour}:${minute}`}
@@ -475,24 +510,37 @@ const ViewClientSheet: React.FC<any> = () => {
                                     <RangePicker onChange={handleDateRangeChange} style={{ border: '2px solid black', height: '43px' }} />
                                 </div>
                             </div>
-                            <div style={{
-                                display: 'flex', gap: '61px',
-                                marginLeft: '9px'
-                            }}>
-                                <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
-                                <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
-                            </div>
+
                             <div
                                 style={{
-                                    display: "flex",
                                     flexDirection: "row",
                                     justifyContent: "space-around",
                                     marginTop: "20px",
                                 }}
                                 className="clientSheetTlTask"
                             >
+                                <h1>Task</h1>
+                                <div style={{
+                                    display: 'flex', gap: '61px',
+                                    marginLeft: '9px'
+                                }}>
+                                    <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
+                                    <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
+                                </div>
+                                <br />
                                 <Table columns={columns} dataSource={filteredData} pagination={paginationSettings} />
+                                <h1>Reply/Remainder</h1>
+                                <div style={{
+                                    display: 'flex', gap: '61px',
+                                    marginLeft: '9px'
+                                }}>
+                                    <p>{`Total Mrng Time: ${totalEstHoursFormat} hours ${totalEstMinutesFormat} minutes`}</p>
+                                    <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
+                                </div>
+                                <br />
+                                <Table columns={columns} dataSource={filteredRemainder} pagination={paginationSettings} />
                             </div>
+
                         </div>
                     </div>
                 </div>
