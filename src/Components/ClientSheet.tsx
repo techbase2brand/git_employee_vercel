@@ -59,6 +59,7 @@ const ClientSheet: React.FC<any> = () => {
     const [morningChecks, setMorningChecks] = useState<Record<string, boolean>>({});
     const [data, setData] = useState<ClientSheetData[]>([]);
     const [favirotes, setFavirotesChecks] = useState<Record<string, boolean>>({});
+    const [taskRemainder, setTaskRemainder] = useState<Record<string, boolean>>({});
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [eveningChecks, setEveningChecks] = useState<Record<string, boolean>>({});
     const [eveningComments, setEveningComments] = useState<Record<string, string>>({});
@@ -222,6 +223,23 @@ const ClientSheet: React.FC<any> = () => {
                         }}
                         checked={favirotes[record.projectName]}
                         onChange={() => handleCheckboxChangeFav(record.projectName, true)}
+                    />
+                );
+            },
+        },
+        {
+            title: "Reply/Rem.",
+            dataIndex: "select",
+            key: "select",
+            render: (_: any, record: Project) => {
+                return (
+                    <Checkbox
+                        style={{
+                            border: '2px solid black',
+                            borderRadius: '6px',
+                        }}
+                        checked={taskRemainder[record.projectName]}
+                        onChange={() => handleCheckboxChangeTask(record.projectName, true)}
                     />
                 );
             },
@@ -398,6 +416,35 @@ const ClientSheet: React.FC<any> = () => {
         });
     };
 
+    const handleCheckboxChangeTask = (projectName: string, isMorning: boolean) => {
+        setTaskRemainder((prevChecks: any) => {
+            const updatedChecks = {
+                ...prevChecks,
+                [projectName]: !prevChecks[projectName],
+            };
+            axios
+                .put(
+                    `${process.env.REACT_APP_API_BASE_URL}/update-task-status`,
+                    {
+                        projectName,
+                        taskRemainder: updatedChecks[projectName] ? 1 : 0,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('myToken')}`,
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log("taskRemainder status updated successfully");
+                })
+                .catch((error) => {
+                    console.error('Error while updating taskRemainder status:', error);
+                });
+
+            return updatedChecks;
+        });
+    };
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/get-data`)
             .then(response => {
@@ -441,9 +488,9 @@ const ClientSheet: React.FC<any> = () => {
 
         const requestData = {
             employee: selectedEmployee,
-            clients: Object.keys(newMorningChecks),
+            clients: Object.keys(morningChecks),
             morningComments: morningComments,
-            morningChecks: newMorningChecks,
+            morningChecks: morningChecks,
             eveningChecks: eveningChecks,
             eveningComments: eveningComments,
             assignedBy: assignedBy,
@@ -451,6 +498,7 @@ const ClientSheet: React.FC<any> = () => {
             EmployeeID: EmployeeId,
             estTimes: estTimes,
             actTimes: actTimes,
+            taskRemainder:taskRemainder,
         };
 
         axios
@@ -477,7 +525,6 @@ const ClientSheet: React.FC<any> = () => {
                 setEstTimes({});
             })
             .catch((error) => {
-                console.error('Error while sending data:', error);
                 toast.error('Error while sending data.', {
                     position: toast.POSITION.TOP_RIGHT,
                 });

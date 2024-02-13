@@ -175,10 +175,7 @@ const EveningDashboard: React.FC = () => {
                   style={{ width: 300 }}
                 />
               </div>
-
-
             </div>
-
             <div
               style={{
                 display: "flex",

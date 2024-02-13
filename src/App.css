@@ -450,6 +450,22 @@ css .campus_form {
   color: black
 }
 
+.shifting-change thead.ant-table-thead tr th:nth-child(1),
+.shifting-change thead.ant-table-thead tr th:nth-child(2),
+.shifting-change thead.ant-table-thead tr th:nth-child(3),
+.shifting-change thead.ant-table-thead tr th:nth-child(4),
+.shifting-change thead.ant-table-thead tr th:nth-child(5),
+.shifting-change thead.ant-table-thead tr th:nth-child(6),
+.shifting-change thead.ant-table-thead tr th:nth-child(7),
+.shifting-change thead.ant-table-thead tr th:nth-child(8) {
+  min-width: 100px;
+  padding: 0 4px;
+}
+.shifting-change table tbody.ant-table-tbody td.ant-table-cell {
+  text-align: center;
+  padding: 0 4px;
+}
+
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(1),
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(2),
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(3),
@@ -464,8 +480,12 @@ css .campus_form {
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(12),
 .clientSheetTlTask thead.ant-table-thead tr th:nth-child(13) {
   min-width: 100px;
+  padding: 0 4px;
 }
-
+.clientSheetTlTask table tbody.ant-table-tbody td.ant-table-cell {
+  text-align: center;
+  padding: 0 4px;
+}
 
 .saleCampus-form thead.ant-table-thead tr th:nth-child(1),
 .saleCampus-form thead.ant-table-thead tr th:nth-child(2),
