@@ -519,7 +519,7 @@ const ViewClientSheet: React.FC<any> = () => {
                                 }}
                                 className="clientSheetTlTask"
                             >
-                                <h1>Task</h1>
+                                <h3>Task</h3>
                                 <div style={{
                                     display: 'flex', gap: '61px',
                                     marginLeft: '9px'
@@ -527,18 +527,17 @@ const ViewClientSheet: React.FC<any> = () => {
                                     <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
                                     <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
                                 </div>
-                                <br />
-                                <Table columns={columns} dataSource={filteredData} pagination={paginationSettings} />
-                                <h1>Reply/Remainder</h1>
+                                <Table columns={columns} dataSource={filteredData} />
+                                <h3>Reply/Remainder</h3>
                                 <div style={{
-                                    display: 'flex', gap: '61px',
+                                    display: 'flex', gap: '50px',
                                     marginLeft: '9px'
                                 }}>
                                     <p>{`Total Mrng Time: ${totalEstHoursFormat} hours ${totalEstMinutesFormat} minutes`}</p>
                                     <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
                                 </div>
                                 <br />
-                                <Table columns={columns} dataSource={filteredRemainder} pagination={paginationSettings} />
+                                <Table columns={columns} dataSource={filteredRemainder}/>
                             </div>
 
                         </div>
