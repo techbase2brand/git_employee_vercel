@@ -482,9 +482,13 @@ css .campus_form {
   min-width: 100px;
   padding: 0 4px;
 }
+
 .clientSheetTlTask table tbody.ant-table-tbody td.ant-table-cell {
   text-align: center;
   padding: 0 4px;
+}
+.clientSheetTlTask ul.ant-pagination.ant-table-pagination.ant-table-pagination-right.css-dev-only-do-not-override-txh9fw {
+  display: none;
 }
 
 .saleCampus-form thead.ant-table-thead tr th:nth-child(1),
