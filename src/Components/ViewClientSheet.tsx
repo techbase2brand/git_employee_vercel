@@ -93,15 +93,15 @@ const ViewClientSheet: React.FC<any> = () => {
     //     }
     // });
     const filteredData = data.filter((project) => {
-        if (employeeID === "B2B00100" && project.taskRemainder === 1) {
+        if (employeeID === "B2B00100" && project.taskRemainder === 0) {
             return (
                 project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 project.AssigneeName !== "" &&
                 (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
             );
         } else {
-            const isAssignedByEmployee = project.assignedBy === employeeName && project.taskRemainder === 1;
-            const isAssignedToEmployee = project.AssigneeName === employeeName && project.taskRemainder === 1;
+            const isAssignedByEmployee = project.assignedBy === employeeName && project.taskRemainder === 0;
+            const isAssignedToEmployee = project.AssigneeName === employeeName && project.taskRemainder === 0;
             return (
                 (isAssignedByEmployee || isAssignedToEmployee) &&
                 project.assignedBy !== "" &&
@@ -113,15 +113,15 @@ const ViewClientSheet: React.FC<any> = () => {
     });
 
     const filteredRemainder = data.filter((project) => {
-        if (employeeID === "B2B00100" && project.taskRemainder === 0) {
+        if (employeeID === "B2B00100" && project.taskRemainder === 1) {
             return (
                 project.projectName.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 project.AssigneeName !== "" &&
                 (selectedAssignee ? project.AssigneeName === selectedAssignee : true)
             );
         } else {
-            const isAssignedByEmployee = project.assignedBy === employeeName && project.taskRemainder === 0;
-            const isAssignedToEmployee = project.AssigneeName === employeeName && project.taskRemainder === 0;
+            const isAssignedByEmployee = project.assignedBy === employeeName && project.taskRemainder === 1;
+            const isAssignedToEmployee = project.AssigneeName === employeeName && project.taskRemainder === 1;
             return (
                 (isAssignedByEmployee || isAssignedToEmployee) &&
                 project.assignedBy !== "" &&

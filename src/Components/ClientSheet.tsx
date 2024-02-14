@@ -55,6 +55,7 @@ const ClientSheet: React.FC<any> = () => {
     const [data1, setData1] = useState<Project[]>([]);
     const [selectedEmployee, setSelectedEmployee] = useState<string>("");
     const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
+
     const [morningComments, setMorningComments] = useState<Record<string, string>>({});
     const [morningChecks, setMorningChecks] = useState<Record<string, boolean>>({});
     const [data, setData] = useState<ClientSheetData[]>([]);
@@ -498,7 +499,7 @@ const ClientSheet: React.FC<any> = () => {
             EmployeeID: EmployeeId,
             estTimes: estTimes,
             actTimes: actTimes,
-            taskRemainder:taskRemainder,
+            taskRemainder: taskRemainder,
         };
 
         axios
@@ -523,6 +524,7 @@ const ClientSheet: React.FC<any> = () => {
                 setSelectAllMorningTasks(false);
                 setActTimes({});
                 setEstTimes({});
+                setSearchTerm("");
             })
             .catch((error) => {
                 toast.error('Error while sending data.', {
@@ -593,7 +595,7 @@ const ClientSheet: React.FC<any> = () => {
                                     value={selectedEmployee || undefined}
                                 >
                                     {employeeFirstNames
-                                        .filter(name => ["Arshpreet", "Manpreet", "Aashu", "Yugal", "Sahil", "Sandeep", "Zaid"].includes(name))
+                                        .filter(name => ["Arshpreet", "Manpreet", "Aashu", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer"].includes(name))
                                         .sort()
                                         .map((name, index) => (
                                             <Select.Option key={index} value={name}>
@@ -612,6 +614,7 @@ const ClientSheet: React.FC<any> = () => {
                                         <Select.Option value="Zaid">Zaid</Select.Option>
                                         <Select.Option value="Sandeep">Sandeep</Select.Option>
                                         <Select.Option value="Sahil">Sahil</Select.Option>
+                                        <Select.Option value="Sameer">Sameer</Select.Option>
                                     </Select>
                                 }
 
@@ -666,6 +669,13 @@ const ClientSheet: React.FC<any> = () => {
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Zaid">Zaid</Select.Option>
+                                    </Select>
+                                }
+                                {EmployeeId === "B2B00029" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Sameer">Sameer</Select.Option>
                                     </Select>
                                 }
                                 <div
