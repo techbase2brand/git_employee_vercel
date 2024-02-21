@@ -60,7 +60,7 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
         if (selectedAssignee) {
             return item.sendTo === selectedAssignee && (item.checked === 0 || item.checked === null);
         } else {
-            return item.checked === 0 || item.checked === null;
+            return item?.sendTo !== "" && (item.checked === 0 || item.checked === null);
         }
     });
 
