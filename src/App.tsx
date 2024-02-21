@@ -500,14 +500,6 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
-           <Route
-            path="/ViewLead"
-            element={
-              <ProtectedRoute>
-                <ViewLead />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/CategoryForm"
             element={

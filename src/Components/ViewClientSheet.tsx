@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DeleteOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
 import { format } from "date-fns";
+import ViewLead from "./ViewLead";
 const { RangePicker } = DatePicker;
 
 interface ClientSheetData {
@@ -35,6 +36,7 @@ const ViewClientSheet: React.FC<any> = () => {
     const [dateRange, setDateRange] = useState<[string | null, string | null]>([null, null]);
     const [currentDate] = useState<Date>(new Date());
     const formattedDate = format(currentDate, "yyyy-MM-dd");
+    //viewleads
 
     const myDataString = localStorage.getItem('myData');
     let employeeName = "";
@@ -537,9 +539,11 @@ const ViewClientSheet: React.FC<any> = () => {
                                     <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
                                 </div>
                                 <br />
-                                <Table columns={columns} dataSource={filteredRemainder}/>
-                            </div>
+                                <Table columns={columns} dataSource={filteredRemainder} />
 
+                                <h3 style={{ marginBottom: '10px' }}>View Lead</h3>
+                                <ViewLead selectedAssignee={selectedAssignee} searchTerm={searchTerm} />
+                            </div>
                         </div>
                     </div>
                 </div>

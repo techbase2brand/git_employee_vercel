@@ -595,7 +595,7 @@ const ClientSheet: React.FC<any> = () => {
                                     value={selectedEmployee || undefined}
                                 >
                                     {employeeFirstNames
-                                        .filter(name => ["Arshpreet", "Manpreet", "Aashu", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer"].includes(name))
+                                        .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer"].includes(name))
                                         .sort()
                                         .map((name, index) => (
                                             <Select.Option key={index} value={name}>
@@ -609,7 +609,6 @@ const ClientSheet: React.FC<any> = () => {
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Yugal">Yugal</Select.Option>
                                         <Select.Option value="Manpreet">Manpreet</Select.Option>
-                                        <Select.Option value="Aashu">Aashu</Select.Option>
                                         <Select.Option value="Arshpreet">Arshpreet</Select.Option>
                                         <Select.Option value="Zaid">Zaid</Select.Option>
                                         <Select.Option value="Sandeep">Sandeep</Select.Option>
@@ -639,14 +638,6 @@ const ClientSheet: React.FC<any> = () => {
                                         <Option value="ALL">ALL</Option>
                                         <Option value="FAVORITE">ALL FAVORITE</Option>
                                         <Select.Option value="Arshpreet">Arshpreet</Select.Option>
-                                    </Select>
-                                }
-
-                                {EmployeeId === "B2B00023" &&
-                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
-                                        <Option value="ALL">ALL</Option>
-                                        <Option value="FAVORITE">ALL FAVORITE</Option>
-                                        <Select.Option value="Aashu">Aashu</Select.Option>
                                     </Select>
                                 }
 
@@ -689,7 +680,7 @@ const ClientSheet: React.FC<any> = () => {
                                     </button>
                                 </div>
                             </div>
-                            {(filterOption === "FAVORITE" || filterOption === "Arshpreet" || filterOption === "Manpreet" || filterOption === "Yugal" || filterOption === "Aashu") &&
+                            {(filterOption === "FAVORITE" || filterOption === "Arshpreet" || filterOption === "Manpreet" || filterOption === "Yugal") &&
                                 <Checkbox
                                     style={{
                                         marginLeft: '14%',

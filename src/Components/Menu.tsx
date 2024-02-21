@@ -431,9 +431,6 @@ const AppMenu = () => {
             <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
               <Link to="/ViewClientSheet">View TL Task</Link>
             </Menu.Item>
-            <Menu.Item key="ViewLead" icon={<TableOutlined />}>
-              <Link to="/ViewLead">ViewLead</Link>
-            </Menu.Item>
             <Menu.Item
               key="AssignTaskPage"
               icon={<TableOutlined rev={undefined} />}
@@ -560,9 +557,6 @@ const AppMenu = () => {
             <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
               <Link to="/ViewClientSheet">View TL Task</Link>
             </Menu.Item>
-            {/* <Menu.Item key="ViewLead" icon={<TableOutlined />}>
-              <Link to="/ViewLead">ViewLead</Link>
-            </Menu.Item> */}
             <Menu.Item
               key="AssignTaskPage"
               icon={<TableOutlined rev={undefined} />}

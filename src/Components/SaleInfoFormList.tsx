@@ -2,15 +2,26 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
-import { Table, Button, Input, Modal, DatePicker } from "antd";
+import { Table, Button, Input, Modal, DatePicker, Select } from "antd";
 import { format } from "date-fns";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   EditOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 const { RangePicker } = DatePicker;
+
+interface Employee {
+  EmpID: string | number;
+  firstName: string;
+  lastName: string
+  role: string;
+  dob: string | Date;
+  EmployeeID: string;
+  status: number;
+}
 
 interface SalesInfoData {
   id: number;
@@ -35,6 +46,8 @@ interface SalesInfoData {
   commModeWhatsapp: string;
   commModeSkype: string;
   othermode: string;
+  sendTo: string;
+  enterCmnt: string;
 }
 
 const SaleInfoFormList = () => {
@@ -51,6 +64,7 @@ const SaleInfoFormList = () => {
   const [gettingData, setGettingData] = useState<SalesInfoData[]>([]);
   const uniqueStatusNames = Array.from(new Set(statusNames));
   const formattedDate = format(currentDate, "yyyy-MM-dd");
+  const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
   const myDataString = localStorage.getItem('myData');
 
   let empIdMatch = "";
@@ -65,7 +79,7 @@ const SaleInfoFormList = () => {
   const [filteredByDateRange, setFilteredByDateRange] = useState<SalesInfoData[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [selectedDays, setSelectedDays] = useState<string>("");
-
+  const [selectedSendToValues, setSelectedSendToValues] = useState<Record<number, string>>({});
   const showModal = (text: string | string[]) => {
     const reasons = Array.isArray(text) ? text : text.split(',');
     setModalContent(reasons);
@@ -110,6 +124,23 @@ const SaleInfoFormList = () => {
   const paginationSettings = {
     pageSize: 100,
   };
+
+  useEffect(() => {
+    axios
+      .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        const employeeNames = response?.data.map((employee) => employee.firstName);
+
+        setEmployeeFirstNames(employeeNames);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   const handleGoButtonClick = () => {
     const today = new Date();
@@ -248,7 +279,32 @@ const SaleInfoFormList = () => {
     ];
     return modes.join(', ');
   };
+  const handleSend = (recordId: number) => {
+    const recordToUpdate = filteredData.find((item) => item.id === recordId);
+    const updatedRecord = { ...recordToUpdate, sendTo: selectedSendToValues[recordId] || "" };
 
+    axios
+      .put(
+        `${process.env.REACT_APP_API_BASE_URL}/updateSendTo/${recordId}`,
+        updatedRecord,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        toast.success('send successfully!', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating SendTo field:", error);
+        toast.error('sending failed.', {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      });
+  };
 
   const columns = [
     {
@@ -353,6 +409,45 @@ const SaleInfoFormList = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
+      title: "Send To",
+      dataIndex: "sendTo",
+      key: "sendTo",
+      render: (text: string, record: SalesInfoData) => {
+        console.log("record", record);
+
+        return (
+          <Select
+            showSearch
+            placeholder="Select assigned Name"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              typeof option?.children === "string" &&
+              (option?.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            style={{
+              width: '100%', height: 'fit-content'
+            }}
+            value={selectedSendToValues[record.id] || record.sendTo}
+            onChange={(value) => setSelectedSendToValues((prev) => ({ ...prev, [record.id]: value }))}
+          >
+            {employeeFirstNames
+              .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer"].includes(name))
+              .map((name, index) => (
+                <Select.Option key={index} value={name}>
+                  {name}
+                </Select.Option>
+              ))}
+          </Select>
+        )
+      },
+    },
+    {
+      title: "Comment",
+      dataIndex: "enterCmnt",
+      key: "enterCmnt",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
       title: "Action",
       key: "action",
       render: (_: any, record: SalesInfoData) => (
@@ -364,6 +459,14 @@ const SaleInfoFormList = () => {
           >
             Edit
           </Button>
+          {selectedSendToValues[record.id] &&
+            <Button
+              style={{ border: '1px solid black' }}
+              onClick={() => handleSend(record.id)}
+            >
+              Send
+            </Button>
+          }
         </span>
       ),
     },
