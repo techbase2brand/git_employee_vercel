@@ -65,7 +65,7 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
     });
 
     const paginationSettings = {
-        pageSize: 10,
+        pageSize: 100,
     };
 
     useEffect(() => {
