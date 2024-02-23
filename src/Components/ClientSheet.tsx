@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Option } from "antd/es/mentions";
 import { format } from "date-fns";
+import DragAssign from "./DragAssign";
 interface Employee {
     EmpID: string | number;
     firstName: string;
@@ -55,7 +56,6 @@ const ClientSheet: React.FC<any> = () => {
     const [data1, setData1] = useState<Project[]>([]);
     const [selectedEmployee, setSelectedEmployee] = useState<string>("");
     const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
-
     const [morningComments, setMorningComments] = useState<Record<string, string>>({});
     const [morningChecks, setMorningChecks] = useState<Record<string, boolean>>({});
     const [data, setData] = useState<ClientSheetData[]>([]);
@@ -567,6 +567,7 @@ const ClientSheet: React.FC<any> = () => {
                             }}
                             className="add-div"
                         >
+                            <p className="add-heading" style={{ height: 'auto' }}>AssignTl Task</p>
                             <div style={{ display: 'flex', gap: '20px' }} className="placeholder-color">
                                 <input
                                     value={searchTerm}
@@ -680,12 +681,11 @@ const ClientSheet: React.FC<any> = () => {
                                     </button>
                                 </div>
                             </div>
+                            <DragAssign />
                             {(filterOption === "FAVORITE" || filterOption === "Arshpreet" || filterOption === "Manpreet" || filterOption === "Yugal") &&
                                 <Checkbox
                                     style={{
-                                        marginLeft: '14%',
-                                        position: 'absolute',
-                                        marginTop: '51px'
+                                        marginLeft: '28%'
                                     }}
                                     checked={selectAllMorningTasks}
                                     onChange={(e) => {
@@ -707,7 +707,6 @@ const ClientSheet: React.FC<any> = () => {
                                     display: "flex",
                                     flexDirection: "row",
                                     justifyContent: "space-around",
-                                    marginTop: "35px",
                                 }}
                                 className="clientSheetTlTask"
                             >

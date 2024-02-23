@@ -30,7 +30,6 @@ import ShiftChangeReport from "./Components/ShiftChangeReport";
 import SalecampusForm from "./Components/SalecampusForm";
 import SalecampusFormList from "./Components/SalecampusFormList";
 import SaleInfoForm from "./Components/SaleInfoForm";
-import DragAssign from "./Components/DragAssign";
 import DocForm from "./Components/DocForm";
 import BlogPost from "./Components/BlogPost";
 import CampusBlogs from "./Components/CampusBlogs";
@@ -441,14 +440,6 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <SaleInfoFormList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dragAssign"
-            element={
-              <ProtectedRoute>
-                <DragAssign />
               </ProtectedRoute>
             }
           />

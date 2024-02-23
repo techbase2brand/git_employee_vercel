@@ -46,7 +46,6 @@ const AddModule: React.FC<unknown> = () => {
   const [phases, setPhases] = useState<Phases[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [submitting, setSubmitting] = useState(false);
-
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [selectedPhase, setSelectedPhase] = useState<string>("");
   const [selectedModule, setSelectedModule] = useState<string>("");
