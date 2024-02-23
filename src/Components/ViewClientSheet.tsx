@@ -8,6 +8,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { Option } from "antd/es/mentions";
 import { format } from "date-fns";
 import ViewLead from "./ViewLead";
+import ViewTlBacklog from "./ViewTlBacklog";
 const { RangePicker } = DatePicker;
 
 interface ClientSheetData {
@@ -529,7 +530,7 @@ const ViewClientSheet: React.FC<any> = () => {
                                     <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
                                     <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
                                 </div>
-                                <Table columns={columns} dataSource={filteredData} pagination={paginationSettings}/>
+                                <Table columns={columns} dataSource={filteredData} pagination={paginationSettings} />
                                 <h3>Reply/Remainder</h3>
                                 <div style={{
                                     display: 'flex', gap: '50px',
@@ -539,11 +540,15 @@ const ViewClientSheet: React.FC<any> = () => {
                                     <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
                                 </div>
                                 <br />
-                                <Table columns={columns} dataSource={filteredRemainder} pagination={paginationSettings}/>
+                                <Table columns={columns} dataSource={filteredRemainder} pagination={paginationSettings} />
 
-                                <h3 style={{ marginBottom: '10px' }}>View Lead</h3>
-                                <ViewLead selectedAssignee={selectedAssignee} searchTerm={searchTerm} />
+
                             </div>
+                            <h3 style={{ marginBottom: '10px' }}>View Lead</h3>
+                            <ViewLead selectedAssignee={selectedAssignee} searchTerm={searchTerm} dateRange={dateRange} />
+
+                            <h3 style={{ marginBottom: '10px' }}>BacklogTable</h3>
+                            <ViewTlBacklog searchTerm={searchTerm} dateRange={dateRange} />
                         </div>
                     </div>
                 </div>

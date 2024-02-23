@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table, Button, Checkbox } from "antd";
+import { Table, Button, Checkbox, Modal } from "antd";
 import { format } from "date-fns";
 
 interface SalesInfoData {
@@ -35,13 +35,16 @@ interface SalesInfoData {
 interface Props {
     selectedAssignee: string | null;
     searchTerm: string;
+    dateRange: any;
 }
-const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
+const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm, dateRange }) => {
     const [data, setData] = useState<SalesInfoData[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalRecord, setModalRecord] = useState<SalesInfoData | null>(null);
     const [filteredData, setFilteredData] = useState<SalesInfoData[]>(data);
     const [currentDate] = useState<Date>(new Date());
     const formattedDate = format(currentDate, "yyyy-MM-dd");
-    const [dateRange] = useState<[string | null, string | null]>([null, null]);
+    // const [dateRange] = useState<[string | null, string | null]>([null, null]);
     const [editMode, setEditMode] = useState<number | null>(null);
     const [editedComments, setEditedComments] = useState<Record<string, string>>({});
     const sortedDataa = [...filteredData].sort((a, b) => a.id - b.id);
@@ -80,19 +83,23 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
             )
             .then((response) => {
                 const resData = response.data;
-                setData(resData);
-                setFilteredData(resData);
-                let filteData = response.data;
+                let filteredData = resData;
 
                 if (dateRange[0] && dateRange[1]) {
                     const startDate = new Date(dateRange[0]!).getTime();
                     const endDate = new Date(dateRange[1]!).getTime();
 
-                    filteData = response.data.filter((obj: SalesInfoData) => {
+                    filteredData = resData.filter((obj: SalesInfoData) => {
                         const taskDate = new Date(obj.dateData).getTime();
                         return taskDate >= startDate && taskDate <= endDate;
                     });
                 }
+
+                setData(filteredData);
+                setFilteredData(filteredData);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
             });
     }, [dateRange, formattedDate]);
 
@@ -126,15 +133,38 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
             });
     };
 
-    const handleCheckChange = (record: SalesInfoData) => {
-        const updatedData = data.map((item) =>
-            item.id === record.id ? { ...item, checked: item.checked === 1 ? 0 : 1 } : item
-        );
+    // const handleCheckChange = (record: SalesInfoData) => {
+    //     const updatedData = data.map((item) =>
+    //         item.id === record.id ? { ...item, checked: item.checked === 1 ? 0 : 1 } : item
+    //     );
 
+    //     setData(updatedData);
+
+    //     axios.put(`${process.env.REACT_APP_API_BASE_URL}/update-checked-tl/${record.id}`, {
+    //         checked: record.checked === 1 ? 0 : 1,
+    //     })
+    //         .then(response => {
+    //             console.log('check updated successfully:', response.data);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error while updating check:', error);
+    //         });
+    // };
+    const handleCheckChange = (record: SalesInfoData) => {
+        setModalRecord(record);
+        setIsModalVisible(true);
+    };
+    const handleModalOk = () => {
+        setIsModalVisible(false);
+
+        // Your existing code for handling checkbox change
+        const updatedData = data.map((item) =>
+            item.id === modalRecord?.id ? { ...item, checked: item.checked === 1 ? 0 : 1 } : item
+        );
         setData(updatedData);
 
-        axios.put(`${process.env.REACT_APP_API_BASE_URL}/update-checked-tl/${record.id}`, {
-            checked: record.checked === 1 ? 0 : 1,
+        axios.put(`${process.env.REACT_APP_API_BASE_URL}/update-checked-tl/${modalRecord?.id}`, {
+            checked: modalRecord?.checked === 1 ? 0 : 1,
         })
             .then(response => {
                 console.log('check updated successfully:', response.data);
@@ -143,6 +173,11 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
                 console.error('Error while updating check:', error);
             });
     };
+
+    const handleModalCancel = () => {
+        setIsModalVisible(false);
+    };
+
     const columns = [
         {
             title: "Client name",
@@ -197,16 +232,22 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
             ),
         },
         {
-            title: "Checked",
+            title: "F/A",
             dataIndex: "checked",
             key: "checked",
-            render: (text: string, record: SalesInfoData) => (
-                <Checkbox
-                    style={{ border: '2px solid black', borderRadius: '6px' }}
-                    checked={record.checked === 1}
-                    onChange={() => handleCheckChange(record)}
-                />
-            ),
+            render: (text: string, record: SalesInfoData) => {
+                return (
+                    <>
+                        {EmployeId === "B2B00100" && record.enterCmnt && (
+                            <Checkbox
+                                style={{ border: '2px solid black', borderRadius: '6px' }}
+                                checked={record.checked === 1}
+                                onChange={() => handleCheckChange(record)}
+                            />
+                        )}
+                    </>
+                )
+            },
         },
     ];
 
@@ -247,7 +288,7 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
     return (
         <div>
             <div>
-                <div>
+                <div className="clientSheetTlTask">
                     {EmployeId === "B2B00100" ?
                         <Table
                             dataSource={allData.slice().reverse()}
@@ -262,6 +303,14 @@ const ViewLead: React.FC<Props> = ({ selectedAssignee, searchTerm }) => {
                             rowClassName={getStatusRowClassName}
                             pagination={paginationSettings}
                         />}
+                    <Modal
+                        title="Are you sure?"
+                        visible={isModalVisible}
+                        onOk={handleModalOk}
+                        onCancel={handleModalCancel}
+                    >
+                        <p>This is your final Approve for remove data.</p>
+                    </Modal>
                 </div>
             </div>
         </div>

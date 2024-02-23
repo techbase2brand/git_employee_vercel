@@ -574,10 +574,6 @@ const AppMenu = () => {
               <Link to="/ViewBacklogPage">View Backlog Page <Badge count={CommentNotifications}>
               </Badge></Link>
             </Menu.Item>
-            <Menu.Item key="dragAssign" icon={<TableOutlined />}>
-              <Link to="/dragAssign">DragAssign</Link>
-            </Menu.Item>
-
           </Menu.SubMenu>
           <Menu.SubMenu key="hr" icon={<TableOutlined rev={undefined} />} title="HR">
             <Menu.Item
