@@ -542,13 +542,13 @@ const ViewClientSheet: React.FC<any> = () => {
                                 <br />
                                 <Table columns={columns} dataSource={filteredRemainder} pagination={paginationSettings} />
 
+                                <h3 style={{ marginBottom: '10px' }}>View Lead</h3>
+                                <ViewLead selectedAssignee={selectedAssignee} searchTerm={searchTerm} dateRange={dateRange} />
 
+                                <h3 style={{ marginBottom: '10px' }}>BacklogTable</h3>
+                                <ViewTlBacklog searchTerm={searchTerm} dateRange={dateRange} selectedAssignee={selectedAssignee} />
                             </div>
-                            <h3 style={{ marginBottom: '10px' }}>View Lead</h3>
-                            <ViewLead selectedAssignee={selectedAssignee} searchTerm={searchTerm} dateRange={dateRange} />
 
-                            <h3 style={{ marginBottom: '10px' }}>BacklogTable</h3>
-                            <ViewTlBacklog searchTerm={searchTerm} dateRange={dateRange} />
                         </div>
                     </div>
                 </div>

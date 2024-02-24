@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-
 import { Table, Button, Modal, Checkbox } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-
 
 interface Task {
   EvngTaskID: number;
@@ -114,22 +112,17 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         },
       })
       .then((response) => {
-        const sortedData = response.data.sort(
-          (a, b) => a.firstName.localeCompare(b.firstName)
+        const sortedData = response?.data.sort(
+          (a, b) => a?.firstName.localeCompare(b?.firstName)
         );
-        const filteredData = sortedData.filter((emp) => emp.status === 1)
-
-
+        const filteredData = sortedData.filter((emp) => emp?.status === 1)
         setEmployeeArr(filteredData);
-
         setDel(false)
-
       })
       .catch((error) => console.log(error));
   }, [del]);
 
   const arrayOfArray = Object.values(data);
-
   const handleApproval = (EvngTaskID: number) => {
     const updatedData = arrayOfArray.map((task) =>
       task.map((item) =>

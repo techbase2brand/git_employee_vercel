@@ -92,8 +92,8 @@ const EveningDashboard: React.FC = () => {
 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query.toLowerCase());
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
   };
 
   return (

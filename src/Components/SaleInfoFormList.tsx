@@ -66,7 +66,6 @@ const SaleInfoFormList = () => {
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [employeeFirstNames, setEmployeeFirstNames] = useState<string[]>([]);
   const myDataString = localStorage.getItem('myData');
-
   let empIdMatch = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
