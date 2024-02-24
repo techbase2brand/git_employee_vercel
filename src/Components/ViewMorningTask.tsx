@@ -23,16 +23,21 @@ interface Task {
 
 const ViewMorningTask: React.FC = () => {
   const [data, setData] = useState<any>();
-  const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate] = useState<Date>(new Date());
   const [editID] = useState<any>();
   const { mrngEditID, setMrngEditID } = useContext(GlobalInfo);
   const [loading, setLoading] = useState(true);
-  
+
   if (editID) {
     setMrngEditID(editID);
   }
   const formattedDate = format(currentDate, "yyyy-MM-dd");
+  const myDataString = localStorage.getItem('myData');
+  let employeeID = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    employeeID = myData.EmployeeID;
+  }
 
   useEffect(() => {
     axios
@@ -53,17 +58,7 @@ const ViewMorningTask: React.FC = () => {
         console.error(error);
         setLoading(false);
       });
-  }, [employeeID, formattedDate]);
-
-  const dataString = localStorage.getItem("myData");
-  const employeeInfo = useMemo(
-    () => (dataString ? JSON.parse(dataString) : []),
-    [dataString]
-  );
-
-  useEffect(() => {
-    setEmployeeID(employeeInfo?.EmployeeID);
-  }, []);
+  }, [formattedDate]);
 
   return (
     <div className="emp-main-div">
@@ -114,15 +109,15 @@ const ViewMorningTask: React.FC = () => {
                   Morning Tasks
                 </p>
               </div>
-                {loading ? (
-                  <Spin size="large" className="spinner-antd"/>
-                ) : (
-                  <MorningTaskTable
-                    data={data}
-                    mrngEditID={mrngEditID}
-                    setMrngEditID={setMrngEditID}
-                  />
-                )}
+              {loading ? (
+                <Spin size="large" className="spinner-antd" />
+              ) : (
+                <MorningTaskTable
+                  data={data}
+                  mrngEditID={mrngEditID}
+                  setMrngEditID={setMrngEditID}
+                />
+              )}
             </div>
           </div>
         </div>

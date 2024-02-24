@@ -66,10 +66,6 @@ const Dashboard: React.FC = () => {
       });
   }, []);
 
-
-
-
-
   return (
     <div className="emp-main-div">
       <div
@@ -151,14 +147,14 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               <div style={{}} className="dashboard-handle">
-              {/* {loading ?
+                {/* {loading ?
                   <Spin size="large" className="spinner-antd"/>
                   : */}
                 <TaskTable data={data} totalEstHrs={totalEstHrs} setTotalEstHrs={setTotalEstHrs}
                   setTotalUpWorkHrs={setTotalUpWorkHrs} setSetTotalUpWorkHrs={setSetTotalUpWorkHrs}
                   selectedRole={selectedRole} searchQuery={searchQuery}
                 />
-              {/* } */}
+                {/* } */}
               </div>
             </div>
           </div>

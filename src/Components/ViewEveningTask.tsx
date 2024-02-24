@@ -24,11 +24,17 @@ interface Task {
 }
 const ViewEveningTask: React.FC = () => {
   const [data, setData] = useState<Task[]>([]);
-  const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate] = useState<Date>(new Date());
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const { evngEditID, setEvngEditID } = useContext(GlobalInfo);
   const [loading, setLoading] = useState(true);
+
+  const myDataString = localStorage.getItem('myData');
+  let employeeID = "";
+  if (myDataString) {
+    const myData = JSON.parse(myDataString);
+    employeeID = myData.EmployeeID;
+  }
 
   useEffect(() => {
     axios
@@ -53,14 +59,6 @@ const ViewEveningTask: React.FC = () => {
         setLoading(false);
       });
   }, [employeeID, formattedDate]);
-
-  const dataString = localStorage.getItem("myData");
-
-  useEffect(() => {
-    const employeeInfo = dataString ? JSON.parse(dataString) : [];
-    const firstEmployeeID = employeeInfo?.EmployeeID;
-    setEmployeeID(firstEmployeeID);
-  }, [formattedDate, dataString]);
 
   return (
     <div className="emp-main-div">
@@ -111,15 +109,15 @@ const ViewEveningTask: React.FC = () => {
                   Evening Status
                 </p>
               </div>
-                {loading ?
-                  <Spin size="large" className="spinner-antd"/>
-                  :
-                  <EveningTaskTable
-                    data={data}
-                    evngEditID={evngEditID}
-                    setEvngEditID={setEvngEditID}
-                  />
-                }
+              {loading ?
+                <Spin size="large" className="spinner-antd" />
+                :
+                <EveningTaskTable
+                  data={data}
+                  evngEditID={evngEditID}
+                  setEvngEditID={setEvngEditID}
+                />
+              }
             </div>
           </div>
         </div>

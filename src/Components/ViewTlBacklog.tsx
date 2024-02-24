@@ -27,10 +27,10 @@ interface Employee {
 interface Props {
     searchTerm: string;
     dateRange: any;
+    selectedAssignee: string | null;
 }
-const ViewTlBacklog: React.FC<Props> = ({ searchTerm, dateRange }) => {
+const ViewTlBacklog: React.FC<Props> = ({ searchTerm, dateRange, selectedAssignee }) => {
     const [data, setData] = useState<BacklogTask[]>([]);
-    const [selectedAssignee] = useState('');
     const [originalData, setOriginalData] = useState<BacklogTask[]>([]);
     const [modalRecord, setModalRecord] = useState<BacklogTask | null>(null);
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -51,7 +51,7 @@ const ViewTlBacklog: React.FC<Props> = ({ searchTerm, dateRange }) => {
         let filteredData = originalData;
 
         if (selectedAssignee) {
-            filteredData = originalData.filter((item) => item.assigneeName === selectedAssignee);
+            filteredData = originalData.filter((item) => item?.assigneeName === selectedAssignee);
         }
         setData(filteredData);
     }, [selectedAssignee, originalData])
