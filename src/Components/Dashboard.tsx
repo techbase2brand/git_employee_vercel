@@ -9,7 +9,6 @@ import DashboardTable from "./DashboardTable";
 import axios from "axios";
 import { format } from "date-fns";
 
-
 const { Search } = Input;
 
 interface Task {
@@ -23,7 +22,6 @@ interface Task {
   employeeID: string;
   currDate: string;
 }
-
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<any>([]);

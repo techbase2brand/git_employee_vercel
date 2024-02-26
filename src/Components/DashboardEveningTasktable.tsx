@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Checkbox } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { Console } from "console";
 
 interface Task {
   EvngTaskID: number;
@@ -16,21 +17,6 @@ interface Task {
   currDate: string;
   selectDate: string;
   approvedBy: string;
-}
-
-interface Props {
-  data: Task[][];
-  totalUpwork: any;
-  setTotalUpWork: React.Dispatch<React.SetStateAction<any>>;
-  totalEstHrs: any;
-  setTotalEstHrs: React.Dispatch<React.SetStateAction<any>>;
-  totalUpworkhrs: any;
-  setTotalUpworkhrs: React.Dispatch<React.SetStateAction<any>>;
-  searchQuery: any;
-  setSelectedRole: React.Dispatch<React.SetStateAction<any>>;
-  selectedRole: any;
-  del: any;
-  setDel: any;
 }
 
 interface EmployeeTime {
@@ -48,6 +34,20 @@ interface Employee {
   status: number;
 }
 
+interface Props {
+  data: Task[][];
+  totalUpwork: any;
+  setTotalUpWork: React.Dispatch<React.SetStateAction<any>>;
+  totalEstHrs: any;
+  setTotalEstHrs: React.Dispatch<React.SetStateAction<any>>;
+  totalUpworkhrs: any;
+  setTotalUpworkhrs: React.Dispatch<React.SetStateAction<any>>;
+  searchQuery: any;
+  setSelectedRole: React.Dispatch<React.SetStateAction<any>>;
+  selectedRole: any;
+  del: any;
+  setDel: any;
+}
 
 const DashboardEveningTasktable: React.FC<Props> = ({
   data,
@@ -76,10 +76,9 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   let jobPosition = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
-    employeeName = myData.firstName;
-    jobPosition = myData.jobPosition;
+    employeeName = myData?.firstName;
+    jobPosition = myData?.jobPosition;
   }
-
   const showModalDel = () => {
     setIsModalOpen(true);
   };
@@ -115,7 +114,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         const sortedData = response?.data.sort(
           (a, b) => a?.firstName.localeCompare(b?.firstName)
         );
-        const filteredData = sortedData.filter((emp) => emp?.status === 1)
+        const filteredData = sortedData?.filter((emp) => emp?.status === 1)
         setEmployeeArr(filteredData);
         setDel(false)
       })
@@ -123,14 +122,15 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   }, [del]);
 
   const arrayOfArray = Object.values(data);
+
   const handleApproval = (EvngTaskID: number) => {
-    const updatedData = arrayOfArray.map((task) =>
-      task.map((item) =>
-        item.EvngTaskID === EvngTaskID
+    const updatedData = arrayOfArray?.map((task) =>
+      task?.map((item) =>
+        item?.EvngTaskID === EvngTaskID
           ? { ...item, approvedBy: employeeName }
           : item
       )
-    );
+    )
     setTotalUpWork(updatedData);
     setCheckedTasks((prevCheckedTasks) => ({
       ...prevCheckedTasks,
@@ -159,7 +159,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       });
   };
 
-
   const columns = [
     {
       title: "Project Name",
@@ -180,7 +179,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       title: "Task",
       dataIndex: "task",
       key: "task",
-
     },
     {
       title: "Est time (hrs)",
@@ -258,9 +256,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}`;
-
   setTotalUpWork(formattedTime);
-
   const totalEstTime = arrayOfArray.reduce((acc, curr) => {
     curr.forEach((obj) => {
       if (obj?.estTime) {
@@ -291,7 +287,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         } else {
           [hours, minutes] = obj.upWorkHrs.split(":").map(Number);
         }
-
         const timeInMinutes = hours * 60 + minutes;
         acc += timeInMinutes;
       }
@@ -338,7 +333,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     curr.forEach((obj: any) => {
       if (obj?.upWorkHrs) {
         let hours, minutes;
-
         if (typeof obj.upWorkHrs === "number") {
           hours = obj.upWorkHrs;
           minutes = 0;
@@ -387,32 +381,26 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   }
   let filteredEmployees;
   if (selectedRole) {
-    filteredEmployees = employeeArr.filter((emp: Employee) => emp.role === selectedRole);
+    filteredEmployees = employeeArr.filter((emp: Employee) => emp?.role === selectedRole);
   } else {
     filteredEmployees = employeeArr;
   }
 
-
-
   const tables = filteredEmployees
     .filter((emp: Employee) => {
-      if (!searchQuery) return true; // Show all if there's no search query
-
-      // Check if the employee's name matches the searchQuery
+      if (!searchQuery) return true;
       if (emp.firstName.toLowerCase().includes(searchQuery) || emp.lastName.toLowerCase().includes(searchQuery)) {
         return true;
       }
 
-      // Find tasks for this employee
-      const tasksForEmployee = arrayOfArray.find(
-        (e) => e[0]?.employeeID === emp.EmployeeID
+      const tasksForEmployee = arrayOfArray?.find(
+        (e) => e[0]?.employeeID === emp?.EmployeeID
       );
-      // If there are tasks for this employee, check if any task matches the searchQuery
       if (tasksForEmployee) {
         return tasksForEmployee.some(task =>
-          task.phaseName.toLowerCase().includes(searchQuery) ||
-          task.projectName.toLowerCase().includes(searchQuery) ||
-          task.module.toLowerCase().includes(searchQuery)
+          task?.phaseName.toLowerCase().includes(searchQuery) ||
+          task?.projectName.toLowerCase().includes(searchQuery) ||
+          task?.module.toLowerCase().includes(searchQuery)
         );
       }
 
@@ -420,17 +408,17 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     })
     .map((emp: Employee) => {
       const tasksForEmployee = arrayOfArray.find(
-        (e) => e[0]?.employeeID === emp.EmployeeID
+        (e) => e[0]?.employeeID === emp?.EmployeeID
       );
 
       const filteredEstTime = employeeTimes.find(
-        (obj) => obj.employeeID === emp.EmployeeID
+        (obj) => obj?.employeeID === emp?.EmployeeID
       );
       const filteredUpworkTime = employeeUpworkTimes.find(
-        (obj) => obj.employeeID === emp.EmployeeID
+        (obj) => obj?.employeeID === emp?.EmployeeID
       );
       const filteredactTime = employeeactTimes.find(
-        (obj) => obj.employeeID === emp.EmployeeID
+        (obj) => obj?.employeeID === emp?.EmployeeID
       );
 
       const renderEmptyText = () => (
