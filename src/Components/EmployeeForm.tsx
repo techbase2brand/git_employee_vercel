@@ -442,7 +442,6 @@ const EmployeeForm: React.FC = () => {
                         backgroundColor: "#FFFFFF",
                         border: "1.69622px solid #D8D6D6",
                         borderRadius: "4.24055px",
-                        width: "14.5vw",
                       }}
                     >
                       <DatePicker
@@ -493,7 +492,6 @@ const EmployeeForm: React.FC = () => {
                         backgroundColor: "#FFFFFF",
                         border: "1.69622px solid #D8D6D6",
                         borderRadius: "4.24055px",
-                        width: "14.5vw",
                       }}
                     >
                       <DatePicker

@@ -57,7 +57,7 @@ const CategoryForm: React.FC<unknown> = () => {
     }
     const dataToSend = isEditMode
       ? termTask
-      : { CategoryData: termTask.CategoryData, dated: termTask.dated};
+      : { CategoryData: termTask.CategoryData, dated: termTask.dated };
 
     const apiEndpoint = isEditMode
       ? `${process.env.REACT_APP_API_BASE_URL}/update/category/${location?.state?.id}`
@@ -112,7 +112,7 @@ const CategoryForm: React.FC<unknown> = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column", width: '100%' }}
             className="form-container"
           >
             <div className="add-div" style={{ gap: '15px' }}>

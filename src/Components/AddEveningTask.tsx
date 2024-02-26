@@ -373,7 +373,7 @@ const AddModule: React.FC<any> = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column", width: '100%' }}
             className="form-container"
           >
             <div className="add-div">
@@ -386,7 +386,7 @@ const AddModule: React.FC<any> = () => {
 
               <select
                 // onChange={handleChange}
-                style={{ width: "95%" }}
+                style={{ width: "auto" }}
                 className="add-input"
                 id="project"
                 name="project"
@@ -405,7 +405,7 @@ const AddModule: React.FC<any> = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  width: "95%",
+                  width: "auto",
                 }}
               >
                 <div style={{ display: "flex", flexDirection: "column" }}>
@@ -463,7 +463,7 @@ const AddModule: React.FC<any> = () => {
                   task:<span style={{ color: "red" }}>*</span>
                 </label>
 
-                <div style={{ width: "89%" }} className="form-control">
+                <div style={{ width: "auto" }} className="form-control">
                   <textarea
                     style={{
                       outline: "none",
@@ -503,7 +503,8 @@ const AddModule: React.FC<any> = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  width: "94%",
+                  width: "auto",
+                  gap: '2px'
                 }}
               >
                 <div className="form-group">
