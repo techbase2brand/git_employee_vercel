@@ -8,7 +8,6 @@ import { format } from "date-fns";
 import { GlobalInfo } from "../App";
 import { Spin } from "antd";
 
-
 interface Task {
   EvngTaskID: number;
   projectName: string;

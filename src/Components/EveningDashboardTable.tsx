@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Tooltip } from "antd";
+import { DatePicker, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
-const { RangePicker } = DatePicker;
 
 interface Employee {
   EmpID: number;
@@ -27,10 +25,6 @@ interface TaskEntry {
   upWorkHrs: string;
 }
 
-interface HourEntry {
-  hours: number;
-  // ... other properties if they exist
-}
 interface EveningDashboardTableProps {
   data: any;
   totalUpwork: any;
@@ -69,11 +63,11 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
     }
   };
 
-  const handleMorningEveningButtonClick = () => {
-    setIsEvening(!isEvening);
-    const route = isEvening ? "/dashboard" : "/EveningDashboard";
-    navigate(route);
-  };
+  // const handleMorningEveningButtonClick = () => {
+  //   setIsEvening(!isEvening);
+  //   const route = isEvening ? "/dashboard" : "/EveningDashboard";
+  //   navigate(route);
+  // };
 
   useEffect(() => {
     axios
@@ -83,8 +77,8 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
         },
       })
       .then((response) => {
-        const sortedData = response.data.sort((a, b) =>
-          a.firstName.localeCompare(b.firstName)
+        const sortedData = response?.data?.sort((a, b) =>
+          a?.firstName.localeCompare(b?.firstName)
         );
         setEmployeeArr(sortedData);
       })
@@ -110,12 +104,12 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
 
     return Object.entries(data)
       .map(([id, taskEntries]) => {
-        const employee = employeeArr.find(
-          (emp) => emp.EmployeeID.toString() === id
+        const employee = employeeArr?.find(
+          (emp) => emp?.EmployeeID?.toString() === id
         );
-        const employeeName = employee ? employee.firstName : id;
+        const employeeName = employee ? employee?.firstName : id;
         const hoursList = (taskEntries as TaskEntry[]).map(
-          (entry: any) => entry.upWorkHrs
+          (entry: any) => entry?.upWorkHrs
         );
         const totalHours = sumTimes(hoursList);
 
@@ -129,11 +123,9 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
 
   const computeTotalUpworkHrs = (): string => {
     const allHours: string[] = [];
-
     (Object.values(data) as any[][]).forEach((taskEntries) => {
       taskEntries.forEach((entry) => allHours.push(entry.upWorkHrs));
     });
-
     return sumTimes(allHours);
   };
 
@@ -147,7 +139,6 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
         .filter((entry) => (entry as any)[timeKey]) // Filter out null values
         .forEach((entry) => allTimes.push((entry as any)[timeKey]));
     });
-
     return sumTimes(allTimes);
   };
 
@@ -171,18 +162,15 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
   const getTotalActTimeTooltip = () => {
     return Object.entries(data)
       .map(([id, taskEntries]) => {
-        const employee = employeeArr.find((emp) => emp.EmployeeID === id);
-        const employeeName = employee ? employee.firstName : id;
+        const employee = employeeArr.find((emp) => emp?.EmployeeID === id);
+        const employeeName = employee ? employee?.firstName : id;
         const totalActTime = sumTimes(
           (taskEntries as TaskEntry[])
             .filter((entry) => entry.actTime) // Filter out null values
             .map((entry) => entry.actTime!)
         );
-
         if (totalActTime === "0:00") return null; // Filter out the entries with 0 hours
-
-        return `${employeeName}: ${totalActTime} ` ;
-
+        return `${employeeName}: ${totalActTime} `;
       })
       .filter(Boolean) // Remove nulls from the array
       .join("\n");
@@ -198,15 +186,9 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
       }}
     >
       <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          width: "100%",
-        }}
+        className="dashboard-main"
       >
-        <div>
+        <div style={{ display: 'flex' }}>
           <button
             style={{ padding: "8px", borderRadius: "5px 0px 0px 5px" }}
             onClick={handleButton1Click}
@@ -258,5 +240,4 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
     </div>
   );
 };
-
 export default EveningDashboardTable;

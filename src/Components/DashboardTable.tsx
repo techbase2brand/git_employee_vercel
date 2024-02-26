@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 interface Employee {
   EmpID: number;
   firstName: string;
@@ -20,19 +19,6 @@ interface MorningDashboardTableProps {
   setTotalEstHrs: React.Dispatch<React.SetStateAction<any>>;
   setTotalUpWorkHrs: any;
   setSetTotalUpWorkHrs: React.Dispatch<React.SetStateAction<any>>;
-}
-
-interface TaskEntry {
-  MrngTaskID: number;
-
-  currDate: string;
-  employeeID: string;
-  estTime: string;
-  module: string;
-  phaseName: string;
-  projectName: string;
-  task: string;
-  upWorkHrs: string;
 }
 
 const DashboardTable: React.FC<MorningDashboardTableProps> = ({
@@ -80,15 +66,11 @@ const DashboardTable: React.FC<MorningDashboardTableProps> = ({
     navigate(route);
   };
 
-  console.log(data, "morning data");
-
   const handleDateChange = (date: dayjs.Dayjs | null) => {
     if (date) {
       setDate(date);
     }
   };
-
-
 
   function sumTimes(allTimes: string[]): string {
     let totalMinutes = 0;
@@ -124,10 +106,8 @@ const DashboardTable: React.FC<MorningDashboardTableProps> = ({
         const totalEstTime = sumTimes(
           (taskEntries as any[]).map((entry: any) => entry.estTime)
         );
-
         // Filter out the entries with 0 hours
         if (totalEstTime === "0:00") return null;
-
         return `${employeeName}: ${totalEstTime}`;
       })
       .filter(Boolean) // Remove nulls from the array
@@ -142,10 +122,8 @@ const DashboardTable: React.FC<MorningDashboardTableProps> = ({
         const totalUpWorkTime = sumTimes(
           (taskEntries as any[]).map((entry) => entry.upWorkHrs)
         );
-
         // Filter out the entries with 0 hours
         if (totalUpWorkTime === "0:00") return null;
-
         return `${employeeName}: ${totalUpWorkTime}`;
       })
       .filter(Boolean) // Remove nulls from the array

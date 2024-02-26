@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePicker, Input, Spin } from "antd";
+import { DatePicker, Input } from "antd";
 import Menu from "./Menu";
 import Navbar from "./Navbar";
 import DashboardEveningTasktable from "./DashboardEveningTasktable";
@@ -26,8 +26,6 @@ interface Task {
 
 const EveningDashboard: React.FC = () => {
   const [data, setData] = useState<any>([]);
-
-  // const [loading, setLoading] = useState(true);
   const [currentDate] = useState<Date>(new Date());
   const [totalUpwork, setTotalUpWork] = useState<any>();
   const [totalEstHrs, setTotalEstHrs] = useState<any>();
@@ -41,7 +39,6 @@ const EveningDashboard: React.FC = () => {
   };
 
   const formattedDate = format(currentDate, "yyyy-MM-dd");
-
   const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
     setDateRange(dateStrings);
   };
@@ -56,46 +53,40 @@ const EveningDashboard: React.FC = () => {
       })
       .then((response) => {
         let filteredData;
-
         if (dateRange[0] && dateRange[1]) {
           const startDate = new Date(dateRange[0]!).getTime();  // using the non-null assertion '!'
           const endDate = new Date(dateRange[1]!).getTime();    // using the non-null assertion '!'
-
-          filteredData = response.data.filter((obj) => {
-            const taskDate = new Date(obj.selectDate).getTime();
+          filteredData = response?.data?.filter((obj) => {
+            const taskDate = new Date(obj?.selectDate).getTime();
             return taskDate >= startDate && taskDate <= endDate;
           });
         } else {
-          filteredData = response.data.filter(
-            (obj) => obj.selectDate === formattedDate
+          filteredData = response?.data?.filter(
+            (obj) => obj?.selectDate === formattedDate
           );
         }
         const sortedData = filteredData.sort(
-          (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
+          (a, b) => Number(b?.EvngTaskID) - Number(a?.EvngTaskID)
         );
 
         const result = sortedData.reduce((acc: Record<string, any>, obj) => {
-          if (!acc[obj.employeeID]) {
-            acc[obj.employeeID] = [];
+          if (!acc[obj?.employeeID]) {
+            acc[obj?.employeeID] = [];
           }
-          acc[obj.employeeID].push(obj);
+          acc[obj?.employeeID].push(obj);
           return acc;
         }, {});
         setData(result);
-        // setLoading(false);
       })
       .catch((error) => {
         console.error(error);
       });
   }, [dateRange, formattedDate, del]);
 
-
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
   };
-
   return (
     <div className="emp-main-div">
       <div
@@ -195,11 +186,8 @@ const EveningDashboard: React.FC = () => {
               />
             </div>
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div style={{}} className="evening-handle">
-                {/* {loading ?
-                  <Spin size="large" className="spinner-antd"/>
-                  : */}
-                <DashboardEveningTasktable
+              <div className="evening-handle">
+                {/* <DashboardEveningTasktable
                   data={data}
                   totalUpwork={totalUpwork}
                   setTotalUpWork={setTotalUpWork}
@@ -212,8 +200,23 @@ const EveningDashboard: React.FC = () => {
                   setSelectedRole={setSelectedRole}
                   del={del}
                   setDel={setDel}
-                />
-                {/* } */}
+                /> */}
+                {data && (
+                  <DashboardEveningTasktable
+                    data={data}
+                    totalUpwork={totalUpwork}
+                    setTotalUpWork={setTotalUpWork}
+                    totalEstHrs={totalEstHrs}
+                    setTotalEstHrs={setTotalEstHrs}
+                    totalUpworkhrs={totalUpworkhrs}
+                    setTotalUpworkhrs={setTotalUpworkhrs}
+                    searchQuery={searchQuery}
+                    selectedRole={selectedRole}
+                    setSelectedRole={setSelectedRole}
+                    del={del}
+                    setDel={setDel}
+                  />
+                )}
               </div>
             </div>
           </div>
