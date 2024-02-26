@@ -351,7 +351,7 @@ const AddModule: React.FC<unknown> = () => {
             <Menu />
           </div>
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column",width: '100%' }}
             className="form-container"
           >
             <div className="add-div">
@@ -365,7 +365,7 @@ const AddModule: React.FC<unknown> = () => {
               </label>
 
               <select
-                style={{ width: "95%" }}
+                style={{ width: "100%" }}
                 className="add-input"
                 id="project"
                 name="project"
@@ -384,7 +384,7 @@ const AddModule: React.FC<unknown> = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  width: "95%",
+                  width: "auto",
                 }}
               >
                 <div style={{ display: "flex", flexDirection: "column" }}>
@@ -440,7 +440,7 @@ const AddModule: React.FC<unknown> = () => {
                 <label className="add-label">
                   task:<span style={{ color: "red" }}>*</span>
                 </label>
-                <div style={{ width: "89%" }} className="form-control">
+                <div style={{ width: "auto" }} className="form-control">
                   <textarea
                     style={{
                       outline: "none",
@@ -477,7 +477,7 @@ const AddModule: React.FC<unknown> = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  width: "94%",
+                  width: "auto",
                 }}
               >
                 <div className="form-group">
