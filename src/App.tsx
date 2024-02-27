@@ -86,6 +86,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
+
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("myToken");

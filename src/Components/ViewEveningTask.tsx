@@ -35,30 +35,59 @@ const ViewEveningTask: React.FC = () => {
     employeeID = myData.EmployeeID;
   }
 
+  // useEffect(() => {
+  //   axios
+  //     .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`, {
+
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       const arr = response?.data?.filter(
+  //         (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
+  //       ) || [];
+  //       const sortedData = arr.sort(
+  //         (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
+  //       );
+  //       setData(sortedData);
+  //       setLoading(false);
+
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setLoading(false);
+  //     });
+  // }, [employeeID, formattedDate]);
+
+
+
+
   useEffect(() => {
     axios
-      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`, {
-        
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening/param`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
+        params: {
+          employeeID: employeeID,
+          currDate: formattedDate,
+        },
       })
       .then((response) => {
-        const arr = response?.data?.filter(
-          (e) => e?.employeeID === employeeID && e?.currDate === formattedDate
-        ) || [];
+        const arr = response?.data || [];
         const sortedData = arr.sort(
           (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
         );
         setData(sortedData);
         setLoading(false);
-
       })
       .catch((error) => {
         console.error(error);
         setLoading(false);
       });
   }, [employeeID, formattedDate]);
+  
 
   return (
     <div className="emp-main-div">
