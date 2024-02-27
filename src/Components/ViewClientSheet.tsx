@@ -252,11 +252,11 @@ const ViewClientSheet: React.FC<any> = () => {
     setData(updatedData);
 
     axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}/update-checks/${record.id}`, {
+      .put(`${process.env.REACT_APP_API_BASE_URL}/update-checks-evng/${record.id}`, {
         eveningCheck: record.eveningCheck === 1 ? 0 : 1,
       })
       .then((response) => {
-        console.log("Evening check updated successfully:", response.data);
+        console.log("Evening check updated successfully:");
       })
       .catch((error) => {
         console.error("Error while updating evening check:", error);

@@ -423,6 +423,12 @@ const ClientSheet: React.FC<any> = () => {
                 ...prevChecks,
                 [projectName]: !prevChecks[projectName],
             };
+            if (updatedChecks[projectName]) {
+                setMorningChecks((prevMorningChecks) => ({
+                    ...prevMorningChecks,
+                    [projectName]: true,
+                }));
+            }
             axios
                 .put(
                     `${process.env.REACT_APP_API_BASE_URL}/update-task-status`,
