@@ -113,60 +113,135 @@ const AddModule: React.FC<unknown> = () => {
     [dataString]
   );
 
+
   const navigate = useNavigate();
-  useEffect(() => {
-    axios
-      .get<AssignedEmployees[]>(
-        ` ${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
+// useEffect(() => {
+//   axios
+//     .get<AssignedEmployees[]>(
+//       `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//         params: {
+//           employeeID: empInfo?.EmployeeID,
+//         },
+//       }
+//     )
+//       .then((response) => {
+//         const sortedData = response?.data?.sort(
+//           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
+//         );
+//         const arr = sortedData
+//           .map((e) => {
+//             if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
+//               return e.projectName;
+//             }
+//             return null;
+//           })
+//           .filter((value, index, self) => {
+//             return value !== null && self.indexOf(value) === index;
+//           })
+//           .reduce((unique: Array<string>, value: string | null) => {
+//             if (value !== null && !unique.includes(value)) {
+//               unique.push(value);
+//             }
+//             return unique;
+//           }, []);
+
+//         setProjectNames(arr);
+
+//         if (morningTask?.projectName) {
+//           const arr = sortedData
+//             .filter(
+//               (obj) =>
+//                 obj?.projectName === morningTask?.projectName &&
+//                 obj?.EmployeeID === empInfo.EmployeeID
+//             )
+//             .map((obj) => obj.phaseName);
+
+
+//           const phasesArr = arr.map((phase, index) => ({
+//             phaseID: index + 1,
+//             projectName: morningTask.projectName,
+//             phases: [phase],
+//           }));
+
+//           setPhases(phasesArr);
+//         }
+//       });
+//   }, [morningTask.projectName]);
+
+
+
+
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get<AssignedEmployees[]>(
+        `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            employeeID: empInfo?.EmployeeID,
+          },
         }
-      )
-      .then((response) => {
-        const sortedData = response?.data?.sort(
-          (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
-        );
+      );
+
+// console.log("response.data",response.data)
+      // Handle the response data
+      const sortedData = response?.data?.sort(
+        (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
+      );
+      const arr = sortedData
+        .map((e) => {
+          if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
+            return e.projectName;
+          }
+          return null;
+        })
+        .filter((value, index, self) => {
+          return value !== null && self.indexOf(value) === index;
+        })
+        .reduce((unique: Array<string>, value: string | null) => {
+          if (value !== null && !unique.includes(value)) {
+            unique.push(value);
+          }
+          return unique;
+        }, []);
+
+      setProjectNames(arr);
+
+      if (morningTask?.projectName) {
         const arr = sortedData
-          .map((e) => {
-            if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
-              return e.projectName;
-            }
-            return null;
-          })
-          .filter((value, index, self) => {
-            return value !== null && self.indexOf(value) === index;
-          })
-          .reduce((unique: Array<string>, value: string | null) => {
-            if (value !== null && !unique.includes(value)) {
-              unique.push(value);
-            }
-            return unique;
-          }, []);
+          .filter(
+            (obj) =>
+              obj?.projectName === morningTask?.projectName &&
+              obj?.EmployeeID === empInfo.EmployeeID
+          )
+          .map((obj) => obj.phaseName);
 
-        setProjectNames(arr);
+        const phasesArr = arr.map((phase, index) => ({
+          phaseID: index + 1,
+          projectName: morningTask.projectName,
+          phases: [phase],
+        }));
 
-        if (morningTask?.projectName) {
-          const arr = sortedData
-            .filter(
-              (obj) =>
-                obj?.projectName === morningTask?.projectName &&
-                obj?.EmployeeID === empInfo.EmployeeID
-            )
-            .map((obj) => obj.phaseName);
+        setPhases(phasesArr);
+      }
+    } catch (error) {
+      // Handle errors
+      console.error('Error while fetching data:', error);
+    }
+  };
 
+  fetchData();
+}, [empInfo?.EmployeeID, morningTask.projectName]);
 
-          const phasesArr = arr.map((phase, index) => ({
-            phaseID: index + 1,
-            projectName: morningTask.projectName,
-            phases: [phase],
-          }));
-
-          setPhases(phasesArr);
-        }
-      });
-  }, [morningTask.projectName]);
 
   useEffect(() => {
     axios

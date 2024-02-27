@@ -120,12 +120,16 @@ const AddModule: React.FC<any> = () => {
   useEffect(() => {
     // Fetch employees from the backend API
     const token = localStorage.getItem("myToken");
-    axios
-      .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+
+  axios
+    .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        employeeID: employeeInfo?.EmployeeID,
+      },
+    })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
