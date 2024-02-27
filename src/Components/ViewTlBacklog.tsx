@@ -39,6 +39,9 @@ const ViewTlBacklog: React.FC<Props> = ({
   buttonClick1,
 }) => {
   const [data, setData] = useState<BacklogTask[]>([]);
+  const filteredTasks = data.filter(
+    (task) => task?.faChecked === null || task?.faChecked === 0
+  );
   const [originalData, setOriginalData] = useState<BacklogTask[]>([]);
   const [modalRecord, setModalRecord] = useState<BacklogTask | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -107,19 +110,19 @@ const ViewTlBacklog: React.FC<Props> = ({
           (a, b) => b.backlogTaskID - a.backlogTaskID
         );
         const filteredData = sortedData?.filter((e) => {
-          e.UserEmail === UserEmail;
-          const assigneeMatch = e.assigneeName
+          e?.UserEmail === UserEmail;
+          const assigneeMatch = e?.assigneeName
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
-          const assignedByMatch = e.taskName
+          const assignedByMatch = e?.taskName
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
           const clientNameMatch =
-            e.clientName &&
-            e.clientName.toLowerCase().includes(searchTerm.toLowerCase());
+            e?.clientName &&
+            e?.clientName.toLowerCase().includes(searchTerm.toLowerCase());
           const projectNameMatch =
-            e.projectName &&
-            e.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+            e?.projectName &&
+            e?.projectName.toLowerCase().includes(searchTerm.toLowerCase());
           return (
             assigneeMatch ||
             assignedByMatch ||
@@ -133,6 +136,7 @@ const ViewTlBacklog: React.FC<Props> = ({
             new Date(e.deadlineEnd) <= new Date(dateRange[1])
           );
         });
+
         setData(filteredDataWithDate);
         const today = new Date();
         const tenDaysAgo = new Date();
@@ -314,7 +318,7 @@ const ViewTlBacklog: React.FC<Props> = ({
       <div className="clientSheetTlTask">
         <Table
           style={{ width: "80vw" }}
-          dataSource={data}
+          dataSource={filteredTasks}
           columns={columns}
           rowClassName={() => "header-row"}
           pagination={paginationSettings}
