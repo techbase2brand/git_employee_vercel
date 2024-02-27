@@ -1050,6 +1050,12 @@ const AppMenu = () => {
       {info.jobPosition == "QA" && (
         <>
           <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
+          <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+              <Link to="/ClientSheet">Assign TL Task</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>
+              <Link to="/ViewClientSheet">View TL Task</Link>
+            </Menu.Item>
             <Menu.Item
               key="AssignTaskPage"
               icon={<TableOutlined rev={undefined} />}

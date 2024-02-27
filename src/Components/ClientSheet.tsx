@@ -596,7 +596,7 @@ const ClientSheet: React.FC<any> = () => {
                                     value={selectedEmployee || undefined}
                                 >
                                     {employeeFirstNames
-                                        .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer"].includes(name))
+                                        .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer", "Suraj"].includes(name))
                                         .sort()
                                         .map((name, index) => (
                                             <Select.Option key={index} value={name}>
@@ -615,9 +615,16 @@ const ClientSheet: React.FC<any> = () => {
                                         <Select.Option value="Sandeep">Sandeep</Select.Option>
                                         <Select.Option value="Sahil">Sahil</Select.Option>
                                         <Select.Option value="Sameer">Sameer</Select.Option>
+                                        <Select.Option value="Suraj">Suraj</Select.Option>
                                     </Select>
                                 }
-
+                                {EmployeeId === "B2B00048" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Suraj">Suraj</Select.Option>
+                                    </Select>
+                                }
                                 {EmployeeId === "B2B00022" &&
                                     <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
                                         <Option value="ALL">ALL</Option>
