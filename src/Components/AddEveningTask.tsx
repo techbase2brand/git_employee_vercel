@@ -122,7 +122,7 @@ const AddModule: React.FC<any> = () => {
     const token = localStorage.getItem("myToken");
 
   axios
-    .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`, {
+    .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo/param`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

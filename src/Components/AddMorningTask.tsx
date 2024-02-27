@@ -174,14 +174,11 @@ const AddModule: React.FC<unknown> = () => {
 
 
 
-
-
-
 useEffect(() => {
   const fetchData = async () => {
     try {
       const response = await axios.get<AssignedEmployees[]>(
-        `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
+        `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo/param`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
