@@ -621,6 +621,27 @@ const ViewClientSheet: React.FC<any> = () => {
                 }}
                 className="clientSheetTlTask"
               >
+                <h3>Reply/Remainder</h3>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "50px",
+                    marginLeft: "9px",
+                  }}
+                >
+                  <p>{`Total Mrng Time: ${totalEstHoursFormat} hours ${totalEstMinutesFormat} minutes`}</p>
+                  <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
+                </div>
+                <br />
+                <Table
+                  columns={columns}
+                  dataSource={filteredRemainder}
+                  pagination={paginationSettings}
+                />
+                <Button type="primary" onClick={loadData}>
+                  Load Data
+                </Button>
+                <br />
                 <h3>Task</h3>
                 <div
                   style={{
@@ -638,27 +659,7 @@ const ViewClientSheet: React.FC<any> = () => {
                   dataSource={filteredData}
                   pagination={paginationSettings}
                 />
-                <Button type="primary" onClick={loadData}>
-                  Load Data
-                </Button>
-                <h3>Reply/Remainder</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "50px",
-                    marginLeft: "9px",
-                  }}
-                >
-                  <p>{`Total Mrng Time: ${totalEstHoursFormat} hours ${totalEstMinutesFormat} minutes`}</p>
-                  <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
-                </div>
                 <br />
-
-                <Table
-                  columns={columns}
-                  dataSource={filteredRemainder}
-                  pagination={paginationSettings}
-                />
                 <h3 style={{ marginBottom: "10px" }}>View Lead</h3>
                 <ViewLead
                   selectedAssignee={selectedAssignee}
