@@ -35,6 +35,9 @@ const Login: React.FC = () => {
           alert("Invalid username or password");
         } else {
           console.log("Login successful");
+          console.log("res?.data",res?.data);
+
+
           if (res.data.user.logged === 0) {
             setShowTermsModal(true);
             axios.get('https://api.ipify.org?format=json')
@@ -64,12 +67,20 @@ const Login: React.FC = () => {
                 console.error('Error fetching data:', error);
               });
           } else {
-            navigate("/add-morning-task");
+            const { user, token } = res.data;
+            const dataString = JSON.stringify(user);
+            localStorage.setItem("myData", dataString);
+            localStorage.setItem("myToken", token);
+            if(localStorage.getItem("myToken")){
+              navigate("/add-morning-task");
+
+            }
+
           }
-          const { user, token } = res.data;
-          const dataString = JSON.stringify(user);
-          localStorage.setItem("myData", dataString);
-          localStorage.setItem("myToken", token);
+          // const { user, token } = res.data;
+          // const dataString = JSON.stringify(user);
+          // localStorage.setItem("myData", dataString);
+          // localStorage.setItem("myToken", token);
         }
       })
       .catch((error) => {

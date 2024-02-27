@@ -121,7 +121,10 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       .catch((error) => console.log(error));
   }, [del]);
 
+
   const arrayOfArray = Object.values(data);
+  console.log("arrayOfArray",arrayOfArray)
+
 
   const handleApproval = (EvngTaskID: number) => {
     const updatedData = arrayOfArray?.map((task) =>
@@ -201,7 +204,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       key: "selectDate",
     },
     {
-      title: "TL Approved",
+      title: "TLL Approved",
       dataIndex: "approvedBy",
       key: "approvedBy",
       render: (text: string, record: Task) => {
