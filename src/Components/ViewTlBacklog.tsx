@@ -39,14 +39,12 @@ const ViewTlBacklog: React.FC<Props> = ({
   buttonClick1,
 }) => {
   const [data, setData] = useState<BacklogTask[]>([]);
-  const filteredTasks = data.filter(
-    (task) => task?.faChecked === null || task?.faChecked === 0
-  );
   const [originalData, setOriginalData] = useState<BacklogTask[]>([]);
   const [modalRecord, setModalRecord] = useState<BacklogTask | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const myDataString = localStorage.getItem("myData");
+
   setBacklog(data);
   let employeeName = "";
   let EmpId = "";
@@ -57,6 +55,13 @@ const ViewTlBacklog: React.FC<Props> = ({
     myName = `${myData.firstName}`;
     EmpId = `${myData.EmployeeID}`;
   }
+  const filteredTasks = data.filter((task) => {
+    if (EmpId === "B2B00100") {
+      return task.faChecked === null || task.faChecked === 0;
+    } else {
+      return task.employeeID === EmpId;
+    }
+  });
 
   useEffect(() => {
     let filteredData = originalData;
