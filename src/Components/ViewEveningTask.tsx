@@ -60,26 +60,19 @@ const ViewEveningTask: React.FC = () => {
   //     });
   // }, [employeeID, formattedDate]);
 
-
-
-
   useEffect(() => {
     axios
-      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening/param`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening/individual`, {
         params: {
           employeeID: employeeID,
           currDate: formattedDate,
         },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
       })
       .then((response) => {
-        const arr = response?.data || [];
-        const sortedData = arr.sort(
-          (a, b) => Number(b.EvngTaskID) - Number(a.EvngTaskID)
-        );
-        setData(sortedData);
+        setData(response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -99,13 +92,9 @@ const ViewEveningTask: React.FC = () => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"

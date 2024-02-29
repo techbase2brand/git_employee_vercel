@@ -17,13 +17,10 @@ const HrLeaveAutoFill: React.FC = () => {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          maxHeight: "100vh",
           backgroundColor: "#F7F9FF",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+
         <div
           style={{
             display: "flex",
@@ -32,9 +29,7 @@ const HrLeaveAutoFill: React.FC = () => {
             width: "100%",
           }}
         >
-          <div className="menu-div">
-            <Menu />
-          </div>
+       
           <div style={{ width: "100%" }}>
             <div style={{ width: "92%", marginLeft: "4.4%", marginTop: "5%" }}>
               <HrLeaveAutoFillComp />

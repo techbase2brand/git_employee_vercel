@@ -49,13 +49,9 @@ const ViewSalesMaster: React.FC = () => {
                     height: "100%",
                 }}
             >
-                <div style={{ height: "8%" }}>
-                    <Navbar />
-                </div>
+               
                 <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                    <div className="menu-div">
-                        <Menu />
-                    </div>
+                    
                     <div
                         style={{ display: "flex", flexDirection: "column" }}
                         className="form-container"

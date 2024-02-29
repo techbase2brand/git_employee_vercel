@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Input, Spin } from "antd";
 
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import TaskTable from "./TaskTable";
 import DashboardTable from "./DashboardTable";
 import axios from "axios";
@@ -74,13 +72,9 @@ const Dashboard: React.FC = () => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+     
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+        
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"

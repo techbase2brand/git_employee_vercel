@@ -5,6 +5,7 @@ import {
   Routes,
   Route,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import "./App.css";
 
@@ -72,6 +73,8 @@ import ViewBacklogPage from "./Components/ViewBacklogPage";
 import AssignedTasks from "./Components/AssignedTasks";
 import ChatMessagePage from "./Components/ChatMessagePage";
 import ViewLead from "./Components/ViewLead";
+import Navbar from "./Components/Navbar";
+import Menu from "./Components/Menu";
 export const GlobalInfo = createContext<any>({});
 
 export const AssignedTaskCountContext = createContext<{
@@ -79,22 +82,53 @@ export const AssignedTaskCountContext = createContext<{
   setAssignedTaskCount: React.Dispatch<React.SetStateAction<number>>;
 }>({
   assignedTaskCount: 0,
-  setAssignedTaskCount: () => { },
+  setAssignedTaskCount: () => {},
 });
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
+const token = localStorage.getItem("myToken");
 
 
+
+const NavigationNavbar: React.FC = () => {
+
+  const location = useLocation();
+  const token = localStorage.getItem("myToken");
+
+  return (
+    <>
+      {token && location.pathname !== "/" && <Navbar />}
+
+    </>
+  );
+};
+
+
+const NavigationMenu: React.FC = () => {
+
+  const location = useLocation();
+  const token = localStorage.getItem("myToken");
+
+  return (
+    <>
+
+      {token && location.pathname !== "/" && <Menu />}
+    </>
+  );
+};
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("myToken");
+
   if (!token) {
     alert("Please log in!");
-    setTimeout(() => {
-      navigate("/");
-    }, 0);
+setTimeout(()=>{
+  navigate("/");
+},0)
+
+
     return null;
   }
   return <>{children}</>;
@@ -108,6 +142,8 @@ const App: React.FC = () => {
   const [assignedTaskCount, setAssignedTaskCount] = useState(0);
   const info = JSON.parse(localStorage.getItem("myData") || "{}");
 
+  // const shouldNavbarAndMenuDisplay = token && location.pathname !== "/";
+
   useEffect(() => {
     if ("Notification" in window) {
       Notification.requestPermission().then((permission) => {
@@ -118,533 +154,543 @@ const App: React.FC = () => {
     }
   }, []);
 
+//  const currentLocation = window.location.origin;
+//  console.log("currentLocation",currentLocation);
+
+
   return (
-    <Router>
-      <GlobalInfo.Provider
-        value={{
-          empObj: empObj,
-          setEmpObj: setEmpObj,
-          empInfo: empInfo,
-          setEmpInfo: setEmpInfo,
-          mrngEditID: mrngEditID,
-          setMrngEditID: setMrngEditID,
-          evngEditID: evngEditID,
-          setEvngEditID: setEvngEditID,
-          assignedTaskCount: assignedTaskCount,
-          setAssignedTaskCount: setAssignedTaskCount,
-        }}
-      >
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ChatMessagePage"
-            element={
-              <ProtectedRoute>
-                <ChatMessagePage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/EveningDashboard"
-            element={
-              <ProtectedRoute>
-                <EveningDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-project"
-            element={
-              <ProtectedRoute>
-                <AddProject />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/AssignedTasks"
-            element={
-              <ProtectedRoute>
-                <AssignedTasks />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/AdminSaleCampusFormList"
-            element={
-              <ProtectedRoute>
-                <AdminSaleCampusFormList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/AdminSaleInfotechFormList"
-            element={
-              <ProtectedRoute>
-                <AdminSaleInfotechFormList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewTermCondition"
-            element={
-              <ProtectedRoute>
-                <ViewTermCondition />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewSalesMaster"
-            element={
-              <ProtectedRoute>
-                <ViewSalesMaster />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/TermCondition"
-            element={
-              <ProtectedRoute>
-                <TermCondition />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/SalesMaster"
-            element={
-              <ProtectedRoute>
-                <SalesMaster />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-phase"
-            element={
-              <ProtectedRoute>
-                <AddPhase />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-module"
-            element={
-              <ProtectedRoute>
-                <AddModule />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/view-project"
-            element={
-              <ProtectedRoute>
-                <ViewProject />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/LeavePage"
-            element={
-              <ProtectedRoute>
-                <LeavePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewClientSheet"
-            element={
-              <ProtectedRoute>
-                <ViewClientSheet />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/view-phase"
-            element={
-              <ProtectedRoute>
-                <ViewPhase />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/view-module"
-            element={
-              <ProtectedRoute>
-                <ViewModule />
-              </ProtectedRoute>
-            }
-          />
-
-
-          <Route
-            path="/EditAddPhase"
-            element={
-              <ProtectedRoute>
-                <EditAddPhase />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/AssignTaskPage"
-            element={
-              <ProtectedRoute>
-                <AssignTaskPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewBacklogPage"
-            element={
-              <ProtectedRoute>
-                <ViewBacklogPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/EditAddModule"
-            element={
-              <ProtectedRoute>
-                <EditAddModule />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ShiftChangePage"
-            element={
-              <ProtectedRoute>
-                <ShiftChangePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ClientSheet"
-            element={
-              <ProtectedRoute>
-                <ClientSheet />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/table-navbar"
-            element={
-              <ProtectedRoute>
-                <TableNavbar />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-morning-task"
-            element={
-              <ProtectedRoute>
-                <AddMorningTask />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-evening-task"
-            element={
-              <ProtectedRoute>
-                <AddEveningTask />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/view-morning-task"
-            element={
-              <ProtectedRoute>
-                <ViewMorningTask />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/view-evening-task"
-            element={
-              <ProtectedRoute>
-                <ViewEveningTask />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/AboutProject"
-            element={
-              <ProtectedRoute>
-                <AboutProject />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/PhaseAssignedTo"
-            element={
-              <ProtectedRoute>
-                <PhaseAssignedTo />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewPhaseAssign"
-            element={
-              <ProtectedRoute>
-                <ViewPhaseAssign />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/LeaveForm"
-            element={
-              <ProtectedRoute>
-                <LeaveForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewLeavePage"
-            element={
-              <ProtectedRoute>
-                <ViewLeavePage />
-              </ProtectedRoute>
-            }
-          />
-          {/* Salecampus route */}
-          <Route
-            path="/salecampusform"
-            element={
-              <ProtectedRoute>
-                <SalecampusForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/salecampusformlist"
-            element={
-              <ProtectedRoute>
-                <SalecampusFormList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/saleinfoform"
-            element={
-              <ProtectedRoute>
-                <SaleInfoForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/saleInfoFormList"
-            element={
-              <ProtectedRoute>
-                <SaleInfoFormList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dragAssignTable"
-            element={
-              <ProtectedRoute>
-                <DragAssignTable />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/DocForm"
-            element={
-              <ProtectedRoute>
-                <DocForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/BlogPost"
-            element={
-              <ProtectedRoute>
-                <BlogPost />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/CampusBlogs"
-            element={
-              <ProtectedRoute>
-                <CampusBlogs />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/InfotechBlog"
-            element={
-              <ProtectedRoute>
-                <InfotechBlog />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/DocTable"
-            element={
-              <ProtectedRoute>
-                <DocTable />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/CategoryForm"
-            element={
-              <ProtectedRoute>
-                <CategoryForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/CategoryList"
-            element={
-              <ProtectedRoute>
-                <CategoryList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/KnowledgeCenter"
-            element={
-              <ProtectedRoute>
-                <KnowledgeCenter />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/KnowledgeCenterList"
-            element={
-              <ProtectedRoute>
-                <KnowledgeCenterList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewBlogPost"
-            element={
-              <ProtectedRoute>
-                <ViewBlogPost />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/CampusBlogList"
-            element={
-              <ProtectedRoute>
-                <CampusBlogList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/InfotechTable"
-            element={
-              <ProtectedRoute>
-                <InfotechTable />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewDocumentation"
-            element={
-              <ProtectedRoute>
-                <ViewDocumentation />
-              </ProtectedRoute>
-            }
-          />
-          {/* {info?.role === "HR" && ( */}
+    <>
+      <Router>
+        <GlobalInfo.Provider
+          value={{
+            empObj: empObj,
+            setEmpObj: setEmpObj,
+            empInfo: empInfo,
+            setEmpInfo: setEmpInfo,
+            mrngEditID: mrngEditID,
+            setMrngEditID: setMrngEditID,
+            evngEditID: evngEditID,
+            setEvngEditID: setEvngEditID,
+            assignedTaskCount: assignedTaskCount,
+            setAssignedTaskCount: setAssignedTaskCount,
+          }}
+        >
           <>
-            <Route
-              path="/HRsection"
-              element={
-                <ProtectedRoute>
-                  <HRsection />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/HRshiftChangeSection"
-              element={
-                <ProtectedRoute>
-                  <HRshiftChangeSection />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/HrLeaveAutoFill"
-              element={
-                <ProtectedRoute>
-                  <HrLeaveAutoFill />
-                </ProtectedRoute>
-              }
-            />
+            <div style={{ height: "8%" }}>
+            <NavigationNavbar />
+            </div>
+            <div className="menu-div">
+             <NavigationMenu />
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ChatMessagePage"
+                  element={
+                    <ProtectedRoute>
+                      <ChatMessagePage />
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route
-              path="/HrLeaveReport"
-              element={
-                <ProtectedRoute>
-                  <HrLeaveReport />
-                </ProtectedRoute>
-              }
-            />
+                <Route
+                  path="/EveningDashboard"
+                  element={
+                    <ProtectedRoute>
+                      <EveningDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add-project"
+                  element={
+                    <ProtectedRoute>
+                      <AddProject />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/AssignedTasks"
+                  element={
+                    <ProtectedRoute>
+                      <AssignedTasks />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/AdminSaleCampusFormList"
+                  element={
+                    <ProtectedRoute>
+                      <AdminSaleCampusFormList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/AdminSaleInfotechFormList"
+                  element={
+                    <ProtectedRoute>
+                      <AdminSaleInfotechFormList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewTermCondition"
+                  element={
+                    <ProtectedRoute>
+                      <ViewTermCondition />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewSalesMaster"
+                  element={
+                    <ProtectedRoute>
+                      <ViewSalesMaster />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/TermCondition"
+                  element={
+                    <ProtectedRoute>
+                      <TermCondition />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/SalesMaster"
+                  element={
+                    <ProtectedRoute>
+                      <SalesMaster />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add-phase"
+                  element={
+                    <ProtectedRoute>
+                      <AddPhase />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add-module"
+                  element={
+                    <ProtectedRoute>
+                      <AddModule />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-project"
+                  element={
+                    <ProtectedRoute>
+                      <ViewProject />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/LeavePage"
+                  element={
+                    <ProtectedRoute>
+                      <LeavePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewClientSheet"
+                  element={
+                    <ProtectedRoute>
+                      <ViewClientSheet />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-phase"
+                  element={
+                    <ProtectedRoute>
+                      <ViewPhase />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-module"
+                  element={
+                    <ProtectedRoute>
+                      <ViewModule />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/EditAddPhase"
+                  element={
+                    <ProtectedRoute>
+                      <EditAddPhase />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/AssignTaskPage"
+                  element={
+                    <ProtectedRoute>
+                      <AssignTaskPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewBacklogPage"
+                  element={
+                    <ProtectedRoute>
+                      <ViewBacklogPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/EditAddModule"
+                  element={
+                    <ProtectedRoute>
+                      <EditAddModule />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ShiftChangePage"
+                  element={
+                    <ProtectedRoute>
+                      <ShiftChangePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ClientSheet"
+                  element={
+                    <ProtectedRoute>
+                      <ClientSheet />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/table-navbar"
+                  element={
+                    <ProtectedRoute>
+                      <TableNavbar />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add-morning-task"
+                  element={
+                    <ProtectedRoute>
+                      <AddMorningTask />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add-evening-task"
+                  element={
+                    <ProtectedRoute>
+                      <AddEveningTask />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-morning-task"
+                  element={
+                    <ProtectedRoute>
+                      <ViewMorningTask />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-evening-task"
+                  element={
+                    <ProtectedRoute>
+                      <ViewEveningTask />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/AboutProject"
+                  element={
+                    <ProtectedRoute>
+                      <AboutProject />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/PhaseAssignedTo"
+                  element={
+                    <ProtectedRoute>
+                      <PhaseAssignedTo />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewPhaseAssign"
+                  element={
+                    <ProtectedRoute>
+                      <ViewPhaseAssign />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/LeaveForm"
+                  element={
+                    <ProtectedRoute>
+                      <LeaveForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewLeavePage"
+                  element={
+                    <ProtectedRoute>
+                      <ViewLeavePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/salecampusform"
+                  element={
+                    <ProtectedRoute>
+                      <SalecampusForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/salecampusformlist"
+                  element={
+                    <ProtectedRoute>
+                      <SalecampusFormList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/saleinfoform"
+                  element={
+                    <ProtectedRoute>
+                      <SaleInfoForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/saleInfoFormList"
+                  element={
+                    <ProtectedRoute>
+                      <SaleInfoFormList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dragAssignTable"
+                  element={
+                    <ProtectedRoute>
+                      <DragAssignTable />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/DocForm"
+                  element={
+                    <ProtectedRoute>
+                      <DocForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/BlogPost"
+                  element={
+                    <ProtectedRoute>
+                      <BlogPost />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/CampusBlogs"
+                  element={
+                    <ProtectedRoute>
+                      <CampusBlogs />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/InfotechBlog"
+                  element={
+                    <ProtectedRoute>
+                      <InfotechBlog />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/DocTable"
+                  element={
+                    <ProtectedRoute>
+                      <DocTable />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/CategoryForm"
+                  element={
+                    <ProtectedRoute>
+                      <CategoryForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/CategoryList"
+                  element={
+                    <ProtectedRoute>
+                      <CategoryList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/KnowledgeCenter"
+                  element={
+                    <ProtectedRoute>
+                      <KnowledgeCenter />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/KnowledgeCenterList"
+                  element={
+                    <ProtectedRoute>
+                      <KnowledgeCenterList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewBlogPost"
+                  element={
+                    <ProtectedRoute>
+                      <ViewBlogPost />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/CampusBlogList"
+                  element={
+                    <ProtectedRoute>
+                      <CampusBlogList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/InfotechTable"
+                  element={
+                    <ProtectedRoute>
+                      <InfotechTable />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewDocumentation"
+                  element={
+                    <ProtectedRoute>
+                      <ViewDocumentation />
+                    </ProtectedRoute>
+                  }
+                />
+                <>
+                  <Route
+                    path="/HRsection"
+                    element={
+                      <ProtectedRoute>
+                        <HRsection />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/HRshiftChangeSection"
+                    element={
+                      <ProtectedRoute>
+                        <HRshiftChangeSection />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/HrLeaveAutoFill"
+                    element={
+                      <ProtectedRoute>
+                        <HrLeaveAutoFill />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  <Route
+                    path="/HrLeaveReport"
+                    element={
+                      <ProtectedRoute>
+                        <HrLeaveReport />
+                      </ProtectedRoute>
+                    }
+                  />
+                </>
+                <Route
+                  path="/LeaveReports"
+                  element={
+                    <ProtectedRoute>
+                      <LeaveReports />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ShiftChangeForm"
+                  element={
+                    <ProtectedRoute>
+                      <ShiftChangeForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ViewShiftChange"
+                  element={
+                    <ProtectedRoute>
+                      <ViewShiftChange />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/ShiftChangeReport"
+                  element={
+                    <ProtectedRoute>
+                      <ShiftChangeReport />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/employee-form"
+                  element={
+                    <ProtectedRoute>
+                      <EmployeeForm />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/employee-list"
+                  element={
+                    <ProtectedRoute>
+                      <EmployeeList />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </div>
           </>
-          {/* )} */}
-          <Route
-            path="/LeaveReports"
-            element={
-              <ProtectedRoute>
-                <LeaveReports />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ShiftChangeForm"
-            element={
-              <ProtectedRoute>
-                <ShiftChangeForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ViewShiftChange"
-            element={
-              <ProtectedRoute>
-                <ViewShiftChange />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/ShiftChangeReport"
-            element={
-              <ProtectedRoute>
-                <ShiftChangeReport />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/employee-form"
-            element={
-              <ProtectedRoute>
-                <EmployeeForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/employee-list"
-            element={
-              <ProtectedRoute>
-                <EmployeeList />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </GlobalInfo.Provider>
-    </Router>
+        </GlobalInfo.Provider>
+      </Router>
+    </>
   );
 };
 

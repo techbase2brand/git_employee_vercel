@@ -48,13 +48,9 @@ const ViewTermCondition: React.FC = () => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
@@ -87,7 +83,7 @@ const ViewTermCondition: React.FC = () => {
                   Term && Conditions....
                 </p>
               </div>
-              {loading===true ?
+              {loading === true ?
                 <Spin size="large" className="spinner-antd" />
                 :
                 <TermConditionTable

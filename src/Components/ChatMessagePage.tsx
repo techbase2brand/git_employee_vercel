@@ -27,13 +27,9 @@ const ChatMessagePage = () => {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          maxHeight: "100vh",
           backgroundColor: "#F7F9FF",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
           <div className="menu-div">
             <Chatmenu
