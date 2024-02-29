@@ -66,7 +66,6 @@ const AddModule: React.FC<any> = () => {
     currDate: formattedDate,
     selectDate: formattedDate,
   });
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -78,57 +77,97 @@ const AddModule: React.FC<any> = () => {
     [dataString]
   );
 
+  // useEffect(() => {
+  //   if (location?.state?.EvngTaskID) {
+  //     axios
+  //       .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`, {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         const res = response?.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
+
+  //         setSelectedProject(res[0]?.projectName);
+  //         setSelectedPhase(res[0]?.phaseName);
+  //         setSelectedModule(res[0]?.module); // Add this line to set the module
+  //         handleEstTimeChange(res[0]?.estTime || "");
+
+  //         setEveningTask((prevEveningTask) => ({
+  //           ...prevEveningTask,
+  //           EvngTaskID: res[0]?.EvngTaskID,
+  //           projectName: res[0]?.projectName,
+  //           phaseName: res[0]?.phaseName,
+  //           module: res[0]?.module,
+  //           task: res[0]?.task,
+  //           estTime: res[0]?.estTime,
+  //           actTime: res[0]?.actTime,
+  //           upWorkHrs: res[0]?.upWorkHrs,
+  //           employeeID: res[0]?.employeeID,
+  //           currDate: res[0]?.currDate,
+  //           selectDate: res[0]?.selectDate,
+  //         }));
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching data:", error);
+  //       });
+  //   }
+  // }, [evngEditID]); // Remove handleEstTimeChange from here
   useEffect(() => {
     if (location?.state?.EvngTaskID) {
       axios
-        .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening`, {
+        .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskEvening/${location?.state?.EvngTaskID}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         })
         .then((response) => {
-          const res = response?.data.filter((e) => e.EvngTaskID === location?.state?.EvngTaskID);
-
-          setSelectedProject(res[0]?.projectName);
-          setSelectedPhase(res[0]?.phaseName);
-          setSelectedModule(res[0]?.module); // Add this line to set the module
-          handleEstTimeChange(res[0]?.estTime || "");
-
-          setEveningTask((prevEveningTask) => ({
-            ...prevEveningTask,
-            EvngTaskID: res[0]?.EvngTaskID,
-            projectName: res[0]?.projectName,
-            phaseName: res[0]?.phaseName,
-            module: res[0]?.module,
-            task: res[0]?.task,
-            estTime: res[0]?.estTime,
-            actTime: res[0]?.actTime,
-            upWorkHrs: res[0]?.upWorkHrs,
-            employeeID: res[0]?.employeeID,
-            currDate: res[0]?.currDate,
-            selectDate: res[0]?.selectDate,
-          }));
+          const res = response?.data[0];
+  
+          if (res) {
+            setSelectedProject(res.projectName);
+            setSelectedPhase(res.phaseName);
+            setSelectedModule(res.module);
+            handleEstTimeChange(res.estTime || "");
+  
+            setEveningTask((prevEveningTask) => ({
+              ...prevEveningTask,
+              EvngTaskID: res.EvngTaskID,
+              projectName: res.projectName,
+              phaseName: res.phaseName,
+              module: res.module,
+              task: res.task,
+              estTime: res.estTime,
+              actTime: res.actTime,
+              upWorkHrs: res.upWorkHrs,
+              employeeID: res.employeeID,
+              currDate: res.currDate,
+              selectDate: res.selectDate,
+            }));
+          } else {
+            console.error("No data found for the specified EvngTaskID.");
+          }
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
     }
-  }, [evngEditID]); // Remove handleEstTimeChange from here
-
+  }, [location?.state?.EvngTaskID]);
+  
 
   useEffect(() => {
     // Fetch employees from the backend API
     const token = localStorage.getItem("myToken");
 
-  axios
-    .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo/param`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        employeeID: employeeInfo?.EmployeeID,
-      },
-    })
+    axios
+      .get<AssignedEmployees[]>(`${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo/param`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          employeeID: employeeInfo?.EmployeeID,
+        },
+      })
       .then((response) => {
         const sortedData = response.data.sort(
           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
@@ -368,13 +407,9 @@ const AddModule: React.FC<any> = () => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+
           <div
             style={{ display: "flex", flexDirection: "column", width: '100%' }}
             className="form-container"

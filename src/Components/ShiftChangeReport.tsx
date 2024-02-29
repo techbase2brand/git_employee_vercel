@@ -13,13 +13,10 @@ const ShiftChangeReport: React.FC = () => {
             flexDirection: "column",
             width: "100%",
             height: "100%",
-            maxHeight: "100vh",
             backgroundColor: "#F7F9FF",
           }}
         >
-          <div style={{ height: "8%" }}>
-            <Navbar />
-          </div>
+        
           <div
             style={{
               display: "flex",
@@ -27,9 +24,7 @@ const ShiftChangeReport: React.FC = () => {
               height: "90%",
             }}
           >
-            <div className="menu-div">
-              <Menu />
-            </div>
+           
             <div style={{ width: "92%", marginTop: "5%", marginLeft: "25px", marginRight: "25px" }}>
               <div
                 style={{

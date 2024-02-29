@@ -287,13 +287,9 @@ const EmployeeForm: React.FC = () => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+     
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+       
           <div className="form-container">
             <div className="form-div">
               <h2

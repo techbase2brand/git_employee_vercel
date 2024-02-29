@@ -715,17 +715,17 @@ const Navbar: React.FunctionComponent = () => {
       navigate("/");
     }
   };
-  useEffect(() => {
-    const hideMenuButton = document.getElementById("hideMenuButton");
-    const menuDivs = document.querySelectorAll(".menu-div");
-    if (hideMenuButton) {
-      hideMenuButton.addEventListener("click", function () {
-        menuDivs.forEach(function (menuDiv) {
-          menuDiv.classList.toggle("hidden");
-        });
-      });
-    }
-  }, []); // Empty dependency array ensures this runs once after component mount
+  // useEffect(() => {
+  //   const hideMenuButton = document.getElementById("hideMenuButton");
+  //   const menuDivs = document.querySelectorAll(".menu-div");
+  //   if (hideMenuButton) {
+  //     hideMenuButton.addEventListener("click", function () {
+  //       menuDivs.forEach(function (menuDiv) {
+  //         menuDiv.classList.toggle("hidden");
+  //       });
+  //     });
+  //   }
+  // }, []); // Empty dependency array ensures this runs once after component mount
   const handleBack = () => {
     if (rolled === "rakeshbase2brand@gmail.com") {
       navigate("/dashboard")
@@ -753,12 +753,12 @@ const Navbar: React.FunctionComponent = () => {
           <div className="logo" onClick={handleBack}>
             <img src="./b2b.png" alt="Company Logo" />
           </div>
-          <button id="hideMenuButton" style={{
+          {/* <button id="hideMenuButton" style={{
             width: '35px',
             height: '34px',
             margin: '26px',
             marginRight: '41%'
-          }}>☰</button>
+          }}>☰</button> */}
 
           <div className="search">
             <Input

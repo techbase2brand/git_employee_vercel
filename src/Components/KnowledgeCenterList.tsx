@@ -307,13 +307,9 @@ const KnowledgeCenterList = () => {
                         height: "100%",
                     }}
                 >
-                    <div style={{ height: "8%" }}>
-                        <Navbar />
-                    </div>
+                    
                     <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                        <div className="menu-div">
-                            <Menu />
-                        </div>
+                       
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusFormList-default-os">

@@ -71,7 +71,7 @@ const AddModule: React.FC<unknown> = () => {
   useEffect(() => {
     if (location?.state?.MrngTaskID) {
       axios
-        .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning`, {
+        .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning/${location?.state?.MrngTaskID}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -415,13 +415,9 @@ useEffect(() => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+  
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+          
           <div
             style={{ display: "flex", flexDirection: "column",width: '100%' }}
             className="form-container"
@@ -565,6 +561,29 @@ useEffect(() => {
                     required
                   >
                     <option value="">--Select Time--</option>
+                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                      [0, 10, 20, 30, 40, 50].map((minute) => (
+                        <option
+                          key={`${hour}:${minute}`}
+                          value={`${hour}:${minute}`}
+                        >
+                          {`${hour} hours ${minute} mins`}
+                        </option> 
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="add-label">Upwork Hrs</label>
+                  <select
+                    style={{ width: "16.8vw" }}
+                    name="upWorkHrs"
+                    className="form-control"
+                    value={morningTask.upWorkHrs}
+                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
+                  >
+                    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
                     {Array.from({ length: 25 }, (_, i) => i).map((hour) =>
                       [0, 10, 20, 30, 40, 50].map((minute) => {
                         if (hour === 24 && minute > 0) {
@@ -582,29 +601,6 @@ useEffect(() => {
                           </option>
                         );
                       })
-                    )}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="add-label">Upwork Hrs</label>
-                  <select
-                    style={{ width: "16.8vw" }}
-                    name="upWorkHrs"
-                    className="form-control"
-                    value={morningTask.upWorkHrs}
-                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
-                  >
-                    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [0, 10, 20, 30, 40, 50].map((minute) => (
-                        <option
-                          key={`${hour}:${minute}`}
-                          value={`${hour}:${minute}`}
-                        >
-                          {`${hour} hours ${minute} mins`}
-                        </option>
-                      ))
                     )}
                   </select>
                 </div>

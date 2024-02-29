@@ -112,13 +112,9 @@ const AddProject: React.FC = (navigation) => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+       
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <AppMenu />
-          </div>
+          
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"

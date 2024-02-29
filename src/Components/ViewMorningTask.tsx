@@ -39,27 +39,49 @@ const ViewMorningTask: React.FC = () => {
     employeeID = myData.EmployeeID;
   }
 
+  // useEffect(() => {
+  //   axios
+  //     .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       const res = response.data.filter((e) => e?.employeeID == employeeID && e?.currDate == formattedDate);
+  //       const sortedData = res.sort(
+  //         (a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)
+  //       );
+  //       setData(sortedData);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       setLoading(false);
+  //     });
+  // }, [formattedDate]);
   useEffect(() => {
-    axios
-      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        },
-      })
-      .then((response) => {
-        const res = response.data.filter((e) => e?.employeeID == employeeID && e?.currDate == formattedDate);
-        const sortedData = res.sort(
-          (a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)
-        );
-        setData(sortedData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
-  }, [formattedDate]);
+    setLoading(true);  // Ensure loading is set to true at the start of data fetching
 
+    const url = new URL(`${process.env.REACT_APP_API_BASE_URL}/get/addTaskMorning/individual`);
+
+    // Append query parameters for employeeID and currDate
+    url.searchParams.append("employeeID", employeeID);
+    url.searchParams.append("currDate", formattedDate);
+
+    axios.get<Task[]>(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+      },
+    })
+    .then((response) => {
+      setData(response.data.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)));
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error(error);
+      setLoading(false);
+    });
+  }, [formattedDate, employeeID]);  // 
   return (
     <div className="emp-main-div">
       <div
@@ -70,13 +92,9 @@ const ViewMorningTask: React.FC = () => {
           height: "100%",
         }}
       >
-        <div style={{ height: "8%" }}>
-          <Navbar />
-        </div>
+       
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          <div className="menu-div">
-            <Menu />
-          </div>
+         
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
