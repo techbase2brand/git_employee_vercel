@@ -195,7 +195,7 @@ const HrLeaveReportTable: React.FC = () => {
                   <div className="regularLeaveStyle">Total Regular Leave: {`${totalAllRegularDaysHours.days} days, ${totalAllRegularDaysHours.hours} hours, and ${totalAllRegularDaysHours.minutes} minutes`}</div>
                 </div>
                 <div style={{ marginTop: "20px" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <table style={{ width: "auto", borderCollapse: "collapse" }}>
                     <thead>
                       <tr>
                         <th style={{ padding: "12px", borderBottom: "1px solid #ccc" }}>Month</th>
@@ -360,7 +360,7 @@ const HrLeaveReportTable: React.FC = () => {
         : calculateTotalLeaveForEmployee(selectedEmployee)
       }
       {selectedEmployee === 'all' &&
-        <div className="pagination" style={{ display: "flex", justifyContent: "space-between", margin: "10px 0" }}>
+        <div className="pagination" style={{ display: "flex", gap:'44rem', margin: "10px 0" }}>
           <button
             disabled={currentPage === 0}
             onClick={() => setCurrentPage(prevPage => prevPage - 1)}

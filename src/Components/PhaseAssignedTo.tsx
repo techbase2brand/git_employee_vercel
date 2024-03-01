@@ -70,7 +70,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
   );
 
   const navigate = useNavigate();
-  const filteredData = data.filter((item:any) => item.status === 1);
+  const filteredData = data.filter((item: any) => item.status === 1);
 
   useEffect(() => {
     axios
@@ -180,92 +180,79 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
   return (
     <div className="emp-main-div">
       <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-        }}
+        style={{ display: "flex", flexDirection: "column", width: 'auto' }}
+        className="form-container"
       >
-       
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
-          <div
-            style={{ display: "flex", flexDirection: "column" }}
-            className="form-container"
-          >
-            <div className="add-div">
-              <p className="add-heading">Assignee to</p>
-              <label className="add-label">
-                Project Name<span style={{ color: "red" }}>*</span>
-              </label>
+        <div className="add-div">
+          <p className="add-heading">Assignee to</p>
+          <label className="add-label">
+            Project Name<span style={{ color: "red" }}>*</span>
+          </label>
 
-              <select
-                className="add-input"
-                id="project"
-                name="project"
-                value={selectedProject}
-                onChange={(e) => handleProjectChange(e.target.value)}
+          <select
+            className="add-input"
+            id="project"
+            name="project"
+            value={selectedProject}
+            onChange={(e) => handleProjectChange(e.target.value)}
+          >
+            <option value="">Select a project</option>
+            {projectNames.sort((a, b) => a.localeCompare(b)).map((project) => (
+              <option key={project} value={project}>
+                {project}
+              </option>
+            ))}
+          </select>
+          <label className="add-label">
+            Phase<span style={{ color: "red" }}>*</span>
+          </label>
+          <select
+            className="add-input"
+            id="phase"
+            name="phase"
+            value={selectedPhase}
+            onChange={(e) => handlePhaseChange(e.target.value)}
+          >
+            <option value="">Select a phase</option>
+            {phases
+              .filter((phase) => phase.projectName === selectedProject)
+              .map((phase) => {
+                return (
+                  <React.Fragment key={phase.phaseID}>
+                    <option value={phase.phases}>{phase.phases}</option>
+                  </React.Fragment>
+                );
+              })}
+          </select>
+          <label className="add-label">
+            Assigned to <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ overflow: "auto", height: "230px", marginTop: "8px" }}>
+            {filteredData.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((employee) => (
+              <div
+                style={{ display: "flex", flexDirection: "column" }}
+                key={employee.EmployeeID}
               >
-                <option value="">Select a project</option>
-                {projectNames.sort((a, b) => a.localeCompare(b)).map((project) => (
-                  <option key={project} value={project}>
-                    {project}
-                  </option>
-                ))}
-              </select>
-              <label className="add-label">
-                Phase<span style={{ color: "red" }}>*</span>
-              </label>
-              <select
-                className="add-input"
-                id="phase"
-                name="phase"
-                value={selectedPhase}
-                onChange={(e) => handlePhaseChange(e.target.value)}
-              >
-                <option value="">Select a phase</option>
-                {phases
-                  .filter((phase) => phase.projectName === selectedProject)
-                  .map((phase) => {
-                    return (
-                      <React.Fragment key={phase.phaseID}>
-                        <option value={phase.phases}>{phase.phases}</option>
-                      </React.Fragment>
-                    );
-                  })}
-              </select>
-              <label className="add-label">
-                  Assigned to <span style={{ color: "red" }}>*</span>
+                <label key={employee.EmployeeID}>
+                  <input
+                    type="checkbox"
+                    checked={assignee.some(
+                      (e) => e.EmployeeID === employee.EmployeeID
+                    )}
+                    onChange={() => handleCheckboxChange(employee)}
+                  />
+                  {employee.firstName} {employee.lastName}
                 </label>
-              <div style={{ overflow: "auto", height: "230px",marginTop: "8px" }}>
-                {filteredData.sort((a, b) => a.firstName.localeCompare(b.firstName)).map((employee) => (
-                  <div
-                    style={{ display: "flex", flexDirection: "column" }}
-                    key={employee.EmployeeID}
-                  >
-                    <label key={employee.EmployeeID}>
-                      <input
-                        type="checkbox"
-                        checked={assignee.some(
-                          (e) => e.EmployeeID === employee.EmployeeID
-                        )}
-                        onChange={() => handleCheckboxChange(employee)}
-                      />
-                      {employee.firstName} {employee.lastName}
-                    </label>
-                  </div>
-                ))}
               </div>
-              <button className="add-button" onClick={handleSubmit}>
-                Assign
-              </button>
-            </div>
-            <div
-              style={{ marginTop: "50px", height: "80%", width: "100%" }}
-            ></div>
+            ))}
           </div>
+          <button className="add-button" onClick={handleSubmit}>
+            Assign
+          </button>
         </div>
+        <div
+          style={{ marginTop: "50px", height: "80%", width: "100%" }}
+        ></div>
       </div>
     </div>
   );

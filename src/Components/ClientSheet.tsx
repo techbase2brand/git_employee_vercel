@@ -552,25 +552,20 @@ const ClientSheet: React.FC<any> = () => {
                     height: "100%",
                 }}
             >
-                
+
                 <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                   
+
                     <div
                         style={{ display: "flex", flexDirection: "column" }}
-                        className="form-containerr"
+                        className="form-container"
                     >
                         <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                marginBottom: "50px",
-                                marginLeft: "40px",
-                                width: "80%",
-                            }}
-                            className="add-div"
                         >
-                            <p className="add-heading" style={{ height: 'auto' }}>AssignTl Task</p>
-                            <div style={{ display: 'flex', gap: '20px' }} className="placeholder-color">
+                            <p
+                                className="mrng-tas"
+                            >
+                                AssignTl Task</p>
+                            <div className="placeholder-color">
                                 <input
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -712,11 +707,6 @@ const ClientSheet: React.FC<any> = () => {
                                 >Select All Morning Check</Checkbox>
                             }
                             <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-around",
-                                }}
                                 className="clientSheetTlTask"
                             >
                                 <Table columns={columns} dataSource={filteredData} pagination={paginationSettings} />

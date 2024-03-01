@@ -104,58 +104,48 @@ const CategoryForm: React.FC<unknown> = () => {
           height: "100%",
         }}
       >
-        
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          
+
           <div
             style={{ display: "flex", flexDirection: "column", width: '100%' }}
             className="form-container"
           >
             <div className="add-div" style={{ gap: '15px' }}>
               <h1>Add a Category</h1>
-              <div>
-                <div className="SalecampusForm-col-os">
+              <div style={{display:'flex',gap:'3rem'}}>
+                <div className="SalecampusForm-input-os">
+                <label className="add-label">
+                    Search
+                  </label>
+                  <input
+                    type="text"
+                    name="profileName"
+                    placeholder="Status"
+                    value={termTask.CategoryData}
+                    onChange={(e) => handleTermChange(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="add-label">
+                    Date:
+                  </label>
                   <div className="SalecampusForm-input-os">
                     <input
-                      type="text"
-                      name="profileName"
-                      placeholder="Status"
-                      value={termTask.CategoryData}
-                      onChange={(e) => handleTermChange(e.target.value)}
+                      style={{ width: 'auto' }}
+                      type="date"
+                      name="selectDate"
+                      value={termTask?.dated}
+                      onChange={(e) => handleDateChange(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
-              <div className="SalecampusForm-col-os">
-                <label className="add-label">
-                  Date:
-                </label>
-                <div className="SalecampusForm-input-os">
-                  <input
-                    style={{ width: 'auto' }}
-                    type="date"
-                    name="selectDate"
-                    value={termTask?.dated}
-                    onChange={(e) => handleDateChange(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "94%",
-                }}
-              >
-              </div>
-              <button className="add-button" onClick={handleSubmit}>
+              <button className="add-button" onClick={handleSubmit} style={{width:'10%'}}>
                 Submit
               </button>
             </div>
-            <div
-              style={{ marginTop: "50px", height: "80%", width: "100%" }}
-            ></div>
+            
           </div>
         </div>
       </div>

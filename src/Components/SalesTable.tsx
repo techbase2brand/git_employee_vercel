@@ -73,21 +73,21 @@ const SalesTable: React.FC<Props> = ({ data, setMrngEditID }) => {
             key: "action",
             render: (_: any, record: Task) => (
                 <span>
-                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.saleId)}>Edit</Button>
-                    <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.saleId)}>Delete</Button>
+                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.saleId)}/>
+                    <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.saleId)}/>
                 </span>
             ),
         },
     ];
     return (
-        <>
+        <div className="status-all">
             <p>{employeeFirstname}</p>
             <Table
                 dataSource={propsData}
                 columns={columns}
                 rowClassName={() => "header-row"}
             />
-        </>
+        </div>
     );
 };
 

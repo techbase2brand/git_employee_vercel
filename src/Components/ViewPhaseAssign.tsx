@@ -1,7 +1,5 @@
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import ViewPhaseassignedTable from "./ViewPhaseassignedTable";
 
 const ViewPhaseAssign: React.FC = () => {
@@ -16,29 +14,20 @@ const ViewPhaseAssign: React.FC = () => {
           height: "100%",
         }}
       >
-        
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          
-          <div  >
-            <div style={{ width: '92%', marginLeft: '4.4%', marginTop: '5%' }}>
-              <div
-                style={{
-                  display: "flex",
-                  width: "80%",
-                  alignItems: "center",
-                }}
+
+          <div
+            style={{ display: "flex", flexDirection: "column" }}
+            className="form-container"
+          >
+            <div
+            >
+              <p
+                className="mrng-tas"
               >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Phase Assigned
-                </p>
-              </div>
+                Phase Assigned
+              </p>
               <ViewPhaseassignedTable />
             </div>
           </div>

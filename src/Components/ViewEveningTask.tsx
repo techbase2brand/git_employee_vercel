@@ -78,7 +78,7 @@ const ViewEveningTask: React.FC = () => {
         setLoading(false);
       });
   }, [employeeID, formattedDate]);
-  
+
 
   return (
     <div className="emp-main-div">
@@ -97,45 +97,21 @@ const ViewEveningTask: React.FC = () => {
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
           >
-            <div
-              style={{
-                display: "flex",
-                width: "80%",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            ></div>
-            <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  width: "80%",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Evening Status
-                </p>
-              </div>
-              {loading ?
-                <Spin size="large" className="spinner-antd" />
-                :
-                <EveningTaskTable
-                  data={data}
-                  evngEditID={evngEditID}
-                  setEvngEditID={setEvngEditID}
-                />
-              }
-            </div>
-          </div>
+            <p
+              className="mrng-tas"
+            >
+              Evening Status
+            </p>
+          {loading ?
+            <Spin size="large" className="spinner-antd" />
+            :
+            <EveningTaskTable
+              data={data}
+              evngEditID={evngEditID}
+              setEvngEditID={setEvngEditID}
+            />
+          }
+        </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, {  useEffect } from "react";
+import React, { useEffect } from "react";
 // import { Table, Button, Select } from "antd";
 // import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -70,52 +70,24 @@ const LeaveReports: React.FC = () => {
   // }, []);
 
   return (
-    <>
-      <div className="emp-main-div">
-        <div
+    <div className="emp-main-div">
+      <div
+        style={{ display: "flex", flexDirection: "column" }}
+        className="form-container"
+      >
+        <p
           style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#F7F9FF",
+            color: "#094781",
+            justifyContent: "flex-start",
+            fontSize: "32px",
+            fontWeight: "bold",
           }}
         >
-          
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              height: "90%",
-            }}
-          >
-          
-
-            <div style={{ width: "92%", marginTop: "5%" ,marginLeft:"25px" ,marginRight:"25px"}}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Leave Report
-                </p>
-              </div>
-
-              <LeaveReportsTable />
-            </div>
-          </div>
-        </div>
+          Leave Report
+        </p>
+        <LeaveReportsTable />
       </div>
-    </>
+    </div>
   );
 };
 

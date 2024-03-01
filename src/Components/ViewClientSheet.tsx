@@ -542,13 +542,8 @@ const ViewClientSheet: React.FC<any> = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100%",
-          height: "100%",
         }}
       >
-        
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-containerr"
@@ -559,7 +554,7 @@ const ViewClientSheet: React.FC<any> = () => {
                 flexDirection: "column",
                 marginBottom: "50px",
                 marginLeft: "40px",
-                width: "80%",
+                width: "82%",
               }}
               className="add-div"
             >
@@ -680,7 +675,6 @@ const ViewClientSheet: React.FC<any> = () => {
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );

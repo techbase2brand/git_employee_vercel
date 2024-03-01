@@ -179,18 +179,15 @@ const HrLeaveAutoFillComp: React.FC = () => {
 
   return (
     <>
-      <h2 style={{ textAlign: "center" }}>Leave Form</h2>
+      
       <form
         onSubmit={handleSubmit}
         style={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "start",
-          maxWidth: "80%",
-          margin: "0 auto",
-          width: "60%",
         }}
       >
+        <h2>Leave Form</h2>
         <label className="add-label">
           Employee:
           <select
@@ -213,11 +210,8 @@ const HrLeaveAutoFillComp: React.FC = () => {
         </label>
         <label className="add-label">
           Leave Duration:
+        </label>
           <RangePicker
-            style={{
-              display: "block",
-              width: "100%",
-            }}
             value={[
               startDate ? dayjs(startDate) : null,
               endDate ? dayjs(endDate) : null,
@@ -232,7 +226,6 @@ const HrLeaveAutoFillComp: React.FC = () => {
               }
             }}
           />
-        </label>
         <div className="form-group" style={{}}>
           <label className="add-label">
             Leave Type:
@@ -302,7 +295,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="form-group" style={{ width: "45%" }}>
+        <div className="form-group" >
           <label className="add-label">Leave Reason:</label>
 
           <textarea
@@ -361,7 +354,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
             </select>
           </label>
         </div>
-        <button className="add-button" type="submit">
+        <button className="add-button-2" type="submit">
           Apply
         </button>
       </form>

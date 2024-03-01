@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Spin } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
-
+import { DeleteOutlined} from "@ant-design/icons";
 interface LeaveData {
   LeaveInfoID: 0;
   employeeName: string;
@@ -147,12 +147,9 @@ const HRleaveTable: React.FC = () => {
             Deny
           </Button>
           <Button
-            type="default"
-            danger
+            type="link" danger icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.LeaveInfoID)}
-          >
-            Delete
-          </Button>
+          />
         </div>
       ),
     }
@@ -169,7 +166,6 @@ const HRleaveTable: React.FC = () => {
         :
         <div className="leave-table">
           <Table
-            style={{ width: "80vw" }}
             dataSource={data}
             columns={columns}
             rowClassName={(record) =>

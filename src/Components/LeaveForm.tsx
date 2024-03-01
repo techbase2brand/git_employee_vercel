@@ -58,29 +58,11 @@ const LeaveForm: React.FC = () => {
     <div className="emp-main-div">
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#F7F9FF",
+          display: "flex", flexDirection: "column", width: 'auto'
         }}
+        className="form-container"
       >
-       
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            height: "90%",
-            width: "100%",
-          }}
-        >
-          
-          <div style={{ width: "100%" }}>
-            <div style={{ width: "92%", marginLeft: "4.4%", marginTop: "5%" }}>
-              <LeaveFormComp />
-            </div>
-          </div>
-        </div>
+        <LeaveFormComp />
       </div>
     </div>
   );

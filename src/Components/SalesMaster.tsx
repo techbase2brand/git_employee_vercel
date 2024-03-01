@@ -103,18 +103,17 @@ const SalesMaster: React.FC<unknown> = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100%",
-          height: "100%",
+          // width: "100%",
+          // height: "100%",
         }}
       >
        
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
           
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column",width:'auto' }}
             className="form-container"
           >
-            <div className="add-div" style={{ gap: '15px' }}>
+            <div className="add-div" >
               <h1>Add a Status</h1>
               <div>
                 <div className="SalecampusForm-col-os">
@@ -143,24 +142,11 @@ const SalesMaster: React.FC<unknown> = () => {
                   />
                 </div>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "94%",
-                }}
-              >
-              </div>
               <button className="add-button" onClick={handleSubmit}>
                 Submit
               </button>
             </div>
-            <div
-              style={{ marginTop: "50px", height: "80%", width: "100%" }}
-            ></div>
           </div>
-        </div>
       </div>
     </div>
   );

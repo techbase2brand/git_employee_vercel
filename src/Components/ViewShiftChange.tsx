@@ -14,7 +14,6 @@ const ViewShiftChange: React.FC = () => {
 
   return (
     <div className="emp-main-div">
-
       <div
         style={{ display: "flex", flexDirection: "column" }}
         className="form-container"

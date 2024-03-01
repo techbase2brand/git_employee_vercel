@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import MorningTaskTable from "./MorningTaskTable";
 import axios from "axios";
@@ -98,37 +98,22 @@ const ViewMorningTask: React.FC = () => {
             className="form-container"
           >
             <div
-              style={{
-                display: "flex",
-                width: "80%",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            ></div>
-            <div >
-              <div
+            >
+              <p
+                className="mrng-tas"
               >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Morning Tasks
-                </p>
-              </div>
-              {loading ? (
-                <Spin size="large" className="spinner-antd" />
-              ) : (
-                <MorningTaskTable
-                  data={data}
-                  mrngEditID={mrngEditID}
-                  setMrngEditID={setMrngEditID}
-                />
-              )}
+                Morning Tasks
+              </p>
             </div>
+            {loading ? (
+              <Spin size="large" className="spinner-antd" />
+            ) : (
+              <MorningTaskTable
+                data={data}
+                mrngEditID={mrngEditID}
+                setMrngEditID={setMrngEditID}
+              />
+            )}
           </div>
         </div>
       </div>

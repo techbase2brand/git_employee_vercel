@@ -341,9 +341,7 @@ const ViewDocumentation = () => {
                         height: "100%",
                     }}
                 >
-                    
                     <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                        
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusFormList-default-os">
@@ -360,6 +358,7 @@ const ViewDocumentation = () => {
                                             className="search"
                                             style={{
                                                 width: "fit-content",
+                                                marginBottom:'2rem'
                                             }}
                                         >
                                             <Input

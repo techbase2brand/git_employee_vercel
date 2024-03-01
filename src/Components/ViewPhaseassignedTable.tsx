@@ -116,6 +116,7 @@ const ViewPhaseassignedTable: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         style={{ width: 400, marginBottom: 16 }}
       />
+      <div className="pro-list">
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -130,6 +131,7 @@ const ViewPhaseassignedTable: React.FC = () => {
           pagination={paginationSettings}
         />
       }
+      </div>
     </>
   );
 };

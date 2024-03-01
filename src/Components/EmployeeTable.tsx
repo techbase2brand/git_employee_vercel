@@ -276,12 +276,12 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search"
             style={{
-              marginLeft: 10, border: '1px solid #d9d9d9',
+           border: '1px solid #d9d9d9',
               borderRadius: '6px', height: '30px'
             }}
           />
           <div style={{
-            marginBottom: 10, marginLeft: '49%',
+            marginBottom: 10, marginLeft: '28%',
             position: 'absolute',
             marginTop: '26px',
             color: 'red'
@@ -297,10 +297,12 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
           </div>
         </div>
       </div >
+      <div className="employee-list">
       {loading ? <Spin size="large" className="spinner-antd" />
         :
         <Table dataSource={filteredData} columns={columns} pagination={paginationSettings} />
       }
+      </div>
     </>
   )
 };

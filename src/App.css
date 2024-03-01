@@ -174,23 +174,23 @@ tbody>tr>td:nth-child(14) {
 }
 
 .form-div {
-
-  width: 40%;
+  width: 57%;
   background-color: #F7F9FF;
   height: 100%;
   margin-right: 48%;
-  /* margin-top:7% */
 }
 
 .emp-div-flex {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  gap: 2rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .form-control {
@@ -251,6 +251,13 @@ tbody>tr>td:nth-child(14) {
   width: auto;
 }
 
+.emp-mrng {
+  display: flex;
+  width: 100%;
+  height: auto;
+  background-color: #f7f9ff;
+}
+
 .add-heading {
   font-family: "Poppins";
   font-style: normal;
@@ -258,9 +265,7 @@ tbody>tr>td:nth-child(14) {
   font-size: 26.1px;
   line-height: 39px;
   letter-spacing: 0.02em;
-  height: 25px;
   color: #094781;
-  position: "absolute";
 }
 
 .go-button {
@@ -284,7 +289,7 @@ tbody>tr>td:nth-child(14) {
   font-size: 15.3508px;
   line-height: 23px;
   color: #094781;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .add-input {
@@ -344,7 +349,7 @@ tbody>tr>td:nth-child(14) {
 
 .add-button {
   padding: 6px;
-  width: 33%;
+  width: auto;
   background: #094781;
   border-radius: 4.96885px;
   margin-top: 24px;
@@ -493,9 +498,7 @@ tbody>tr>td:nth-child(14) {
   line-height: 1.5;
   font-style: italic;
 }
-.clientSheetTlTask table{
-  width: auto;
-}
+
 
 /* salecampus css starts */
 css .campus_form {
@@ -512,6 +515,12 @@ css .campus_form {
   color: black
 }
 
+.placeholder-color {
+  display: flex;
+  gap: 10px;
+  width: 70%;
+}
+
 .shifting-change thead.ant-table-thead tr th:nth-child(1),
 .shifting-change thead.ant-table-thead tr th:nth-child(2),
 .shifting-change thead.ant-table-thead tr th:nth-child(3),
@@ -522,6 +531,32 @@ css .campus_form {
 .shifting-change thead.ant-table-thead tr th:nth-child(8) {
   min-width: 100px;
   padding: 0 4px;
+}
+
+.dashboard-handle thead.ant-table-thead tr th:nth-child(1),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(2),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(3),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(4),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(5),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(6),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(7) {
+  min-width: 100px;
+  padding: 0 10px;
+}
+
+.shifting-change table {
+  width: auto;
+}
+
+.cat-table thead.ant-table-thead tr th:nth-child(1),
+.cat-table thead.ant-table-thead tr th:nth-child(2),
+.cat-table thead.ant-table-thead tr th:nth-child(3) {
+  min-width: 100px;
+  padding: 0 4px;
+}
+
+.cat-table table {
+  width: auto;
 }
 
 .shifting-change table tbody.ant-table-tbody td.ant-table-cell {
@@ -573,6 +608,10 @@ css .campus_form {
   padding: 0 10px;
 }
 
+.saleCampus-form table {
+  width: auto;
+}
+
 .shift-table thead.ant-table-thead tr th:nth-child(1),
 .shift-table thead.ant-table-thead tr th:nth-child(2),
 .shift-table thead.ant-table-thead tr th:nth-child(3),
@@ -603,7 +642,15 @@ css .campus_form {
   min-width: 100px;
 }
 
+.pro-list table {
+  width: auto;
+}
+
 .leave-Page table {
+  width: auto;
+}
+
+.status-all table {
   width: auto;
 }
 
@@ -648,23 +695,45 @@ css .campus_form {
 .employee-list thead.ant-table-thead tr th:nth-child(3),
 .employee-list thead.ant-table-thead tr th:nth-child(4),
 .employee-list thead.ant-table-thead tr th:nth-child(5),
-.employee-list thead.ant-table-thead tr th:nth-child(6) {
+.employee-list thead.ant-table-thead tr th:nth-child(6),
+.employee-list thead.ant-table-thead tr th:nth-child(7),
+.employee-list thead.ant-table-thead tr th:nth-child(8) {
   min-width: 100px;
   padding: 0 10px;
 }
 
-.dashboard-handle thead.ant-table-thead tr th:nth-child(1),
+.employee-list table {
+  width: auto;
+}
+
+.employee-list ul.ant-pagination {
+  justify-content: center;
+}
+
+/* .dashboard-handle thead.ant-table-thead tr th:nth-child(1),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(2),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(3),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(4),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(5),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(6),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(7) {
   min-width: 100px;
   padding: 0 10px;
-}
+} */
 
-.dashboard-handle table {
-  width: auto;
+.add-button-2 {
+  padding: 6px;
+  width: 25%;
+  background: #094781;
+  border-radius: 4.96885px;
+  margin-top: 24px;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18.7263px;
+  line-height: 28px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
 }
 
 .evening-handle table thead.ant-table-thead tr th:nth-child(1),
@@ -705,6 +774,14 @@ css .campus_form {
   padding: 0 10px;
 }
 
+.saleInfo-form table {
+  width: auto;
+}
+
+.saleInfo-form ul.ant-pagination {
+  justify-content: center;
+}
+
 .evening-dashboard thead.ant-table-thead tr th:nth-child(9) {
   min-width: 0px;
 }
@@ -722,8 +799,41 @@ css .campus_form {
   padding: 0 10px;
 }
 
+.leave-page thead.ant-table-thead tr th:nth-child(1),
+.leave-page thead.ant-table-thead tr th:nth-child(2),
+.leave-page thead.ant-table-thead tr th:nth-child(3),
+.leave-page thead.ant-table-thead tr th:nth-child(4),
+.leave-page thead.ant-table-thead tr th:nth-child(5),
+.leave-page thead.ant-table-thead tr th:nth-child(6),
+.leave-page thead.ant-table-thead tr th:nth-child(7),
+.leave-page thead.ant-table-thead tr th:nth-child(8),
+.leave-page thead.ant-table-thead tr th:nth-child(9) {
+  min-width: 100px;
+  padding: 0 10px;
+}
+
+.leave-page table {
+  width: auto;
+}
+
+.view-term thead.ant-table-thead tr th:nth-child(1),
+.view-term thead.ant-table-thead tr th:nth-child(2),
+.view-term thead.ant-table-thead tr th:nth-child(3),
+.view-term thead.ant-table-thead tr th:nth-child(4) {
+  min-width: 100px;
+  padding: 0 10px;
+}
+
+.view-term table {
+  width: auto;
+}
+
 .leave-table table {
   width: auto;
+}
+
+.view-term ul.ant-pagination {
+  justify-content: left;
 }
 
 .leave-table ul.ant-pagination {
@@ -749,6 +859,10 @@ css .campus_form {
 .infotech-form thead.ant-table-thead tr th:nth-child(17) {
   min-width: 100px;
   padding: 0 10px;
+}
+
+.infotech-form table {
+  width: auto;
 }
 
 .mrng-table thead.ant-table-thead tr th:nth-child(1),
@@ -844,6 +958,13 @@ css .campus_form {
   font-size: 16px;
   font-weight: 400;
   padding: 8px 0;
+}
+
+.mrng-tas {
+  color: rgb(9, 71, 129);
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .SalecampusForm-radio-os {
@@ -955,3 +1076,26 @@ tr:nth-child(even) {
 .ant-table-row.enrolled {
   background-color: inherit;
 } */
+
+@media screen and (min-width: 767px) and (max-width: 1202px) {
+  .form-div {
+    width: 100%;
+    background-color: #F7F9FF;
+    height: 100%;
+    margin-right: 48%;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(1),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(2),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(3),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(4),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(5),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(6),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(7) {
+    min-width: 150px;
+    padding: 0 10px;
+  }
+}

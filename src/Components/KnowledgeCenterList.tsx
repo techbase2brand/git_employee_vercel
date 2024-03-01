@@ -252,7 +252,6 @@ const KnowledgeCenterList = () => {
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(record.id)}
                     >
-                        Edit
                     </Button>
                     <Button
                         type="link"
@@ -263,7 +262,6 @@ const KnowledgeCenterList = () => {
                             showModalDel();
                         }}
                     >
-                        Delete
                     </Button>
                 </span>
 
@@ -307,9 +305,9 @@ const KnowledgeCenterList = () => {
                         height: "100%",
                     }}
                 >
-                    
+
                     <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                       
+
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusFormList-default-os">

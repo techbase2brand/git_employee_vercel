@@ -210,7 +210,7 @@ const LeavePageTable: React.FC = () => {
     pageSize: 100,
   };
   return (
-    <>
+    <div className="leave-page">
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -218,7 +218,6 @@ const LeavePageTable: React.FC = () => {
         }} />
         :
         <Table
-          style={{ width: "80vw" }}
           dataSource={data}
           columns={columns}
           rowKey={(record) => record.LeaveInfoID.toString()} // Specify a unique row key
@@ -226,7 +225,7 @@ const LeavePageTable: React.FC = () => {
           pagination={paginationSettings}
         />
       }
-    </>
+    </div>
   );
 };
 
