@@ -197,25 +197,19 @@ const LeaveFormComp: React.FC = () => {
 
   return (
     <>
-      <h2 style={{ textAlign: "center" }}>Leave Form</h2>
+      <h2>Leave Form</h2>
       <form
         onSubmit={handleSubmit}
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "start",
-          maxWidth: "80%",
-          margin: "0 auto",
-          width: "60%",
         }}
       >
         <label className="add-label">
           Leave Duration:
+          </label>
           <RangePicker
-            style={{
-              display: "block",
-              width: "100%",
-            }}
             value={[
               startDate ? dayjs(startDate) : null,
               endDate ? dayjs(endDate) : null,
@@ -231,7 +225,7 @@ const LeaveFormComp: React.FC = () => {
               }
             }}
           />
-        </label>
+        
         <div className="form-group" style={{}}>
           <label className="add-label">
             Leave Type: {leaveCategoryState ? leaveCategoryState : null}
@@ -244,7 +238,7 @@ const LeaveFormComp: React.FC = () => {
                 display: "block",
               }}
               name="estTime"
-              className="form-control"
+              className="form-leave"
               value={estTime}
               onClick={handleDropdownClick}
               onChange={handleDropdownChange}
@@ -327,11 +321,7 @@ const LeaveFormComp: React.FC = () => {
           <label className="add-label">
             Admin:
             <select
-              className="form-control"
-              style={{
-                width: "100%",
-                display: "block",
-              }}
+              className="form-leave"
               value={teamLead}
               onChange={(e) => setTeamLead(e.target.value)}
               required

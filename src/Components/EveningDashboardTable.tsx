@@ -181,8 +181,6 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
       style={{
         display: "flex",
         justifyContent: "space-between",
-        width: "85vw",
-        marginTop: "3%",
       }}
     >
       <div

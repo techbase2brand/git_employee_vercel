@@ -99,18 +99,17 @@ const EveningDashboard: React.FC = () => {
       >
 
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-  
+
           <div
             style={{ display: "flex", flexDirection: "column", paddingTop: "16px" }}
             className="form-container"
           >
             <div
-              style={{ display: "flex", flexDirection: "row", width: "100%" }}
+              style={{ display: "flex", flexDirection: "row", gap: '2rem' }}
             >
               <div
                 style={{
                   display: "flex",
-                  width: "100%",
                   alignItems: "center",
                   justifyContent: "space-between",
                 }}
@@ -121,7 +120,6 @@ const EveningDashboard: React.FC = () => {
 
               <div style={{
                 display: "flex",
-                width: "100%",
                 alignItems: "center",
                 justifyContent: "space-between",
               }}>
@@ -152,7 +150,6 @@ const EveningDashboard: React.FC = () => {
               </div>
               <div style={{
                 display: "flex",
-                width: "100%",
                 alignItems: "center",
                 justifyContent: "space-between",
               }}>

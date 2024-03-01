@@ -164,6 +164,7 @@ const ViewLeavepageTable: React.FC = () => {
         =
         <div>Total:<span className="portal">{UncertainLeave + RegularLeave}</span></div>
       </div>
+      <div className="leave-Page">
       {loading ?
         <Spin size="large" className="spinner-antd" />
         :
@@ -174,6 +175,7 @@ const ViewLeavepageTable: React.FC = () => {
           rowClassName={() => "header-row"}
         />
       }
+</div>
     </>
   );
 };

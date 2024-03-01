@@ -37,7 +37,7 @@ const HRsection: React.FC = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  Leave Page
+                  Leave Page Approval
                 </p>
               </div>
               <HRleaveTable

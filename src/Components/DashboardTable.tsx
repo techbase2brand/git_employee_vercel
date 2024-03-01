@@ -142,10 +142,8 @@ const DashboardTable: React.FC<MorningDashboardTableProps> = ({
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-evenly",
           alignItems: "center",
-          width: "100%",
+          gap:'2rem'
         }}
       >
         <div style={{ display: "flex", flexDirection: "row" }}>

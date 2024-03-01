@@ -151,7 +151,6 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
             icon={<EditOutlined />}
             onClick={() => handleEdit(record.EvngTaskID)}
           >
-            Edit
           </Button>
           <Button
             type="link"
@@ -159,7 +158,6 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.EvngTaskID)}
           >
-            Delete
           </Button>
         </span>
       ),
@@ -174,8 +172,9 @@ const EveningTaskTable: React.FC<Props> = ({ data, setEvngEditID }) => {
         <p><strong>Actual Time Total: </strong> {convertDecimalToTime(totalActTime)} hrs</p>
         <p><strong>UpWork Total: </strong> {convertDecimalToTime(totalUpWorkHrs)} hrs</p>
       </div>
-      <Table dataSource={propsData} columns={columns} rowClassName={() => "header-row"} pagination={paginationSettings} />
-
+      <div className="mrng-table">
+        <Table dataSource={propsData} columns={columns} rowClassName={() => "header-row"} pagination={paginationSettings} />
+      </div>
     </div>
   )
 };

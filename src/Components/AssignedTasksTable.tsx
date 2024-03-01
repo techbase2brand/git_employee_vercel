@@ -271,7 +271,6 @@ const AssignedTasksTable: React.FC = () => {
         <Spin size="large" className="spinner-antd" />
         :
         <Table
-          style={{ width: "80vw" }}
           dataSource={data}
           columns={columns}
           rowClassName={() => "header-row"}

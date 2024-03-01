@@ -76,7 +76,7 @@ const AddModule: React.FC<any> = () => {
     () => (dataString ? JSON.parse(dataString) : []),
     [dataString]
   );
-
+  const updateData = selectedProject && selectedPhase && selectedModule && eveningTask.task && eveningTask?.estTime && eveningTask.actTime;
   // useEffect(() => {
   //   if (location?.state?.EvngTaskID) {
   //     axios
@@ -123,13 +123,13 @@ const AddModule: React.FC<any> = () => {
         })
         .then((response) => {
           const res = response?.data[0];
-  
+
           if (res) {
             setSelectedProject(res.projectName);
             setSelectedPhase(res.phaseName);
             setSelectedModule(res.module);
             handleEstTimeChange(res.estTime || "");
-  
+
             setEveningTask((prevEveningTask) => ({
               ...prevEveningTask,
               EvngTaskID: res.EvngTaskID,
@@ -153,7 +153,7 @@ const AddModule: React.FC<any> = () => {
         });
     }
   }, [location?.state?.EvngTaskID]);
-  
+
 
   useEffect(() => {
     // Fetch employees from the backend API
@@ -312,46 +312,41 @@ const AddModule: React.FC<any> = () => {
   };
 
   const handleSubmit = () => {
-    if (eveningTask.module && eveningTask.task && eveningTask.estTime) {
-      setSubmitting(true)
-    }
-    if (evngEditID) {
-      axios
-        .put(
-          `${process.env.REACT_APP_API_BASE_URL}/update/addEvngTask/${evngEditID}`,
-          eveningTask,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-            },
-          })
-        .then((response) => {
-          if (response.data === "All fields are required.") {
-            alert("All fields are required.");
-          } else {
+    if (updateData) {
+      if (eveningTask.module && eveningTask.task && eveningTask.estTime) {
+        setSubmitting(true)
+      }
+      if (evngEditID) {
+
+        axios
+          .put(
+            `${process.env.REACT_APP_API_BASE_URL}/update/addEvngTask/${evngEditID}`,
+            eveningTask,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+              },
+            })
+          .then((response) => {
             navigate("/view-evening-task");
             setEvngEditID();
             toast.success('Updated successfully!', {
               position: toast.POSITION.TOP_RIGHT,
             });
-          }
-        })
-        .catch((error) => {
-          toast.error('Error while Updating tasks.', {
-            position: toast.POSITION.TOP_RIGHT,
+          })
+          .catch((error) => {
+            toast.error('Error while Updating tasks.', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           });
-        });
-    } else {
-      axios
-        .post(`${process.env.REACT_APP_API_BASE_URL}/create/addTaskEvening`, eveningTask, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-          },
-        })
-        .then((response) => {
-          if (response.data === "All fields are required.") {
-            alert("All fields are required.");
-          } else {
+      } else {
+        axios
+          .post(`${process.env.REACT_APP_API_BASE_URL}/create/addTaskEvening`, eveningTask, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          })
+          .then((response) => {
             setSelectedProject("");
             setSelectedPhase("");
             setSelectedModule("");
@@ -372,13 +367,15 @@ const AddModule: React.FC<any> = () => {
             toast.success('Evening Task added successfully!', {
               position: toast.POSITION.TOP_RIGHT,
             });
-          }
-        })
-        .catch((error) => {
-          toast.error('Error while inserting tasks.', {
-            position: toast.POSITION.TOP_RIGHT,
+          })
+          .catch((error) => {
+            toast.error('Error while inserting tasks.', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           });
-        });
+      }
+    } else {
+      alert("Some fields are missing. Please fill in all required fields.");
     }
   };
 
@@ -414,6 +411,7 @@ const AddModule: React.FC<any> = () => {
             style={{ display: "flex", flexDirection: "column", width: '100%' }}
             className="form-container"
           >
+            <div style={{ width: '50%' }}>
             <div className="add-div">
               <p className="add-heading">
                 {location?.state?.EvngTaskID ? "Update Evening Task" : "Add Evening Task"}
@@ -423,8 +421,6 @@ const AddModule: React.FC<any> = () => {
               </label>
 
               <select
-                // onChange={handleChange}
-                style={{ width: "auto" }}
                 className="add-input"
                 id="project"
                 name="project"
@@ -439,14 +435,9 @@ const AddModule: React.FC<any> = () => {
                 ))}
               </select>
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "auto",
-                }}
+               className="phase-mod"
               >
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                <div className="mrng-phase">
                   <label className="add-label">
                     Phase<span style={{ color: "red" }}>*</span>
                   </label>
@@ -471,7 +462,7 @@ const AddModule: React.FC<any> = () => {
                   </select>
                   {/* )} */}
                 </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                <div className="mrng-phase">
                   <label className="add-label">
                     Module<span style={{ color: "red" }}>*</span>
                   </label>
@@ -540,17 +531,15 @@ const AddModule: React.FC<any> = () => {
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "space-between",
                   width: "auto",
-                  gap: '2px'
+                  gap: '4px'
                 }}
               >
-                <div className="form-group">
+                <div className="mrng-phase">
                   <label className="add-label">
                     Est. time :<span style={{ color: "red" }}>*</span>
                   </label>
                   <select
-                    style={{ width: "16.8vw" }}
                     name="estTime"
                     className="form-control"
                     value={eveningTask?.estTime}
@@ -570,10 +559,9 @@ const AddModule: React.FC<any> = () => {
                     )}
                   </select>
                 </div>
-                <div className="form-group">
+                <div className="mrng-phase">
                   <label className="add-label">Upwork Hrs</label>
                   <select
-                    style={{ width: "16.8vw" }}
                     name="upWorkHrs"
                     className="form-control"
                     value={eveningTask.upWorkHrs}
@@ -601,12 +589,11 @@ const AddModule: React.FC<any> = () => {
                     )}
                   </select>
                 </div>
-                <div className="form-group">
+                <div className="mrng-phase">
                   <label className="add-label">
                     Act. time : <span style={{ color: "red" }}>*</span>
                   </label>
                   <select
-                    style={{ width: "16.8vw" }}
                     name="actTime"
                     className="form-control"
                     value={eveningTask.actTime}
@@ -631,9 +618,7 @@ const AddModule: React.FC<any> = () => {
                 Submit
               </button>
             </div>
-            <div
-              style={{ marginTop: "50px", height: "80%", width: "100%" }}
-            ></div>
+            </div>
           </div>
         </div>
       </div>

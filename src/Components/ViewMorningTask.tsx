@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import MorningTaskTable from "./MorningTaskTable";
 import axios from "axios";
 import { format } from "date-fns";
@@ -73,14 +71,14 @@ const ViewMorningTask: React.FC = () => {
         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
       },
     })
-    .then((response) => {
-      setData(response.data.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)));
-      setLoading(false);
-    })
-    .catch((error) => {
-      console.error(error);
-      setLoading(false);
-    });
+      .then((response) => {
+        setData(response.data.sort((a, b) => Number(b.MrngTaskID) - Number(a.MrngTaskID)));
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [formattedDate, employeeID]);  // 
   return (
     <div className="emp-main-div">
@@ -92,9 +90,9 @@ const ViewMorningTask: React.FC = () => {
           height: "100%",
         }}
       >
-       
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
+
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
@@ -107,14 +105,8 @@ const ViewMorningTask: React.FC = () => {
                 justifyContent: "flex-start",
               }}
             ></div>
-            <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
+            <div >
               <div
-                style={{
-                  display: "flex",
-                  width: "80%",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }}
               >
                 <p
                   style={{
