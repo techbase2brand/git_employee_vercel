@@ -1068,6 +1068,10 @@ tr:nth-child(even) {
   background-color: #92b3fb !important;
 }
 
+.ant-spin-container {
+  width: fit-content;
+}
+
 /* This ensures that every row, regardless of whether it is even or odd, takes the color based on its class and doesn't get shaded differently */
 /* .ant-table-row.interested,
 .ant-table-row.not-interested,
