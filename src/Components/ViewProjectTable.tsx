@@ -113,7 +113,7 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
           />
         </div>
       </div>
-     
+     <div className="pro-list">
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -121,13 +121,13 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
         }}/>
         :
         <Table
-          style={{ width: "80vw" }}
           dataSource={filteredData}
           columns={columns}
           rowClassName={() => "header-row"}
           pagination={paginationSettings}
         />
       }
+      </div>
     </>
   );
 };

@@ -1,7 +1,5 @@
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import HRleaveTable from "./HRleaveTable";
 const HRsection: React.FC = () => {
 
@@ -10,43 +8,22 @@ const HRsection: React.FC = () => {
     <div className="emp-main-div">
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#F7F9FF",
+          display: "flex", flexDirection: "column", width: 'auto'
         }}
+        className="form-container"
       >
-  
-        <div style={{ display: "flex", flexDirection: "row", height: "90%", width: '8%' }}>
-    
-          <div>
-            <div style={{ width: "92%", marginTop: "5%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  width: "80%",
-                  alignItems: "center",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Leave Page Approval
-                </p>
-              </div>
-              <HRleaveTable
-              />
-            </div>
-          </div>
+        <div>
+          <p
+            className="mrng-tas"
+          >
+            Leave Page Approval
+          </p>
         </div>
+        <HRleaveTable
+        />
       </div>
     </div>
+
   );
 };
 

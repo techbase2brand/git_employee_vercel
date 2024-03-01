@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import TermConditionTable from "./TermConditionTable";
 import axios from "axios";
 import { GlobalInfo } from "../App";
@@ -40,62 +38,37 @@ const ViewTermCondition: React.FC = () => {
 
   return (
     <div className="emp-main-div">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-        }}
-      >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%",
+      }}
+    >
 
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-
-          <div
-            style={{ display: "flex", flexDirection: "column" }}
-            className="form-container"
+      <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column" }}
+          className="form-container"
+        >
+          <p
+            className="mrng-tas"
           >
-            <div
-              style={{
-                display: "flex",
-                width: "80%",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            ></div>
-            <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  width: "80%",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Term && Conditions....
-                </p>
-              </div>
-              {loading === true ?
-                <Spin size="large" className="spinner-antd" />
-                :
-                <TermConditionTable
-                  data={data}
-                  mrngEditID={mrngEditID}
-                  setMrngEditID={setMrngEditID}
-                />
-              }
-            </div>
-          </div>
+            Term && Conditions....
+          </p>
+          {loading === true ?
+            <Spin size="large" className="spinner-antd" />
+            :
+            <TermConditionTable
+              data={data}
+              mrngEditID={mrngEditID}
+              setMrngEditID={setMrngEditID}
+            />
+          }
         </div>
       </div>
+    </div>
     </div>
   );
 };

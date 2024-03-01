@@ -60,7 +60,7 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
 
   const columns = [
     {
-      title: "term",
+      title: "Term",
       dataIndex: "term",
       key: "term",
       render: (text: string) => (
@@ -70,12 +70,12 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       ),
     },
     {
-      title: "currdate",
+      title: "Currdate",
       dataIndex: "currdate",
       key: "currdate",
     },
     {
-      title: "date",
+      title: "Date",
       dataIndex: "date",
       key: "date",
     },
@@ -84,9 +84,9 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       key: "action",
       render: (_: any, record: Task,index: number) => (
         <span>
-          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.TermID)}>Edit</Button>
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.TermID)}/>
           {index !== 0 &&
-            <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.TermID)}>Delete</Button>
+            <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.TermID)}/>
           }
         </span>
       ),
@@ -95,11 +95,13 @@ const TermConditionTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   return (
     <>
       <p>{employeeFirstname}</p>
+      <div className="view-term">
       <Table
         dataSource={propsData}
         columns={columns}
         rowClassName={() => "header-row"}
       />
+      </div>
       <Modal
         title="Term Details"
         visible={modalVisible}

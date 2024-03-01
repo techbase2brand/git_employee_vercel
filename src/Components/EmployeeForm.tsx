@@ -431,7 +431,7 @@ const EmployeeForm: React.FC = () => {
                   </div>
                 </div>
                 <div className="emp-div-flex">
-                  <div style={{ marginTop: "8px" }}>
+                  <div className="form-group">
                     <label className="emp-label">Date of Birth:</label>
                     <div
                       style={{
@@ -481,7 +481,7 @@ const EmployeeForm: React.FC = () => {
                 </div>
 
                 <div className="emp-div-flex">
-                  <div style={{ marginTop: "8px" }}>
+                  <div className="form-group">
                     <label className="emp-label">Date of Joining:</label>
                     <div
                       style={{

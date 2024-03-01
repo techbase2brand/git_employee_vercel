@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import CategoryTable from "./CategoryTable";
 import axios from "axios";
 import { GlobalInfo } from "../App";
@@ -48,51 +46,33 @@ const CategoryList: React.FC = () => {
                     height: "100%",
                 }}
             >
-                
+
                 <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                    
+
                     <div
                         style={{ display: "flex", flexDirection: "column" }}
                         className="form-container"
                     >
-                        <div
+                        <p
                             style={{
-                                display: "flex",
-                                width: "80%",
-                                alignItems: "center",
+                                color: "#094781",
                                 justifyContent: "flex-start",
+                                fontSize: "32px",
+                                fontWeight: "bold",
+                                marginBottom: '2rem'
                             }}
-                        ></div>
-                        <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    width: "80%",
-                                    alignItems: "center",
-                                    justifyContent: "flex-start",
-                                }}
-                            >
-                                <p
-                                    style={{
-                                        color: "#094781",
-                                        justifyContent: "flex-start",
-                                        fontSize: "32px",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    Category List
-                                </p>
-                            </div>
-                            {loading ?
-                                <Spin size="large" className="spinner-antd" />
-                                :
-                                <CategoryTable
-                                    data={data}
-                                    mrngEditID={mrngEditID}
-                                    setMrngEditID={setMrngEditID}
-                                />
-                            }
-                        </div>
+                        >
+                            Category List
+                        </p>
+                        {loading ?
+                            <Spin size="large" className="spinner-antd" />
+                            :
+                            <CategoryTable
+                                data={data}
+                                mrngEditID={mrngEditID}
+                                setMrngEditID={setMrngEditID}
+                            />
+                        }
                     </div>
                 </div>
             </div>

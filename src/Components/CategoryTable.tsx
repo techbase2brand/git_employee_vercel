@@ -67,21 +67,21 @@ const CategoryTable: React.FC<Props> = ({ data, setMrngEditID }) => {
             key: "action",
             render: (_: any, record: Task) => (
                 <span>
-                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.id)}>Edit</Button>
-                    <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}>Delete</Button>
+                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.id)}></Button>
+                    <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}></Button>
                 </span>
             ),
         },
     ];
     return (
-        <>
+        <div className="cat-table">
             <p>{employeeFirstname}</p>
             <Table
                 dataSource={propsData}
                 columns={columns}
                 rowClassName={() => "header-row"}
             />
-        </>
+        </div>
     );
 };
 

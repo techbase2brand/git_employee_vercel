@@ -113,7 +113,7 @@ const ViewPhaseTable: React.FC = () => {
           />
         </div>
       </div>
-      <div className="view-phase">
+      <div className="pro-list">
         {loading ?
           <Spin size="large" className="spinner-antd" style={{
             position: 'absolute',
@@ -121,7 +121,6 @@ const ViewPhaseTable: React.FC = () => {
           }} />
           :
           <Table
-            style={{ width: '80vw' }}
             dataSource={filteredData}
             columns={columns}
             rowClassName={() => "header-row"}

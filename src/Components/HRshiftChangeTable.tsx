@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Spin } from "antd";
 import axios from "axios";
-
+import { DeleteOutlined } from "@ant-design/icons";
 interface ShiftChangeData {
   ShiftChangeTableID: 0,
   employeeName: string;
@@ -174,12 +174,10 @@ const HRshiftChangeTable: React.FC = () => {
             Deny
           </Button>
           <Button
-            type="default"
-            danger
+            type="link"
+            danger icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.ShiftChangeTableID)}
-          >
-            Delete
-          </Button>
+          />
         </div>
       ),
     }

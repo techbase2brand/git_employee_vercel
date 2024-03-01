@@ -128,19 +128,8 @@ const AddPhase: React.FC = () => {
 
   return (
     <div className="emp-main-div">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column",width:'auto' }}
             className="form-container"
           >
             <div className="add-div">
@@ -209,9 +198,7 @@ const AddPhase: React.FC = () => {
             <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
             </div>
           </div>
-        </div>
       </div>
-    </div>
   );
 };
 

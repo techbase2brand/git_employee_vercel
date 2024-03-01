@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import ViewModuleTable from "./ViewModuleTable";
 import { GlobalInfo } from "../App";
 
@@ -40,32 +38,21 @@ const ViewProject: React.FC = () => {
           height: "100%",
         }}
       >
-       
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-       
-          <div  >
-            <div>
-            </div>
-            <div style={{ width: '92%', marginLeft: '4.4%', marginTop: '5%' }}>
-              <div
-                style={{
-                  display: "flex",
-                  width: "80%",
-                  alignItems: "center",
-                }}
+
+          <div
+            style={{ display: "flex", flexDirection: "column" }}
+            className="form-container"
+          >
+            <div
+            >
+              <p
+                className="mrng-tas"
               >
-                <p
-                  style={{
-                    color: "#094781",
-                    justifyContent: "flex-start",
-                    fontSize: "32px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Module List
-                </p>
-              </div>
-              <     ViewModuleTable modulejEditObj={modulejEditObj} setModulejEditObj={setModulejEditObj} />
+                Module List
+              </p>
+              <ViewModuleTable modulejEditObj={modulejEditObj} setModulejEditObj={setModulejEditObj} />
             </div>
           </div>
         </div>

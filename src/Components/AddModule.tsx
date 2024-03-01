@@ -144,19 +144,8 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
 
   return (
     <div className="emp-main-div">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-       
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
           <div
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column",width:'auto' }}
             className="form-container"
           >
             <div className="add-div">
@@ -256,7 +245,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
                     </div>
                   ))}
               </div>
-              <button className="add-button" onClick={handleSubmit}>
+              <button className="add-button-2" onClick={handleSubmit}>
                 Add Module
               </button>
             </div>
@@ -264,8 +253,6 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
   );
 };
 

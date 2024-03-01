@@ -594,7 +594,7 @@ const AddModule: React.FC<unknown> = () => {
                     </select>
                   </div>
                 </div>
-                <button className="add-button" onClick={handleSubmit} disabled={submitting === true}>
+                <button className="add-button-2" onClick={handleSubmit} disabled={submitting === true}>
                   Submit
                 </button>
               </div>

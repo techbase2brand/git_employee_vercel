@@ -106,6 +106,7 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
         </div>
         {/* <button onClick={() => { setSearchTerm(''); }}>Reset Search</button> */}
       </div>
+      <div className="pro-list">
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -113,13 +114,13 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
         }}/>
         :
         <Table
-          style={{ width: '80vw' }}
           dataSource={filteredData}
           columns={columns}
           rowClassName={() => "header-row"}
           pagination={paginationSettings}
         />
       }
+      </div>
     </>
   );
 };

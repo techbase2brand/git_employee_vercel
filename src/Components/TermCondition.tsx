@@ -100,13 +100,8 @@ const TermCondition: React.FC<unknown> = () => {
         style={{
           display: "flex",
           flexDirection: "column",
-          width: "100%",
-          height: "100%",
         }}
       >
-       
-        <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-container"
@@ -152,7 +147,6 @@ const TermCondition: React.FC<unknown> = () => {
               style={{ marginTop: "50px", height: "80%", width: "100%" }}
             ></div>
           </div>
-        </div>
       </div>
     </div>
   );

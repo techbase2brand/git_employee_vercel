@@ -277,7 +277,7 @@ const DragAssign: React.FC<any> = () => {
   return (
     <div
       style={{
-        width: "80%",
+        width: "100%",
         margin: "7px",
       }}
     >
@@ -285,10 +285,7 @@ const DragAssign: React.FC<any> = () => {
 
       {Array.from({ length: elementCount }, (_, index) => (
         <div
-          style={{
-            display: "flex",
-            gap: "10px",
-          }}
+          className="placeholder-color"
           key={index}
         >
           <textarea
@@ -303,7 +300,7 @@ const DragAssign: React.FC<any> = () => {
             placeholder="Add task"
           />
           <Select
-            style={{ border: "2px solid black", height: "auto" }}
+            style={{ border: "2px solid black", height: "auto", width: '25%' }}
             mode="multiple"
             id="assignee"
             className="add-input"
@@ -361,16 +358,17 @@ const DragAssign: React.FC<any> = () => {
               </button>
             )}
           </div>
+          <button
+            className="add-button"
+            onClick={handleSubmit}
+            disabled={submitting === true}
+            style={{ margin: "14px" }}
+          >
+            Send
+          </button>
         </div>
       ))}
-      <button
-        className="add-button"
-        onClick={handleSubmit}
-        disabled={submitting === true}
-        style={{ margin: "14px" }}
-      >
-        Send
-      </button>
+
     </div>
   );
 };

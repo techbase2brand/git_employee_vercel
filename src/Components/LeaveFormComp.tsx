@@ -294,7 +294,7 @@ const LeaveFormComp: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="form-group" style={{ width: "45%" }}>
+        <div className="form-group">
           <label className="add-label">Leave Reason:</label>
 
           <textarea
@@ -303,7 +303,6 @@ const LeaveFormComp: React.FC = () => {
               height: "80px",
               marginTop: "5px",
               marginBottom: "10px",
-              resize: "none",
               padding: "5px",
             }}
             value={leaveReason}
@@ -320,6 +319,8 @@ const LeaveFormComp: React.FC = () => {
         <div className="form-group" style={{}}>
           <label className="add-label">
             Admin:
+          </label>
+
             <select
               className="form-leave"
               value={teamLead}
@@ -333,10 +334,9 @@ const LeaveFormComp: React.FC = () => {
                 </option>
               ))}
             </select>
-          </label>
         </div>
 
-        <button className="add-button" type="submit">
+        <button className="add-button-2" type="submit">
           Apply
         </button>
       </form>
