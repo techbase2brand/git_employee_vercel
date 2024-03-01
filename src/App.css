@@ -749,9 +749,7 @@ css .campus_form {
   padding: 0 10px;
 }
 
-.evening-handle table {
-  width: auto;
-}
+
 
 .evening-handle ul.ant-pagination {
   justify-content: center;
@@ -1068,10 +1066,6 @@ tr:nth-child(even) {
   background-color: #92b3fb !important;
 }
 
-.ant-spin-container {
-  width: fit-content;
-}
-
 /* This ensures that every row, regardless of whether it is even or odd, takes the color based on its class and doesn't get shaded differently */
 /* .ant-table-row.interested,
 .ant-table-row.not-interested,
@@ -1091,7 +1085,6 @@ tr:nth-child(even) {
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1440px) {
-
   .dashboard-handle thead.ant-table-thead tr th:nth-child(1),
   .dashboard-handle thead.ant-table-thead tr th:nth-child(2),
   .dashboard-handle thead.ant-table-thead tr th:nth-child(3),
@@ -1105,7 +1098,6 @@ tr:nth-child(even) {
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1440px) {
-
   .evening-handle table thead.ant-table-thead tr th:nth-child(1),
   .evening-handle table thead.ant-table-thead tr th:nth-child(2),
   .evening-handle table thead.ant-table-thead tr th:nth-child(3),
