@@ -107,7 +107,7 @@ const ViewShiftChangeTable: React.FC = () => {
   ];
 
   return (
-    <>
+    <div className="shift-table">
       {loading ?
         <Spin size="large" className="spinner-antd" />
         :
@@ -118,7 +118,7 @@ const ViewShiftChangeTable: React.FC = () => {
           rowClassName={() => "header-row"}
         />
       }
-    </>
+    </div>
   );
 };
 

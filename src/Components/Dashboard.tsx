@@ -92,14 +92,9 @@ const Dashboard: React.FC = () => {
                 totalEstHrs={totalEstHrs} setTotalEstHrs={setTotalEstHrs} setTotalUpWorkHrs={setTotalUpWorkHrs}
                 setSetTotalUpWorkHrs={setSetTotalUpWorkHrs} />
             </div>
-            <div style={{ width: "90%", height: "80%", marginTop: "3%" }}>
-              <div style={{ display: 'flex' }}>
-                <div style={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}> {/* This ensures the dropdown takes up as much space as possible */}
+            <div style={{marginTop: "3%" }}>
+              <div style={{ display: 'flex',gap:'2rem' }}>
+                <div>
                   <select
                     id="roleSelect"
                     style={{
@@ -125,12 +120,7 @@ const Dashboard: React.FC = () => {
                     <option value="Sales Infotech">Sales Infotech</option>
                   </select>
                 </div>
-                <div style={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}>
+                <div>
                   <Search
                     placeholder="Search by employee, phase, module, or project"
                     onChange={handleSearchChange}

@@ -96,13 +96,20 @@ const AppMenu = () => {
   const [notif, setNotif] = useState();
   const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
   const storedData = localStorage.getItem("myData");
   const myData = storedData ? JSON.parse(storedData) : null;
   const jsonData = JSON.stringify(notif)
   const Navigate = useNavigate();
+
   const handleLeaveFormClick = (e: any) => {
     e.preventDefault();
     setShowTermsModal(true)
+  };
+
+  const onOpenChange = (keys: string[]) => {
+    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+    setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
   };
 
   useEffect(() => {
@@ -395,7 +402,8 @@ const AppMenu = () => {
   ).length;
   const desiredIndex = 0;
   return (
-    <Menu mode="inline">
+    <Menu mode="inline" openKeys={openKeys}
+      onOpenChange={onOpenChange}>
       <Modal
         title="Terms and Conditions"
         centered
@@ -1050,7 +1058,7 @@ const AppMenu = () => {
       {info.jobPosition == "QA" && (
         <>
           <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
-          <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
+            <Menu.Item key="ClientSheet" icon={<TableOutlined />}>
               <Link to="/ClientSheet">Assign TL Task</Link>
             </Menu.Item>
             <Menu.Item key="ViewClientSheet" icon={<TableOutlined />}>

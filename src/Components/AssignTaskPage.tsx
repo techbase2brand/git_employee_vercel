@@ -43,8 +43,8 @@ const AssignTaskPage: React.FC<any> = () => {
       deadlineEnd: null,
     },
   ]);
-  
-  const submition = tasks.filter(((item)=>item.task && item.assigneeName && item.deadlineEnd && item.checked));
+
+  const submition = tasks.filter(((item) => item.task && item.assigneeName && item.deadlineEnd && item.checked));
 
   const sortedData = [...data1];
   sortedData.sort((a, b) => a.clientName.localeCompare(b.clientName));
@@ -263,7 +263,7 @@ const AssignTaskPage: React.FC<any> = () => {
           toast.success('Tasks inserted successfully!', {
             position: toast.POSITION.TOP_RIGHT,
           });
-        
+
         }
       })
       .catch((error) => {
@@ -313,9 +313,9 @@ const AssignTaskPage: React.FC<any> = () => {
           height: "100%",
         }}
       >
-        
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-         
+
           <div
             style={{ display: "flex", flexDirection: "column" }}
             className="form-containerr"
@@ -324,9 +324,7 @@ const AssignTaskPage: React.FC<any> = () => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                marginBottom: "50px",
-                marginLeft: "40px",
-                width: "80%",
+                margin: '50px 25px'
               }}
               className="add-div"
             >
@@ -334,19 +332,12 @@ const AssignTaskPage: React.FC<any> = () => {
 
               {Array.from({ length: elementCount }, (_, index) => (
                 <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    marginTop: "35px",
-                  }}
+                  className="assign-div"
                   key={index}
                 >
                   <textarea
                     style={{
                       padding: "8px",
-                      width: "300px",
-                      height: "100px",
                       resize: "none",
                     }}
                     className="add-input task-input"
@@ -357,7 +348,6 @@ const AssignTaskPage: React.FC<any> = () => {
                     placeholder="Please write task"
                   />
                   <select
-                    style={{ marginLeft: "15px" }}
                     className="add-input"
                     value={tasks[index]?.clientName || ""}
                     onChange={(e) => handleClientName(e.target.value, index)}
@@ -371,7 +361,6 @@ const AssignTaskPage: React.FC<any> = () => {
                   </select>
 
                   <select
-                    style={{ marginLeft: "15px" }}
                     className="add-input"
                     value={tasks[index]?.projectName || ""}
                     onChange={(e) => handleProjectName(e.target.value, index)}
@@ -388,7 +377,6 @@ const AssignTaskPage: React.FC<any> = () => {
                   </select>
 
                   <select
-                    style={{ marginLeft: "15px" }}
                     className="add-input"
                     id="assignee"
                     name="assignee"
@@ -431,9 +419,7 @@ const AssignTaskPage: React.FC<any> = () => {
                   <input
                     type="checkbox"
                     style={{
-                      marginBottom: "32px",
-                      paddingBottom: "20px",
-                      width: "30px",
+                      width: "18px",
                     }}
                     className="add-checkbox"
                     checked={tasks[index]?.checked || false}
@@ -476,7 +462,7 @@ const AssignTaskPage: React.FC<any> = () => {
                   marginLeft: "300px",
                 }}
               >
-                <button className="add-button" onClick={handleSubmit}  disabled={submitting===true} >
+                <button className="add-button" onClick={handleSubmit} disabled={submitting === true} >
                   Send
                 </button>
               </div>

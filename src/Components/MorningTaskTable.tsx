@@ -27,7 +27,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [propsData, setPropsData] = useState<Task[]>(data || []);
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-  
+
   const navigate = useNavigate();
   const dataString = localStorage.getItem("myData");
 
@@ -98,9 +98,9 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
           position: toast.POSITION.TOP_RIGHT,
         });
       });
-      setTimeout(() => {
-        setSubmitting(false);
-      }, 1000);
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 1000);
   };
 
   const employeeInfo = useMemo(() => (dataString ? JSON.parse(dataString) : []), [dataString]);
@@ -150,9 +150,9 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       title: "Action",
       key: "action",
       render: (_: any, record: Task) => (
-        <span>
-          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.MrngTaskID)}>Edit</Button>
-          <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.MrngTaskID)}>Delete</Button>
+        <span style={{display:'flex'}}>
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record.MrngTaskID)}></Button>
+          <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.MrngTaskID)}></Button>
           <Button onClick={() => handleMove(record)} disabled={submitting === true}>Move</Button>
         </span>
       ),
@@ -162,6 +162,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   return (
     <>
       <p>{employeeFirstname}</p>
+      <div className="mrng-table">
       <Table
         dataSource={propsData}
         columns={columns}
@@ -175,6 +176,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
           </div>
         )}
       />
+      </div>
     </>
   );
 };

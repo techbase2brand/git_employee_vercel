@@ -51,7 +51,6 @@ const AddModule: React.FC<unknown> = () => {
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [employeeID, setEmployeeID] = useState<string>("");
   const [currentDate] = useState<Date>(new Date());
-
   const formattedDate = format(currentDate, "yyyy-MM-dd");
   const [morningTask, setMorningTask] = useState<Task>({
     MrngTaskID: 0,
@@ -66,6 +65,8 @@ const AddModule: React.FC<unknown> = () => {
     selectDate: formattedDate,
   });
   const token = localStorage.getItem("myToken");
+  const emptyData = selectedProject && morningTask.estTime && morningTask.task && selectedModule && selectedPhase
+  console.log("emptyData", emptyData);
 
   const location = useLocation();
   useEffect(() => {
@@ -115,129 +116,129 @@ const AddModule: React.FC<unknown> = () => {
 
 
   const navigate = useNavigate();
-// useEffect(() => {
-//   axios
-//     .get<AssignedEmployees[]>(
-//       `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//         params: {
-//           employeeID: empInfo?.EmployeeID,
-//         },
-//       }
-//     )
-//       .then((response) => {
-//         const sortedData = response?.data?.sort(
-//           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
-//         );
-//         const arr = sortedData
-//           .map((e) => {
-//             if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
-//               return e.projectName;
-//             }
-//             return null;
-//           })
-//           .filter((value, index, self) => {
-//             return value !== null && self.indexOf(value) === index;
-//           })
-//           .reduce((unique: Array<string>, value: string | null) => {
-//             if (value !== null && !unique.includes(value)) {
-//               unique.push(value);
-//             }
-//             return unique;
-//           }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get<AssignedEmployees[]>(
+  //       `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         params: {
+  //           employeeID: empInfo?.EmployeeID,
+  //         },
+  //       }
+  //     )
+  //       .then((response) => {
+  //         const sortedData = response?.data?.sort(
+  //           (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
+  //         );
+  //         const arr = sortedData
+  //           .map((e) => {
+  //             if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
+  //               return e.projectName;
+  //             }
+  //             return null;
+  //           })
+  //           .filter((value, index, self) => {
+  //             return value !== null && self.indexOf(value) === index;
+  //           })
+  //           .reduce((unique: Array<string>, value: string | null) => {
+  //             if (value !== null && !unique.includes(value)) {
+  //               unique.push(value);
+  //             }
+  //             return unique;
+  //           }, []);
 
-//         setProjectNames(arr);
+  //         setProjectNames(arr);
 
-//         if (morningTask?.projectName) {
-//           const arr = sortedData
-//             .filter(
-//               (obj) =>
-//                 obj?.projectName === morningTask?.projectName &&
-//                 obj?.EmployeeID === empInfo.EmployeeID
-//             )
-//             .map((obj) => obj.phaseName);
-
-
-//           const phasesArr = arr.map((phase, index) => ({
-//             phaseID: index + 1,
-//             projectName: morningTask.projectName,
-//             phases: [phase],
-//           }));
-
-//           setPhases(phasesArr);
-//         }
-//       });
-//   }, [morningTask.projectName]);
+  //         if (morningTask?.projectName) {
+  //           const arr = sortedData
+  //             .filter(
+  //               (obj) =>
+  //                 obj?.projectName === morningTask?.projectName &&
+  //                 obj?.EmployeeID === empInfo.EmployeeID
+  //             )
+  //             .map((obj) => obj.phaseName);
 
 
+  //           const phasesArr = arr.map((phase, index) => ({
+  //             phaseID: index + 1,
+  //             projectName: morningTask.projectName,
+  //             phases: [phase],
+  //           }));
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get<AssignedEmployees[]>(
-        `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo/param`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            employeeID: empInfo?.EmployeeID,
-          },
-        }
-      );
+  //           setPhases(phasesArr);
+  //         }
+  //       });
+  //   }, [morningTask.projectName]);
 
-// console.log("response.data",response.data)
-      // Handle the response data
-      const sortedData = response?.data?.sort(
-        (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
-      );
-      const arr = sortedData
-        .map((e) => {
-          if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
-            return e.projectName;
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<AssignedEmployees[]>(
+          `${process.env.REACT_APP_API_BASE_URL}/get/PhaseAssignedTo/param`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              employeeID: empInfo?.EmployeeID,
+            },
           }
-          return null;
-        })
-        .filter((value, index, self) => {
-          return value !== null && self.indexOf(value) === index;
-        })
-        .reduce((unique: Array<string>, value: string | null) => {
-          if (value !== null && !unique.includes(value)) {
-            unique.push(value);
-          }
-          return unique;
-        }, []);
+        );
 
-      setProjectNames(arr);
-
-      if (morningTask?.projectName) {
+        // console.log("response.data",response.data)
+        // Handle the response data
+        const sortedData = response?.data?.sort(
+          (a, b) => Number(b.PhaseAssigneeID) - Number(a.PhaseAssigneeID)
+        );
         const arr = sortedData
-          .filter(
-            (obj) =>
-              obj?.projectName === morningTask?.projectName &&
-              obj?.EmployeeID === empInfo.EmployeeID
-          )
-          .map((obj) => obj.phaseName);
+          .map((e) => {
+            if (empInfo && e?.EmployeeID === empInfo?.EmployeeID) {
+              return e.projectName;
+            }
+            return null;
+          })
+          .filter((value, index, self) => {
+            return value !== null && self.indexOf(value) === index;
+          })
+          .reduce((unique: Array<string>, value: string | null) => {
+            if (value !== null && !unique.includes(value)) {
+              unique.push(value);
+            }
+            return unique;
+          }, []);
 
-        const phasesArr = arr.map((phase, index) => ({
-          phaseID: index + 1,
-          projectName: morningTask.projectName,
-          phases: [phase],
-        }));
+        setProjectNames(arr);
 
-        setPhases(phasesArr);
+        if (morningTask?.projectName) {
+          const arr = sortedData
+            .filter(
+              (obj) =>
+                obj?.projectName === morningTask?.projectName &&
+                obj?.EmployeeID === empInfo.EmployeeID
+            )
+            .map((obj) => obj.phaseName);
+
+          const phasesArr = arr.map((phase, index) => ({
+            phaseID: index + 1,
+            projectName: morningTask.projectName,
+            phases: [phase],
+          }));
+
+          setPhases(phasesArr);
+        }
+      } catch (error) {
+        // Handle errors
+        console.error('Error while fetching data:', error);
       }
-    } catch (error) {
-      // Handle errors
-      console.error('Error while fetching data:', error);
-    }
-  };
+    };
 
-  fetchData();
-}, [empInfo?.EmployeeID, morningTask.projectName]);
+    fetchData();
+  }, [empInfo?.EmployeeID, morningTask.projectName]);
 
 
   useEffect(() => {
@@ -331,50 +332,44 @@ useEffect(() => {
     }
   }, [empInfo]);
   const handleSubmit = () => {
-    if (morningTask.module && morningTask.task && morningTask.estTime) {
-      setSubmitting(true)
-    }
-    if (location?.state?.MrngTaskID) {
-      axios
-        .put(
-          `${process.env.REACT_APP_API_BASE_URL}/update/addMrngTask/${location?.state?.MrngTaskID}`,
-          morningTask,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          if (response.data === "All fields are required.") {
-            alert("All compulsory fields are required.");
-          } else {
+    if (emptyData) {
+      if (morningTask.module && morningTask.task && morningTask.estTime) {
+        setSubmitting(true)
+      }
+      if (location?.state?.MrngTaskID) {
+        axios
+          .put(
+            `${process.env.REACT_APP_API_BASE_URL}/update/addMrngTask/${location?.state?.MrngTaskID}`,
+            morningTask,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((response) => {
             navigate("/view-morning-task");
             toast.success('Updated successfully!', {
               position: toast.POSITION.TOP_RIGHT,
             });
-          }
-        })
-        .catch((error) => {
-          toast.error('Error while Updating task.', {
-            position: toast.POSITION.TOP_RIGHT,
+          })
+          .catch((error) => {
+            toast.error('Error while Updating task.', {
+              position: toast.POSITION.TOP_RIGHT,
+            });
           });
-        });
-    } else {
-      axios
-        .post(
-          `${process.env.REACT_APP_API_BASE_URL}/create/addTaskMorning`,
-          morningTask,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          if (response.data === "All fields are required.") {
-            alert("All fields are required.");
-          } else {
+      } else {
+        axios
+          .post(
+            `${process.env.REACT_APP_API_BASE_URL}/create/addTaskMorning`,
+            morningTask,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((response) => {
             setSelectedProject("");
             setSelectedPhase("");
             setSelectedModule("");
@@ -394,14 +389,16 @@ useEffect(() => {
             toast.success('Morning Task added successfully!', {
               position: toast.POSITION.TOP_RIGHT,
             });
-          }
-        })
-        .catch((error) => {
-          toast.error('Error while inserting tasks.', {
-            position: toast.POSITION.TOP_RIGHT,
+          })
+          .catch((error) => {
+            toast.error('Error while inserting tasks.', {
+              position: toast.POSITION.TOP_RIGHT,
 
+            });
           });
-        });
+      }
+    } else {
+      alert("Some fields are missing. Please fill in all required fields.");
     }
   };
 
@@ -415,203 +412,193 @@ useEffect(() => {
           height: "100%",
         }}
       >
-  
+
         <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          
+
           <div
-            style={{ display: "flex", flexDirection: "column",width: '100%' }}
+            style={{ display: "flex", flexDirection: "column", width: '100%' }}
             className="form-container"
           >
-            <div className="add-div">
-              <p className="add-heading">
-                {location?.state?.MrngTaskID
-                  ? "Update Morning Task"
-                  : "Add Morning Task"}
-              </p>
-              <label className="add-label">
-                Project Name<span style={{ color: "red" }}>*</span>
-              </label>
-
-              <select
-                style={{ width: "100%" }}
-                className="add-input"
-                id="project"
-                name="project"
-                value={selectedProject}
-                onChange={(e) => handleProjectChange(e.target.value)}
-              >
-                <option value="">Select a project</option>
-                {projectNames?.map((project) => (
-                  <option key={project} value={project}>
-                    {project}
-                  </option>
-                ))}
-              </select>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "auto",
-                }}
-              >
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <label className="add-label">
-                    Phase<span style={{ color: "red" }}>*</span>
-                  </label>
-                  <select
-                    className="add-input"
-                    id="phase"
-                    name="phase"
-                    value={selectedPhase}
-                    onChange={(e) => handlePhaseChange(e.target.value)}
-                  >
-                    <option value="">Select a phase</option>
-                    {phases
-                      .filter((phase) => phase.projectName === selectedProject)
-                      .map((phase) => {
-                        return phase.phases.map((singlePhase, index) => (
-                          <option key={index} value={singlePhase}>
-                            {singlePhase}
-                          </option>
-                        ));
-                      })}
-                  </select>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <label className="add-label">
-                    Module<span style={{ color: "red" }}>*</span>
-                  </label>
-                  <select
-                    className="add-input"
-                    id="module"
-                    name="module"
-                    value={selectedModule}
-                    onChange={(e) => handleModuleChange(e.target.value)}
-                  >
-                    <option value="">Select a module</option>
-                    {modules
-                      .filter((module) => module.phaseName == selectedPhase && module.projectName == selectedProject)
-                      .map((module) => {
-                        return (
-                          <option key={module.modID} value={module.modules}>
-                            {module.modules}
-                          </option>
-                        );
-                      })}
-                  </select>
-                </div>
-              </div>
-
-              <div>
+            <div style={{ width: '50%' }}>
+              <div className="add-div">
+                <p className="add-heading">
+                  {location?.state?.MrngTaskID
+                    ? "Update Morning Task"
+                    : "Add Morning Task"}
+                </p>
                 <label className="add-label">
-                  task:<span style={{ color: "red" }}>*</span>
+                  Project Name<span style={{ color: "red" }}>*</span>
                 </label>
-                <div style={{ width: "auto" }} className="form-control">
-                  <textarea
-                    style={{
-                      outline: "none",
-                      border: "none",
-                      width: "100%",
-                      height: "10vh",
-                      resize: "none",  // Add this line
-                      boxSizing: "content-box", // set boxSizing to content-box
-                    }}
-                    name="task"
-                    className="textarea-control" // use the new class
-                    value={morningTask.task}
-                    onChange={(e) => handleTaskChange(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="SalecampusForm-col-os">
-                <label className="add-label">
-                  Date:
-                </label>
-                <div className="SalecampusForm-input-os">
-                  <input
-                    style={{ width: 'auto' }}
-                    type="date"
-                    name="selectDate"
-                    value={morningTask?.selectDate}
-                    onChange={(e) => handleDateChange(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "auto",
-                }}
-              >
-                <div className="form-group">
-                  <label className="add-label">
-                    Estimate Hrs<span style={{ color: "red" }}>*</span>
-                  </label>
-                  <select
-                    style={{ width: "16.8vw" }}
-                    name="estTime"
-                    className="form-control"
-                    value={morningTask.estTime}
-                    onChange={(e) => handleEstTimeChange(e.target.value)}
-                    required
-                  >
-                    <option value="">--Select Time--</option>
-                     {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
-                      [0, 10, 20, 30, 40, 50].map((minute) => (
-                        <option
-                          key={`${hour}:${minute}`}
-                          value={`${hour}:${minute}`}
-                        >
-                          {`${hour} hours ${minute} mins`}
-                        </option> 
-                      ))
-                    )}
-                  </select>
+                <select
+                  className="add-input"
+                  id="project"
+                  name="project"
+                  value={selectedProject}
+                  onChange={(e) => handleProjectChange(e.target.value)}
+                >
+                  <option value="">Select a project</option>
+                  {projectNames?.map((project) => (
+                    <option key={project} value={project}>
+                      {project}
+                    </option>
+                  ))}
+                </select>
+                <div
+                  className="phase-mod"
+                >
+                  <div className="mrng-phase">
+                    <label className="add-label">
+                      Phase<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <select
+                      className="add-input"
+                      id="phase"
+                      name="phase"
+                      value={selectedPhase}
+                      onChange={(e) => handlePhaseChange(e.target.value)}
+                    >
+                      <option value="">Select a phase</option>
+                      {phases
+                        .filter((phase) => phase.projectName === selectedProject)
+                        .map((phase) => {
+                          return phase.phases.map((singlePhase, index) => (
+                            <option key={index} value={singlePhase}>
+                              {singlePhase}
+                            </option>
+                          ));
+                        })}
+                    </select>
+                  </div>
+
+                  <div className="mrng-phase">
+                    <label className="add-label">
+                      Module<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <select
+                      className="add-input"
+                      id="module"
+                      name="module"
+                      value={selectedModule}
+                      onChange={(e) => handleModuleChange(e.target.value)}
+                    >
+                      <option value="">Select a module</option>
+                      {modules
+                        .filter((module) => module.phaseName == selectedPhase && module.projectName == selectedProject)
+                        .map((module) => {
+                          return (
+                            <option key={module.modID} value={module.modules}>
+                              {module.modules}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="add-label">Upwork Hrs</label>
-                  <select
-                    style={{ width: "16.8vw" }}
-                    name="upWorkHrs"
-                    className="form-control"
-                    value={morningTask.upWorkHrs}
-                    onChange={(e) => handleUpWorkHrsChange(e.target.value)}
-                  >
-                    <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
-                    {Array.from({ length: 25 }, (_, i) => i).map((hour) =>
-                      [0, 10, 20, 30, 40, 50].map((minute) => {
-                        if (hour === 24 && minute > 0) {
-                          return null;
-                        }
-                        return (
+                <div>
+                  <label className="add-label">
+                    task:<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <div style={{ width: "auto" }} className="form-control">
+                    <textarea
+                      style={{
+                        outline: "none",
+                        border: "none",
+                        width: "100%",
+                        height: "10vh",
+                        resize: "none",  // Add this line
+                        boxSizing: "content-box", // set boxSizing to content-box
+                      }}
+                      name="task"
+                      className="textarea-control" // use the new class
+                      value={morningTask.task}
+                      onChange={(e) => handleTaskChange(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="SalecampusForm-col-os">
+                  <label className="add-label">
+                    Date:
+                  </label>
+                  <div className="SalecampusForm-input-os">
+                    <input
+                      style={{ width: 'auto' }}
+                      type="date"
+                      name="selectDate"
+                      value={morningTask?.selectDate}
+                      onChange={(e) => handleDateChange(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "auto",
+                    gap: '4px'
+                  }}
+                >
+                  <div className="mrng-phase">
+                    <label className="add-label">
+                      Estimate Hrs<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <select
+                      name="estTime"
+                      className="form-control"
+                      value={morningTask.estTime}
+                      onChange={(e) => handleEstTimeChange(e.target.value)}
+                      required
+                    >
+                      <option value="">--Select Time--</option>
+                      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((hour) =>
+                        [0, 10, 20, 30, 40, 50].map((minute) => (
                           <option
-                            key={`${hour}:${minute < 10 ? "0" + minute : minute
-                              }`}
-                            value={`${hour}:${minute < 10 ? "0" + minute : minute
-                              }`}
+                            key={`${hour}:${minute}`}
+                            value={`${hour}:${minute}`}
                           >
-                            {`${hour} hour${hour !== 1 ? "s" : ""
-                              } ${minute} min${minute !== 1 ? "s" : ""}`}
+                            {`${hour} hours ${minute} mins`}
                           </option>
-                        );
-                      })
-                    )}
-                  </select>
+                        ))
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="mrng-phase">
+                    <label className="add-label">Upwork Hrs</label>
+                    <select
+                      name="upWorkHrs"
+                      className="form-control"
+                      value={morningTask.upWorkHrs}
+                      onChange={(e) => handleUpWorkHrsChange(e.target.value)}
+                    >
+                      <option value="0:00">0 hours 0 mins</option> {/* Add this option */}
+                      {Array.from({ length: 25 }, (_, i) => i).map((hour) =>
+                        [0, 10, 20, 30, 40, 50].map((minute) => {
+                          if (hour === 24 && minute > 0) {
+                            return null;
+                          }
+                          return (
+                            <option
+                              key={`${hour}:${minute < 10 ? "0" + minute : minute
+                                }`}
+                              value={`${hour}:${minute < 10 ? "0" + minute : minute
+                                }`}
+                            >
+                              {`${hour} hour${hour !== 1 ? "s" : ""
+                                } ${minute} min${minute !== 1 ? "s" : ""}`}
+                            </option>
+                          );
+                        })
+                      )}
+                    </select>
+                  </div>
                 </div>
+                <button className="add-button" onClick={handleSubmit} disabled={submitting === true}>
+                  Submit
+                </button>
               </div>
-              <button className="add-button" onClick={handleSubmit} disabled={submitting === true}>
-                Submit
-              </button>
             </div>
-            <div
-              style={{ marginTop: "50px", height: "80%", width: "100%" }}
-            ></div>
           </div>
         </div>
       </div>

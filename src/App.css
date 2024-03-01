@@ -99,7 +99,6 @@ tbody>tr>td:nth-child(14) {
 .emp-main-div {
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 100%;
   height: auto;
   background-color: #f7f9ff;
@@ -110,10 +109,13 @@ tbody>tr>td:nth-child(14) {
   background-color: white;
   min-width: auto;
   display: flex;
+  width: 100%
 }
-.menu-div ul{
+
+.menu-div ul {
   width: auto;
 }
+
 .ck-editor__editable_inline {
   min-height: 300px;
 }
@@ -134,7 +136,6 @@ tbody>tr>td:nth-child(14) {
 
 .total-lengthPortal {
   display: flex;
-  margin-left: 55px;
   gap: 25px;
   font-size: 1rem;
 }
@@ -142,13 +143,15 @@ tbody>tr>td:nth-child(14) {
 .portal {
   color: red;
 }
-.dash-time{
+
+.dash-time {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
 }
+
 .form-container {
   width: 100%;
   height: 100%;
@@ -195,7 +198,6 @@ tbody>tr>td:nth-child(14) {
   padding-left: 10px;
   padding-right: 4%;
   border-radius: 5px;
-  width: 13vw;
   padding-top: 15px;
   padding-bottom: 15px;
   border-width: 1px solid #094781;
@@ -232,11 +234,21 @@ tbody>tr>td:nth-child(14) {
 
 .add-div {
   display: flex;
-  width: 50%;
-  margin-right: 15%;
-  justify-content: flex-start;
-  margin-top: 64px;
   flex-direction: column;
+  margin: 1px 25px;
+  justify-content: flex-start;
+}
+
+.backlog-table table {
+  width: auto
+}
+
+.assign-task ul.ant-pagination {
+  justify-content: center;
+}
+
+.assign-task table {
+  width: auto;
 }
 
 .add-heading {
@@ -271,9 +283,8 @@ tbody>tr>td:nth-child(14) {
   font-weight: 500;
   font-size: 15.3508px;
   line-height: 23px;
-  letter-spacing: 0.02em;
-  margin-top: 32px;
   color: #094781;
+  margin-top: 10px;
 }
 
 .add-input {
@@ -281,11 +292,30 @@ tbody>tr>td:nth-child(14) {
   border: 1.69622px solid #d8d6d6;
   border-radius: 4.24055px;
   box-sizing: border-box;
-  width: 267.15px;
-  height: 53.43px;
   min-height: 53.43px;
   margin-top: 10px;
   padding-inline: 10px;
+}
+
+.assign-div {
+  display: flex;
+  flex-direction: row;
+  margin-top: 35px;
+  width: 100%;
+  gap: 4px
+}
+
+.phase-mod {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  gap: 3px;
+}
+
+.mrng-phase {
+  display: flex;
+  flex-direction: column;
+  width: 33.3%;
 }
 
 .round-button {
@@ -313,10 +343,8 @@ tbody>tr>td:nth-child(14) {
 
 
 .add-button {
-  width: 161px;
-  height: 43px;
-  left: 340px;
-  top: 604px;
+  padding: 6px;
+  width: 33%;
   background: #094781;
   border-radius: 4.96885px;
   margin-top: 24px;
@@ -352,6 +380,15 @@ tbody>tr>td:nth-child(14) {
   color: #ffffff;
 }
 
+.form-leave {
+  padding: 6%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: 1.69622px solid #d8d6d6;
+  border-radius: 4.24055px;
+  width: 100%;
+}
+
 .nav-proj-btn {
   font-family: "Poppins";
   font-style: normal;
@@ -364,6 +401,15 @@ tbody>tr>td:nth-child(14) {
   background: #fd7c50;
   border: 1px solid #454545;
   border-radius: 50px;
+}
+
+.input-add {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 15px;
+  line-height: 2rem;
+  border-radius: 7px;
+  border: 1px solid;
 }
 
 .nav-date {
@@ -419,11 +465,8 @@ tbody>tr>td:nth-child(14) {
 
 .dashboard-main {
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 100%;
   margin-top: 2rem;
+  gap: 2rem;
 }
 
 .containerStyle {
@@ -449,6 +492,9 @@ tbody>tr>td:nth-child(14) {
   font-size: 16px;
   line-height: 1.5;
   font-style: italic;
+}
+.clientSheetTlTask table{
+  width: auto;
 }
 
 /* salecampus css starts */
@@ -524,13 +570,52 @@ css .campus_form {
 .saleCampus-form thead.ant-table-thead tr th:nth-child(13),
 .saleCampus-form thead.ant-table-thead tr th:nth-child(14) {
   min-width: 100px;
+  padding: 0 10px;
+}
 
+.shift-table thead.ant-table-thead tr th:nth-child(1),
+.shift-table thead.ant-table-thead tr th:nth-child(2),
+.shift-table thead.ant-table-thead tr th:nth-child(3),
+.shift-table thead.ant-table-thead tr th:nth-child(4),
+.shift-table thead.ant-table-thead tr th:nth-child(5),
+.shift-table thead.ant-table-thead tr th:nth-child(6),
+.shift-table thead.ant-table-thead tr th:nth-child(7) {
+  min-width: 100px;
+  padding: 0 10px;
+}
+
+.shift-table table {
+  width: auto;
+}
+
+.shift-table ul.ant-pagination {
+  justify-content: center;
+}
+
+.leave-Page thead.ant-table-thead tr th:nth-child(1),
+.leave-Page thead.ant-table-thead tr th:nth-child(2),
+.leave-Page thead.ant-table-thead tr th:nth-child(3),
+.leave-Page thead.ant-table-thead tr th:nth-child(4),
+.leave-Page thead.ant-table-thead tr th:nth-child(5),
+.leave-Page thead.ant-table-thead tr th:nth-child(6),
+.leave-Page thead.ant-table-thead tr th:nth-child(7),
+.leave-Page thead.ant-table-thead tr th:nth-child(8) {
+  min-width: 100px;
+}
+
+.leave-Page table {
+  width: auto;
+}
+
+.leave-Page ul.ant-pagination {
+  justify-content: center;
 }
 
 .view-phase thead.ant-table-thead tr th:nth-child(1),
 .view-phase thead.ant-table-thead tr th:nth-child(1),
 .view-phase thead.ant-table-thead tr th:nth-child(1) {
   min-width: 100px;
+  padding: 0 10px;
 }
 
 .backlog-table thead.ant-table-thead tr th:nth-child(1),
@@ -544,6 +629,7 @@ css .campus_form {
 .backlog-table thead.ant-table-thead tr th:nth-child(9),
 .backlog-table thead.ant-table-thead tr th:nth-child(10) {
   min-width: 100px;
+  padding: 0 10px;
 }
 
 .assign-task thead.ant-table-thead tr th:nth-child(1),
@@ -554,6 +640,7 @@ css .campus_form {
 .assign-task thead.ant-table-thead tr th:nth-child(7),
 .assign-task thead.ant-table-thead tr th:nth-child(8) {
   min-width: 100px;
+  padding: 0 10px;
 }
 
 .employee-list thead.ant-table-thead tr th:nth-child(1),
@@ -563,14 +650,21 @@ css .campus_form {
 .employee-list thead.ant-table-thead tr th:nth-child(5),
 .employee-list thead.ant-table-thead tr th:nth-child(6) {
   min-width: 100px;
+  padding: 0 10px;
 }
 
 .dashboard-handle thead.ant-table-thead tr th:nth-child(1),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(2),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(3),
 .dashboard-handle thead.ant-table-thead tr th:nth-child(5),
-.dashboard-handle thead.ant-table-thead tr th:nth-child(6) {
+.dashboard-handle thead.ant-table-thead tr th:nth-child(6),
+.dashboard-handle thead.ant-table-thead tr th:nth-child(7) {
   min-width: 100px;
+  padding: 0 10px;
+}
+
+.dashboard-handle table {
+  width: auto;
 }
 
 .evening-handle table thead.ant-table-thead tr th:nth-child(1),
@@ -578,8 +672,20 @@ css .campus_form {
 .evening-handle table thead.ant-table-thead tr th:nth-child(3),
 .evening-handle table thead.ant-table-thead tr th:nth-child(5),
 .evening-handle table thead.ant-table-thead tr th:nth-child(6),
-.evening-handle table thead.ant-table-thead tr th:nth-child(7) {
+.evening-handle table thead.ant-table-thead tr th:nth-child(7),
+.evening-handle table thead.ant-table-thead tr th:nth-child(8),
+.evening-handle table thead.ant-table-thead tr th:nth-child(9),
+.evening-handle table thead.ant-table-thead tr th:nth-child(10) {
   min-width: 100px;
+  padding: 0 10px;
+}
+
+.evening-handle table {
+  width: auto;
+}
+
+.evening-handle ul.ant-pagination {
+  justify-content: center;
 }
 
 .saleInfo-form thead.ant-table-thead tr th:nth-child(1),
@@ -596,6 +702,7 @@ css .campus_form {
 .saleInfo-form thead.ant-table-thead tr th:nth-child(12),
 .saleInfo-form thead.ant-table-thead tr th:nth-child(13) {
   min-width: 100px;
+  padding: 0 10px;
 }
 
 .evening-dashboard thead.ant-table-thead tr th:nth-child(9) {
@@ -612,6 +719,15 @@ css .campus_form {
 .leave-table thead.ant-table-thead tr th:nth-child(8),
 .leave-table thead.ant-table-thead tr th:nth-child(9) {
   min-width: 100px;
+  padding: 0 10px;
+}
+
+.leave-table table {
+  width: auto;
+}
+
+.leave-table ul.ant-pagination {
+  justify-content: center;
 }
 
 .infotech-form thead.ant-table-thead tr th:nth-child(1),
@@ -632,8 +748,29 @@ css .campus_form {
 .infotech-form thead.ant-table-thead tr th:nth-child(16),
 .infotech-form thead.ant-table-thead tr th:nth-child(17) {
   min-width: 100px;
+  padding: 0 10px;
 }
 
+.mrng-table thead.ant-table-thead tr th:nth-child(1),
+.mrng-table thead.ant-table-thead tr th:nth-child(2),
+.mrng-table thead.ant-table-thead tr th:nth-child(3),
+.mrng-table thead.ant-table-thead tr th:nth-child(4),
+.mrng-table thead.ant-table-thead tr th:nth-child(5),
+.mrng-table thead.ant-table-thead tr th:nth-child(6),
+.mrng-table thead.ant-table-thead tr th:nth-child(7),
+.mrng-table thead.ant-table-thead tr th:nth-child(8),
+.mrng-table thead.ant-table-thead tr th:nth-child(9) {
+  min-width: 100px;
+  padding: 0 10px;
+}
+
+.mrng-table table {
+  width: auto;
+}
+
+.mrng-table ul.ant-pagination {
+  justify-content: center;
+}
 
 .adjust-inputs {
   height: 27px !important;

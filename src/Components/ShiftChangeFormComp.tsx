@@ -130,129 +130,100 @@ const ShiftChangeFormComp: React.FC<any> = () => {
   }, [employeeID]);
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <div className="add-div">
-          <p className="add-heading">Shift Change Form</p>
-          <form onSubmit={handleSubmit}>
-            <label className="add-label" style={{ display: "block", marginBottom: "10px" }}>
-              Name<span style={{ color: "red" }}>*</span>
+    <div className="add-div" >
+      <p className="add-heading">Shift Change Form</p>
+      <form onSubmit={handleSubmit}>
+        <label className="add-label" style={{ display: "block", marginBottom: "10px" }}>
+          Name<span style={{ color: "red" }}>*</span>
+          <input
+            type="text"
+            value={employeeName}
+            onChange={(e) => setEmployeeName(e.target.value)}
+            required
+            className="input-add"
+          />
+        </label>
+
+        <label className="add-label" style={{ display: "block", marginBottom: "10px" }}>
+          Apply Date<span style={{ color: "red" }}>*</span>
+          <input
+            type="date"
+            value={applyDate}
+            onChange={(e) => setApplyDate(e.target.value)}
+            required
+            className="input-add"
+          />
+        </label>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label className="add-label" >
+              In Time<span style={{ color: "red" }}>*</span>
               <input
-                type="text"
-                value={employeeName}
-                onChange={(e) => setEmployeeName(e.target.value)}
+                type="time"
+                value={inTime}
+                onChange={(e) => setInTime(e.target.value)}
                 required
-                style={{ width: "100%", padding: "5px", marginBottom: "15px" }}
+                className="input-add"
               />
             </label>
-
-            <label className="add-label" style={{ display: "block", marginBottom: "10px" }}>
-              Apply Date<span style={{ color: "red" }}>*</span>
+            <label className="add-label" >
+              Out Time<span style={{ color: "red" }}>*</span>
               <input
-                type="date"
-                value={applyDate}
-                onChange={(e) => setApplyDate(e.target.value)}
+                type="time"
+                value={outTime}
+                onChange={(e) => setOutTime(e.target.value)}
                 required
-                style={{ width: "100%", padding: "5px", marginBottom: "15px" }}
+                className="input-add"
               />
             </label>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "95%",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <label className="add-label" style={{ marginBottom: "10px" }}>
-                  In Time<span style={{ color: "red" }}>*</span>
-                  <input
-                    type="time"
-                    value={inTime}
-                    onChange={(e) => setInTime(e.target.value)}
-                    required
-                    style={{ width: "100%", padding: "5px", marginBottom: "15px" }}
-                  />
-                </label>
-                <label className="add-label" style={{ marginBottom: "10px" }}>
-                  Out Time<span style={{ color: "red" }}>*</span>
-                  <input
-                    type="time"
-                    value={outTime}
-                    onChange={(e) => setOutTime(e.target.value)}
-                    required
-                    style={{ width: "100%", padding: "5px", marginBottom: "15px" }}
-                  />
-                </label>
-              </div>
-            </div>
-            <label className="add-label" style={{ display: "block", marginBottom: "10px" }}>
-              Reason for Shift Change<span style={{ color: "red" }}>*</span>
-              <textarea
-                value={shiftChangeReason}
-                onChange={(e) => setShiftChangeReason(e.target.value)}
-                required
-                style={{ width: "100%", padding: "5px", marginBottom: "15px" }}
-              />
-            </label>
-
-            <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label className="add-label">
-                Team Lead:
-                <select
-                  className="form-control"
-                  style={{
-                    width: "100%",
-                    display: "block",
-                    padding: "5px",
-                    marginBottom: "15px",
-                  }}
-                  value={teamLead}
-                  onChange={(e) => setTeamLead(e.target.value)}
-                  required
-                >
-                  <option value="">Select admin</option>
-                  {adminInfo.map((admin) => (
-                    <option key={admin.EmployeeID} value={admin.EmployeeID}>
-                      {admin.firstName}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <button
-                className="submit-btn"
-                type="submit"
-                style={{
-                  backgroundColor: "#4CAF50",
-                  border: "none",
-                  color: "white",
-                  textAlign: "center",
-                  textDecoration: "none",
-                  display: "inline-block",
-                  fontSize: "16px",
-                  padding: "10px 24px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                }}
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </>
+        <label className="add-label" >
+          Reason for Shift Change<span style={{ color: "red" }}>*</span>
+          <textarea
+            value={shiftChangeReason}
+            onChange={(e) => setShiftChangeReason(e.target.value)}
+            required
+            className="input-add"
+          />
+        </label>
+
+        <div className="form-group" >
+          <label className="add-label">
+            Team Lead:
+            <select
+              className="input-add"
+              value={teamLead}
+              onChange={(e) => setTeamLead(e.target.value)}
+              required
+            >
+              <option value="">Select admin</option>
+              {adminInfo.map((admin) => (
+                <option key={admin.EmployeeID} value={admin.EmployeeID}>
+                  {admin.firstName}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button
+            className="add-button"
+            type="submit"
+
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
