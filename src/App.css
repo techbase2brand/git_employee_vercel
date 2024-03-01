@@ -1103,3 +1103,19 @@ tr:nth-child(even) {
     padding: 0 10px;
   }
 }
+
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+
+  .evening-handle table thead.ant-table-thead tr th:nth-child(1),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(2),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(3),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(5),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(6),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(7),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(8),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(9),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(10) {
+    min-width: 150px;
+    padding: 0 10px;
+  }
+}
