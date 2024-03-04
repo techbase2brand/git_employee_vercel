@@ -245,7 +245,7 @@ const AddModule: React.FC<any> = ({ navigation, classes }) => {
                     </div>
                   ))}
               </div>
-              <button className="add-button-2" onClick={handleSubmit}>
+              <button className="add-button" onClick={handleSubmit}>
                 Add Module
               </button>
             </div>

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import axios from "axios";
 import { Button, Checkbox, Select, Table, DatePicker } from "antd";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,8 +22,6 @@ interface ClientSheetData {
   actTime: string;
   taskRemainder: number;
 }
-
-
 
 
 const ViewClientSheet: React.FC<any> = () => {
@@ -362,6 +358,12 @@ const ViewClientSheet: React.FC<any> = () => {
   };
   const columns = [
     {
+      title: "Client Name",
+      dataIndex: "clientName", // Use projectName to dynamically look up clientName
+      key: "clientName",
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
       title: "Project Name",
       dataIndex: "projectName",
       key: "projectName",
@@ -544,137 +546,137 @@ const ViewClientSheet: React.FC<any> = () => {
           flexDirection: "column",
         }}
       >
+        <div
+          style={{ display: "flex", flexDirection: "column" }}
+          className="form-containerr"
+        >
           <div
-            style={{ display: "flex", flexDirection: "column" }}
-            className="form-containerr"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "50px",
+              marginLeft: "40px",
+              width: "82%",
+            }}
+            className="add-div"
           >
             <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginBottom: "50px",
-                marginLeft: "40px",
-                width: "82%",
-              }}
-              className="add-div"
+              style={{ display: "flex", gap: "20px" }}
+              className="placeholder-color"
             >
-              <div
-                style={{ display: "flex", gap: "20px" }}
-                className="placeholder-color"
-              >
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search"
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search"
+                style={{
+                  marginLeft: 10,
+                  borderRadius: "6px",
+                  height: "43px",
+                  border: "2px solid black",
+                }}
+              />
+              {employeeID === "B2B00100" && (
+                <Select
                   style={{
-                    marginLeft: 10,
-                    borderRadius: "6px",
-                    height: "43px",
+                    width: 200,
                     border: "2px solid black",
+                    borderRadius: "10px",
                   }}
-                />
-                {employeeID === "B2B00100" && (
-                  <Select
-                    style={{
-                      width: 200,
-                      border: "2px solid black",
-                      borderRadius: "10px",
-                    }}
-                    placeholder="Select Assignee"
-                    onChange={(value) => setSelectedAssignee(value)}
-                    value={selectedAssignee}
-                  >
-                    <option value="">All</option>
-                    {assigneeOptions.map((assignee) => (
-                      <Option key={assignee} value={assignee}>
-                        {assignee}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-                <div
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
+                  placeholder="Select Assignee"
+                  onChange={(value) => setSelectedAssignee(value)}
+                  value={selectedAssignee}
                 >
-                  <RangePicker
-                    onChange={handleDateRangeChange}
-                    style={{ border: "2px solid black", height: "43px" }}
-                  />
-                </div>
-              </div>
-
+                  <option value="">All</option>
+                  {assigneeOptions.map((assignee) => (
+                    <Option key={assignee} value={assignee}>
+                      {assignee}
+                    </Option>
+                  ))}
+                </Select>
+              )}
               <div
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  marginTop: "20px",
+                  display: "flex",
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
-                className="clientSheetTlTask"
               >
-                <h3>Reply/Remainder</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "50px",
-                    marginLeft: "9px",
-                  }}
-                >
-                  <p>{`Total Mrng Time: ${totalEstHoursFormat} hours ${totalEstMinutesFormat} minutes`}</p>
-                  <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
-                </div>
-                <br />
-                <Table
-                  columns={columns}
-                  dataSource={filteredRemainder}
-                  pagination={paginationSettings}
-                />
-                <Button type="primary" onClick={loadData}>
-                  Load Data
-                </Button>
-                <br />
-                <h3>Task</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "61px",
-                    marginLeft: "9px",
-                  }}
-                >
-                  <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
-                  <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
-                </div>
-
-                <Table
-                  columns={columns}
-                  dataSource={filteredData}
-                  pagination={paginationSettings}
-                />
-                <br />
-                <h3 style={{ marginBottom: "10px" }}>View Lead</h3>
-                <ViewLead
-                  selectedAssignee={selectedAssignee}
-                  searchTerm={searchTerm}
-                  dateRange={dateRange}
-                  buttonClick1={buttonClick1}
-                />
-                <Button type="primary" onClick={loadDataTable}>
-                  Load Data
-                </Button>
-                <h3 style={{ marginBottom: "10px" }}>BacklogTable</h3>
-                <ViewTlBacklog
-                  searchTerm={searchTerm}
-                  dateRange={dateRange}
-                  selectedAssignee={selectedAssignee}
-                  buttonClick1={buttonClick1}
-                  setBacklog={setBacklog}
+                <RangePicker
+                  onChange={handleDateRangeChange}
+                  style={{ border: "2px solid black", height: "43px" }}
                 />
               </div>
             </div>
+
+            <div
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                marginTop: "20px",
+              }}
+              className="clientSheetTlTask"
+            >
+              <h3>Reply/Remainder</h3>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "50px",
+                  marginLeft: "9px",
+                }}
+              >
+                <p>{`Total Mrng Time: ${totalEstHoursFormat} hours ${totalEstMinutesFormat} minutes`}</p>
+                <p>{`Total Evng Time: ${totalHoursFormat} hours ${totalMinutesFormat} minutes`}</p>
+              </div>
+              <br />
+              <Table
+                columns={columns}
+                dataSource={filteredRemainder}
+                pagination={paginationSettings}
+              />
+              <Button type="primary" onClick={loadData}>
+                Load Data
+              </Button>
+              <br />
+              <h3>Task</h3>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "61px",
+                  marginLeft: "9px",
+                }}
+              >
+                <p>{`Total Mrng Time: ${totalEstHoursFormatted} hours ${totalEstMinutesFormatted} minutes`}</p>
+                <p>{`Total Evng Time: ${totalHoursFormatted} hours ${totalMinutesFormatted} minutes`}</p>
+              </div>
+
+              <Table
+                columns={columns}
+                dataSource={filteredData}
+                pagination={paginationSettings}
+              />
+              <br />
+              <h3 style={{ marginBottom: "10px" }}>View Lead</h3>
+              <ViewLead
+                selectedAssignee={selectedAssignee}
+                searchTerm={searchTerm}
+                dateRange={dateRange}
+                buttonClick1={buttonClick1}
+              />
+              <Button type="primary" onClick={loadDataTable}>
+                Load Data
+              </Button>
+              <h3 style={{ marginBottom: "10px" }}>BacklogTable</h3>
+              <ViewTlBacklog
+                searchTerm={searchTerm}
+                dateRange={dateRange}
+                selectedAssignee={selectedAssignee}
+                buttonClick1={buttonClick1}
+                setBacklog={setBacklog}
+              />
+            </div>
           </div>
+        </div>
       </div>
     </div>
   );

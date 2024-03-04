@@ -19,6 +19,7 @@ interface Task {
   employeeID: string;
   currDate: string;
   selectDate: string;
+  actTime: string;
 }
 
 interface AssignedEmployees {
@@ -63,6 +64,7 @@ const AddModule: React.FC<unknown> = () => {
     employeeID: "",
     currDate: formattedDate,
     selectDate: formattedDate,
+    actTime: ''
   });
   const token = localStorage.getItem("myToken");
   const emptyData = selectedProject && morningTask.estTime && morningTask.task && selectedModule && selectedPhase
@@ -94,6 +96,7 @@ const AddModule: React.FC<unknown> = () => {
               employeeID: res[0]?.employeeID,
               currDate: res[0]?.currDate,
               selectDate: res[0]?.selectDate,
+              actTime: res[0]?.actTime
             });
 
             // Update the selectedProject, selectedPhase, and selectedModule
@@ -384,6 +387,7 @@ const AddModule: React.FC<unknown> = () => {
               employeeID: "",
               currDate: formattedDate,
               selectDate: formattedDate,
+              actTime: ""
             });
             navigate("/view-morning-task");
             toast.success('Morning Task added successfully!', {

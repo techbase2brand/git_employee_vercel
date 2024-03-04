@@ -1,7 +1,5 @@
 import React, { } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import ViewBacklogTable from "./ViewBacklogTable";
 
 const ViewBacklogPage: React.FC = () => {

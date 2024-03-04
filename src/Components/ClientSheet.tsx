@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import axios from "axios";
 import { Table, Checkbox, Select } from "antd";
 import { toast } from 'react-toastify';
@@ -506,6 +504,10 @@ const ClientSheet: React.FC<any> = () => {
             estTimes: estTimes,
             actTimes: actTimes,
             taskRemainder: taskRemainder,
+            clientNames: filteredData.reduce((acc, project) => {
+                acc[project.projectName] = project.clientName;
+                return acc;
+            }, {} as Record<string, string>),
         };
 
         axios
