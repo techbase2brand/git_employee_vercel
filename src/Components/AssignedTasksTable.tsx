@@ -3,7 +3,7 @@ import { Spin, Table } from "antd";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import io from "socket.io-client";
+// import io from "socket.io-client";
 interface BacklogTask {
   backlogTaskID: number;
   taskName: string;
@@ -46,6 +46,7 @@ const AssignedTasksTable: React.FC = () => {
     const myData = JSON.parse(dataString);
     localEmpId = myData?.EmployeeID;
   }
+console.log("localEmpId",localEmpId);
 
   useEffect(() => {
     axios
@@ -68,20 +69,20 @@ const AssignedTasksTable: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
-    socket.on("notification", (data: { data: any[] }) => {
-      const sortedData = data?.data?.sort(
-        (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
-      );
-      const filteredData = sortedData?.filter(
-        (task) =>
-          isWithinLastOneMonth(task?.currdate) &&
-          task?.employeeID === employeeInfo?.EmployeeID
-      );
-      setData(filteredData);
-    });
-  }, []);
+  // useEffect(() => {
+  //   const socket = io(`${process.env.REACT_APP_API_BASE_URL}`);
+  //   socket.on("notification", (data: { data: any[] }) => {
+  //     const sortedData = data?.data?.sort(
+  //       (a, b) => Number(b.backlogTaskID) - Number(a.backlogTaskID)
+  //     );
+  //     const filteredData = sortedData?.filter(
+  //       (task) =>
+  //         isWithinLastOneMonth(task?.currdate) &&
+  //         task?.employeeID === employeeInfo?.EmployeeID
+  //     );
+  //     setData(filteredData);
+  //   });
+  // }, []);
 
   const handleCheckboxChange = (isChecked: boolean, backlogTaskID: number) => {
     const updatedData = data.map((task) =>
