@@ -51,8 +51,9 @@ const ViewBacklogTable: React.FC = () => {
     empId = `${myData.EmployeeID}`;
     myName = `${myData.firstName}`;
   }
-  const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === null || item.finalApprove === 0) : data.filter((item) => item.AssignedBy === myName);
-
+  // const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === null || item.finalApprove === 0) : data.filter((item) => item.AssignedBy === myName);
+  const filterData = data.filter((item) => item?.finalApprove === null)
+  const OwnData = data.filter((item) => item?.AssignedBy === myName)
   useEffect(() => {
     let filteredData = originalData;
 
@@ -491,16 +492,29 @@ const ViewBacklogTable: React.FC = () => {
         }
       </div>
       <div className="backlog-table" >
+
         {loading ?
           <Spin size="large" className="spinner-antd" />
           :
-          <Table
-            // style={{ width: "80vw" }}
-            dataSource={filterData}
-            columns={columns}
-            rowClassName={() => "header-row"}
-            pagination={paginationSettings}
-          />
+          <div>
+            {
+              employeeName === "Managing Director" ?
+                <Table
+                  // style={{ width: "80vw" }}
+                  dataSource={filterData}
+                  columns={columns}
+                  rowClassName={() => "header-row"}
+                  pagination={paginationSettings}
+                />
+                :
+                <Table
+                  dataSource={OwnData}
+                  columns={columns}
+                  rowClassName={() => "header-row"}
+                  pagination={paginationSettings}
+                />
+            }
+          </div>
         }
         <Modal
           title="Confirmation"
