@@ -3,7 +3,6 @@ import { Table, DatePicker, Select, Spin, Checkbox, Modal } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
-import { log } from "console";
 const { Option } = Select;
 interface BacklogTask {
   backlogTaskID: number;
@@ -53,8 +52,8 @@ const ViewBacklogTable: React.FC = () => {
     myName = `${myData.email}`;
   }
   // const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === null || item.finalApprove === 0) : data.filter((item) => item.AssignedBy === myName);
-  const filterData = data || originalData.filter((item) => item?.finalApprove === null)
-  const OwnData = data || originalData.filter((item) => item?.UserEmail === myName)
+  const filterData = data.filter((item) => item?.finalApprove === null)
+  const OwnData = data.filter((item) => item?.UserEmail === myName)
   useEffect(() => {
     let filteredData = originalData;
 
