@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { DatePicker, Input } from "antd";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import DashboardEveningTasktable from "./DashboardEveningTasktable";
 import EveningDashboardTable from "./EveningDashboardTable";
 import axios from "axios";

@@ -584,6 +584,7 @@ css .campus_form {
 .clientSheetTlTask table tbody.ant-table-tbody td.ant-table-cell {
   text-align: center;
   padding: 0 4px;
+  width: 20px;
 }
 
 .clientSheetTlTask ul.ant-pagination.ant-table-pagination.ant-table-pagination-right.css-dev-only-do-not-override-txh9fw {
@@ -674,7 +675,8 @@ css .campus_form {
 .backlog-table thead.ant-table-thead tr th:nth-child(7),
 .backlog-table thead.ant-table-thead tr th:nth-child(8),
 .backlog-table thead.ant-table-thead tr th:nth-child(9),
-.backlog-table thead.ant-table-thead tr th:nth-child(10) {
+.backlog-table thead.ant-table-thead tr th:nth-child(10),
+.backlog-table thead.ant-table-thead tr th:nth-child(11) {
   min-width: 100px;
   padding: 0 10px;
 }
@@ -1085,6 +1087,7 @@ tr:nth-child(even) {
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1440px) {
+
   .dashboard-handle thead.ant-table-thead tr th:nth-child(1),
   .dashboard-handle thead.ant-table-thead tr th:nth-child(2),
   .dashboard-handle thead.ant-table-thead tr th:nth-child(3),
@@ -1097,7 +1100,22 @@ tr:nth-child(even) {
   }
 }
 
+@media screen and (min-width: 1450px) and (max-width: 1700px) {
+
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(1),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(2),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(3),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(4),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(5),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(6),
+  .dashboard-handle thead.ant-table-thead tr th:nth-child(7) {
+    min-width: 160px;
+    padding: 0 10px;
+  }
+}
+
 @media screen and (min-width: 1024px) and (max-width: 1440px) {
+
   .evening-handle table thead.ant-table-thead tr th:nth-child(1),
   .evening-handle table thead.ant-table-thead tr th:nth-child(2),
   .evening-handle table thead.ant-table-thead tr th:nth-child(3),
@@ -1108,6 +1126,22 @@ tr:nth-child(even) {
   .evening-handle table thead.ant-table-thead tr th:nth-child(9),
   .evening-handle table thead.ant-table-thead tr th:nth-child(10) {
     min-width: 150px;
+    padding: 0 10px;
+  }
+}
+
+@media screen and (min-width: 1450px) and (max-width: 1700px) {
+
+  .evening-handle table thead.ant-table-thead tr th:nth-child(1),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(2),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(3),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(5),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(6),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(7),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(8),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(9),
+  .evening-handle table thead.ant-table-thead tr th:nth-child(10) {
+    min-width: 160px;
     padding: 0 10px;
   }
 }

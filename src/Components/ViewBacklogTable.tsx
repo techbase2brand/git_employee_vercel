@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, DatePicker, Select, Spin } from "antd";
+import { Table, DatePicker, Select, Spin, Checkbox, Modal } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
@@ -18,6 +18,7 @@ interface BacklogTask {
   clientName: string;
   projectName: string;
   comment: string;
+  finalApprove: number;
 }
 interface Employee {
   EmpID: string | number;
@@ -35,15 +36,22 @@ const ViewBacklogTable: React.FC = () => {
   const [selectedAssignee, setSelectedAssignee] = useState('');
   const [originalData, setOriginalData] = useState<BacklogTask[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<BacklogTask | null>(null);
   const [selectedOption, setSelectedOption] = useState('');
   const myDataString = localStorage.getItem('myData');
   const [loading, setLoading] = useState(true);
 
   let employeeName = "";
+  let empId = "";
+  let myName = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
     employeeName = `${myData.jobPosition}`;
+    empId = `${myData.EmployeeID}`;
+    myName = `${myData.firstName}`;
   }
+  const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === 0 || item.finalApprove === null) : data.filter((item) => item.AssignedBy === myName);
 
   useEffect(() => {
     let filteredData = originalData;
@@ -54,19 +62,39 @@ const ViewBacklogTable: React.FC = () => {
 
     setData(filteredData);
     setLoading(false);
-  }, [selectedAssignee, originalData])
+  }, [selectedAssignee])
 
   const handleAssigneeChange = (value: string) => {
     setSelectedAssignee(value);
   };
 
   const onDateRangeChange = (values: RangeValue<dayjs.Dayjs>, formatString: [string, string]) => {
-    if (values === null || values[0] === null || values[1] === null) {
+    if (!values || !values[0] || !values[1]) {
       setDateRange(null);
-    } else {
-      setDateRange([values[0].toDate(), values[1].toDate()]);
+      return;
     }
+
+    const startDate = values[0].isValid() ? values[0].startOf('day').toDate() : null;
+    const endDate = values[1].isValid() ? values[1].endOf('day').toDate() : null;
+
+    if (!startDate || !endDate) {
+      setDateRange(null);
+      return;
+    }
+
+    const filteredData = originalData.filter((item) => {
+      const taskStartDate = new Date(item.deadlineStart);
+      const taskEndDate = new Date(item.deadlineEnd);
+
+      return !isNaN(taskStartDate.getTime()) && !isNaN(taskEndDate.getTime()) &&
+        taskStartDate >= startDate && taskEndDate <= endDate;
+    });
+
+    setData(filteredData);
+    setDateRange([startDate, endDate]);
   };
+
+
   const handleGoButtonClick = () => {
     const filteredResult = originalData.filter((item) => {
       const dateMatch =
@@ -81,6 +109,7 @@ const ViewBacklogTable: React.FC = () => {
 
       return dateMatch && assigneeMatch;
     });
+    console.log("filteredResult");
 
     setData(filteredResult);
   };
@@ -155,10 +184,11 @@ const ViewBacklogTable: React.FC = () => {
         const filteredData = sortedData?.filter((e) => {
           e.UserEmail === UserEmail;
           const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
-          const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
-          const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase())
-          const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-          return assigneeMatch || assignedByMatch || clientNameMatch || projectNameMatch;
+          // const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
+          const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase());
+          const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+
+          return assigneeMatch || clientNameMatch || projectNameMatch;
         });
 
         setData(filteredData);
@@ -169,11 +199,11 @@ const ViewBacklogTable: React.FC = () => {
           employeeName === "Managing Director") {
           const filteredData = sortedData?.filter((e) => {
             e.UserEmail === UserEmail;
-            const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
-            const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
-            const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase())
-            const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-            return assigneeMatch || assignedByMatch || clientNameMatch || projectNameMatch;
+            const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
+            const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
+            const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
+
+            return assigneeMatch || clientNameMatch || projectNameMatch;
 
           });
           setData(filteredData);
@@ -198,7 +228,7 @@ const ViewBacklogTable: React.FC = () => {
       }
     };
     fetchData();
-  }, [adminID, dateRange, searchTerm]);
+  }, [adminID, searchTerm]);
 
 
   const formatDate = (dateString: string) => {
@@ -213,6 +243,62 @@ const ViewBacklogTable: React.FC = () => {
     dateToCheck.setHours(0, 0, 0, 0);
 
     return dateToCheck <= currentDate;
+  };
+
+  // const handleEveningCheckChange = (record: BacklogTask) => {
+  //   const updatedData = data.map((item) =>
+  //     item.backlogTaskID === record.backlogTaskID
+  //       ? { ...item, finalApprove: item.finalApprove === 1 ? 0 : 1 }
+  //       : item
+  //   );
+
+  //   setData(updatedData);
+
+  //   axios
+  //     .put(`${process.env.REACT_APP_API_BASE_URL}/final-check/${record.backlogTaskID}`, {
+  //       finalApprove: record.finalApprove === 1 ? 0 : 1,
+  //     })
+  //     .then((response) => {
+  //       console.log("final approve updated successfully:");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error while updating evening check:", error);
+  //     });
+  // };
+
+  const handleEveningCheckChange = (record: BacklogTask) => {
+    setShowConfirmationModal(true);
+    setSelectedTask(record);
+  };
+
+  const handleModalOk = () => {
+    setShowConfirmationModal(false);
+    setSelectedTask(null);
+    if (selectedTask) {
+      const updatedData = data.map((item) =>
+        item.backlogTaskID === selectedTask.backlogTaskID
+          ? { ...item, finalApprove: item.finalApprove === 1 ? 0 : 1 }
+          : item
+      );
+  
+      setData(updatedData);
+  
+      axios
+        .put(`${process.env.REACT_APP_API_BASE_URL}/final-check/${selectedTask.backlogTaskID}`, {
+          finalApprove: selectedTask.finalApprove === 1 ? 0 : 1,
+        })
+        .then((response) => {
+          console.log("Final approve updated successfully.");
+        })
+        .catch((error) => {
+          console.error("Error while updating evening check:", error);
+        });
+    }
+  };
+
+  const handleModalCancel = () => {
+    setShowConfirmationModal(false);
+    setSelectedTask(null);
   };
 
   const columns = [
@@ -250,7 +336,7 @@ const ViewBacklogTable: React.FC = () => {
       title: "Assigned Date",
       dataIndex: "currdate",
       key: "currdate",
-      render: (text: string) => <div>{text}</div>,
+      render: (text: string) => <div>{new Date(text).toLocaleDateString()}</div>,
     },
     {
       title: "Deadline Start",
@@ -308,6 +394,18 @@ const ViewBacklogTable: React.FC = () => {
       key: "comment",
       render: (text: string) => <div>{text || "N/A"}</div>,
     },
+    ...(empId === 'B2B00100' ? [{
+      title: "F/A",
+      dataIndex: "finalApprove",
+      key: "finalApprove",
+      render: (text: string, record: BacklogTask) => (
+        <Checkbox
+          style={{ border: "2px solid black", borderRadius: "6px" }}
+          checked={record.finalApprove === 1}
+          onChange={() => handleEveningCheckChange(record)}
+        />
+      ),
+    }] : []),
   ];
 
   return (
@@ -376,16 +474,25 @@ const ViewBacklogTable: React.FC = () => {
       </div>
       <div className="backlog-table" >
         {loading ?
-         <Spin size="large" className="spinner-antd"/>
-         :
-        <Table
-          style={{ width: "80vw" }}
-          dataSource={data}
-          columns={columns}
-          rowClassName={() => "header-row"}
-          pagination={paginationSettings}
-        />
-}
+          <Spin size="large" className="spinner-antd" />
+          :
+          <Table
+            style={{ width: "80vw" }}
+            dataSource={filterData}
+            columns={columns}
+            rowClassName={() => "header-row"}
+            pagination={paginationSettings}
+          />
+        }
+          <Modal
+        title="Confirmation"
+        visible={showConfirmationModal}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <p>Are you sure?</p>
+        {/* You can customize the confirmation message here */}
+      </Modal>
       </div>
     </>
   );
