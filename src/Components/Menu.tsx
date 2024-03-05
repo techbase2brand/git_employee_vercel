@@ -101,7 +101,6 @@ const AppMenu = () => {
   const myData = storedData ? JSON.parse(storedData) : null;
   const jsonData = JSON.stringify(notif)
   const Navigate = useNavigate();
-
   const handleLeaveFormClick = (e: any) => {
     e.preventDefault();
     setShowTermsModal(true)
@@ -872,6 +871,14 @@ const AppMenu = () => {
 
       {info.jobPosition == "Employee" && (
         <>
+          {info.EmployeeID === "B2B00012" &&
+            <Menu.Item
+              key="dashboard"
+              icon={<DashboardOutlined rev={undefined} />}
+            >
+              <Link to="/dashboard">Dashboard</Link>
+            </Menu.Item>
+          }
           <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
             {myData.EmployeeID === "B2B00033" &&
               <>

@@ -11,6 +11,7 @@ const { RangePicker } = DatePicker;
 
 interface ClientSheetData {
   id: number;
+  clientName: string;
   projectName: string;
   AssigneeName: string;
   morningComment: string | null;
@@ -358,17 +359,16 @@ const ViewClientSheet: React.FC<any> = () => {
   };
   const columns = [
     {
-      title: "Client Name",
-      dataIndex: "clientName", // Use projectName to dynamically look up clientName
-      key: "clientName",
-      render: (text: string) => <div>{text}</div>,
+      title: "Client & Project",
+      key: "clientAndProject",
+      render: (text: string, record: ClientSheetData) => (
+        <div>
+          <div>{record.clientName}</div>|
+          <div>{record.projectName}</div>
+        </div>
+      ),
     },
-    {
-      title: "Project Name",
-      dataIndex: "projectName",
-      key: "projectName",
-      render: (text: string) => <div>{text}</div>,
-    },
+
     {
       title: "Assigned By",
       dataIndex: "assignedBy",

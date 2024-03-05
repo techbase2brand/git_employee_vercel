@@ -42,7 +42,12 @@ interface Employee {
   EmployeeID: string;
   status: number;
 }
-
+interface Project {
+  ProID: string | number;
+  clientName: string;
+  projectName: string;
+  projectDescription: string;
+}
 
 const TaskTable: React.FC<Props> = ({
   data,
@@ -57,6 +62,7 @@ const TaskTable: React.FC<Props> = ({
   const [employeeArr, setEmployeeArr] = useState<any>([]);
   const [arrayOfArray, setArrayOfArray] = useState<any>([]);
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
+  const [projectsInfo, setProjectsInfo] = useState<Project[]>([]);
   const myDataString = localStorage.getItem('myData');
   let employeeName = "";
   let jobPosition = "";
@@ -66,6 +72,17 @@ const TaskTable: React.FC<Props> = ({
     jobPosition = myData.jobPosition;
   }
 
+  useEffect(() => {
+    axios
+      .get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        setProjectsInfo(response.data);
+      });
+  }, []);
   // const handleDelete = (MrngTaskID: number) => {
   //   axios
   //     .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/morningDashboard/${MrngTaskID}`, {
@@ -145,9 +162,17 @@ const TaskTable: React.FC<Props> = ({
 
   const columns = [
     {
-      title: "Project Name",
-      dataIndex: "projectName",
-      key: "projectName",
+      title: "Client & Project",
+      dataIndex: "clientAndProject",
+      key: "clientAndProject",
+      render: (text: string, record: Task) => {
+        const project = projectsInfo.find(
+          (project) => project.projectName === record.projectName
+        );
+        const clientName = project ? project.clientName : "";
+        const projectName = project ? project.projectName : "";
+        return `${clientName} - ${projectName}`;
+      },
     },
     {
       title: "Phase",
@@ -166,7 +191,7 @@ const TaskTable: React.FC<Props> = ({
       //   render: (dob: string | Date) => new Date(dob).toLocaleDateString(),
     },
     {
-      title: "Est time (hrs)",
+      title: "Est",
       dataIndex: "estTime",
       key: "estTime",
     },
@@ -177,7 +202,7 @@ const TaskTable: React.FC<Props> = ({
       render: (text: string, record: Task) => {
         return (
           <>
-            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard") &&
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
               <Checkbox
                 checked={!!text || checkedTasks[record.MrngTaskID]}
                 onChange={() => handleApproval(record.MrngTaskID)}

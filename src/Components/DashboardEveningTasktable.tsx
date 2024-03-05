@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Checkbox } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { Console } from "console";
 
 interface Task {
   EvngTaskID: number;
@@ -48,6 +47,12 @@ interface Props {
   del: any;
   setDel: any;
 }
+interface Project {
+  ProID: string | number;
+  clientName: string;
+  projectName: string;
+  projectDescription: string;
+}
 
 const DashboardEveningTasktable: React.FC<Props> = ({
   data,
@@ -68,6 +73,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   const [recordToDelete, setRecordToDelete] = useState<Task | null>(
     null
   );
+  const [projectsInfo, setProjectsInfo] = useState<Project[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
 
@@ -101,7 +107,17 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       });
     setIsModalOpen(false);
   };
-
+  useEffect(() => {
+    axios
+      .get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        setProjectsInfo(response.data);
+      });
+  }, []);
 
   useEffect(() => {
     axios
@@ -123,7 +139,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
 
   const arrayOfArray = Object.values(data);
-  console.log("arrayOfArray",arrayOfArray)
 
 
   const handleApproval = (EvngTaskID: number) => {
@@ -164,9 +179,17 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
   const columns = [
     {
-      title: "Project Name",
-      dataIndex: "projectName",
-      key: "projectName",
+      title: "Client & Project",
+      dataIndex: "clientAndProject",
+      key: "clientAndProject",
+      render: (text: string, record: Task) => {
+        const project = projectsInfo.find(
+          (project) => project.projectName === record.projectName
+        );
+        const clientName = project ? project.clientName : "";
+        const projectName = project ? project.projectName : "";
+        return `${clientName} - ${projectName}`;
+      },
     },
     {
       title: "Phase",
@@ -184,17 +207,17 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       key: "task",
     },
     {
-      title: "Est time (hrs)",
+      title: "Est",
       dataIndex: "estTime",
       key: "estTime",
     },
     {
-      title: "Act time (hrs)",
+      title: "Act",
       dataIndex: "actTime",
       key: "actTime",
     },
     {
-      title: "UpWork(hrs)",
+      title: "UpWork",
       dataIndex: "upWorkHrs",
       key: "upWorkHrs",
     },
@@ -204,13 +227,13 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       key: "selectDate",
     },
     {
-      title: "TLL Approved",
+      title: "TL Approved",
       dataIndex: "approvedBy",
       key: "approvedBy",
       render: (text: string, record: Task) => {
         return (
           <>
-            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard") &&
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
               <Checkbox
                 checked={!!text || checkedTasks[record.EvngTaskID]}
                 onChange={() => handleApproval(record.EvngTaskID)}
