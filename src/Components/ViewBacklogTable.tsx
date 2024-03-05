@@ -52,8 +52,8 @@ const ViewBacklogTable: React.FC = () => {
     myName = `${myData.firstName}`;
   }
   // const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === null || item.finalApprove === 0) : data.filter((item) => item.AssignedBy === myName);
-  const filterData = data.filter((item) => item?.finalApprove === null)
-  const OwnData = data.filter((item) => item?.AssignedBy === myName)
+  const filterData = data || originalData.filter((item) => item?.finalApprove === null)
+  const OwnData = data || originalData.filter((item) => item?.AssignedBy === myName)
   useEffect(() => {
     let filteredData = originalData;
 
