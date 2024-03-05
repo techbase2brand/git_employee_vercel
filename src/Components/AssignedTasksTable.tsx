@@ -152,12 +152,12 @@ console.log("localEmpId",localEmpId);
     const isEditing = editableTaskID === record.backlogTaskID;
 
     return (
-      <div>
-        {filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && <textarea
+      <div style={{ width: '140px' }}>
+        {filteredData.find((item) => item.isCompleted === 0 && record.isCompleted === 0) && <textarea style={{ width: '-webkit-fill-available' }}
           value={text}
           onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
         />}
-        {isEditing && record.isCompleted === 1 && <textarea
+        {isEditing && record.isCompleted === 1 && <textarea style={{ width: '-webkit-fill-available' }}
           value={text}
           onChange={(e) => handleCommentChange(e.target.value, record.backlogTaskID)}
         />}
@@ -197,7 +197,7 @@ console.log("localEmpId",localEmpId);
       title: "Task",
       dataIndex: "taskName",
       key: "taskName",
-      render: (text: string) => <div>{text}</div>,
+      render: (text: string) => <div style={{ width: '140px' }}>{text}</div>,
     },
     {
       title: "AssignedBy",
