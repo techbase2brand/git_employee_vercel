@@ -3,6 +3,7 @@ import { Table, DatePicker, Select, Spin, Checkbox, Modal } from "antd";
 import { RangeValue } from "rc-picker/lib/interface";
 import dayjs from "dayjs";
 import axios, { AxiosError } from "axios";
+import { log } from "console";
 const { Option } = Select;
 interface BacklogTask {
   backlogTaskID: number;
@@ -31,6 +32,7 @@ const { RangePicker } = DatePicker;
 
 const ViewBacklogTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
+
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAssignee, setSelectedAssignee] = useState('');
@@ -190,62 +192,68 @@ const ViewBacklogTable: React.FC = () => {
   };
   const filteringData = employees.filter((item: any) => item.status === 1);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-          },
-        });
-        setOriginalData(response.data)
-        const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      });
+      setOriginalData(response.data)
+      const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
+      const filteredData = sortedData?.filter((e) => {
+        e.UserEmail === UserEmail;
+        const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
+        // const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
+        const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase());
+        const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return assigneeMatch || clientNameMatch || projectNameMatch;
+      });
+      console.log("filter dayta",filteredData);
+      
+
+      setData(filteredData);
+      const today = new Date();
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(today.getDate() - 10);
+      if (
+        employeeName === "Managing Director") {
         const filteredData = sortedData?.filter((e) => {
           e.UserEmail === UserEmail;
-          const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
-          // const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
-          const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase());
-          const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+          const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
+          const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
+          const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
 
           return assigneeMatch || clientNameMatch || projectNameMatch;
+
         });
-
         setData(filteredData);
-        const today = new Date();
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(today.getDate() - 10);
-        if (
-          employeeName === "Managing Director") {
-          const filteredData = sortedData?.filter((e) => {
-            e.UserEmail === UserEmail;
-            const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
-            const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
-            const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
+      } else {
+        const finalFilteredData = filteredData?.filter((e) => {
+          const taskDate = new Date(e.currdate);
+          const isDateInRange =
+            taskDate >= tenDaysAgo &&
+            (dateRange === null ||
+              (taskDate >= (dateRange[0] || tenDaysAgo) &&
+                taskDate <= (dateRange[1] || today)));
 
-            return assigneeMatch || clientNameMatch || projectNameMatch;
+          const isAssignedByAdmin = e.UserEmail === UserEmail;
 
-          });
-          setData(filteredData);
-        } else {
-          const finalFilteredData = filteredData?.filter((e) => {
-            const taskDate = new Date(e.currdate);
-            const isDateInRange =
-              taskDate >= tenDaysAgo &&
-              (dateRange === null ||
-                (taskDate >= (dateRange[0] || tenDaysAgo) &&
-                  taskDate <= (dateRange[1] || today)));
-
-            const isAssignedByAdmin = e.UserEmail === UserEmail;
-
-            return isDateInRange && isAssignedByAdmin;
-          });
-          setData(finalFilteredData);
-        }
-
-      } catch (error: any) {
-        console.error(error);
+          return isDateInRange && isAssignedByAdmin;
+        });
+        setData(finalFilteredData);
       }
-    };
+
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("WORKING");
+    
     fetchData();
   }, [adminID, searchTerm, dateRange]);
 
