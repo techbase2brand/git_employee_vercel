@@ -51,7 +51,7 @@ const ViewBacklogTable: React.FC = () => {
     empId = `${myData.EmployeeID}`;
     myName = `${myData.firstName}`;
   }
-  const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === 0 || item.finalApprove === null) : data.filter((item) => item.AssignedBy === myName);
+  const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === null || item.finalApprove === 0) : data.filter((item) => item.AssignedBy === myName);
 
   useEffect(() => {
     let filteredData = originalData;
@@ -246,7 +246,7 @@ const ViewBacklogTable: React.FC = () => {
       }
     };
     fetchData();
-  }, [adminID, searchTerm]);
+  }, [adminID, searchTerm, dateRange]);
 
 
   const formatDate = (dateString: string) => {
@@ -348,7 +348,7 @@ const ViewBacklogTable: React.FC = () => {
       title: "Task Name",
       dataIndex: "taskName",
       key: "taskName",
-      render: (text: string) => <div style={{    width: '140px'}}>{text}</div>,
+      render: (text: string) => <div style={{ width: '140px' }}>{text}</div>,
     },
     {
       title: "Assigned Date",
