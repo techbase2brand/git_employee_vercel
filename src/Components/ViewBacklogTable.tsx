@@ -95,23 +95,41 @@ const ViewBacklogTable: React.FC = () => {
   };
 
 
+  // const handleGoButtonClick = () => {
+  //   const filteredResult = originalData.filter((item) => {
+  //     const dateMatch =
+  //       selectedOption && item.currdate ?
+  //         new Date(item.currdate) >= new Date(new Date().getTime() - parseInt(selectedOption) * 24 * 60 * 60 * 1000) :
+  //         true;
+
+  //     const assigneeMatch =
+  //       selectedAssignee ?
+  //         item.assigneeName.toLowerCase().includes(selectedAssignee.toLowerCase()) :
+  //         true;
+
+  //     return dateMatch && assigneeMatch;
+  //   });
+
+  //   setData(filteredResult);
+  // };
   const handleGoButtonClick = () => {
     const filteredResult = originalData.filter((item) => {
       const dateMatch =
-        selectedOption && item.currdate ?
-          new Date(item.currdate) >= new Date(new Date().getTime() - parseInt(selectedOption) * 24 * 60 * 60 * 1000) :
-          true;
+        selectedOption && item.currdate
+          ? new Date(item.currdate) >= new Date(new Date().getTime() - parseInt(selectedOption) * 24 * 60 * 60 * 1000)
+          : true;
 
-      const assigneeMatch =
-        selectedAssignee ?
-          item.assigneeName.toLowerCase().includes(selectedAssignee.toLowerCase()) :
-          true;
+      const assigneeMatch = selectedAssignee
+        ? item.assigneeName.toLowerCase().includes(selectedAssignee.toLowerCase())
+        : true;
 
       return dateMatch && assigneeMatch;
     });
-    console.log("filteredResult");
 
-    setData(filteredResult);
+    // If no date range or assignee is selected, show the entire originalData
+    const finalData = selectedOption || selectedAssignee ? filteredResult : originalData;
+
+    setData(finalData);
   };
 
 
@@ -280,9 +298,9 @@ const ViewBacklogTable: React.FC = () => {
           ? { ...item, finalApprove: item.finalApprove === 1 ? 0 : 1 }
           : item
       );
-  
+
       setData(updatedData);
-  
+
       axios
         .put(`${process.env.REACT_APP_API_BASE_URL}/final-check/${selectedTask.backlogTaskID}`, {
           finalApprove: selectedTask.finalApprove === 1 ? 0 : 1,
@@ -330,7 +348,7 @@ const ViewBacklogTable: React.FC = () => {
       title: "Task Name",
       dataIndex: "taskName",
       key: "taskName",
-      render: (text: string) => <div>{text}</div>,
+      render: (text: string) => <div style={{    width: '140px'}}>{text}</div>,
     },
     {
       title: "Assigned Date",
@@ -477,22 +495,22 @@ const ViewBacklogTable: React.FC = () => {
           <Spin size="large" className="spinner-antd" />
           :
           <Table
-            style={{ width: "80vw" }}
+            // style={{ width: "80vw" }}
             dataSource={filterData}
             columns={columns}
             rowClassName={() => "header-row"}
             pagination={paginationSettings}
           />
         }
-          <Modal
-        title="Confirmation"
-        visible={showConfirmationModal}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
-        <p>Are you sure?</p>
-        {/* You can customize the confirmation message here */}
-      </Modal>
+        <Modal
+          title="Confirmation"
+          visible={showConfirmationModal}
+          onOk={handleModalOk}
+          onCancel={handleModalCancel}
+        >
+          <p>Are you sure?</p>
+          {/* You can customize the confirmation message here */}
+        </Modal>
       </div>
     </>
   );
