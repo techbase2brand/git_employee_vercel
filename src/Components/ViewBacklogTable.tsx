@@ -32,6 +32,7 @@ const { RangePicker } = DatePicker;
 
 const ViewBacklogTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
+console.log("data",data);
 
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
