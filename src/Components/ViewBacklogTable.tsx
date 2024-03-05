@@ -32,8 +32,6 @@ const { RangePicker } = DatePicker;
 
 const ViewBacklogTable: React.FC = () => {
   const [data, setData] = useState<BacklogTask[]>([]);
-console.log("data",data);
-
   const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAssignee, setSelectedAssignee] = useState('');
@@ -52,11 +50,11 @@ console.log("data",data);
     const myData = JSON.parse(myDataString);
     employeeName = `${myData.jobPosition}`;
     empId = `${myData.EmployeeID}`;
-    myName = `${myData.firstName}`;
+    myName = `${myData.email}`;
   }
   // const filterData = empId === "B2B00100" ? data.filter((item) => item.finalApprove === null || item.finalApprove === 0) : data.filter((item) => item.AssignedBy === myName);
   const filterData = data || originalData.filter((item) => item?.finalApprove === null)
-  const OwnData = data || originalData.filter((item) => item?.AssignedBy === myName)
+  const OwnData = data || originalData.filter((item) => item?.UserEmail === myName)
   useEffect(() => {
     let filteredData = originalData;
 
@@ -203,48 +201,26 @@ console.log("data",data);
       });
       setOriginalData(response.data)
       const sortedData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
-      const filteredData = sortedData?.filter((e) => {
-        e.UserEmail === UserEmail;
-        const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
-        // const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
-        const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase());
-        const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase());
+      // const filteredData = sortedData?.filter((e) => {
+      //   e.UserEmail === UserEmail;
+      //   const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm.toLowerCase());
+      //   // const assignedByMatch = e.taskName.toLowerCase().includes(searchTerm.toLowerCase());
+      //   const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm.toLowerCase());
+      //   const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm.toLowerCase());
 
-        return assigneeMatch || clientNameMatch || projectNameMatch;
-      });
-      console.log("filter dayta",filteredData);
-      
+      //   return assigneeMatch || clientNameMatch || projectNameMatch;
+      // });
+      // console.log("filter dayta", filteredData);
 
-      setData(filteredData);
+
+      setData(sortedData);
       const today = new Date();
       const tenDaysAgo = new Date();
       tenDaysAgo.setDate(today.getDate() - 10);
       if (
         employeeName === "Managing Director") {
-        const filteredData = sortedData?.filter((e) => {
-          e.UserEmail === UserEmail;
-          const assigneeMatch = e.assigneeName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
-          const clientNameMatch = e.clientName && e.clientName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
-          const projectNameMatch = e.projectName && e.projectName.toLowerCase().includes(searchTerm?.toLowerCase() || '');
-
-          return assigneeMatch || clientNameMatch || projectNameMatch;
-
-        });
+        const filteredData = response.data.sort((a, b) => b.backlogTaskID - a.backlogTaskID);
         setData(filteredData);
-      } else {
-        const finalFilteredData = filteredData?.filter((e) => {
-          const taskDate = new Date(e.currdate);
-          const isDateInRange =
-            taskDate >= tenDaysAgo &&
-            (dateRange === null ||
-              (taskDate >= (dateRange[0] || tenDaysAgo) &&
-                taskDate <= (dateRange[1] || today)));
-
-          const isAssignedByAdmin = e.UserEmail === UserEmail;
-
-          return isDateInRange && isAssignedByAdmin;
-        });
-        setData(finalFilteredData);
       }
 
     } catch (error: any) {
@@ -254,7 +230,7 @@ console.log("data",data);
 
   useEffect(() => {
     console.log("WORKING");
-    
+
     fetchData();
   }, [adminID, searchTerm, dateRange]);
 
@@ -420,7 +396,7 @@ console.log("data",data);
       title: "comment",
       dataIndex: "comment",
       key: "comment",
-      render: (text: string) => <div>{text || "N/A"}</div>,
+      render: (text: string) => <div style={{ width: '140px' }}>{text || "N/A"}</div>,
     },
     ...(empId === 'B2B00100' ? [{
       title: "F/A",
