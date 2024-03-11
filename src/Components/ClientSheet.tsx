@@ -615,6 +615,30 @@ const ClientSheet: React.FC<any> = () => {
                                         <Select.Option value="Sahil">Sahil</Select.Option>
                                         <Select.Option value="Sameer">Sameer</Select.Option>
                                         <Select.Option value="Suraj">Suraj</Select.Option>
+                                        <Select.Option value="Surya">Surya</Select.Option>
+                                        <Select.Option value="Rajan">Rajan</Select.Option>
+                                        <Select.Option value="Nasir">Nasir</Select.Option>
+                                    </Select>
+                                }
+                                {EmployeeId === "B2B00049" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Nasir">Nasir</Select.Option>
+                                    </Select>
+                                }
+                                {EmployeeId === "B2B00009" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Rajan">Rajan</Select.Option>
+                                    </Select>
+                                }
+                                {EmployeeId === "B2B00050" &&
+                                    <Select defaultValue="FAVORITE" onChange={handleFilterChange} style={{ width: 120, border: '1px solid black', borderRadius: '5px' }}>
+                                        <Option value="ALL">ALL</Option>
+                                        <Option value="FAVORITE">ALL FAVORITE</Option>
+                                        <Select.Option value="Surya">Surya</Select.Option>
                                     </Select>
                                 }
                                 {EmployeeId === "B2B00048" &&
