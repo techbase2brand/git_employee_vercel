@@ -595,7 +595,7 @@ const ClientSheet: React.FC<any> = () => {
                                     value={selectedEmployee || undefined}
                                 >
                                     {employeeFirstNames
-                                        .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer", "Suraj"].includes(name))
+                                        .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer", "Suraj", "Rajan", "Surya", "Nasir"].includes(name))
                                         .sort()
                                         .map((name, index) => (
                                             <Select.Option key={index} value={name}>
