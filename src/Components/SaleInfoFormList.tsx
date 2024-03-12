@@ -412,8 +412,6 @@ const SaleInfoFormList = () => {
       dataIndex: "sendTo",
       key: "sendTo",
       render: (text: string, record: SalesInfoData) => {
-        console.log("record", record);
-
         return (
           <Select
             showSearch
@@ -430,7 +428,7 @@ const SaleInfoFormList = () => {
             onChange={(value) => setSelectedSendToValues((prev) => ({ ...prev, [record.id]: value }))}
           >
             {employeeFirstNames
-              .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer"].includes(name))
+              .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer","Surya","Nasir"].includes(name))
               .map((name, index) => (
                 <Select.Option key={index} value={name}>
                   {name}
