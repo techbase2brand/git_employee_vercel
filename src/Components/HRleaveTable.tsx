@@ -92,6 +92,12 @@ const HRleaveTable: React.FC = () => {
       render: (text: string) => <div style={{}}>{text}</div>,
     },
     {
+      title: "Team Lead",
+      dataIndex: "teamLead",
+      key: "teamLead",
+      render: (text: string) => <div style={{}}>{text}</div>,
+    },
+    {
       title: "Start Date",
       dataIndex: "startDate",
       key: "startDate",
