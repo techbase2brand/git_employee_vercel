@@ -1315,6 +1315,30 @@ const AppMenu = () => {
               <Link to="/ViewDocumentation">ViewDocumentation</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.SubMenu key="Blogs" icon={<TableOutlined rev={undefined} />} title="Blogs">
+            <Menu.Item key="BlogPost" icon={<TableOutlined />}>
+              <Link to="/BlogPost">BlogPost</Link>
+            </Menu.Item>
+            <Menu.Item key="ViewBlogPost" icon={<TableOutlined />}>
+              <Link to="/ViewBlogPost">ViewBlogPost</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="InfotechBlogs" icon={<TableOutlined rev={undefined} />} title="Infotech-Blogs">
+            <Menu.Item key="InfotechBlog" icon={<TableOutlined />}>
+              <Link to="/InfotechBlog">InfotechBlog</Link>
+            </Menu.Item>
+            <Menu.Item key="InfotechTable" icon={<TableOutlined />}>
+              <Link to="/InfotechTable">InfotechTable</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
+          <Menu.SubMenu key="CampusBlogs" icon={<TableOutlined rev={undefined} />} title="Campus-Blogs">
+            <Menu.Item key="CampusBlogs" icon={<TableOutlined />}>
+              <Link to="/CampusBlogs">CampusBlogs</Link>
+            </Menu.Item>
+            <Menu.Item key="CampusBlogList" icon={<TableOutlined />}>
+              <Link to="/CampusBlogList">CampusBlogList</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
     </Menu>
