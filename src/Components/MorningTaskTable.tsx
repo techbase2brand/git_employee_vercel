@@ -28,6 +28,8 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [move, setMove] = useState(false);
+  
   const [modalInputValue, setModalInputValue] = useState("");
   const [modalRecord, setModalRecord] = useState<Task | null>(null);
   const navigate = useNavigate();
@@ -51,6 +53,9 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
     }
     if (!modalInputValue) {
       console.error("Please select a valid act time");
+      return;
+    }
+    if (move === true) {
       return;
     }
     setSubmitting(true);
@@ -84,6 +89,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
             })
             .finally(() => {
               setSubmitting(false);
+              setMove(true);
             });
         } else {
           setSubmitting(false);
@@ -97,6 +103,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
         setModalVisible(false);
         // setModalInputValue("");
         setModalRecord(null);
+        setMove(true);
       });
   };
 

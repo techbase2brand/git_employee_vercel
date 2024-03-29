@@ -388,9 +388,6 @@ const TaskTable: React.FC<Props> = ({
             >
               <p>{filteredEstTime?.formattedTime}</p>
               <p style={{ marginLeft: "5vw" }}>{filteredactTime?.formattedTime}</p>
-              <p style={{ marginLeft: "10vw" }}>
-                {filteredUpworkTime?.formattedTime}
-              </p>
             </div>
           </div>
           <Table
