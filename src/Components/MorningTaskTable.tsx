@@ -28,7 +28,6 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
   const [employeeFirstname, setEmployeeFirstname] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [move, setMove] = useState(false);
   
   const [modalInputValue, setModalInputValue] = useState("");
   const [modalRecord, setModalRecord] = useState<Task | null>(null);
@@ -55,9 +54,7 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
       console.error("Please select a valid act time");
       return;
     }
-    if (move === true) {
-      return;
-    }
+   
     setSubmitting(true);
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/update/morningDashboard/${modalRecord.MrngTaskID}`, {
@@ -89,7 +86,6 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
             })
             .finally(() => {
               setSubmitting(false);
-              setMove(true);
             });
         } else {
           setSubmitting(false);
@@ -103,7 +99,6 @@ const MorningTaskTable: React.FC<Props> = ({ data, setMrngEditID }) => {
         setModalVisible(false);
         // setModalInputValue("");
         setModalRecord(null);
-        setMove(true);
       });
   };
 
