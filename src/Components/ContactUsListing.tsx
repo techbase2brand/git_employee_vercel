@@ -37,7 +37,7 @@ const CampusBlogList = () => {
         const token = localStorage.getItem("myToken");
         axios
             .get(
-                `https://empbackend.base2brand.com/get-contact-us`
+                `${process.env.REACT_APP_API_BASE_URL}/get-contact-us`
                 , {
                     headers: {
                         Authorization: `Bearer ${token}`,
