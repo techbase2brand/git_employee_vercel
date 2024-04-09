@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
 import { Table, Button, Input, Modal, DatePicker, Select } from "antd";
 import { format } from "date-fns";
 

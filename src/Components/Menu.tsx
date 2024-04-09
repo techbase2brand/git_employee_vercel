@@ -727,6 +727,10 @@ const AppMenu = () => {
               <Link to="/CampusBlogList">CampusBlogList</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.Item key="CampusBlogList" icon={<TableOutlined />}>
+          <Link to="/Contactus">Contact Us</Link>
+          </Menu.Item>
+
           {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
          <Link to="/salecampusformlist">Sale Campus List</Link>
        </Menu.Item> */}
