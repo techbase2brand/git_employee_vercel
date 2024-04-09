@@ -75,6 +75,8 @@ import ChatMessagePage from "./Components/ChatMessagePage";
 import ViewLead from "./Components/ViewLead";
 import Navbar from "./Components/Navbar";
 import Menu from "./Components/Menu";
+import Contactus from "./Components/ContactUsListing"
+
 export const GlobalInfo = createContext<any>({});
 
 export const AssignedTaskCountContext = createContext<{
@@ -518,6 +520,14 @@ const App: React.FC = () => {
                   element={
                     <ProtectedRoute>
                       <CampusBlogs />
+                    </ProtectedRoute>
+                  }
+                />
+                 <Route
+                  path="/Contactus"
+                  element={
+                    <ProtectedRoute>
+                      <Contactus />
                     </ProtectedRoute>
                   }
                 />
