@@ -75,7 +75,8 @@ import ChatMessagePage from "./Components/ChatMessagePage";
 import ViewLead from "./Components/ViewLead";
 import Navbar from "./Components/Navbar";
 import Menu from "./Components/Menu";
-import Contactus from "./Components/ContactUsListing"
+import Contactus from "./Components/ContactUsListing";
+import RequestListing from "./Components/RequestListing";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -528,6 +529,14 @@ const App: React.FC = () => {
                   element={
                     <ProtectedRoute>
                       <Contactus />
+                    </ProtectedRoute>
+                  }
+                />
+                  <Route
+                  path="/RequestQuote"
+                  element={
+                    <ProtectedRoute>
+                      <RequestListing />
                     </ProtectedRoute>
                   }
                 />
