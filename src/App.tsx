@@ -77,6 +77,7 @@ import Navbar from "./Components/Navbar";
 import Menu from "./Components/Menu";
 import Contactus from "./Components/ContactUsListing";
 import RequestListing from "./Components/RequestListing";
+import Applyjobs from "./Components/Applyjobs";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -540,6 +541,15 @@ const App: React.FC = () => {
                     </ProtectedRoute>
                   }
                 />
+                  <Route
+                  path="/Applyjobs"
+                  element={
+                    <ProtectedRoute>
+                      <Applyjobs />
+                    </ProtectedRoute>
+                  }
+                />
+
                 <Route
                   path="/InfotechBlog"
                   element={
