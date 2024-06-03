@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState, useEffect } from "react";
 
-import { Checkbox, Table } from "antd";
+import { Checkbox, Table, Tooltip } from "antd";
 import axios from "axios";
 
 interface Task {
@@ -161,6 +161,19 @@ const TaskTable: React.FC<Props> = ({
   };
 
   const columns = [
+    // {
+    //   title: "Client & Project",
+    //   dataIndex: "clientAndProject",
+    //   key: "clientAndProject",
+    //   render: (text: string, record: Task) => {
+    //     const project = projectsInfo.find(
+    //       (project) => project.projectName === record.projectName
+    //     );
+    //     const clientName = project ? project.clientName : "";
+    //     const projectName = project ? project.projectName : "";
+    //     return `${clientName} - ${projectName}`;
+    //   },
+    // },
     {
       title: "Client & Project",
       dataIndex: "clientAndProject",
@@ -169,9 +182,15 @@ const TaskTable: React.FC<Props> = ({
         const project = projectsInfo.find(
           (project) => project.projectName === record.projectName
         );
-        const clientName = project ? project.clientName : "";
-        const projectName = project ? project.projectName : "";
-        return `${clientName} - ${projectName}`;
+        const clientName = project ? project?.clientName : "";
+        const projectName = project ? project?.projectName : "";
+        const projectDescription = project ? project.projectDescription : "";
+
+        return (
+          <Tooltip title={projectDescription} color="volcano">
+            <span>{`${clientName} - ${projectName}`}</span>
+          </Tooltip>
+        );
       },
     },
     {
