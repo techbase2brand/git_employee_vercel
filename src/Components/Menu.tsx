@@ -733,7 +733,9 @@ const AppMenu = () => {
           <Menu.Item key="RequestQuote" icon={<TableOutlined />}>
           <Link to="/RequestQuote">Request Quote</Link>
           </Menu.Item>
-          
+          <Menu.Item key="ApplyJobs" icon={<TableOutlined />}>
+          <Link to="/ApplyJobs">Apply Jobs</Link>
+          </Menu.Item>
           {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
          <Link to="/salecampusformlist">Sale Campus List</Link>
        </Menu.Item> */}
