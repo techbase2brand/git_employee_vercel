@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Spin } from "antd";
+import { Table, Button, Spin, Divider, Space, Tooltip } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -67,6 +67,11 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
       title: "Client",
       dataIndex: "clientName",
       key: "clientName",
+      render: (text: string, record: Project) => (
+        <Tooltip title={record.projectDescription} color="volcano">
+          <span>{text}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Project",
@@ -113,20 +118,20 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
           />
         </div>
       </div>
-     <div className="pro-list">
-      {loading ?
-        <Spin size="large" className="spinner-antd" style={{
-          position: 'absolute',
-          width: '84%'
-        }}/>
-        :
-        <Table
-          dataSource={filteredData}
-          columns={columns}
-          rowClassName={() => "header-row"}
-          pagination={paginationSettings}
-        />
-      }
+      <div className="pro-list">
+        {loading ?
+          <Spin size="large" className="spinner-antd" style={{
+            position: 'absolute',
+            width: '84%'
+          }} />
+          :
+          <Table
+            dataSource={filteredData}
+            columns={columns}
+            rowClassName={() => "header-row"}
+            pagination={paginationSettings}
+          />
+        }
       </div>
     </>
   );

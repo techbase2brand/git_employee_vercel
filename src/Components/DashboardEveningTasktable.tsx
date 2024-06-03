@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, Checkbox } from "antd";
+import { Table, Button, Modal, Checkbox, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -74,6 +74,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     null
   );
   const [projectsInfo, setProjectsInfo] = useState<Project[]>([]);
+  console.log("projectsInfo",projectsInfo)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
 
@@ -178,6 +179,19 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   };
 
   const columns = [
+    // {
+    //   title: "Client & Project",
+    //   dataIndex: "clientAndProject",
+    //   key: "clientAndProject",
+    //   render: (text: string, record: Task) => {
+    //     const project = projectsInfo.find(
+    //       (project) => project.projectName === record.projectName
+    //     );
+    //     const clientName = project ? project.clientName : "";
+    //     const projectName = project ? project.projectName : "";
+    //     return `${clientName} - ${projectName}`;
+    //   },
+    // },
     {
       title: "Client & Project",
       dataIndex: "clientAndProject",
@@ -186,9 +200,15 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         const project = projectsInfo.find(
           (project) => project.projectName === record.projectName
         );
-        const clientName = project ? project.clientName : "";
-        const projectName = project ? project.projectName : "";
-        return `${clientName} - ${projectName}`;
+        const clientName = project ? project?.clientName : "";
+        const projectName = project ? project?.projectName : "";
+        const projectDescription = project ? project.projectDescription : "";
+  
+        return (
+          <Tooltip title={projectDescription} color="volcano">
+            <span>{`${clientName} - ${projectName}`}</span>
+          </Tooltip>
+        );
       },
     },
     {
