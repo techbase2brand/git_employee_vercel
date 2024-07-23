@@ -78,6 +78,7 @@ import Menu from "./Components/Menu";
 import Contactus from "./Components/ContactUsListing";
 import RequestListing from "./Components/RequestListing";
 import Applyjobs from "./Components/Applyjobs";
+import Appcartify from "./Components/Appcartify";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -711,6 +712,14 @@ const App: React.FC = () => {
                   element={
                     <ProtectedRoute>
                       <EmployeeList />
+                    </ProtectedRoute>
+                  }
+                />
+                 <Route
+                  path="/Appcartify"
+                  element={
+                    <ProtectedRoute>
+                      <Appcartify />
                     </ProtectedRoute>
                   }
                 />

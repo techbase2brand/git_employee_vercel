@@ -994,6 +994,11 @@ const AppMenu = () => {
               <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
           </Menu.SubMenu>
+          <Menu.SubMenu key="Appcartify" icon={<TableOutlined rev={undefined} />} title="Appcartify">
+            <Menu.Item key="Appcartify" icon={<TableOutlined />}>
+              <Link to="/Appcartify">Appcartify</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
         </>
       )}
 
