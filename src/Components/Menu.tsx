@@ -736,6 +736,11 @@ const AppMenu = () => {
           <Menu.Item key="ApplyJobs" icon={<TableOutlined />}>
           <Link to="/ApplyJobs">Apply Jobs</Link>
           </Menu.Item>
+          <Menu.SubMenu key="Appcartify" icon={<TableOutlined rev={undefined} />} title="Appcartify">
+            <Menu.Item key="Appcartify" icon={<TableOutlined />}>
+              <Link to="/Appcartify">Appcartify</Link>
+            </Menu.Item>
+          </Menu.SubMenu>
           {/* <Menu.Item key="salecampusformlist" icon={<TableOutlined />}>
          <Link to="/salecampusformlist">Sale Campus List</Link>
        </Menu.Item> */}
@@ -994,6 +999,7 @@ const AppMenu = () => {
               <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
           </Menu.SubMenu>
+        
         </>
       )}
 
