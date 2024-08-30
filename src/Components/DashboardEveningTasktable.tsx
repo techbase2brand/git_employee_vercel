@@ -74,17 +74,18 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     null
   );
   const [projectsInfo, setProjectsInfo] = useState<Project[]>([]);
-  console.log("projectsInfo",projectsInfo)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
 
   const myDataString = localStorage.getItem('myData');
   let employeeName = "";
   let jobPosition = "";
+  let EmployeeID = "";
   if (myDataString) {
     const myData = JSON.parse(myDataString);
     employeeName = myData?.firstName;
     jobPosition = myData?.jobPosition;
+    EmployeeID = myData?.EmployeeID;
   }
   const showModalDel = () => {
     setIsModalOpen(true);
@@ -203,7 +204,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         const clientName = project ? project?.clientName : "";
         const projectName = project ? project?.projectName : "";
         const projectDescription = project ? project.projectDescription : "";
-  
+
         return (
           <Tooltip title={projectDescription} color="volcano">
             <span>{`${clientName} - ${projectName}`}</span>
@@ -253,7 +254,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       render: (text: string, record: Task) => {
         return (
           <>
-            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || EmployeeID === "B2B00012" || EmployeeID === "B2B00028") &&
               <Checkbox
                 checked={!!text || checkedTasks[record.EvngTaskID]}
                 onChange={() => handleApproval(record.EvngTaskID)}

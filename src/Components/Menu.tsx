@@ -816,6 +816,14 @@ const AppMenu = () => {
 
       {info.jobPosition == "BDE" && (
         <>
+        {info.EmployeeID === "B2B00028" &&
+            <Menu.Item
+              key="dashboard"
+              icon={<DashboardOutlined rev={undefined} />}
+            >
+              <Link to="/dashboard">Dashboard</Link>
+            </Menu.Item>
+          }
           <Menu.SubMenu key="dailytask" icon={<TableOutlined rev={undefined} />} title="Daily Task">
             <Menu.Item
               key="AssignTaskPage"
