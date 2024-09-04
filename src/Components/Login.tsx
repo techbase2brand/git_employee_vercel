@@ -149,6 +149,7 @@ const Login: React.FC = () => {
             justifyContent: "center",
             backgroundColor: "#094781",
           }}
+          className="login-img"
         >
           <img src="./Group 56.png" alt="Example Image" />
         </div>
@@ -160,6 +161,7 @@ const Login: React.FC = () => {
             alignItems: "center",
             justifyContent: "center",
           }}
+          className="login-main"
         >
           <div
             style={{
@@ -169,8 +171,9 @@ const Login: React.FC = () => {
               justifyContent: "center",
               width: "100%",
             }}
+            className="emp-form-login"
           >
-            <div style={{ marginBottom: "8%" }}>
+            <div style={{ marginBottom: "8%" }} className="login-text">
               <p
                 style={{
                   fontSize: "48px",
@@ -197,6 +200,7 @@ const Login: React.FC = () => {
               >
                 <Input
                   style={{ padding: "3%", paddingRight: "3%", width: "30vw " }}
+                  className="email-input"
                   prefix={<UserOutlined className="site-form-item-icon" />}
                   placeholder="Type Email Here"
                 />
@@ -209,6 +213,7 @@ const Login: React.FC = () => {
               >
                 <Input
                   style={{ padding: "3%", paddingRight: "3%", width: "30vw " }}
+                  className="email-input"
                   type={passwordVisible ? "text" : "password"}
                   placeholder="Password"
                   prefix={
@@ -220,13 +225,13 @@ const Login: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item>
+              {/* <Form.Item>
                 <Form.Item
                   name="remember"
                   valuePropName="checked"
                   noStyle
                 ></Form.Item>
-              </Form.Item>
+              </Form.Item> */}
 
               <div
                 style={{
@@ -237,7 +242,7 @@ const Login: React.FC = () => {
                   height: "6vh",
                 }}
               >
-                <Button
+                <button
                   style={{
                     width: "40%",
                     height: "100%",
@@ -247,21 +252,23 @@ const Login: React.FC = () => {
                     paddingLeft: "10%",
                     color: "white",
                     textAlign: "center",
+                    fontSize: '18px',
+                    fontWeight: 800
                   }}
-                  type="primary"
-                  htmlType="submit"
+                  // type="primary"
+                  // htmlType="submit"
                   className="login-form-button"
                 >
-                  <h3
+                  {/* <h3
                     style={{
                       fontWeight: "bold",
                       width: "3vw",
                       marginLeft: "12px",
                     }}
-                  >
-                    Login
-                  </h3>
-                </Button>
+                  > */}
+                  Login
+                  {/* </h3> */}
+                </button>
               </div>
               <Modal
                 title="Terms and Conditions"

@@ -1077,6 +1077,40 @@ tr:nth-child(even) {
   background-color: inherit;
 } */
 
+@media screen and (max-width: 767px) {
+  .login-img {
+    display: none !important;
+  }
+
+  .login-main {
+    width: 100% !important;
+  }
+
+  .login-form-button {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .email-input {
+    width: 100% !important;
+  }
+
+  .outer-container {
+    height: unset !important;
+    margin-top: 5rem !important;
+  }
+
+  .login-form {
+    width: 100% !important;
+  }
+
+  .emp-form-login {
+    padding: 2rem;
+  }
+}
+
 @media screen and (min-width: 767px) and (max-width: 1202px) {
   .form-div {
     width: 100%;
@@ -1085,6 +1119,7 @@ tr:nth-child(even) {
     margin-right: 48%;
   }
 }
+
 
 @media screen and (min-width: 1024px) and (max-width: 1440px) {
 
