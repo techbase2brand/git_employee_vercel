@@ -66,24 +66,52 @@ function BlogPost(): JSX.Element {
         }
     }, [record]);
 
+    // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const files: FileList | null = e.target.files;
+    //     if (files) {
+    //         const formData = new FormData();
+    //         Array.from(files).forEach((file: File) => {
+    //             formData.append("images", file);
+    //         });
+    //         try {
+    //             const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/upload`, formData);
+    //             const newImageUrls = response.data.image_urls;
+    //             setImageFiles((prevFiles: File[]) => [...prevFiles, ...Array.from(files)]);
+    //             setImagePreviews((prevPreviews: string[]) => [...prevPreviews, ...newImageUrls]);
+    //             setFormData((prevData: FormData) => ({
+    //                 ...prevData,
+    //                 image_url: [...prevData.image_url, ...newImageUrls],
+    //             }));
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
+    // };
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files: FileList | null = e.target.files;
-        if (files) {
+        if (files && files.length > 0) {
             const formData = new FormData();
-            Array.from(files).forEach((file: File) => {
-                formData.append("images", file);
-            });
+            formData.append("images", files[0]); // Only handle a single file for replacement
+    
             try {
+                // Upload the new image to the server
                 const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/upload`, formData);
-                const newImageUrls = response.data.image_urls;
-                setImageFiles((prevFiles: File[]) => [...prevFiles, ...Array.from(files)]);
-                setImagePreviews((prevPreviews: string[]) => [...prevPreviews, ...newImageUrls]);
+                const newImageUrl = response.data.image_urls[0]; // Assuming server returns an array of URLs
+    
+                // Update the state with the new image URL
                 setFormData((prevData: FormData) => ({
                     ...prevData,
-                    image_url: [...prevData.image_url, ...newImageUrls],
+                    image_url: newImageUrl, // Replace with new image URL
                 }));
+    
+                // Remove the preview of the old image if necessary
+                setImagePreviews([newImageUrl]); // Update preview to only show the new image
+    
             } catch (error) {
                 console.error(error);
+                toast.error('Error while uploading image.', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
             }
         }
     };
@@ -176,6 +204,7 @@ function BlogPost(): JSX.Element {
         });
     };
     const handleUpdate = () => {
+        
         const updatedFormData = {
             ...formData,
         };
@@ -246,7 +275,6 @@ function BlogPost(): JSX.Element {
 
                                                 />
                                             </div>
-                                            {!formData.id &&
                                                 <div className="SalecampusForm-col-os">
                                                     <label>Featured Image</label>
                                                     <div className="SalecampusForm-input-os">
@@ -280,7 +308,7 @@ function BlogPost(): JSX.Element {
                                                             {formErrors.image_url}
                                                         </div>
                                                     )}
-                                                </div>}
+                                                </div>
                                             <div className="SalecampusForm-col-os">
                                                 <label>Page Title</label>
 
