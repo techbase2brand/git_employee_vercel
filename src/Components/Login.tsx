@@ -140,49 +140,21 @@ const Login: React.FC = () => {
     <>
       <div className="outer-container">
         <div
-          style={{
-            width: "50%",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#094781",
-          }}
           className="login-img"
         >
           <img src="./Group 56.png" alt="Example Image" />
         </div>
         <div
-          style={{
-            width: "50%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
           className="login-main"
         >
           <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-            }}
             className="emp-form-login"
           >
             <div style={{ marginBottom: "8%" }} className="login-text">
               <p
-                style={{
-                  fontSize: "48px",
-                  fontWeight: "bold",
-                  color: "#094781",
-                }}
+                className="b2b-login"
               >
-                {" "}
-                Login{" "}
+                B2b Login
               </p>
             </div>
             <Form
@@ -243,18 +215,6 @@ const Login: React.FC = () => {
                 }}
               >
                 <button
-                  style={{
-                    width: "40%",
-                    height: "100%",
-                    borderRadius: "25px",
-                    backgroundColor: "#094781",
-                    paddingRight: "10%",
-                    paddingLeft: "10%",
-                    color: "white",
-                    textAlign: "center",
-                    fontSize: '18px',
-                    fontWeight: 800
-                  }}
                   // type="primary"
                   // htmlType="submit"
                   className="login-form-button"
