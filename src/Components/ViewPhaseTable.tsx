@@ -19,7 +19,7 @@ const ViewPhaseTable: React.FC = () => {
   useEffect(() => {
     axios.get<Phases[]>(`${process.env.REACT_APP_API_BASE_URL}/get/phases`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
     })
       .then((response) => {
@@ -41,7 +41,7 @@ const ViewPhaseTable: React.FC = () => {
   const handleDelete = (phaseID: string) => {
     axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/delete-phase/${phaseID}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
     })
       .then(response => {

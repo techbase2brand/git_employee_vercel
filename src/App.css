@@ -310,6 +310,44 @@ tbody>tr>td:nth-child(14) {
   gap: 4px
 }
 
+.time-table-rs {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  max-width: 1000px;
+}
+
+.all-total-time {
+  display: flex;
+  justify-content: space-evenly;
+}
+.row-success {
+  background-color: #07ef3d; /* Light green background for success */
+}
+
+.total-time-report {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 5px;
+  width: 20%;
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+/* .time-row-rs .ant-table-content {
+  height: 600px;
+  overflow: auto;
+} */
+
+.time-table-data:hover {
+  background: #ccff00ad;
+}
+
 .login-form-button {
   width: 40%;
   height: 100%;
@@ -321,6 +359,23 @@ tbody>tr>td:nth-child(14) {
   text-align: center;
   font-size: 18px;
   font-weight: 800;
+}
+
+.time-row-rs {
+  display: flex;
+  flex-direction: column;
+}
+
+.time-table-data {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px 0px 20px;
+  padding: 10px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 5px;
+  width: 100%;
 }
 
 .login-img {

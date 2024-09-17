@@ -200,15 +200,15 @@ const SaleInfoFormList = () => {
   };
 
   useEffect(() => {
-    // const token = localStorage.getItem("myToken");
+    const token = localStorage.getItem("myToken");
     axios
       .get(
-        `${process.env.REACT_APP_API_BASE_URL}/salesinfodata`
-        //   , {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
+        `${process.env.REACT_APP_API_BASE_URL}/salesinfodata`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       .then((response) => {
         setStatusNames(response.data.map((item: { status: string }) => item.status));
@@ -428,7 +428,7 @@ const SaleInfoFormList = () => {
             onChange={(value) => setSelectedSendToValues((prev) => ({ ...prev, [record.id]: value }))}
           >
             {employeeFirstNames
-              .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer","Surya","Nasir"].includes(name))
+              .filter(name => ["Arshpreet", "Manpreet", "Yugal", "Sahil", "Sandeep", "Zaid", "Sameer", "Surya", "Nasir"].includes(name))
               .map((name, index) => (
                 <Select.Option key={index} value={name}>
                   {name}
@@ -529,9 +529,9 @@ const SaleInfoFormList = () => {
             height: "100%",
           }}
         >
-        
+
           <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-          
+
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="total-size">Total:{totalLength}</div>

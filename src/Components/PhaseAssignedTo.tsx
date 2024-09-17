@@ -76,7 +76,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       })
       .then((response) => {
@@ -92,7 +92,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
     axios
       .get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       })
       .then((response) => {
@@ -103,7 +103,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
   useEffect(() => {
     axios.get<Phases[]>(`${process.env.REACT_APP_API_BASE_URL}/get/phases`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
     })
       .then((response) => {
@@ -162,7 +162,7 @@ const PhaseAssignedTo: React.FC<any> = ({ navigation, classes }) => {
     axios
       .post(`${process.env.REACT_APP_API_BASE_URL}/api/add-phaseAssignee`, assignedEmployees, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('myToken')}`
         }
       })
       .then((response) => {

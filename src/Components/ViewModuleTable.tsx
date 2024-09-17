@@ -25,7 +25,7 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
   useEffect(() => {
     axios.get<Modules[]>(`${process.env.REACT_APP_API_BASE_URL}/get/modules`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
     })
       .then((response) => {
@@ -43,7 +43,7 @@ const ViewModuleTable: React.FC<Props> = ({ modulejEditObj, setModulejEditObj })
   const handleDelete = (modID: string) => {
     axios.delete(`${process.env.REACT_APP_API_BASE_URL}/delete/module/${modID}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        'Authorization': `Bearer ${localStorage.getItem('myToken')}`
       }
     })
       .then(response => {

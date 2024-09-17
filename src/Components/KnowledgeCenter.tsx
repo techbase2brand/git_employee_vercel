@@ -18,7 +18,7 @@ interface FormData {
     pagetitle: string;
     pageKeyword: string;
     status: number;
-    category:string;
+    category: string;
 }
 function KnowledgeCenter(): JSX.Element {
     const myDataString = localStorage.getItem('myData');
@@ -37,7 +37,7 @@ function KnowledgeCenter(): JSX.Element {
         pagetitle: "",
         pageKeyword: "",
         status: 0,
-        category:""
+        category: ""
     };
     const location = useLocation();
     const Navigate = useNavigate();
@@ -69,7 +69,11 @@ function KnowledgeCenter(): JSX.Element {
 
     useEffect(() => {
         axios
-            .get(`${process.env.REACT_APP_API_BASE_URL}/get/category`)
+            .get(`${process.env.REACT_APP_API_BASE_URL}/get/category`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                },
+            })
             .then((response) => {
                 setCategoryNames(response.data)
             })
@@ -227,9 +231,9 @@ function KnowledgeCenter(): JSX.Element {
                         height: "100%",
                     }}
                 >
-                
+
                     <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                      
+
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusForm-data-os">

@@ -237,7 +237,7 @@ function SalecampusForm(): JSX.Element {
         const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/submit-form`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
           body: JSON.stringify(formData),
         });
@@ -262,7 +262,13 @@ function SalecampusForm(): JSX.Element {
   };
 
   const handleUpdate = () => {
-    axios.put(`${process.env.REACT_APP_API_BASE_URL}/updatecampus/${formData.id}`, formData)
+    axios.put(`${process.env.REACT_APP_API_BASE_URL}/updatecampus/${formData.id}`, formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      }
+    )
       .then((response) => {
         Navigate("/salecampusformlist");
       })
@@ -286,9 +292,9 @@ function SalecampusForm(): JSX.Element {
             height: "100%",
           }}
         >
-         
+
           <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-           
+
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="SalecampusForm-data-os">

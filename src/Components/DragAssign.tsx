@@ -263,7 +263,7 @@ const DragAssign: React.FC<any> = () => {
     axios
       .get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

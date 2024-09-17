@@ -105,7 +105,7 @@ const ClientSheet: React.FC<any> = () => {
     useEffect(() => {
         axios.get<Project[]>(`${process.env.REACT_APP_API_BASE_URL}/get/projects`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                'Authorization': `Bearer ${localStorage.getItem('myToken')}`
             }
         }).then((response) => {
             const sortedData = response.data.sort(
@@ -118,7 +118,7 @@ const ClientSheet: React.FC<any> = () => {
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/get/filter-options`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                'Authorization': `Bearer ${localStorage.getItem('myToken')}`
             }
         }).then((response) => {
             setFilterOpt(response.data);
@@ -451,7 +451,13 @@ const ClientSheet: React.FC<any> = () => {
         });
     };
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/get-data`)
+        axios.get(`${process.env.REACT_APP_API_BASE_URL}/get-data`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                },
+            }
+        )
             .then(response => {
                 const filteredData = response.data.data.filter((item: any) => item.created_at.split('T')[0] === formattedDate)
                 const sortedData = filteredData.sort(

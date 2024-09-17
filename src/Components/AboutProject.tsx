@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePicker } from "antd";
-import Menu from "./Menu";
-import Navbar from "./Navbar";
+import { DatePicker, Table, Tooltip } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
+import Item from "antd/es/list/Item";
 
 const { RangePicker } = DatePicker;
 
@@ -14,6 +13,7 @@ interface Project {
   clientName: string;
   projectName: string;
   projectDescription: string;
+  hiding:string;
 }
 
 interface Task {
@@ -51,29 +51,49 @@ const AboutProject: React.FC = () => {
     assignedNames: "",
     EmployeeID: "",
   });
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [selectedDateRange, setSelectedDateRange] = useState<
     [Date | null, Date | null]
   >([null, null]);
 
   const [employees, setEmployees] = useState<any[]>([]);
   const [totalActTime, setTotalActTime] = useState<string>("");
+  const [totalEstTime, setTotalEstTime] = useState<string>("");
+  const [totalUpworkTime, setTotalUpworkTime] = useState<string>("");
   const [selectedDays, setSelectedDays] = useState<number | null>(null);
+
   const [performer, setPerformer] = useState<string>("");
   const [activeButton, setActiveButton] = useState<number | null>(null);
   const [individualActTime, setIndividualActTime] = useState<
-    { employee: string; actTime: string }[]
+    { employee: string; actTime: string; EmployeeID: string }[]
   >([]);
+  const [filteredData, setFilteredData] = useState<Task[]>([]);
 
+
+  const convertTimeToDecimal = (timeString: string | null): number => {
+    if (!timeString) return 0; // Handle cases where actTime is null or undefined
+    const [hours, minutes] = timeString.split(':').map(Number); // Split the time string and convert to numbers
+    if (isNaN(hours) || isNaN(minutes)) return 0; // Handle cases where parsing fails
+    return hours + minutes / 60; // Convert to decimal format
+  };
+
+  const formatDecimalToTime = (decimalTime: number): string => {
+    const hours = Math.floor(decimalTime);
+    const minutes = Math.round((decimalTime - hours) * 60);
+    return `${hours}:${minutes.toString().padStart(2, '0')}`;
+  };
 
   const handleTotal = (days: number | null = null) => {
     let filteredTaskObject = EveningTasks;
 
+    // Filter by project name
     if (projectName) {
       filteredTaskObject = filteredTaskObject.filter(
         (e) => e.projectName === projectName
       );
     }
 
+    // Filter by selected employee
     if (selectedEmployee?.assignedNames) {
       const filteredID = employees.filter(
         (e) => e.EmployeeID === selectedEmployee.EmployeeID
@@ -85,82 +105,22 @@ const AboutProject: React.FC = () => {
       setPerformer(selectedEmployee?.assignedNames);
     }
 
-    if (!selectedEmployee?.assignedNames) {
-      // Calculate individual actTime for each employee
-      let filteredTaskObject = EveningTasks;
-
-      if (projectName) {
-        filteredTaskObject = filteredTaskObject.filter(
-          (e) => e.projectName === projectName
-        );
-      }
-
-      if (selectedDateRange) {
-        filteredTaskObject = filteredTaskObject.filter((task) => {
-          const taskDate = new Date(task.currDate);
-          return (
-            (!selectedDateRange[0] || taskDate >= selectedDateRange[0]) &&
-            (!selectedDateRange[1] || taskDate <= selectedDateRange[1])
-          );
-        });
-      }
-
-      if (selectedDays) {
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - selectedDays);
-
-        filteredTaskObject = filteredTaskObject.filter((task) => {
-          const taskDate = new Date(task.currDate);
-          return taskDate >= startDate && taskDate <= endDate;
-        });
-      }
-
-      const employeeActTime: { [key: string]: number } = {};
-      filteredTaskObject.forEach((task) => {
-        const employeeID = task.employeeID;
-        if (!employeeActTime[employeeID]) {
-          employeeActTime[employeeID] = 0;
-        }
-        const actTimeValue = parseFloat(task.actTime); // Convert actTime to number
-        if (!isNaN(actTimeValue)) {
-          // Ensure it's a valid number
-          employeeActTime[employeeID] += actTimeValue;
-        } else {
-          console.warn(
-            `Invalid actTime value detected for task: ${task.EvngTaskID}`
-          );
-        }
-      });
-
-      const formattedIndividualActTime = Object.entries(employeeActTime).map(
-        ([employeeID, actTime]) => {
-          const employee = employees.find((e) => e.EmployeeID === employeeID);
-          const hours = Math.floor(actTime);
-          const minutes = Math.round((actTime - hours) * 60);
-          return {
-            employee: employee?.assignedNames || "",
-            actTime: `${hours}:${minutes.toString().padStart(2, "0")}`,
-          };
-        }
-      );
-      setIndividualActTime(formattedIndividualActTime);
-    }
-
-    if (selectedDateRange) {
+    // Filter by date range
+    if (selectedDateRange[0] && selectedDateRange[1]) {
       filteredTaskObject = filteredTaskObject.filter((task) => {
         const taskDate = new Date(task.currDate);
         return (
-          (!selectedDateRange[0] || taskDate >= selectedDateRange[0]) &&
-          (!selectedDateRange[1] || taskDate <= selectedDateRange[1])
+          (!selectedDateRange[0] || taskDate >= new Date(selectedDateRange[0])) &&
+          (!selectedDateRange[1] || taskDate <= new Date(selectedDateRange[1]))
         );
       });
     }
 
-    if (days) {
+    // Filter by selected days
+    if (selectedDays) {
       const endDate = new Date();
       const startDate = new Date();
-      startDate.setDate(startDate.getDate() - days);
+      startDate.setDate(startDate.getDate() - selectedDays);
 
       filteredTaskObject = filteredTaskObject.filter((task) => {
         const taskDate = new Date(task.currDate);
@@ -168,39 +128,180 @@ const AboutProject: React.FC = () => {
       });
     }
 
-    const calculateTotalActTime = (tasks: Task[]) => {
-      const total = tasks.reduce((total, task) => {
-        // Check if actTime is null or undefined
-        if (!task.actTime) {
-          console.error("actTime is null or undefined for task:", task);
-          return total; // Return the current total without adding
-        }
+    // Calculate total times for each employee
+    const employeeActTime: { [key: string]: number } = {};
+    const employeeEstTime: { [key: string]: number } = {};
+    const employeeUpWorkTime: { [key: string]: number } = {};
 
-        // Ensure task.actTime is a valid number before adding
-        const actTimeValue = parseFloat(task.actTime);
+    filteredTaskObject.forEach((task) => {
+      const employeeID = task.employeeID;
+      if (!employeeActTime[employeeID]) {
+        employeeActTime[employeeID] = 0;
+        employeeEstTime[employeeID] = 0;
+        employeeUpWorkTime[employeeID] = 0;
+      }
+      const actTimeValue = convertTimeToDecimal(task.actTime);
+      const estTimeValue = convertTimeToDecimal(task.estTime);
+      const upWorkTimeValue = convertTimeToDecimal(task.upWorkHrs?.toString() || "0:0");
 
-        // Check and log if NaN
-        if (isNaN(actTimeValue)) {
-          console.error("NaN detected for task:", task);
-          return total; // Return the current total if NaN is detected
-        }
+      // Debugging log to trace values
+      employeeActTime[employeeID] += actTimeValue;
+      employeeEstTime[employeeID] += estTimeValue;
+      employeeUpWorkTime[employeeID] += upWorkTimeValue;
+    });
 
-        return total + actTimeValue;
-      }, 0);
+    // Format the individual act times
+    const formattedIndividualActTime = Object.entries(employeeActTime).map(
+      ([employeeID, actTime]) => {
+        const employee = employees.find((e) => e.EmployeeID === employeeID);
+        const formattedTime = formatDecimalToTime(actTime); // Convert back to HH:MM format
+        const formattedEstTime = formatDecimalToTime(employeeEstTime[employeeID]);
+        const formattedUpWorkTime = formatDecimalToTime(employeeUpWorkTime[employeeID]);
 
-      const hours = Math.floor(total);
-      const minutes = Math.round((total - hours) * 60);
+        return {
+          employee: employee?.assignedNames || "",
+          actTime: formattedTime,
+          estTime: formattedEstTime,
+          upWorkTime: formattedUpWorkTime,
+          EmployeeID: employeeID,
+        };
+      }
+    );
 
-      // Update the totalActTime state
-      setTotalActTime(`${hours}:${minutes.toString().padStart(2, "0")}`);
-    };
-    // Call calculateTotalActTime function with filteredTaskObject array
+    setIndividualActTime(formattedIndividualActTime);
+
+    // Update the total act time and filtered data
     calculateTotalActTime(filteredTaskObject);
+    if (filteredTaskObject.length === 0) {
+      setFilteredData([]); // Empty the table
+    } else {
+      setFilteredData(filteredTaskObject); // Update the table with filtered data
+    }
+
   };
 
+
+  const calculateTotalActTime = (tasks: Task[]) => {
+    const totalActTime = tasks.reduce((total, task) => {
+      const actTimeValue = convertTimeToDecimal(task.actTime);
+      return total + actTimeValue;
+    }, 0);
+
+    const totalEstTime = tasks.reduce((total, task) => {
+      const estTimeValue = convertTimeToDecimal(task.estTime);
+      return total + estTimeValue;
+    }, 0);
+
+    const totalUpWorkTime = tasks.reduce((total, task) => {
+      const upWorkTimeValue = convertTimeToDecimal(task.upWorkHrs?.toString() || "0:0");
+      return total + upWorkTimeValue;
+    }, 0);
+
+    const formattedTotalActTime = formatDecimalToTime(totalActTime);
+    const formattedTotalEstTime = formatDecimalToTime(totalEstTime);
+    const formattedTotalUpWorkTime = formatDecimalToTime(totalUpWorkTime);
+
+    setTotalActTime(formattedTotalActTime);
+    setTotalEstTime(formattedTotalEstTime);
+    setTotalUpworkTime(formattedTotalUpWorkTime);
+  };
+
+
+  const handleData = (EmployeeID: any) => {
+    setSelectedEmployeeId(EmployeeID);
+    const tableData = EveningTasks.filter(
+      (item: any) => item.employeeID === EmployeeID && item.projectName === projectName
+    );
+
+    setFilteredData(tableData);
+
+    // Calculate total actTime, estTime, and upWorkTime for the selected employee
+    const totalActTime = tableData.reduce((total, task) => {
+      const actTimeValue = convertTimeToDecimal(task.actTime);
+      return total + actTimeValue;
+    }, 0);
+
+    const totalEstTime = tableData.reduce((total, task) => {
+      const estTimeValue = convertTimeToDecimal(task.estTime);
+      return total + estTimeValue;
+    }, 0);
+
+    const totalUpWorkTime = tableData.reduce((total, task) => {
+      const upWorkTimeValue = convertTimeToDecimal(task.upWorkHrs?.toString() || "0:0");
+      return total + upWorkTimeValue;
+    }, 0);
+
+    const formattedTotalActTime = formatDecimalToTime(totalActTime);
+    const formattedTotalEstTime = formatDecimalToTime(totalEstTime);
+    const formattedTotalUpWorkTime = formatDecimalToTime(totalUpWorkTime);
+
+    // Update state with formatted times
+    setTotalActTime(formattedTotalActTime);
+    setTotalEstTime(formattedTotalEstTime);
+    setTotalUpworkTime(formattedTotalUpWorkTime);
+  };
+
+
+  const columns = [
+    {
+      title: "Client & Project",
+      dataIndex: "clientAndProject",
+      key: "clientAndProject",
+      render: (text: string, record: Task) => {
+        const project = projectsInfo.find(
+          (project) => project.projectName === record.projectName
+        );
+        const clientName = project ? project?.clientName : "";
+        const projectName = project ? project?.projectName : "";
+        const projectDescription = project ? project.projectDescription : "";
+
+        return (
+          <Tooltip title={projectDescription} color="volcano">
+            <span>{`${clientName} - ${projectName}`}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: "Phase",
+      dataIndex: "phaseName",
+      key: "phaseName",
+    },
+    {
+      title: "Module",
+      dataIndex: "module",
+      key: "module",
+    },
+    {
+      title: "Task",
+      dataIndex: "task",
+      key: "task",
+    },
+    {
+      title: "Est",
+      dataIndex: "estTime",
+      key: "estTime",
+    },
+    {
+      title: "Act",
+      dataIndex: "actTime",
+      key: "actTime",
+    },
+    {
+      title: "UpWork",
+      dataIndex: "upWorkHrs",
+      key: "upWorkHrs",
+    },
+    {
+      title: "Date",
+      dataIndex: "selectDate",
+      key: "selectDate",
+    }
+  ];
   const projectNames = projectsInfo.filter((e: Project) => {
-    return e.projectName;
+    return e.hiding === null;
   });
+  
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedIndex = event.target.selectedIndex - 1;
@@ -321,28 +422,28 @@ const AboutProject: React.FC = () => {
   }, []);
 
   return (
-    <div className="emp-main-div">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#F7F9FF",
-        }}
-      >
-        
+    <div className="evening-handle">
+      <div className="emp-main-div">
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
-            height: "90%",
+            flexDirection: "column",
             width: "100%",
+            height: "100%",
+            backgroundColor: "#F7F9FF",
           }}
         >
-         
-          <div style={{ width: "100%" }}>
-            <div style={{ width: "92%", marginLeft: "4.4%", marginTop: "5%" }}>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              height: "90%",
+              width: "100%",
+            }}
+          >
+
+            <div className="form-container">
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <p
                   style={{
@@ -356,14 +457,12 @@ const AboutProject: React.FC = () => {
                   Projects Report
                 </p>
               </div>
-
               <div
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   width: "100%",
                 }}
-
               >
                 <div
                   style={{
@@ -378,7 +477,6 @@ const AboutProject: React.FC = () => {
                       display: "flex",
                       flexDirection: "row",
                       justifyContent: "space-around",
-                      marginInline: "15px",
                     }}
                   >
                     <label className="add-label"></label>
@@ -391,7 +489,7 @@ const AboutProject: React.FC = () => {
                       <option value="">Select a project</option>
                       {projectNames.map((project: any) => (
                         <option key={project.ProID} value={project.projectName}>
-                          {project.projectName}
+                          {project.projectName} --- {project.clientName}
                         </option>
                       ))}
                     </select>
@@ -435,7 +533,6 @@ const AboutProject: React.FC = () => {
                         </option>
                       ))}
                     </select>
-
                     <div style={{ marginTop: "10px" }}>
                       <label className="add-label"></label>
                       <RangePicker
@@ -529,55 +626,29 @@ const AboutProject: React.FC = () => {
                   </div>
                 </div>
               </div>
-
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100px",
-                  marginLeft: "15px",
-                  marginTop: "70px",
-                }}
+                className="time-row-rs"
               >
                 {!selectedEmployee?.assignedNames && projectName && (
-
-                  <div style={{ display: "flex", flexDirection: "row" }}>
-                    {individualActTime.map(({ employee, actTime }) => (
+                  <div className="time-table-rs">
+                    {individualActTime.map(({ employee, actTime, EmployeeID }) => (
                       <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-around",
-                          alignItems: "center",
-                          margin: "20px 0",
-                          padding: "10px",
-                          border: "1px solid #ccc",
-                          borderRadius: "5px",
-                          width: "17vw",
-                          marginTop: "10px",
-                        }}
+                        className="time-table-data"
                         key={employee}
+                        onClick={() => handleData(EmployeeID)}
+                        style={{
+                          backgroundColor: selectedEmployeeId === EmployeeID ? '#ffeb00' : 'transparent', // Conditionally set background color
+                          cursor: 'pointer', // Change cursor to indicate it's clickable
+                        }}
                       >
-                        {employee}: {actTime}
+                        <span>{employee}</span>
                       </div>
                     ))}
                   </div>
                 )}
-
-                {totalActTime && (
+                <div className="all-total-time">
                   <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                      margin: "20px 0",
-                      padding: "10px",
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                      width: "17vw",
-                      marginTop: "10px",
-                    }}
+                    className="total-time-report"
                   >
                     {performer && (
                       <p
@@ -590,7 +661,6 @@ const AboutProject: React.FC = () => {
                         {performer}
                       </p>
                     )}
-
                     <span
                       style={{
                         marginLeft: "5px",
@@ -599,13 +669,50 @@ const AboutProject: React.FC = () => {
                         fontWeight: "600",
                       }}
                     >
-                      Total Time:
+                      Act Time:
                     </span>
                     <span style={{ fontSize: "14px", fontWeight: "600" }}>
                       {totalActTime}
                     </span>
                   </div>
-                )}
+                  <div className="total-time-report">
+                    <span
+                      style={{
+                        marginLeft: "5px",
+                        marginRight: "5px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Est Time:
+                    </span>
+                    <span style={{ fontSize: "14px", fontWeight: "600" }}>
+                      {totalEstTime}
+                    </span>
+                  </div>
+                  <div className="total-time-report">
+                    <span
+                      style={{
+                        marginLeft: "5px",
+                        marginRight: "5px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Upwork Time:
+                    </span>
+                    <span style={{ fontSize: "14px", fontWeight: "600" }}>
+                      {totalUpworkTime}
+                    </span>
+                  </div>
+                </div>
+                <div className="evening-dashboard">
+                  <Table
+                    dataSource={filteredData} // Use the filtered tasks state for the table data
+                    columns={columns}
+                    rowClassName={() => "header-row"}
+                  />
+                </div>
               </div>
             </div>
           </div>

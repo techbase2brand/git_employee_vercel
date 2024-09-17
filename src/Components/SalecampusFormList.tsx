@@ -96,11 +96,11 @@ const SalecampusFormList = () => {
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_BASE_URL}/salecampusdata`
-        //   , {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
+          , {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          }
       )
       .then((response) => {
         setStatusNames(response.data.map((item: { status: string }) => item.status));
@@ -120,12 +120,12 @@ const SalecampusFormList = () => {
   const handleDelete = (id: number) => {
     axios
       .delete(
-        `${process.env.REACT_APP_API_BASE_URL}/delete/${id}`
-        // {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        //   },
-        // }
+        `${process.env.REACT_APP_API_BASE_URL}/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
       )
       .then((response) => {
         console.log("deleted");

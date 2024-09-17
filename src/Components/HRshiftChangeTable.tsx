@@ -93,7 +93,7 @@ const HRshiftChangeTable: React.FC = () => {
     axios
       .delete(`${process.env.REACT_APP_API_BASE_URL}/leaveinfo/${ShiftChangeTableID}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

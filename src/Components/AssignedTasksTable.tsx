@@ -50,7 +50,12 @@ console.log("localEmpId",localEmpId);
 
   useEffect(() => {
     axios
-      .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`
+      .get<BacklogTask[]>(`${process.env.REACT_APP_API_BASE_URL}/get/BacklogTasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
       )
       .then((response) => {
         const sortedData = response.data.sort(
@@ -128,7 +133,13 @@ console.log("localEmpId",localEmpId);
       return;
     }
     axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}/update/task-comment/${backlogTaskID}`, { comment: task.comment })
+      .put(`${process.env.REACT_APP_API_BASE_URL}/update/task-comment/${backlogTaskID}`, { comment: task.comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
       .then((response) => {
         const updatedData = data.map((task) =>
           task.backlogTaskID === backlogTaskID ? { ...task, comment: '' } : task

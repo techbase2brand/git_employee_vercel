@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, Checkbox, Tooltip } from "antd";
+import { Table, Button, Modal, Checkbox, Tooltip, Select } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
@@ -16,6 +16,7 @@ interface Task {
   currDate: string;
   selectDate: string;
   approvedBy: string;
+  status: string;
 }
 
 interface EmployeeTime {
@@ -76,7 +77,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   const [projectsInfo, setProjectsInfo] = useState<Project[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
-
+  const [taskStatuses, setTaskStatuses] = useState<Record<number, string>>({});
   const myDataString = localStorage.getItem('myData');
   let employeeName = "";
   let jobPosition = "";
@@ -98,7 +99,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     axios
       .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/eveningDashboard/${EvngTaskID}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {
@@ -125,7 +126,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {
@@ -142,7 +143,12 @@ const DashboardEveningTasktable: React.FC<Props> = ({
 
   const arrayOfArray = Object.values(data);
 
-
+  const getRowClassName = (record: Task) => {
+    if (record.status === "success") {
+      return "row-success"; // Apply this class when status is "success"
+    }
+    return "";
+  };
   const handleApproval = (EvngTaskID: number) => {
     const updatedData = arrayOfArray?.map((task) =>
       task?.map((item) =>
@@ -164,7 +170,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         }
       )
@@ -178,21 +184,32 @@ const DashboardEveningTasktable: React.FC<Props> = ({
         console.log(error);
       });
   };
+  const handleStatusChange = (EvngTaskID: number, value: string) => {
+    // Update local state first
+    setTaskStatuses((prevStatuses) => ({
+      ...prevStatuses,
+      [EvngTaskID]: value,
+    }));
 
+    // Make API call to update the status in the backend
+    axios
+      .put(
+        `${process.env.REACT_APP_API_BASE_URL}/update/status/evng/${EvngTaskID}`,
+        { status: value },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.success) {
+          console.log("Status updated successfully in backend.");
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   const columns = [
-    // {
-    //   title: "Client & Project",
-    //   dataIndex: "clientAndProject",
-    //   key: "clientAndProject",
-    //   render: (text: string, record: Task) => {
-    //     const project = projectsInfo.find(
-    //       (project) => project.projectName === record.projectName
-    //     );
-    //     const clientName = project ? project.clientName : "";
-    //     const projectName = project ? project.projectName : "";
-    //     return `${clientName} - ${projectName}`;
-    //   },
-    // },
     {
       title: "Client & Project",
       dataIndex: "clientAndProject",
@@ -243,11 +260,6 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       key: "upWorkHrs",
     },
     {
-      title: "Date",
-      dataIndex: "selectDate",
-      key: "selectDate",
-    },
-    {
       title: "TL Approved",
       dataIndex: "approvedBy",
       key: "approvedBy",
@@ -268,25 +280,59 @@ const DashboardEveningTasktable: React.FC<Props> = ({
       },
     },
     {
-      title: "Action",
-      key: "action",
-      render: (_: any, record: Task) => (
-        <span>
-          <Button
-            type="link"
-            danger
-            icon={<DeleteOutlined />}
-            // onClick={() => handleDelete(record.EvngTaskID)}
-            onClick={() => {
-              setRecordToDelete(record);
-              showModalDel();
-            }}
-          >
-            Delete
-          </Button>
-        </span>
-      ),
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text: string, record: Task) => {
+        return (
+          <>
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
+              <Select
+                value={taskStatuses[record.EvngTaskID] || "Select"}
+                onChange={(value) => handleStatusChange(record.EvngTaskID, value)}
+                style={{ width: 120 }}
+              >
+                <Select.Option value="pending">Pending</Select.Option>
+                <Select.Option value="success">Success</Select.Option>
+                <Select.Option value="fulfill">Fulfill</Select.Option>
+                <Select.Option value="satisfy">Satisfy</Select.Option>
+                <Select.Option value="not-satisfy">Not Satisfy</Select.Option>
+                <Select.Option value="in-progress">In Progress</Select.Option>
+              </Select>
+            }
+            {
+              jobPosition === "Managing Director" &&
+              <div>{text}</div>
+            }
+          </>
+        )
+      },
     },
+    {
+      title: "Date",
+      dataIndex: "selectDate",
+      key: "selectDate",
+    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (_: any, record: Task) => (
+    //     <span>
+    //       <Button
+    //         type="link"
+    //         danger
+    //         icon={<DeleteOutlined />}
+    //         // onClick={() => handleDelete(record.EvngTaskID)}
+    //         onClick={() => {
+    //           setRecordToDelete(record);
+    //           showModalDel();
+    //         }}
+    //       >
+    //         Delete
+    //       </Button>
+    //     </span>
+    //   ),
+    // },
   ];
 
   const totalMinutes = arrayOfArray.reduce((acc, curr) => {
@@ -495,7 +541,8 @@ const DashboardEveningTasktable: React.FC<Props> = ({
             <Table
               dataSource={tasksForEmployee || []}
               columns={columns}
-              rowClassName={() => "header-row"}
+              // rowClassName={() => "header-row"}
+              rowClassName={getRowClassName}
               locale={{
                 emptyText: renderEmptyText
               }}

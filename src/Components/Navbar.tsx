@@ -515,7 +515,13 @@ const Navbar: React.FunctionComponent = () => {
       AssigneeName: notification.AssigneeName,
     };
 
-    axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/notification`, { notificationObject })
+    axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/notification`, { notificationObject },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      }
+    )
       .then((response) => {
 
         setState(true)
@@ -604,7 +610,7 @@ const Navbar: React.FunctionComponent = () => {
         !getVisitedNotificationObjects().some((obj: { notificationId: number; employeeID: string; AssigneeName: string; }) =>
           obj?.notificationId === notification?.id &&
           (obj?.employeeID === notification?.employeeID ||
-          obj?.AssigneeName === notification?.AssigneeName)))}
+            obj?.AssigneeName === notification?.AssigneeName)))}
       renderItem={(item) => {
         let title;
         let isLeaveNotification = false;

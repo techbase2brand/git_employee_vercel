@@ -72,7 +72,13 @@ function DocForm(): JSX.Element {
                 formData.append("pdf_files[]", file);
             });
             try {
-                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/upload-pdf`, formData);
+                const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/upload-pdf`, formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                        },
+                    }
+                );
                 const pdfUrl = response.data.pdf_url;
                 setFormData((prevData) => ({
                     ...prevData,
@@ -230,7 +236,13 @@ function DocForm(): JSX.Element {
                 };
 
                 try {
-                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-document`, formPayload);
+                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-document`, formPayload,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                            },
+                        }
+                    );
                     setSubmitted(true);
                     Navigate("/DocTable");
                     toast.success('Submit successfully!', {
@@ -251,7 +263,13 @@ function DocForm(): JSX.Element {
         };
 
         axios
-            .put(`${process.env.REACT_APP_API_BASE_URL}/updatedocument/${updatedFormData.id}`, updatedFormData)
+            .put(`${process.env.REACT_APP_API_BASE_URL}/updatedocument/${updatedFormData.id}`, updatedFormData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                    },
+                }
+            )
             .then((response) => {
                 setSubmitted(true);
                 Navigate("/DocTable");
@@ -296,9 +314,9 @@ function DocForm(): JSX.Element {
                         height: "100%",
                     }}
                 >
-                  
+
                     <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-                     
+
                         <section className="SalecampusForm-section-os">
                             <div className="form-container">
                                 <div className="SalecampusForm-data-os">
