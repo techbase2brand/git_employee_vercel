@@ -317,12 +317,63 @@ tbody>tr>td:nth-child(14) {
   max-width: 1000px;
 }
 
+.task-color-rs {
+  max-width: 300px;
+}
+
+.roles-rs {
+  padding: 7px;
+  min-width: 200px;
+  border-radius: 6px;
+}
+
+.fiters-dashboard-rs {
+  display: flex;
+  gap: 12px;
+}
+
+.mrng-newDashboard {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background: #329d32;
+  color: white;
+  padding: 6px;
+  font-weight: 700;
+}
+
+.evng-newDashboard {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 6px;
+  font-weight: 700;
+  border-bottom: 2px solid black;
+}
+
+.table-new-row {
+  background-color: #a8b7ef;
+}
+
 .all-total-time {
   display: flex;
   justify-content: space-evenly;
 }
+
 .row-success {
-  background-color: #07ef3d; /* Light green background for success */
+  background-color: #07ef3d;
+  /* Light green background for success */
+}
+
+.emp-name_rs {
+  color: red;
+  margin-bottom: 0.5rem;
+}
+
+
+
+.emp-table-rs {
+  margin-bottom: 2rem;
 }
 
 .total-time-report {

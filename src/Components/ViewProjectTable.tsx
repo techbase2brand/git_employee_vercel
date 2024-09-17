@@ -9,7 +9,7 @@ interface Project {
   clientName: string;
   projectName: string;
   projectDescription: string;
-  hiding?: boolean;
+  hiding?: any;
 }
 
 interface Props {
@@ -64,11 +64,25 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
   );
 
   const handleApproval = (ProID: number) => {
+    const project = data.find((p) => p.ProID === ProID);
+    if (!project) return;
+
+    // Toggle the hiding state - if null or 1, set to 0; if 0, set to 1
+    const newHidingStatus = project.hiding === null || project.hiding === 1 ? 0 : 1;
+
+    // Immediately update the state for real-time effect
+    setData((prevData) =>
+      prevData.map((project) =>
+        project.ProID === ProID ? { ...project, hiding: newHidingStatus } : project
+      )
+    );
+
+    // Send the update to the server asynchronously
     axios
       .put(
         `${process.env.REACT_APP_API_BASE_URL}/hide/client/${ProID}`,
         {
-          hiding: true, // Set hiding to true
+          hiding: newHidingStatus, // Use the new toggled status (0 or 1)
         },
         {
           headers: {
@@ -77,21 +91,15 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
         }
       )
       .then((response) => {
-        if (response.data.success) {
-          // Update the state to reflect the change in hiding status
-          setData((prevData) =>
-            prevData.map((project) =>
-              project.ProID === ProID ? { ...project, hiding: true } : project
-            )
-          );
-        } else {
-          console.log("Failed to update hiding status.");
+        if (!response.data.success) {
+          console.log("Failed to update hiding status on the server.");
         }
       })
       .catch((error) => {
-        console.error("Error updating hiding status:", error);
+        console.error("Error updating hiding status on the server:", error);
       });
   };
+
 
   const columns = [
     {
@@ -114,11 +122,12 @@ const ViewProjectTable: React.FC<Props> = ({ projEditObj, setProjEditObj }) => {
       dataIndex: "hiding",
       key: "hiding",
       render: (text: string, record: Project) => {
+
         return (
           <>
             <Checkbox
-              checked={record.hiding} // Show checkbox checked based on hiding status
-              onChange={() => handleApproval(Number(record.ProID))} 
+              checked={record.hiding === 0}
+              onChange={() => handleApproval(Number(record.ProID))}
             />
           </>
         )

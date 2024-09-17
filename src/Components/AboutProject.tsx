@@ -13,7 +13,7 @@ interface Project {
   clientName: string;
   projectName: string;
   projectDescription: string;
-  hiding:string;
+  hiding:any;
 }
 
 interface Task {
@@ -299,7 +299,7 @@ const AboutProject: React.FC = () => {
     }
   ];
   const projectNames = projectsInfo.filter((e: Project) => {
-    return e.hiding === null;
+    return e.hiding === 0;
   });
   
 
@@ -641,7 +641,7 @@ const AboutProject: React.FC = () => {
                           cursor: 'pointer', // Change cursor to indicate it's clickable
                         }}
                       >
-                        <span>{employee}</span>
+                        <span>{employee} {actTime}</span>
                       </div>
                     ))}
                   </div>
