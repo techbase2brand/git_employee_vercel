@@ -25,7 +25,7 @@ const Chatmenu: React.FC<ChatmenuProps> = ({ selectedEmployee, chatMessage ,setS
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

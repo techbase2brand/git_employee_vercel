@@ -110,7 +110,13 @@ function SaleInfoForm(): JSX.Element {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_BASE_URL}/get/addSales`)
+      .get(`${process.env.REACT_APP_API_BASE_URL}/get/addSales`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
       .then((response) => {
         setStatusNames(response.data)
       })
@@ -169,7 +175,13 @@ function SaleInfoForm(): JSX.Element {
       handleUpdate();
     } else {
       axios
-        .post(`${process.env.REACT_APP_API_BASE_URL}/submit-salesform`, formData)
+        .post(`${process.env.REACT_APP_API_BASE_URL}/submit-salesform`, formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            },
+          }
+        )
         .then((response) => {
           setSubmitted(true);
         })
@@ -209,7 +221,13 @@ function SaleInfoForm(): JSX.Element {
       statusReason: statusReasonString,
     };
     axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}/updatesale/${updatedFormData?.id}`, updatedFormData)
+      .put(`${process.env.REACT_APP_API_BASE_URL}/updatesale/${updatedFormData?.id}`, updatedFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
       .then((response) => {
         if (rolled === "Sales Infotech") {
           Navigate("/saleinfoformlist");
@@ -242,9 +260,9 @@ function SaleInfoForm(): JSX.Element {
             height: "100%",
           }}
         >
-         
+
           <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-            
+
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="SalecampusForm-data-os">

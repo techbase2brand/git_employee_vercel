@@ -73,7 +73,7 @@ const EmployeeTable: React.FC<Props> = ({ empObj, setEmpObj }) => {
     axios
       .delete(`${process.env.REACT_APP_API_BASE_URL}/users/${EmpID}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

@@ -73,7 +73,7 @@ const EveningDashboardTable: React.FC<EveningDashboardTableProps> = ({
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

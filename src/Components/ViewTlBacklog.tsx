@@ -210,7 +210,11 @@ const ViewTlBacklog: React.FC<Props> = ({
         `${process.env.REACT_APP_API_BASE_URL}/update-faChecked-tl/${modalRecord?.backlogTaskID}`,
         {
           faChecked: modalRecord?.faChecked === 1 ? 0 : 1,
-        }
+        }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      }
       )
       .then((response) => {
         console.log("check updated successfully:", response.data);

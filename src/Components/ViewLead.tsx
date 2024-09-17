@@ -90,12 +90,12 @@ const ViewLead: React.FC<Props> = ({
   useEffect(() => {
     axios
       .get(
-        ` ${process.env.REACT_APP_API_BASE_URL}/salesinfodata`
-        // , {
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // }
+        ` ${process.env.REACT_APP_API_BASE_URL}/salesinfodata`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
       )
       .then((response) => {
         const resData = response.data;
@@ -138,6 +138,10 @@ const ViewLead: React.FC<Props> = ({
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/update-comments-lead/${id}`, {
         enterCmnt,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
       })
       .then((response) => {
         setEditedComments({ ...editedComments, [record.id]: "" });

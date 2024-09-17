@@ -167,12 +167,12 @@ const AdminSaleInfotechFormList = () => {
     const token = localStorage.getItem("myToken");
     axios
       .get(
-        ` ${process.env.REACT_APP_API_BASE_URL}/salesinfodata`
-        // , {
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //   },
-        // }
+        ` ${process.env.REACT_APP_API_BASE_URL}/salesinfodata`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       .then((response) => {
         setStatusNames(response.data.map((item: { status: string }) => item.status));
@@ -245,12 +245,12 @@ const AdminSaleInfotechFormList = () => {
   const handleDelete = (id: number) => {
     axios
       .delete(
-        `${process.env.REACT_APP_API_BASE_URL}/deletesalesinfo/${id}`
-        // {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-        //   },
-        // }
+        `${process.env.REACT_APP_API_BASE_URL}/deletesalesinfo/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
       )
       .then((response) => {
         console.log("res");
@@ -639,9 +639,9 @@ const AdminSaleInfotechFormList = () => {
             height: "100%",
           }}
         >
-          
+
           <div style={{ display: "flex", flexDirection: "row", height: "90%" }}>
-           
+
             <section className="SalecampusForm-section-os">
               <div className="form-container">
                 <div className="total-lengthPortal">

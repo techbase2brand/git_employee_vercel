@@ -67,7 +67,13 @@ const ViewClientSheet: React.FC<any> = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_BASE_URL}/get-data`)
+      .get(`${process.env.REACT_APP_API_BASE_URL}/get-data`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+          },
+        }
+      )
       .then((response) => {
         let filteredData;
         const uniqueAssignees: string[] = Array.from(
@@ -233,6 +239,10 @@ const ViewClientSheet: React.FC<any> = () => {
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/update-checks/${record.id}`, {
         morningCheck: record.morningCheck === 1 ? 0 : 1,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
       })
       .then((response) => {
         console.log("Morning check updated successfully:", response.data);
@@ -254,6 +264,10 @@ const ViewClientSheet: React.FC<any> = () => {
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/update-checks-evng/${record.id}`, {
         eveningCheck: record.eveningCheck === 1 ? 0 : 1,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
       })
       .then((response) => {
         console.log("Evening check updated successfully:");
@@ -314,7 +328,11 @@ const ViewClientSheet: React.FC<any> = () => {
     axios
       .put(`${process.env.REACT_APP_API_BASE_URL}/update-est-time/${id}`, {
         estTime: value,
-      })
+      }, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+    })
       .then((response) => {
         console.log("Est. time updated successfully:", response.data);
       })

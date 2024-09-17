@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Spin } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
-import { DeleteOutlined} from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 interface LeaveData {
   LeaveInfoID: 0;
   employeeName: string;
@@ -38,7 +38,11 @@ const HRleaveTable: React.FC = () => {
 
   const handleDeny = (LeaveInfoID: number) => {
     axios
-      .put(`${process.env.REACT_APP_API_BASE_URL}/denyLeaveHR/${LeaveInfoID}`)
+      .put(`${process.env.REACT_APP_API_BASE_URL}/denyLeaveHR/${LeaveInfoID}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
       .then((response) => {
         fetchData();
       })
@@ -73,7 +77,7 @@ const HRleaveTable: React.FC = () => {
     axios
       .delete(`${process.env.REACT_APP_API_BASE_URL}/leaveinfo/${LeaveInfoID}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {

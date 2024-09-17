@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import React, { useState, useEffect } from "react";
 
-import { Checkbox, Table, Tooltip } from "antd";
+import { Checkbox, Select, Table, Tooltip } from "antd";
 import axios from "axios";
 
 interface Task {
@@ -15,6 +15,7 @@ interface Task {
   employeeID: string;
   currDate: string;
   approvedBy: string;
+  status: string;
 }
 
 interface EmployeeTime {
@@ -87,7 +88,7 @@ const TaskTable: React.FC<Props> = ({
   //   axios
   //     .delete(`${process.env.REACT_APP_API_BASE_URL}/delete/morningDashboard/${MrngTaskID}`, {
   //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+  //         Authorization: `Bearer ${localStorage.getItem("myToken")}`,
   //       },
   //     })
   //     .then((response) => {
@@ -102,7 +103,7 @@ const TaskTable: React.FC<Props> = ({
     axios
       .get<Employee[]>(`${process.env.REACT_APP_API_BASE_URL}/employees`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
         },
       })
       .then((response) => {
@@ -145,7 +146,7 @@ const TaskTable: React.FC<Props> = ({
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("myToken")}`,
           },
         }
       )
@@ -160,20 +161,28 @@ const TaskTable: React.FC<Props> = ({
       });
   };
 
+  const handleStatusChange = (MrngTaskID: number, value: string) => {
+    axios.put(`${process.env.REACT_APP_API_BASE_URL}/update/status/${MrngTaskID}`, {
+      status: value,
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+      },
+    }).then((response) => {
+      if (response.data.success) {
+        setArrayOfArray((prevData: any) => {
+          return prevData.map((taskArray: any) =>
+            taskArray.map((task: any) =>
+              task.MrngTaskID === MrngTaskID ? { ...task, status: value } : task
+            )
+          );
+        });
+      }
+    }).catch(error => console.log(error));
+  };
+
+
   const columns = [
-    // {
-    //   title: "Client & Project",
-    //   dataIndex: "clientAndProject",
-    //   key: "clientAndProject",
-    //   render: (text: string, record: Task) => {
-    //     const project = projectsInfo.find(
-    //       (project) => project.projectName === record.projectName
-    //     );
-    //     const clientName = project ? project.clientName : "";
-    //     const projectName = project ? project.projectName : "";
-    //     return `${clientName} - ${projectName}`;
-    //   },
-    // },
     {
       title: "Client & Project",
       dataIndex: "clientAndProject",
@@ -235,11 +244,48 @@ const TaskTable: React.FC<Props> = ({
       },
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text: string, record: Task) => {
+        console.log("record", record);
+
+        return (
+          <>
+            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
+              <Select
+                value={record.status || "Select"} // Make sure to use record.status
+                onChange={(value) => handleStatusChange(record.MrngTaskID, value)}
+                style={{ width: 120 }}
+              >
+                <Select.Option value="pending">Pending</Select.Option>
+                <Select.Option value="success">Success</Select.Option>
+                <Select.Option value="fulfill">Fulfill</Select.Option>
+                <Select.Option value="satisfy">Satisfy</Select.Option>
+                <Select.Option value="not-satisfy">Not Satisfy</Select.Option>
+                <Select.Option value="in-progress">In Progress</Select.Option>
+              </Select>
+            }
+            {
+              jobPosition === "Managing Director" &&
+              <div>{text}</div>
+            }
+          </>
+        )
+      },
+    },
+    {
       title: "Date",
       dataIndex: "currDate",
       key: "currDate",
     },
   ];
+  const getRowClassName = (record: Task) => {
+    if (record.status === "success") {
+      return "row-success"; // Apply this class when status is "success"
+    }
+    return "";
+  };
 
   const totalMinutes = arrayOfArray.reduce((acc: any, curr: any) => {
     curr.forEach((obj: any) => {
@@ -412,7 +458,8 @@ const TaskTable: React.FC<Props> = ({
           <Table
             dataSource={tasksForEmployee || []}
             columns={columns}
-            rowClassName={() => "header-row"}
+            // rowClassName={() => "header-row"}
+            rowClassName={getRowClassName}
             locale={{
               emptyText: renderEmptyText
             }}

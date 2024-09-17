@@ -182,7 +182,13 @@ function BlogPost(): JSX.Element {
                 };
 
                 try {
-                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-blogpost`, formPayload);
+                    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/submit-blogpost`, formPayload,
+                        {
+                            headers: {
+                              Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                            },
+                          }
+                    );
                     setSubmitted(true);
                     Navigate("/ViewBlogPost");
                     toast.success('Submit successfully!', {

@@ -18,6 +18,7 @@ interface Task {
   currDate: string;
   actTime: string;
   selectDate: string;
+  approvedBy:string;
 }
 const ViewEveningTask: React.FC = () => {
   const [data, setData] = useState<Task[]>([]);

@@ -66,12 +66,12 @@ const KnowledgeCenterList = () => {
     const handleDelete = (id: number) => {
         axios
             .delete(
-                `${process.env.REACT_APP_API_BASE_URL}/delete-knowledge-blog/${id}`
-                // {
-                //   headers: {
-                //     Authorization: `Bearer ${localStorage.getItem("myToken")}`,
-                //   },
-                // }
+                `${process.env.REACT_APP_API_BASE_URL}/delete-knowledge-blog/${id}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+                  },
+                }
             )
             .then((response) => {
                 toast.success('Deleted successfully!', {
