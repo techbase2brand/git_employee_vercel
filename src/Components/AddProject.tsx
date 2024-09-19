@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 interface Project {
-  ProID:any;
+  ProID: string | number;
   clientName: string;
   projectName: string;
   projectDescription: string;
@@ -78,7 +78,6 @@ const AddProject: React.FC = (navigation) => {
         });
     } else {
       const data = {
-        ProID: project.ProID,
         clientName: project.clientName,
         projectName: project.projectName,
         projectDescription: project.projectDescription,
