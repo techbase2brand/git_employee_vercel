@@ -78,6 +78,7 @@ const DashboardEveningTasktable: React.FC<Props> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [checkedTasks, setCheckedTasks] = useState<Record<number, boolean>>({});
   const [taskStatuses, setTaskStatuses] = useState<Record<number, string>>({});
+
   const myDataString = localStorage.getItem('myData');
   let employeeName = "";
   let jobPosition = "";
@@ -288,16 +289,14 @@ const DashboardEveningTasktable: React.FC<Props> = ({
           <>
             {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
               <Select
-                value={taskStatuses[record.EvngTaskID] || "Select"}
+                value={taskStatuses[record.EvngTaskID] || record.status || "Select"}
                 onChange={(value) => handleStatusChange(record.EvngTaskID, value)}
                 style={{ width: 120 }}
               >
+                <Select.Option value="completed">Completed</Select.Option>
                 <Select.Option value="pending">Pending</Select.Option>
-                <Select.Option value="success">Success</Select.Option>
-                <Select.Option value="fulfill">Fulfill</Select.Option>
-                <Select.Option value="satisfy">Satisfy</Select.Option>
-                <Select.Option value="not-satisfy">Not Satisfy</Select.Option>
-                <Select.Option value="in-progress">In Progress</Select.Option>
+                <Select.Option value="in-progress">In-Progress</Select.Option>
+                <Select.Option value="not-satisfy">Not-Satisfy</Select.Option>
               </Select>
             }
             {

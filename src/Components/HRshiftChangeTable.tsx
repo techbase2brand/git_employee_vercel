@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Spin } from "antd";
 import axios from "axios";
 import { DeleteOutlined } from "@ant-design/icons";
+import { Input } from "antd";
+const { Search } = Input;
 interface ShiftChangeData {
   ShiftChangeTableID: 0,
   employeeName: string;
@@ -20,6 +22,7 @@ interface ShiftChangeData {
 const HRshiftChangeTable: React.FC = () => {
   const [data, setData] = useState<ShiftChangeData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   useEffect(() => {
     axios
       .get<ShiftChangeData[]>(`${process.env.REACT_APP_API_BASE_URL}/get/changeShiftInfo`, {
@@ -185,9 +188,21 @@ const HRshiftChangeTable: React.FC = () => {
   const paginationSettings = {
     pageSize: 100,
   };
-
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+  const filteredData = data.filter((item) =>
+    item.employeeName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <>
+    <Search
+        placeholder="Search by employee name"
+        value={searchTerm}
+        onChange={(e) => handleSearch(e.target.value)} // Track search input
+        style={{ width: 300, marginBottom: 20 }}
+      />
+      
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -197,7 +212,7 @@ const HRshiftChangeTable: React.FC = () => {
         <div className="leave-table">
           <Table
             style={{ width: "80vw" }}
-            dataSource={data}
+            dataSource={filteredData}
             columns={columns}
             rowClassName={() => "header-row"}
             pagination={paginationSettings}

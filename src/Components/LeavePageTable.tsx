@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import io from "socket.io-client";
+import { Input } from "antd";
+const { Search } = Input;
 interface LeaveData {
   LeaveInfoID: number;
   employeeName: string;
@@ -22,6 +24,7 @@ interface LeaveData {
 const LeavePageTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const employeeInfo = localStorage.getItem("myData");
 
@@ -209,8 +212,20 @@ const LeavePageTable: React.FC = () => {
   const paginationSettings = {
     pageSize: 100,
   };
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+  const filteredData = data.filter((item) =>
+    item.employeeName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <div className="leave-page">
+      <Search
+        placeholder="Search by employee name"
+        value={searchTerm}
+        onChange={(e) => handleSearch(e.target.value)} // Track search input
+        style={{ width: 300, marginBottom: 20 }}
+      />
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -218,7 +233,7 @@ const LeavePageTable: React.FC = () => {
         }} />
         :
         <Table
-          dataSource={data}
+          dataSource={filteredData}
           columns={columns}
           rowKey={(record) => record.LeaveInfoID.toString()} // Specify a unique row key
           rowClassName={getRowClassName} // Apply custom row class name
