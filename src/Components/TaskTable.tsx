@@ -244,37 +244,6 @@ const TaskTable: React.FC<Props> = ({
       },
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (text: string, record: Task) => {
-        console.log("record", record);
-
-        return (
-          <>
-            {(jobPosition === "Project Manager" || jobPosition === "Team Lead" || jobPosition === "Sales-Dashboard" || employeeName === "Vikash") &&
-              <Select
-                value={record.status || "Select"} // Make sure to use record.status
-                onChange={(value) => handleStatusChange(record.MrngTaskID, value)}
-                style={{ width: 120 }}
-              >
-                <Select.Option value="pending">Pending</Select.Option>
-                <Select.Option value="success">Success</Select.Option>
-                <Select.Option value="fulfill">Fulfill</Select.Option>
-                <Select.Option value="satisfy">Satisfy</Select.Option>
-                <Select.Option value="not-satisfy">Not Satisfy</Select.Option>
-                <Select.Option value="in-progress">In Progress</Select.Option>
-              </Select>
-            }
-            {
-              jobPosition === "Managing Director" &&
-              <div>{text}</div>
-            }
-          </>
-        )
-      },
-    },
-    {
       title: "Date",
       dataIndex: "currDate",
       key: "currDate",

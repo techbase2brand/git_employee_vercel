@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 interface Project {
+  ProID:any;
   clientName: string;
   projectName: string;
   projectDescription: string;
@@ -14,6 +15,7 @@ interface Project {
 
 const AddProject: React.FC = (navigation) => {
   const [project, setProject] = useState<Project>({
+    ProID:'',
     clientName: "",
     projectName: "",
     projectDescription: "",
@@ -76,6 +78,7 @@ const AddProject: React.FC = (navigation) => {
         });
     } else {
       const data = {
+        ProID: project.ProID,
         clientName: project.clientName,
         projectName: project.projectName,
         projectDescription: project.projectDescription,
