@@ -80,6 +80,7 @@ const TermCondition: React.FC<unknown> = () => {
       data: termTask,
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     })
       .then((response) => {
