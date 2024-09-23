@@ -42,6 +42,7 @@ interface IEmployee {
   doj: Date;
   bloodGroup: string;
   highestQualification: string;
+  status: any;
 }
 
 const LeaveFormComp: React.FC = () => {
@@ -84,11 +85,11 @@ const LeaveFormComp: React.FC = () => {
     setLeaveReason(text);
     setCharacterCount(text.length);
 
-    if (text.length < 100) {
-      setValidationMessage("Enter at least 100 characters");
-    } else {
-      setValidationMessage("");
-    }
+    // if (text.length < 100) {
+    //   // setValidationMessage("Enter at least 100 characters");
+    // } else {
+    //   setValidationMessage("");
+    // }
   };
 
   useEffect(() => {
@@ -147,7 +148,7 @@ const LeaveFormComp: React.FC = () => {
             position: toast.POSITION.TOP_RIGHT,
           });
         });
-    } 
+    }
   };
 
   const handleLeaveTypeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,24 +209,24 @@ const LeaveFormComp: React.FC = () => {
       >
         <label className="add-label">
           Leave Duration:
-          </label>
-          <RangePicker
-            value={[
-              startDate ? dayjs(startDate) : null,
-              endDate ? dayjs(endDate) : null,
-            ]}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange={(dates: any) => {
-              if (dates) {
-                setStartDate(dates[0]?.toDate() || null);
-                setEndDate(dates[1]?.toDate() || null);
-              } else {
-                setStartDate(null);
-                setEndDate(null);
-              }
-            }}
-          />
-        
+        </label>
+        <RangePicker
+          value={[
+            startDate ? dayjs(startDate) : null,
+            endDate ? dayjs(endDate) : null,
+          ]}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(dates: any) => {
+            if (dates) {
+              setStartDate(dates[0]?.toDate() || null);
+              setEndDate(dates[1]?.toDate() || null);
+            } else {
+              setStartDate(null);
+              setEndDate(null);
+            }
+          }}
+        />
+
         <div className="form-group" style={{}}>
           <label className="add-label">
             Leave Type: {leaveCategoryState ? leaveCategoryState : null}
@@ -307,7 +308,7 @@ const LeaveFormComp: React.FC = () => {
             }}
             value={leaveReason}
             onChange={handleLeaveReasonChange}
-            minLength={100}
+            // minLength={100}
             required
           />
           <p>Char. entered: {characterCount}</p>
@@ -321,19 +322,21 @@ const LeaveFormComp: React.FC = () => {
             Admin:
           </label>
 
-            <select
-              className="form-leave"
-              value={teamLead}
-              onChange={(e) => setTeamLead(e.target.value)}
-              required
-            >
-              <option value="">Select admin</option>
-              {adminInfo.map((admin) => (
+          <select
+            className="form-leave"
+            value={teamLead}
+            onChange={(e) => setTeamLead(e.target.value)}
+            required
+          >
+            <option value="">Select admin</option>
+            {adminInfo
+              .filter(admin => admin.status === 1)
+              .map((admin) => (
                 <option key={admin.EmployeeID} value={admin.EmployeeID}>
                   {admin.firstName}
                 </option>
               ))}
-            </select>
+          </select>
         </div>
 
         <button className="add-button-2" type="submit">

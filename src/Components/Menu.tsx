@@ -90,26 +90,73 @@ interface Task {
   currdate: string;
   date: string;
 }
+
 const AppMenu = () => {
   const info = JSON.parse(localStorage.getItem("myData") || "{}");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notif, setNotif] = useState();
   const [termsAndConditions, setTermsAndConditions] = useState<any[]>([]);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showTermsModal2, setShowTermsModal2] = useState(false);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   const storedData = localStorage.getItem("myData");
+  const [todayNews, setTodayNews] = useState<any[]>([]);
+
+  const todayDate = new Date().toISOString().split("T")[0];
+
   const myData = storedData ? JSON.parse(storedData) : null;
   const jsonData = JSON.stringify(notif)
   const Navigate = useNavigate();
+
   const handleLeaveFormClick = (e: any) => {
     e.preventDefault();
     setShowTermsModal(true)
+  };
+
+  useEffect(() => {
+    const hasTodayNews = todayNews.some((item) => {
+      const newsDate = new Date(item.date).toISOString().split("T")[0];
+      return newsDate === todayDate;
+    });
+
+    const acceptedDate = localStorage.getItem("acceptedDate");
+    if (hasTodayNews && acceptedDate !== todayDate) {
+      setShowTermsModal2(true);
+    }
+  }, [todayNews]);
+
+  const handleAcceptNews = () => {
+    // Store today's date as the accepted date in localStorage
+    localStorage.setItem("acceptedDate", todayDate);
+    // Close the modal
+    setShowTermsModal2(false);
   };
 
   const onOpenChange = (keys: string[]) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
   };
+
+  useEffect(() => {
+    axios
+      .get<Task[]>(`${process.env.REACT_APP_API_BASE_URL}/get/daily-news`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+        },
+      })
+      .then((response) => {
+        setTodayNews(response.data);
+
+        const TodayNews = response.data.some((item) => item.date === todayDate);
+        if (!TodayNews) {
+          // If no news matches today's date, remove the acceptedDate from localStorage
+          localStorage.removeItem("acceptedDate");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   useEffect(() => {
     axios
@@ -400,6 +447,7 @@ const AppMenu = () => {
       obj.employeeID === notification.employeeID)
   ).length;
   const desiredIndex = 0;
+
   return (
     <Menu mode="inline" openKeys={openKeys}
       onOpenChange={onOpenChange}>
@@ -425,6 +473,26 @@ const AppMenu = () => {
               <p>{item.date}</p>
             </div>
           ))}
+      </Modal>
+      <Modal
+        title={<div style={{ textAlign: 'center' }}>👻 आज के मुख्य समाचार</div>}
+        centered
+        width={1200}
+        visible={showTermsModal2}
+        onCancel={() => setShowTermsModal2(false)}
+        footer={[
+          <Button key="submit" type="primary" onClick={handleAcceptNews}>
+            Accept
+          </Button>,
+        ]}
+      >
+        {todayNews
+          .filter((item) => item.date === todayDate)
+          .map((item, index) =>
+            <div key={item.id} style={{ textAlign: 'center' }}>
+              <div dangerouslySetInnerHTML={{ __html: item.news }} />
+            </div>
+          )}
       </Modal>
       {info.jobPosition == "Project Manager" && (
         <>
@@ -551,6 +619,9 @@ const AppMenu = () => {
 
       {info.jobPosition == "Managing Director" && (
         <>
+          <Menu.Item key="new-dashboard" icon={<DashboardOutlined />}>
+            <Link to="/new-dashboard">New-Dashboard</Link>
+          </Menu.Item>
           <Menu.Item
             key="dashboard"
             icon={<DashboardOutlined rev={undefined} />}
@@ -728,13 +799,13 @@ const AppMenu = () => {
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item key="Contactus" icon={<TableOutlined />}>
-          <Link to="/Contactus">Contact Us</Link>
+            <Link to="/Contactus">Contact Us</Link>
           </Menu.Item>
           <Menu.Item key="RequestQuote" icon={<TableOutlined />}>
-          <Link to="/RequestQuote">Request Quote</Link>
+            <Link to="/RequestQuote">Request Quote</Link>
           </Menu.Item>
           <Menu.Item key="ApplyJobs" icon={<TableOutlined />}>
-          <Link to="/ApplyJobs">Apply Jobs</Link>
+            <Link to="/ApplyJobs">Apply Jobs</Link>
           </Menu.Item>
           <Menu.SubMenu key="Appcartify" icon={<TableOutlined rev={undefined} />} title="Appcartify">
             <Menu.Item key="Appcartify" icon={<TableOutlined />}>
@@ -816,7 +887,7 @@ const AppMenu = () => {
 
       {info.jobPosition == "BDE" && (
         <>
-        {info.EmployeeID === "B2B00028" &&
+          {info.EmployeeID === "B2B00028" &&
             <Menu.Item
               key="dashboard"
               icon={<DashboardOutlined rev={undefined} />}
@@ -893,6 +964,16 @@ const AppMenu = () => {
 
       {info.jobPosition == "Employee" && (
         <>
+          {info.EmployeeID === "B2B00042" &&
+            <Menu.SubMenu key="dailyNews" icon={<TableOutlined rev={undefined} />} title="Add News">
+              <Menu.Item key="dailyNews" icon={<TableOutlined />}>
+                <Link to="/dailyNews">DailyNews</Link>
+              </Menu.Item>
+              <Menu.Item key="ViewNewsTable" icon={<TableOutlined />}>
+                <Link to="/ViewNewsTable">ViewNewsTable</Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+          }
           {info.EmployeeID === "B2B00012" &&
             <Menu.Item
               key="dashboard"
@@ -1007,7 +1088,7 @@ const AppMenu = () => {
               <Link to="/KnowledgeCenterList">KnowledgeCenterList</Link>
             </Menu.Item>
           </Menu.SubMenu>
-        
+
         </>
       )}
 

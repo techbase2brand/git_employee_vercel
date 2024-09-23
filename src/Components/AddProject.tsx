@@ -15,7 +15,7 @@ interface Project {
 
 const AddProject: React.FC = (navigation) => {
   const [project, setProject] = useState<Project>({
-    ProID:'',
+    ProID: '',
     clientName: "",
     projectName: "",
     projectDescription: "",
@@ -86,7 +86,8 @@ const AddProject: React.FC = (navigation) => {
       axios
         .post(`${process.env.REACT_APP_API_BASE_URL}/add/projects`, data, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('myToken')}`
+            'Authorization': `Bearer ${localStorage.getItem('myToken')}`,
+
           }
         })
         .then((response: any) => {
@@ -106,49 +107,49 @@ const AddProject: React.FC = (navigation) => {
 
   return (
     <div className="emp-main-div">
-          <div
-            style={{ display: "flex", flexDirection: "column",width:'auto' }}
-            className="form-container"
-          >
-            <p
-              className="mrng-tas"
-            >
-              {location?.state?.projEditObj ? " Edit Project" : "Add Project"}
-            </p>
-            <label className="add-label">
-              Client Name<span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              className="add-input"
-              name="clientName"
-              value={project?.clientName}
-              onChange={handleProjectChange}
-            />
-            <label className="add-label">
-              Project<span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              className="add-input"
-              name="projectName"
-              value={project?.projectName}
-              onChange={handleProjectChange}
-            >
+      <div
+        style={{ display: "flex", flexDirection: "column", width: 'auto' }}
+        className="form-container"
+      >
+        <p
+          className="mrng-tas"
+        >
+          {location?.state?.projEditObj ? " Edit Project" : "Add Project"}
+        </p>
+        <label className="add-label">
+          Client Name<span style={{ color: "red" }}>*</span>
+        </label>
+        <input
+          className="add-input"
+          name="clientName"
+          value={project?.clientName}
+          onChange={handleProjectChange}
+        />
+        <label className="add-label">
+          Project<span style={{ color: "red" }}>*</span>
+        </label>
+        <input
+          className="add-input"
+          name="projectName"
+          value={project?.projectName}
+          onChange={handleProjectChange}
+        >
 
-            </input>
-            <label className="add-label">
-              Project Description<span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              className="add-input"
-              name="projectDescription"
-              value={project?.projectDescription}
-              onChange={handleProjectChange}
-            />
-            <button className="add-button" onClick={handleAddProject}>
-              Submit
-            </button>
-          </div>
+        </input>
+        <label className="add-label">
+          Project Description<span style={{ color: "red" }}>*</span>
+        </label>
+        <input
+          className="add-input"
+          name="projectDescription"
+          value={project?.projectDescription}
+          onChange={handleProjectChange}
+        />
+        <button className="add-button" onClick={handleAddProject}>
+          Submit
+        </button>
       </div>
+    </div>
   );
 };
 

@@ -32,6 +32,8 @@ interface Employee {
   EmployeeID: string;
   firstName: string;
   lastName: string;
+  status: any;
+  email: string;
 }
 
 const HrLeaveAutoFillComp: React.FC = () => {
@@ -49,8 +51,13 @@ const HrLeaveAutoFillComp: React.FC = () => {
   const [characterCount, setCharacterCount] = useState<number>(0);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [leaveCategoryState, setLeaveCategoryState] = useState<string>("");
-
   const [employees, setEmployees] = useState<Employee[]>([]);
+
+  // Find all admins whose emails exist in the employees list and whose status is 1
+  const matchingEmployees = adminInfo.filter((admin) => {
+    return employees.some((employee) => employee.email === admin.email && employee.status === 1);
+  });
+
 
   const navigate = useNavigate();
 
@@ -61,11 +68,11 @@ const HrLeaveAutoFillComp: React.FC = () => {
     setLeaveReason(text);
     setCharacterCount(text.length);
 
-    if (text.length < 100) {
-      setValidationMessage("Enter at least 100 characters");
-    } else {
-      setValidationMessage("");
-    }
+    // if (text.length < 100) {
+    //   setValidationMessage("Enter at least 100 characters");
+    // } else {
+    //   setValidationMessage("");
+    // }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -144,6 +151,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
         },
       })
       .then((response) => {
+
         setAdminInfo(response.data);
       })
       .catch((error) => {
@@ -179,7 +187,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
 
   return (
     <>
-      
+
       <form
         onSubmit={handleSubmit}
         style={{
@@ -201,31 +209,33 @@ const HrLeaveAutoFillComp: React.FC = () => {
             required
           >
             <option value="">Select employee</option>
-            {employees.map((employee) => (
-              <option key={employee.EmployeeID} value={employee.EmployeeID}>
-                {employee.firstName} {employee.lastName}
-              </option>
-            ))}
+            {employees
+              .filter((employee) => employee.status === 1)
+              .map((employee) => (
+                <option key={employee.EmployeeID} value={employee.EmployeeID}>
+                  {employee.firstName} {employee.lastName}
+                </option>
+              ))}
           </select>
         </label>
         <label className="add-label">
           Leave Duration:
         </label>
-          <RangePicker
-            value={[
-              startDate ? dayjs(startDate) : null,
-              endDate ? dayjs(endDate) : null,
-            ]}
-            onChange={(dates: any) => {
-              if (dates) {
-                setStartDate(dates[0]?.toDate() || null);
-                setEndDate(dates[1]?.toDate() || null);
-              } else {
-                setStartDate(null);
-                setEndDate(null);
-              }
-            }}
-          />
+        <RangePicker
+          value={[
+            startDate ? dayjs(startDate) : null,
+            endDate ? dayjs(endDate) : null,
+          ]}
+          onChange={(dates: any) => {
+            if (dates) {
+              setStartDate(dates[0]?.toDate() || null);
+              setEndDate(dates[1]?.toDate() || null);
+            } else {
+              setStartDate(null);
+              setEndDate(null);
+            }
+          }}
+        />
         <div className="form-group" style={{}}>
           <label className="add-label">
             Leave Type:
@@ -307,7 +317,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
             }}
             value={leaveReason}
             onChange={handleLeaveReasonChange}
-            minLength={100}
+            // minLength={100}
             required
           />
           <p>Char. entered: {characterCount}</p>
@@ -346,7 +356,7 @@ const HrLeaveAutoFillComp: React.FC = () => {
               required
             >
               <option value="">Select admin</option>
-              {adminInfo.map((admin) => (
+              {matchingEmployees.map((admin) => (
                 <option key={admin.adminID} value={admin.adminID}>
                   {admin.adminName}
                 </option>

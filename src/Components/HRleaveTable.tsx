@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Spin } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
+import { Input } from "antd";
+const { Search } = Input;
 import { DeleteOutlined } from "@ant-design/icons";
 interface LeaveData {
   LeaveInfoID: 0;
@@ -20,6 +22,7 @@ interface LeaveData {
 const HRleaveTable: React.FC = () => {
   const [data, setData] = useState<LeaveData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const handleApprove = (LeaveInfoID: number) => {
     const token = localStorage.getItem("myToken");
     axios
@@ -166,8 +169,20 @@ const HRleaveTable: React.FC = () => {
 
   ];
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+  const filteredData = data.filter((item) =>
+    item.employeeName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <>
+      <Search
+        placeholder="Search by employee name"
+        value={searchTerm}
+        onChange={(e) => handleSearch(e.target.value)} // Track search input
+        style={{ width: 300, marginBottom: 20 }}
+      />
       {loading ?
         <Spin size="large" className="spinner-antd" style={{
           position: 'absolute',
@@ -176,7 +191,7 @@ const HRleaveTable: React.FC = () => {
         :
         <div className="leave-table">
           <Table
-            dataSource={data}
+            dataSource={filteredData}
             columns={columns}
             rowClassName={(record) =>
               record.approvalOfTeamLead === "approved" && record.approvalOfHR === "approved"
