@@ -24,12 +24,14 @@ interface Employee {
   role: string;
   dob: string | Date;
   EmployeeID: string;
+  status:any;
 }
 
 const HrLeaveReportTable: React.FC = () => {
   const [allLeave, setAllLeave] = useState<LeaveData[]>([]);
   const [selectedYear, setSelectedYear] = useState<string>('all');
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [years, setyears] = useState(true);
 
@@ -46,6 +48,7 @@ const HrLeaveReportTable: React.FC = () => {
     setyears(false)
   }
   const minutesToDaysHours = (minutes: number) => {
+    
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     const days = Math.floor(hours / 9);
@@ -93,22 +96,65 @@ const HrLeaveReportTable: React.FC = () => {
         setAllEmployees(response.data);
       });
   }, []);
+  const splitLeaveByMonth = (leave: LeaveData) => {
+    const startDate = dayjs(leave.startDate);
+    const endDate = dayjs(leave.endDate);
+    const months = [];
+  
+    let currentMonth = startDate.startOf('month');
+    while (currentMonth.isBefore(endDate.endOf('month'))) {
+      const monthStart = currentMonth.isSame(startDate, 'month') ? startDate : currentMonth;
+      const monthEnd = currentMonth.isSame(endDate, 'month') ? endDate : currentMonth.endOf('month');
+  
+      const fullDays = monthEnd.diff(monthStart, 'day') + 1;
+      let durationMinutes = 0;
+  
+      if (/^\d{1,2}:\d{2}$/.test(leave.leaveType)) {
+        // If leaveType is in HH:MM format
+        durationMinutes = fullDays * timeToMinutes(leave.leaveType);
+      } else if (leave.leaveType.toLowerCase() === 'full day') {
+        // For a full day, assume 9 hours (9 * 60 minutes)
+        durationMinutes = fullDays * 9 * 60;
+      }
+  
+      months.push({
+        month: currentMonth.format("MMM YYYY"),
+        durationMinutes,  // Store the total minutes for this leave in the month
+      });
 
+      currentMonth = currentMonth.add(1, 'month');
+    }
+  
+    return months;
+  };
+  const sumTimeParts = (totalMinutes: number) => {
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+  
+    const totalDays = Math.floor(totalHours / 9);  // Assuming 9 hours make a day
+    const remainingHours = totalHours % 9;
+  
+    return { days: totalDays, hours: remainingHours, minutes: remainingMinutes };
+  };
+  
+  
   const calculateTotalLeaveForEmployee = (employee: Employee) => {
     const employeeLeaves = allLeave.filter(
       (leave) => leave.employeeID === employee.EmployeeID
     );
+  
     if (employeeLeaves.length === 0 && selectedEmployee !== 'all') return (
       <div key={employee.EmpID} style={{ textAlign: "center", margin: "20px 0", color: "#999", fontSize: "20px", fontWeight: "bold" }}>
         {employee.firstName} has no leave data.
       </div>
     );
+  
     if (employeeLeaves.length === 0) return null;
-
-    let totalDuration = 0;
-    let uncertainDuration = 0;
-    let regularDuration = 0;
-
+  
+    let totalMinutes = 0;
+    let uncertainMinutes = 0;
+    let regularMinutes = 0;
+  
     const monthlyData: {
       [key: string]: {
         total: number;
@@ -116,83 +162,55 @@ const HrLeaveReportTable: React.FC = () => {
         regular: number;
       };
     } = {};
-
+  
     employeeLeaves.forEach((leave) => {
-      const startDate = dayjs(leave.startDate).startOf("day");
-      const endDate = dayjs(leave.endDate).startOf("day");
-      // const dayGap = endDate.diff(startDate, "day");
-      const dayGap = endDate.diff(startDate, "day") + 1;
-
-      let duration = 0;
-      if (/^\d{1,2}:\d{2}$/.test(leave.leaveType)) {
-        duration = timeToMinutes(leave.leaveType) * dayGap;
-      } else if (leave.leaveType.toLowerCase() === "full day") {
-        duration = 9 * 60 * dayGap;
-      } else {
-        duration = dayGap * 9 * 60;
-      }
-
-      totalDuration += duration;
-      const monthYear = dayjs(leave.startDate).format("MMM YYYY");
-      if (!monthlyData[monthYear]) {
-        monthlyData[monthYear] = { total: 0, uncertain: 0, regular: 0 };
-      }
-
-      monthlyData[monthYear].total += duration;
-
-      if (leave.leaveCategory === "Uncertain Leave") {
-        uncertainDuration += duration;
-        monthlyData[monthYear].uncertain += duration;
-      } else if (leave.leaveCategory === "Regular Leave") {
-        regularDuration += duration;
-        monthlyData[monthYear].regular += duration;
-      }
+      const leaveMonths = splitLeaveByMonth(leave);
+  
+      leaveMonths.forEach(({ month, durationMinutes }) => {
+        totalMinutes += durationMinutes;
+  
+        if (!monthlyData[month]) {
+          monthlyData[month] = { total: 0, uncertain: 0, regular: 0 };
+        }
+  
+        monthlyData[month].total += durationMinutes;
+  
+        if (leave.leaveCategory === "Uncertain Leave") {
+          uncertainMinutes += durationMinutes;
+          monthlyData[month].uncertain += durationMinutes;
+        } else if (leave.leaveCategory === "Regular Leave") {
+          regularMinutes += durationMinutes;
+          monthlyData[month].regular += durationMinutes;
+        }
+      });
     });
-
-    // const total = minutesToDaysHours(totalDuration);
-    // const uncertain = minutesToDaysHours(uncertainDuration);
-    // const regular = minutesToDaysHours(regularDuration);
-
-    // const totalLeave = `${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`;
-    // const uncertainLeaveDuration = `${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`;
-    // const regularLeaveDuration = `${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`;
-
-    const totalAll = Object.entries(monthlyData)
-      .filter(([key]) => (
-        (!years && (selectedYear === 'all' || key.includes(selectedYear))) ||
-        (years && key.includes(uniqueTimeArray[0]))
-      ))
-      .reduce(
-        (acc, [, value]) => {
-          acc.total += value.total;
-          acc.uncertain += value.uncertain;
-          acc.regular += value.regular;
-          return acc;
-        },
-        { total: 0, uncertain: 0, regular: 0 }
-      );
-
-    const totalAllDaysHours = minutesToDaysHours(totalAll.total);
-    const totalAllUncertainDaysHours = minutesToDaysHours(totalAll.uncertain);
-    const totalAllRegularDaysHours = minutesToDaysHours(totalAll.regular);
-
-    const Leave = totalAllDaysHours.days === 0 && totalAllDaysHours.hours === 0 && totalAllDaysHours.minutes === 0
-    const Uncertain = totalAllUncertainDaysHours.days === 0 && totalAllUncertainDaysHours.hours === 0 && totalAllUncertainDaysHours.minutes === 0;
-    const Regular = totalAllRegularDaysHours.days === 0 && totalAllRegularDaysHours.hours === 0 && totalAllRegularDaysHours.minutes === 0;
-
+  
+    // Convert total minutes to days, hours, and minutes
+    const totalAllTime = sumTimeParts(totalMinutes);
+    const uncertainAllTime = sumTimeParts(uncertainMinutes);
+    const regularAllTime = sumTimeParts(regularMinutes);
+  
+    const hasLeave = totalAllTime.days > 0 || totalAllTime.hours > 0 || totalAllTime.minutes > 0;
+    const hasUncertainLeave = uncertainAllTime.days > 0 || uncertainAllTime.hours > 0 || uncertainAllTime.minutes > 0;
+    const hasRegularLeave = regularAllTime.days > 0 || regularAllTime.hours > 0 || regularAllTime.minutes > 0;
+  
     return (
       <div>
-        {loading ?
-          <Spin size="large" className="spinner-antd" />
-          :
+        {loading ? <Spin size="large" className="spinner-antd" /> :
           <div>
-            {Leave === false || Uncertain === false || Regular === false ?
+            {hasLeave || hasUncertainLeave || hasRegularLeave ? (
               <div key={employee.EmpID}>
                 <h2 style={{ margin: '10px', marginBottom: '-20px' }}>{employee.firstName}</h2>
                 <div className="containerStyle">
-                  <div className="totalLeaveStyle">Total Leave: {`${totalAllDaysHours.days} days, ${totalAllDaysHours.hours} hours, and ${totalAllDaysHours.minutes} minutes`}</div>
-                  <div className="uncertainLeaveStyle">Total Uncertain Leave: {`${totalAllUncertainDaysHours.days} days, ${totalAllUncertainDaysHours.hours} hours, and ${totalAllUncertainDaysHours.minutes} minutes`}</div>
-                  <div className="regularLeaveStyle">Total Regular Leave: {`${totalAllRegularDaysHours.days} days, ${totalAllRegularDaysHours.hours} hours, and ${totalAllRegularDaysHours.minutes} minutes`}</div>
+                  <div className="totalLeaveStyle">
+                    Total Leave: {`${totalAllTime.days} days, ${totalAllTime.hours} hours, and ${totalAllTime.minutes} minutes`}
+                  </div>
+                  <div className="uncertainLeaveStyle">
+                    Total Uncertain Leave: {`${uncertainAllTime.days} days, ${uncertainAllTime.hours} hours, and ${uncertainAllTime.minutes} minutes`}
+                  </div>
+                  <div className="regularLeaveStyle">
+                    Total Regular Leave: {`${regularAllTime.days} days, ${regularAllTime.hours} hours, and ${regularAllTime.minutes} minutes`}
+                  </div>
                 </div>
                 <div style={{ marginTop: "20px" }}>
                   <table style={{ width: "auto", borderCollapse: "collapse" }}>
@@ -205,13 +223,13 @@ const HrLeaveReportTable: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {years === false ? Object.entries(monthlyData)
+                      {Object.entries(monthlyData)
                         .filter(([key]) => selectedYear === 'all' || key.includes(selectedYear))
                         .sort(([a], [b]) => +new Date(a) - +new Date(b))
                         .map(([key, value]) => {
-                          const total = minutesToDaysHours(value.total);
-                          const uncertain = minutesToDaysHours(value.uncertain);
-                          const regular = minutesToDaysHours(value.regular);
+                          const total = sumTimeParts(value.total);
+                          const uncertain = sumTimeParts(value.uncertain);
+                          const regular = sumTimeParts(value.regular);
                           return (
                             <tr key={key}>
                               <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
@@ -220,36 +238,18 @@ const HrLeaveReportTable: React.FC = () => {
                               <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
                             </tr>
                           );
-                        })
-                        :
-                        Object.entries(monthlyData)
-                          .filter(([key]) => key.includes(uniqueTimeArray[0]))
-                          .sort(([a], [b]) => +new Date(a) - +new Date(b))
-                          .map(([key, value]) => {
-                            const total = minutesToDaysHours(value.total);
-                            const uncertain = minutesToDaysHours(value.uncertain);
-                            const regular = minutesToDaysHours(value.regular);
-                            return (
-                              <tr key={key}>
-                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '4px' }}>{key}</td>
-                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${total.days} days, ${total.hours} hours, and ${total.minutes} minutes`}</td>
-                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${uncertain.days} days, ${uncertain.hours} hours, and ${uncertain.minutes} minutes`}</td>
-                                <td style={{ padding: "12px", borderBottom: "1px solid #ccc", paddingLeft: '14px' }}>{`${regular.days} days, ${regular.hours} hours, and ${regular.minutes} minutes`}</td>
-                              </tr>
-                            );
-                          })
-                      }
+                        })}
                     </tbody>
                   </table>
                 </div>
               </div>
-              : null
-            }
+            ) : null}
           </div>
         }
       </div>
     );
   };
+  
 
   // return (
   //   <div className="allEmployeesLeaveData">
@@ -346,6 +346,7 @@ const HrLeaveReportTable: React.FC = () => {
         >
           <option value='all'>All Employees</option>
           {allEmployees
+          .filter(emp => emp.status === 1)
             .sort((a, b) => a.firstName.localeCompare(b.firstName)) // Sort by firstName
             .map(emp => (
               <option key={emp.EmpID} value={emp.EmpID}>{emp.firstName}</option>

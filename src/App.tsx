@@ -67,6 +67,7 @@ import AdminSaleInfotechFormList from "./Components/AdminSaleInfotechFormList";
 import ViewTermCondition from "./Components/ViewTermCondition";
 import ViewSalesMaster from "./Components/ViewSalesMaster";
 import TermCondition from "./Components/TermCondition";
+import DailyNews from "./Components/News/DailyNews";
 import SalesMaster from "./Components/SalesMaster";
 import AssignTaskPage from "./Components/AssignTaskPage";
 import ViewBacklogPage from "./Components/ViewBacklogPage";
@@ -79,6 +80,8 @@ import Contactus from "./Components/ContactUsListing";
 import RequestListing from "./Components/RequestListing";
 import Applyjobs from "./Components/Applyjobs";
 import Appcartify from "./Components/Appcartify";
+import NewDashboard from "./Components/NewDashboard";
+import ViewNewsTable from "./Components/News/ViewNewsTable";
 
 export const GlobalInfo = createContext<any>({});
 
@@ -189,6 +192,14 @@ const App: React.FC = () => {
               <Routes>
                 <Route path="/" element={<Login />} />
                 <Route
+                  path="/new-dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <NewDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/dashboard"
                   element={
                     <ProtectedRoute>
@@ -254,6 +265,14 @@ const App: React.FC = () => {
                   }
                 />
                 <Route
+                  path="/ViewNewsTable"
+                  element={
+                    <ProtectedRoute>
+                      <ViewNewsTable />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/ViewSalesMaster"
                   element={
                     <ProtectedRoute>
@@ -266,6 +285,14 @@ const App: React.FC = () => {
                   element={
                     <ProtectedRoute>
                       <TermCondition />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dailyNews"
+                  element={
+                    <ProtectedRoute>
+                      <DailyNews />
                     </ProtectedRoute>
                   }
                 />

@@ -45,8 +45,14 @@ function SalecampusForm(): JSX.Element {
   const [formData, setFormData] = useState<FormData>(record || initialFormData);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  let isMounted = true; 
 
-
+  useEffect(() => {
+    // Cleanup function: mark component as unmounted when it is unmounted
+    return () => {
+      isMounted = false; // When the component unmounts, set this flag to false
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -238,13 +244,14 @@ function SalecampusForm(): JSX.Element {
           method: "POST",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("myToken")}`,
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
         });
 
         const responseData = await response.json();
 
-        if (response.status === 200) {
+        if (response.status === 200 && isMounted) {
           setFormData(initialFormData);
           setSubmitted(true);
         } else if (response.status === 400) {
@@ -257,6 +264,12 @@ function SalecampusForm(): JSX.Element {
         }, 3000);
       } catch (error) {
         console.error("Error submitting form:", error);
+      }finally {
+        if (isMounted) {
+          setTimeout(() => {
+            setSubmitted(false);
+          }, 3000);
+        }
       }
     }
   };
