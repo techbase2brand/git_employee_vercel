@@ -139,9 +139,11 @@ const HrLeaveReportTable: React.FC = () => {
   
   
   const calculateTotalLeaveForEmployee = (employee: Employee) => {
-    const employeeLeaves = allLeave.filter(
-      (leave) => leave.employeeID === employee.EmployeeID
-    );
+    const employeeLeaves = allLeave.filter((leave) => {
+      const leaveYear = dayjs(leave.startDate).year().toString();
+      return leave.employeeID === employee.EmployeeID && 
+             (selectedYear === 'all' || leaveYear === selectedYear);
+    });
   
     if (employeeLeaves.length === 0 && selectedEmployee !== 'all') return (
       <div key={employee.EmpID} style={{ textAlign: "center", margin: "20px 0", color: "#999", fontSize: "20px", fontWeight: "bold" }}>
